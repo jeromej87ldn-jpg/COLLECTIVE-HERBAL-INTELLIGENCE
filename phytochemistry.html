@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plant Intelligence — C.H.I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#1a3a2a;--forest-mid:#2d5c42;--forest-light:#4a8c65;
+  --gold:#c8952a;--gold-light:#e8b84b;--night:#0c1a10;
+  --parchment:#f5f0e8;--muted:rgba(245,240,232,0.5);
+  --card:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.08);
+  --text:#f5f0e8;--accent:#c8952a;
+  --tag-bg:rgba(74,140,101,0.15);--tag-border:rgba(74,140,101,0.3);--tag-text:#7acca0;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--night);color:var(--text);min-height:100vh;
+  background-image:radial-gradient(ellipse 70% 50% at 50% -5%,rgba(74,140,101,0.1),transparent 60%),radial-gradient(ellipse 50% 40% at 90% 100%,rgba(200,149,42,0.05),transparent 55%);}
+
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:var(--forest);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:100;}
+.nav-logo{text-decoration:none;display:flex;flex-direction:column;}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-light);letter-spacing:.1em;}
+.nav-full{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.5);}
+.nav-right{display:flex;align-items:center;gap:1.25rem;}
+.nav-right>a,.nav-right>.nav-dd{color:rgba(245,240,232,.6);text-decoration:none;font-size:13px;transition:color .2s;}
+.nav-right>a:hover,.nav-right>a.active{color:var(--gold-light);}
+.nav-cta{background:var(--gold);color:var(--forest)!important;padding:.5rem 1rem;border-radius:4px;font-weight:500;}
+.nav-inbox{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:6px;border:1px solid rgba(255,255,255,0.08);color:rgba(245,240,232,.6);transition:all .2s;text-decoration:none;}
+.nav-inbox:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
+.nav-dd{position:relative;display:inline-flex;align-items:center;gap:4px;cursor:pointer;font-size:13px;color:rgba(245,240,232,.6);background:none;border:none;font-family:'DM Sans',sans-serif;padding:0;height:64px;}
+.nav-dd:hover,.nav-dd.open{color:var(--gold-light);}
+.nav-dd-arrow{font-size:8px;opacity:.5;transition:transform .2s;}
+.nav-dd.open .nav-dd-arrow{transform:rotate(180deg);}
+.nav-dd-menu{position:absolute;top:calc(100% - 1px);left:50%;transform:translateX(-50%);background:var(--forest);border:1px solid rgba(200,149,42,.22);border-radius:0 0 8px 8px;padding:.4rem 0;min-width:180px;display:none;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.nav-dd.open .nav-dd-menu{display:block;animation:ddFade .15s ease forwards;}
+@keyframes ddFade{from{opacity:0;transform:translateX(-50%) translateY(-4px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.nav-dd-menu a{display:flex;align-items:center;gap:.55rem;padding:.55rem 1.1rem;font-size:13px;color:rgba(245,240,232,.7);text-decoration:none;transition:all .15s;white-space:nowrap;}
+.nav-dd-menu a:hover{background:rgba(200,149,42,.08);color:var(--gold-light);}
+.nav-dd-menu a.active{color:var(--gold-light);}
+.nav-dd-divider{height:1px;background:rgba(255,255,255,.07);margin:.3rem 0;}
+.nav-dd-icon{font-size:14px;width:16px;text-align:center;flex-shrink:0;}
+@media(max-width:760px){.nav-right>a:not(.nav-cta):not(.nav-inbox){display:none;}.nav-dd{display:none;}}
+
+
+/* QUICK ACCESS BAR */
+.qbar{background:rgba(12,26,16,.95);border-bottom:1px solid var(--card-border);padding:.6rem 2.5rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;position:sticky;top:64px;z-index:40;backdrop-filter:blur(8px);}
+.qbar-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);flex-shrink:0;}
+.qbar-divider{width:1px;height:16px;background:var(--card-border);flex-shrink:0;}
+.qbar-scroll{display:flex;gap:.45rem;flex-wrap:wrap;flex:1;}
+.qpill{font-size:12px;padding:.28rem .8rem;border-radius:999px;border:1px solid var(--card-border);background:transparent;color:rgba(245,240,232,.65);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
+.qpill:hover{border-color:var(--gold);color:var(--gold-light);}
+.qpill.active{background:rgba(200,149,42,.18);color:var(--gold-light);border-color:rgba(200,149,42,.4);}
+.qpill .qdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.qbar-actions{display:flex;gap:.5rem;margin-left:auto;flex-shrink:0;}
+.qbar-btn{font-size:11.5px;padding:.3rem .85rem;border-radius:5px;border:1px solid var(--card-border);background:transparent;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.qbar-btn:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
+.qbar-btn.manage{background:var(--gold);color:var(--forest);border-color:var(--gold);}
+.qbar-empty{font-size:12px;color:rgba(245,240,232,.25);font-style:italic;}
+
+/* HERO */
+.hero{background:linear-gradient(160deg,var(--forest) 0%,rgba(12,26,16,0) 70%);border-bottom:1px solid var(--card-border);padding:3rem 2.5rem 2.5rem;}
+.hero-inner{max-width:980px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:2rem;flex-wrap:wrap;}
+.hero-eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:10px;margin-bottom:.75rem;}
+.hero-eyebrow::before{content:'';width:20px;height:1px;background:var(--gold);opacity:.6;}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4.5vw,52px);font-weight:300;line-height:1.04;color:var(--parchment);margin-bottom:.75rem;}
+.hero-title em{font-style:italic;color:var(--gold-light);}
+.hero-desc{font-size:13.5px;color:var(--muted);line-height:1.85;max-width:500px;}
+.hero-disclaimer{background:rgba(200,149,42,.07);border:1px solid rgba(200,149,42,.18);border-radius:8px;padding:.7rem 1rem;font-size:11.5px;color:rgba(245,240,232,.5);line-height:1.65;max-width:300px;flex-shrink:0;}
+.hero-disclaimer strong{color:var(--gold);font-weight:500;}
+
+/* TOOL TABS */
+.tool-tabs{max-width:980px;margin:0 auto;padding:1.25rem 2.5rem 0;}
+.tab-bar{display:flex;align-items:flex-end;gap:.2rem;border-bottom:1px solid var(--card-border);}
+.ttab{font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:500;padding:.55rem 1.1rem;border-radius:6px 6px 0 0;border:1px solid transparent;border-bottom:none;background:transparent;color:var(--muted);cursor:pointer;transition:all .18s;white-space:nowrap;}
+.ttab:hover{color:var(--text);background:rgba(255,255,255,.04);}
+.ttab.on{background:var(--card);color:var(--gold-light);border-color:var(--card-border);border-bottom:1px solid var(--night);margin-bottom:-1px;}
+
+/* TOOL WRAPPER */
+.tool-wrap{max-width:980px;margin:0 auto;padding:0 2.5rem 5rem;}
+
+/* HERB INPUT SECTION */
+.herb-input-section{background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;}
+.his-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;margin-bottom:.75rem;display:flex;align-items:center;gap:.6rem;}
+.his-title span{font-size:11px;font-family:'DM Sans',sans-serif;font-weight:400;color:var(--muted);letter-spacing:.06em;}
+.herb-input-row{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:.85rem;}
+.herb-input-wrap{position:relative;flex:1;min-width:200px;}
+.herb-input-wrap input{width:100%;background:rgba(0,0,0,.25);border:1px solid var(--card-border);border-radius:6px;padding:.6rem .85rem;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--text);outline:none;transition:border-color .2s;}
+.herb-input-wrap input::placeholder{color:rgba(245,240,232,.2);}
+.herb-input-wrap input:focus{border-color:rgba(200,149,42,.4);}
+.autocomplete-drop{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#1a3a2a;border:1px solid rgba(200,149,42,.3);border-radius:7px;max-height:200px;overflow-y:auto;z-index:100;display:none;}
+.autocomplete-drop.show{display:block;}
+.ac-item{padding:.55rem .85rem;font-size:13px;cursor:pointer;color:var(--text);transition:background .12s;display:flex;align-items:center;justify-content:space-between;}
+.ac-item:hover,.ac-item.focused{background:rgba(200,149,42,.12);}
+.ac-item .ac-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500;}
+.ac-item .ac-cls{font-size:10.5px;color:var(--muted);}
+.add-herb-btn{padding:.6rem 1.2rem;background:var(--gold);color:var(--forest);border:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:background .2s;white-space:nowrap;flex-shrink:0;}
+.add-herb-btn:hover{background:var(--gold-light);}
+
+/* MY STACK DISPLAY */
+.my-stack{display:flex;flex-wrap:wrap;gap:.45rem;}
+.stack-pill{display:inline-flex;align-items:center;gap:0;border-radius:999px;font-size:12.5px;font-weight:500;border:1px solid transparent;overflow:hidden;}
+.stack-pill .sp-name{color:var(--text);padding:.3rem .6rem .3rem .85rem;cursor:pointer;transition:background .12s;}
+.stack-pill .sp-name:hover{background:rgba(255,255,255,.08);}
+.stack-pill.active-pill .sp-name{color:var(--gold-light);}
+.stack-pill .sp-x{font-size:15px;color:rgba(245,240,232,.35);line-height:1;padding:.3rem .6rem .3rem .2rem;cursor:pointer;transition:color .15s;}
+.stack-pill .sp-x:hover{color:rgba(220,80,80,.9);}
+.stack-empty{font-size:13px;color:rgba(245,240,232,.22);font-style:italic;}
+
+/* HERB PROFILE PANEL */
+.herb-profile{background:rgba(0,0,0,.2);border:1px solid rgba(200,149,42,.2);border-radius:10px;padding:1.25rem 1.5rem;margin-top:1rem;display:none;}
+.herb-profile.show{display:block;animation:fade .3s ease forwards;}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.hp-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:var(--gold-light);margin-bottom:.25rem;}
+.hp-section{margin-top:.85rem;}
+.hp-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:.4rem;}
+.hp-pills{display:flex;flex-wrap:wrap;gap:.35rem;}
+
+/* CONTROLS */
+.controls{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-bottom:1.25rem;}
+.ctrl-search{position:relative;flex:1;min-width:200px;}
+.ctrl-search input{width:100%;background:var(--card);border:1px solid var(--card-border);border-radius:6px;padding:.6rem .85rem .6rem 2.3rem;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--text);outline:none;transition:border-color .2s;}
+.ctrl-search input::placeholder{color:rgba(245,240,232,.2);}
+.ctrl-search input:focus{border-color:rgba(200,149,42,.35);}
+.ctrl-search svg{position:absolute;left:.7rem;top:50%;transform:translateY(-50%);opacity:.3;pointer-events:none;}
+.reverse-toggle{display:inline-flex;background:rgba(0,0,0,.25);border:1px solid var(--card-border);border-radius:999px;padding:3px;flex-shrink:0;}
+.reverse-toggle button{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11.5px;font-weight:500;padding:.3rem .9rem;border-radius:999px;cursor:pointer;transition:all .18s;white-space:nowrap;}
+.reverse-toggle button.on{background:var(--forest-mid);color:var(--tag-text);}
+
+/* FILTER PILLS */
+.filter-row{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.25rem;}
+.fp{font-size:11px;padding:.3rem .85rem;border-radius:999px;border:1px solid var(--card-border);background:transparent;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap;}
+.fp:hover{border-color:rgba(200,149,42,.35);color:var(--parchment);}
+.fp.on{background:var(--forest-mid);color:var(--tag-text);border-color:var(--tag-border);}
+
+/* STATS ROW */
+.stats-row{display:flex;gap:.6rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+.scard{background:var(--card);border:1px solid var(--card-border);border-radius:8px;padding:.65rem 1rem;flex:1;min-width:80px;}
+.scard .sv{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--gold-light);}
+.scard .sl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:1px;}
+
+/* SECTION HEADERS */
+.sec-head{display:flex;align-items:baseline;gap:.7rem;margin:1.75rem 0 .65rem;padding-bottom:.45rem;border-bottom:1px solid var(--card-border);}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:500;}
+.sec-count{font-size:11px;color:var(--muted);}
+
+/* GRIDS */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.65rem;margin-bottom:.5rem;}
+.grid.wide{grid-template-columns:repeat(auto-fill,minmax(255px,1fr));}
+
+/* CARDS */
+.crd{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:.95rem 1.05rem;cursor:pointer;text-align:left;width:100%;font-family:'DM Sans',sans-serif;transition:border-color .18s;}
+.crd:hover{border-color:rgba(200,149,42,.3);}
+.crd.open{border-color:rgba(200,149,42,.55);border-left:2px solid var(--gold);}
+.crd.yours-match{border-color:rgba(74,140,101,.4);}
+.crd .cn{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--text);margin:0 0 2px;line-height:1.2;}
+.crd .ct{font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.crd .cs{font-size:12px;color:rgba(245,240,232,.62);line-height:1.55;margin:0;}
+.crd .sys-tag{display:inline-block;font-size:10px;padding:2px 7px;border-radius:999px;margin-bottom:5px;}
+.detail{display:none;margin-top:.8rem;padding-top:.8rem;border-top:1px solid var(--card-border);}
+.crd.open .detail{display:block;}
+.dl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin:7px 0 3px;}
+.dt{font-size:12px;color:rgba(245,240,232,.7);line-height:1.65;margin:0;}
+
+
+
+
+
+
+
+/* GLOSSARY QUICK LINKS */
+.glink{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:rgba(200,149,42,.18);color:var(--gold-light);font-size:9px;font-weight:600;font-style:normal;text-decoration:none;margin-left:3px;vertical-align:middle;transition:background .15s;flex-shrink:0;line-height:1;}
+.glink:hover{background:rgba(200,149,42,.45);}
+
+.mbox{background:rgba(0,0,0,.2);border-left:2px solid rgba(200,149,42,.28);border-radius:0 6px 6px 0;padding:.55rem .8rem;font-size:12px;color:rgba(245,240,232,.62);line-height:1.65;margin:3px 0 5px;font-style:italic;}
+.pill-row{display:flex;flex-wrap:wrap;gap:4px;margin:3px 0 5px;}
+.pill{font-size:11px;padding:2px 8px;border-radius:999px;}
+.pill-green{background:rgba(74,140,101,.22);color:#7acca0;border:1px solid rgba(74,140,101,.45);font-weight:500;}
+.pill-gray{background:var(--card);color:var(--muted);border:1px solid var(--card-border);}
+.pill-gold{background:rgba(200,149,42,.15);color:var(--gold-light);border:1px solid rgba(200,149,42,.25);}
+.pill-purple{background:rgba(130,100,200,.18);color:#b8a0e8;border:1px solid rgba(130,100,200,.3);}
+.pill-teal{background:rgba(74,160,140,.18);color:#80d4c0;border:1px solid rgba(74,160,140,.3);}
+
+.legend{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;margin-bottom:1.1rem;}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--muted);}
+.empty{text-align:center;color:var(--muted);font-size:14px;padding:3rem 0;}
+
+/* SAVED HERBS INLINE PANEL */
+.saved-panel{margin-top:1rem;border-top:1px solid var(--card-border);padding-top:1rem;display:none;}
+.saved-panel.show{display:block;}
+.saved-panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem;flex-wrap:wrap;gap:.5rem;}
+.saved-panel-title{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+.saved-panel-actions{display:flex;gap:.4rem;}
+.sp-action-btn{font-size:11.5px;padding:.28rem .75rem;border-radius:5px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;border:1px solid var(--card-border);background:transparent;color:var(--muted);}
+.sp-action-btn:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
+.sp-action-btn.primary{background:var(--gold);color:var(--forest);border-color:var(--gold);}
+.saved-list{display:flex;flex-wrap:wrap;gap:.4rem;}
+.saved-herb-pill{display:inline-flex;align-items:center;gap:5px;padding:.28rem .75rem;border-radius:999px;font-size:12px;border:1px solid var(--card-border);background:transparent;color:rgba(245,240,232,.7);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.saved-herb-pill:hover{border-color:var(--gold);color:var(--gold-light);}
+.saved-herb-pill.in-stack{background:rgba(74,140,101,.15);color:#7acca0;border-color:rgba(74,140,101,.3);}
+.saved-herb-pill .sh-add{font-size:13px;color:var(--gold);margin-left:2px;}
+/* TOAST NOTIFICATION */
+.toast{position:fixed;bottom:1.75rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--forest);border:1px solid rgba(200,149,42,.4);border-radius:999px;padding:.6rem 1.25rem;font-size:13px;color:var(--parchment);display:flex;align-items:center;gap:.6rem;z-index:300;opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;white-space:nowrap;box-shadow:0 4px 24px rgba(0,0,0,.4);}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.toast-arrow{font-size:14px;color:var(--gold);animation:bounce-down .8s ease infinite;}
+@keyframes bounce-down{0%,100%{transform:translateY(0)}50%{transform:translateY(3px)}}
+
+/* PROFILE PULSE */
+@keyframes pulse-border{0%{box-shadow:0 0 0 0 rgba(200,149,42,.5)}70%{box-shadow:0 0 0 8px rgba(200,149,42,0)}100%{box-shadow:0 0 0 0 rgba(200,149,42,0)}}
+.herb-profile.pulse{animation:pulse-border .7s ease 1;}
+
+.pill.clickable{cursor:pointer;transition:opacity .15s;}
+.pill.clickable:hover{opacity:.75;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:1.5rem;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--forest);border:1px solid rgba(200,149,42,.3);border-radius:12px;padding:1.75rem;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;}
+.modal h3{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;margin-bottom:.3rem;}
+.modal p{font-size:13px;color:var(--muted);margin-bottom:1rem;line-height:1.6;}
+.modal-actions{display:flex;justify-content:flex-end;gap:.6rem;margin-top:1rem;}
+.modal-btn{padding:.55rem 1.1rem;border-radius:5px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;border:1px solid var(--card-border);background:transparent;color:var(--muted);}
+.modal-btn.primary{background:var(--gold);color:var(--forest);border-color:var(--gold);}
+.modal-saved-grid{display:flex;flex-direction:column;gap:.5rem;margin-bottom:.5rem;}
+.modal-saved-item{display:flex;align-items:center;justify-content:space-between;padding:.6rem .85rem;background:var(--card);border-radius:7px;border:1px solid var(--card-border);}
+.msi-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500;}
+.msi-add{font-size:12px;padding:.3rem .7rem;border-radius:5px;background:var(--gold);color:var(--forest);border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
+
+@media(max-width:600px){
+  .hero{padding:2rem 1.25rem 1.75rem;}
+  .tool-tabs,.tool-wrap{padding-left:1.25rem;padding-right:1.25rem;}
+  .qbar{padding:.55rem 1.25rem;}
+  .hero-disclaimer{max-width:100%;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="home.html" class="nav-logo">
+    <span class="nav-chi">C.H.I</span>
+    <span class="nav-full">Collective Herbal Intelligence</span>
+  </a>
+  <div class="nav-right">
+    <div class="nav-dd" id="dd-tools" onclick="toggleDD('tools')">
+      <span  style="color:var(--gold-light)">Tools</span>
+      <span class="nav-dd-arrow">▼</span>
+      <div class="nav-dd-menu">
+        <a href="herb-match.html"><span class="nav-dd-icon">🌿</span>Herb Match</a>
+        <a href="phytochemistry.html" class="active"><span class="nav-dd-icon">⬡</span>Plant Intelligence</a>
+        <a href="supreme.html"><span class="nav-dd-icon">📖</span>Herbadex</a>
+        <a href="herb-identifier.html"><span class="nav-dd-icon">🔍</span>Herb Identifier</a>
+      </div>
+    </div>
+    <div class="nav-dd" id="dd-community" onclick="toggleDD('community')">
+      <span>Community</span>
+      <span class="nav-dd-arrow">▼</span>
+      <div class="nav-dd-menu">
+        <a href="community.html"><span class="nav-dd-icon">💬</span>Community Feed</a>
+        <a href="garden.html"><span class="nav-dd-icon">🌱</span>Herbal Garden</a>
+        <a href="glossary.html"><span class="nav-dd-icon">📚</span>Glossary</a>
+      </div>
+    </div>
+    <div class="nav-dd" id="dd-profile" onclick="toggleDD('profile')">
+      <span>Profile</span>
+      <span class="nav-dd-arrow">▼</span>
+      <div class="nav-dd-menu">
+        <a href="profile.html"><span class="nav-dd-icon">🌿</span>My Profile</a>
+        <a href="inbox.html"><span class="nav-dd-icon">✉️</span>Inbox</a>
+        <div class="nav-dd-divider"></div>
+        <a href="privacy-policy.html"><span class="nav-dd-icon">🔒</span>Privacy Policy</a>
+        <a href="terms.html"><span class="nav-dd-icon">📄</span>Terms</a>
+        <a href="disclaimer.html"><span class="nav-dd-icon">⚠️</span>Disclaimer</a>
+        <div class="nav-dd-divider"></div>
+        <a href="index.html" onclick="localStorage.clear()"><span class="nav-dd-icon">↩</span>Sign out</a>
+      </div>
+    </div>
+    <a href="inbox.html" class="nav-inbox" title="Inbox">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12v9H2V4z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M2 4l6 5 6-5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+    </a>
+    <a href="join.html" class="nav-cta">Join CHI</a>
+  </div>
+</nav>
+
+<!-- QUICK ACCESS BAR -->
+<div class="qbar" id="qbar">
+  <span class="qbar-label">My Stack</span>
+  <div class="qbar-divider"></div>
+  <div class="qbar-scroll" id="qbar-herbs">
+    <span class="qbar-empty">No herbs added yet — use the tool below</span>
+  </div>
+  <div class="qbar-actions">
+    <button class="qbar-btn" onclick="clearStack()" id="qbar-clear" style="display:none">Clear all</button>
+    <button class="qbar-btn manage" onclick="document.getElementById('herb-input-section-wrap').scrollIntoView({behavior:'smooth'});setTimeout(()=>{if(!document.getElementById('saved-panel').classList.contains('show'))toggleSavedPanel();},300)">+ From saved</button>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">C.H.I Tools</div>
+      <h1 class="hero-title">Plant <em>Intelligence</em></h1>
+      <p class="hero-desc">Understand what plants are actually made of — compound classes, molecular mechanisms, and the classification systems beneath every herb. Add your herbs to explore what they contain and what they do.</p>
+    </div>
+    <div class="hero-disclaimer">
+      <strong>Educational tool only.</strong> Describes plant chemistry and traditional classification for learning. Not intended to diagnose, treat, or replace professional medical advice. Consult a qualified practitioner before using herbs therapeutically.
+    </div>
+  </div>
+</div>
+
+<!-- TOOL TABS -->
+<div class="tool-tabs">
+  <div class="tab-bar">
+    <button class="ttab on" id="tab-compounds" onclick="setTab('compounds')">Compound Classes</button>
+    <button class="ttab" id="tab-systems" onclick="setTab('systems')">Body Systems</button>
+    <button class="ttab" id="tab-trad" onclick="setTab('trad')">Traditional Systems</button>
+  </div>
+</div>
+
+<div class="tool-wrap">
+
+  <!-- MY HERB STACK INPUT (shown on all tabs) -->
+  <div class="herb-input-section" id="herb-input-section-wrap">
+    <div class="his-title">
+      My Herb Stack
+      <span id="stack-count-label">0 herbs</span>
+    </div>
+    <div class="herb-input-row">
+      <div class="herb-input-wrap">
+        <input type="text" id="herb-input" placeholder="Type a herb name to add…" autocomplete="off"
+          oninput="onHerbInput()" onkeydown="onHerbKey(event)">
+        <div class="autocomplete-drop" id="ac-drop"></div>
+      </div>
+      <button class="add-herb-btn" onclick="confirmAddHerb()">Add herb</button>
+      <button class="add-herb-btn" style="background:transparent;border:1px solid var(--card-border);color:var(--muted)" onclick="toggleSavedPanel()" id="saved-toggle-btn">📋 Saved herbs</button>
+    </div>
+    <div class="my-stack" id="my-stack">
+      <span class="stack-empty">Your herb stack is empty. Start typing a herb name above.</span>
+    </div>
+
+    <!-- SAVED HERBS INLINE PANEL -->
+    <div class="saved-panel" id="saved-panel">
+      <div class="saved-panel-head">
+        <span class="saved-panel-title">Your saved herbs — tap to add</span>
+        <div class="saved-panel-actions">
+          <button class="sp-action-btn" onclick="addAllSaved()">Add all to stack</button>
+          <button class="sp-action-btn" onclick="toggleSavedPanel()">Close</button>
+        </div>
+      </div>
+      <div class="saved-list" id="saved-list"></div>
+    </div>
+
+    <div class="herb-profile" id="herb-profile"></div>
+
+    <!-- HERB LOOKUP WITHIN STACK SECTION -->
+    <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--card-border)">
+      <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem">Look up any herb</div>
+      <div class="herb-input-wrap" style="max-width:400px">
+        <input type="text" id="herb-lookup-input" placeholder="Type any herb to see its compounds & actions…" autocomplete="off"
+          oninput="onLookupInput()" onkeydown="onLookupKey(event)" style="width:100%;background:rgba(0,0,0,.25);border:1px solid var(--card-border);border-radius:6px;padding:.6rem .85rem;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color .2s">
+        <div class="autocomplete-drop" id="ac-drop-lookup"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPOUND CLASSES VIEW -->
+  <div id="view-compounds">
+    <div class="controls">
+      <div class="ctrl-search">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.4"/><path d="M9.5 9.5l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <input type="text" id="srch-compounds" placeholder="Search compound, herb, action, mechanism…" oninput="renderCompounds()">
+      </div>
+      <div class="reverse-toggle">
+        <button class="on" id="rt-all-c" onclick="setCompoundFilter('all')">All</button>
+        <button id="rt-yours-c" onclick="setCompoundFilter('yours')">My herbs only</button>
+      </div>
+    </div>
+    <div class="filter-row" id="compound-filters"></div>
+    <div class="stats-row">
+      <div class="scard"><div class="sv" id="c-total">0</div><div class="sl">compounds</div></div>
+      <div class="scard"><div class="sv" id="c-shown">0</div><div class="sl">showing</div></div>
+      <div class="scard"><div class="sv" id="c-stack">0</div><div class="sl">in my stack</div></div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><span class="pill pill-green" style="padding:1px 6px">✓</span> in your stack</div>
+      <div class="legend-item"><span class="pill pill-gold" style="padding:1px 6px">★</span> high clinical value</div>
+      <div class="legend-item"><span class="pill pill-purple" style="padding:1px 6px">·</span> well studied</div>
+    </div>
+    <div id="compounds-out"></div>
+  </div>
+
+  <!-- BODY SYSTEMS VIEW -->
+  <div id="view-systems" style="display:none">
+    <div id="systems-out"></div>
+  </div>
+
+  <!-- TRADITIONAL SYSTEMS VIEW -->
+  <div id="view-trad" style="display:none">
+    <div id="trad-out"></div>
+  </div>
+
+
+</div>
+
+<!-- modal removed - saved herbs now inline -->
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-dot" id="toast-dot"></span>
+  <span id="toast-msg"></span>
+  <span class="toast-arrow">↓</span>
+</div>
+
+<script>
+// ─── HERB DATABASE ───────────────────────────────────────────────
+const HERB_DB = [
+  'Ashwagandha','Lion\'s mane','Shilajit','Nigella','Black seed','Olive leaf','Nettle','Dandelion',
+  'Milk thistle','Mullein','Moringa','Damiana','Passionflower','Mugwort','Lemon balm','Hibiscus',
+  'Raspberry leaf','Marshmallow','St John\'s Wort','Marigold','Calendula','Clove',
+  'Chamomile','Lavender','Peppermint','Spearmint','Rosemary','Thyme','Oregano','Sage',
+  'Echinacea','Elderberry','Elderflower','Valerian','Hops','Skullcap','California poppy',
+  'Cramp bark','Hawthorn','Motherwort','Ginkgo','Bacopa','Gotu kola','Turmeric','Ginger',
+  'Garlic','Onion','Burdock','Cleavers','Red clover','Chickweed','Plantain','Yarrow',
+  'Comfrey','Meadowsweet','White willow bark','Feverfew','Black cohosh','Blue cohosh',
+  'Wild yam','Shatavari','Rhodiola','Eleuthero','Siberian ginseng',
+  'Panax ginseng','American ginseng','Astragalus','Reishi','Shiitake','Turkey tail',
+  'Pau d\'arco','Cat\'s claw','Barberry','Goldenseal','Oregon grape','Coptis',
+  'Fennel','Caraway','Cardamom','Licorice root','Slippery elm','Aloe vera',
+  'Schisandra','He shou wu','Dong quai','Rehmannia','Tribulus','Fenugreek',
+  'Saw palmetto','Nettle root','Pumpkin seed','Black pepper','Long pepper','Cayenne',
+  'Milk vetch','Andrographis','Holy basil','Tulsi','Boswellia','Devils claw',
+  'Marshmallow root','Artichoke','Burdock root','Chicory','Dandelion root',
+  'Elderberry extract','Echinacea purpurea','Echinacea angustifolia',
+  'Licorice','Liquorice','Ashwagandha extract','Senna','Cascara','Aloe',
+  'Bearberry','Uva ursi','Buchu','Corn silk','Horsetail','Couch grass',
+  'Bilberry','Blueberry leaf','Grape seed','Grape leaf','Pine bark','Pycnogenol',
+  'Rhodiola rosea','Maca','Mucuna','Velvet bean','Tribulus terrestris',
+  'Saw palmetto berry','Pygeum','Pumpkin seed extract','Stinging nettle',
+  'Horse chestnut','Butcher\'s broom','Gotu kola extract','Centella',
+  'Milk thistle extract','Silymarin','Artichoke leaf','Dandelion leaf',
+  'Lemon verbena','Melissa','Catnip','Motherwort','Skullcap','Passion flower',
+  'Kava','Valerian root','Hops strobiles','Linden','Lime blossom',
+  'Hawthorn berry','Hawthorn leaf','Hawthorn flower','Olive','Garlic bulb',
+  'Onion bulb','Leek','Chives','Fenugreek seed','Fennel seed','Caraway seed',
+  'Dill','Coriander','Cumin','Turmeric root','Ginger root','Galangal',
+  'Cardamom seed','Black cardamom','Nutmeg','Mace','Cinnamon','Cassia',
+  'Clove bud','Allspice','Vanilla','Saffron','Calendula flower',
+  'Chamomile flower','Marigold flower','Arnica','Comfrey leaf','Comfrey root',
+  'Plantain leaf','Psyllium','Slippery elm bark','Marshmallow leaf',
+  'Lungwort','Mullein leaf','Elecampane','Thyme leaf','Oregano leaf',
+  'Marjoram','Basil','Lemon balm leaf','Peppermint leaf','Spearmint leaf',
+  'Rosemary leaf','Sage leaf','Lavender flower','Hyssop','Agrimony',
+  'Lady\'s mantle','Yarrow flower','St John\'s Wort flower','Hypericum',
+  'Vervain','Blue vervain','Skullcap herb','Wood betony','Lemon verbena leaf',
+  'Blackcurrant leaf','Blackberry leaf','Raspberry leaf','Strawberry leaf',
+  'Rose hip','Rose petal','Hibiscus flower','Red clover flower','Cleavers herb',
+  'Nettle herb','Horsetail herb','Oat straw','Oat seed','Alfalfa','Red clover',
+  'White clover','Astragalus root','Codonopsis','Eleutherococcus','Siberian ginseng root',
+  'Schisandra berry','Reishi mushroom','Shiitake mushroom','Maitake mushroom',
+  'Chaga','Cordyceps','Turkey tail mushroom','Lion\'s mane mushroom',
+  'He shou wu root','Dong quai root','White peony','Rehmannia root',
+  'Shatavari root','Ashwagandha root','Bacopa herb','Gotu kola herb',
+  'Brahmi','Shankhapushpi','Jatamansi','Tulsi herb','Holy basil herb',
+  'Andrographis herb','Guduchi','Tinospora','Amla','Indian gooseberry',
+  'Triphala','Haritaki','Bibhitaki','Amalaki','Neem','Karela','Bitter melon',
+  'Gymnema','Gurmar','Boswellia resin','Guggul','Shilajit resin','Himalayan shilajit',
+  'Cannabis','Cannabis sativa','Cannabis indica','Hemp','CBD','Cannabidiol',
+  'THC','Tetrahydrocannabinol','Cannabis ruderalis'
+];
+
+
+// ─── GLOSSARY QUICK LINKS ────────────────────────────────────────
+const GLOSS_TERMS = [
+  ['NF-κB','nf-b'],['AMPK','ampk'],['COX-1','cox-cox-1-cox-2'],['COX-2','cox-cox-1-cox-2'],
+  ['COX','cox-cox-1-cox-2'],['5-LOX','5-lox-5-lipoxygenase'],['Nrf2','nrf2-are-pathway'],
+  ['GABA-A','gaba-gabaergic'],['GABA','gaba-gabaergic'],['HPA axis','hpa-axis'],
+  ['blood-brain barrier','bbb-blood-brain-barrier'],['BBB','bbb-blood-brain-barrier'],
+  ['BDNF','bdnf'],['NGF','ngf-nerve-growth-factor'],['AChE','ache-acetylcholinesterase'],
+  ['acetylcholinesterase','ache-acetylcholinesterase'],['ACE inhibit','ace-inhibitor'],
+  ['apoptosis','apoptosis'],['SIRT1','sirt1'],['mitophagy','mitophagy'],
+  ['senescent','senolytic'],['senolytic','senolytic'],['urolithins','urolithins'],
+  ['TNF-α','tnf'],['cytokine','cytokine'],['prostaglandin','prostaglandins'],
+  ['leukotriene','leukotrienes'],['IL-1β','il-1-il-6'],['IL-6','il-1-il-6'],
+  ['Dectin-1','dectin-1'],['NK cell','nk-cells-natural-killer-cells'],
+  ['bioavailability','bioavailability'],['CYP3A4','cyp3a4'],['DHT','dht-dihydrotestosterone'],
+  ['ergosterol','ergosterol'],['myrosinase','myrosinase'],['glucosinolate','glucosinolates'],
+  ['isothiocyanate','isothiocyanates'],['sulforaphane','sulforaphane'],
+  ['hericenone','hericenones'],['erinacine','erinacines'],['beta-glucan','beta-glucans'],
+  ['arabinogalactan','arabinogalactans'],['oleuropein','oleuropein'],
+  ['silymarin','silymarin'],['thymoquinone','thymoquinone'],['rosmarinic acid','rosmarinic-acid'],
+  ['fulvic acid','fulvic-acid'],['phytoestrogen','phytoestrogen'],
+  ['TAS2R','tas2r'],['cholecystokinin','cholecystokinin-cck'],
+  ['monoterpene','monoterpenes'],['sesquiterpene','sesquiterpenes'],
+  ['triterpene','triterpenes'],['carotenoid','carotenoids'],['iridoid','iridoids'],
+  ['anthraquinone','glycosides'],['ellagitannin','ellagitannins'],
+  ['proanthocyanidin','proanthocyanidins-opcs'],['CB2','cb2-receptor'],
+  ['orexin','orexin'],['SOD','sod-superoxide-dismutase'],['STAT3','stat3'],
+  ['Th1','th1-th2-balance'],['Th2','th1-th2-balance'],['IGF-1','igf-1'],
+  ['mucilage','mucilage'],['aglycone','aglycone'],['aquaretic','aquaretic'],
+];
+
+function linkMech(text){
+  let out = text;
+  // sort longest match first to avoid partial replacements
+  const sorted = [...GLOSS_TERMS].sort((a,b)=>b[0].length-a[0].length);
+  sorted.forEach(([term, anchor])=>{
+    const re = new RegExp('('+term.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')(?![^<]*>)','gi');
+    if(out.includes('data-g-'+anchor)) return; // already linked
+    out = out.replace(re, (m,p1)=>{
+      const marker = `data-g-${anchor}`;
+      if(out.includes(marker)) return p1;
+      return `${p1}<a class="glink" href="glossary.html#term-${anchor}" target="_blank" title="${term} — see glossary" onclick="event.stopPropagation()">?</a>`;
+    });
+  });
+  return out;
+}
+
+// ─── COMPOUNDS DATA ────────────────────────────────────────────────
+const COMPOUNDS=[
+  {cls:'Flavonoids',sub:'Flavonols',name:'Quercetin',tag:'notable',action:'Antihistamine, anti-inflammatory, antioxidant',mech:'Stabilises mast cells preventing histamine release; inhibits COX-1/2; activates Nrf2 pathway for endogenous antioxidant production.',herbs:['Nettle','Dandelion','Olive leaf','Calendula','Capers','Onions']},
+  {cls:'Flavonoids',sub:'Flavonols',name:'Kaempferol',tag:'studied',action:'Anti-inflammatory, anticancer, neuroprotective',mech:'Inhibits NF-κB pathway; induces apoptosis in cancer cell lines; crosses the blood-brain barrier and reduces neuroinflammation.',herbs:['Nettle','Dandelion','Moringa','Calendula','Broccoli','Kale']},
+  {cls:'Flavonoids',sub:'Flavonols',name:'Rutin',tag:'studied',action:'Vascular strengthening, antioxidant, anti-inflammatory',mech:'Quercetin glycoside — strengthens capillary walls by inhibiting collagenase; slower release but higher bioavailability in vascular tissue.',herbs:['Nettle','Dandelion','Elderflower','Buckwheat']},
+  {cls:'Flavonoids',sub:'Flavonols',name:'Fisetin',tag:'notable',action:'Senolytic, neuroprotective, anti-aging',mech:'Clears senescent cells via apoptosis; activates SIRT1 longevity pathway; promotes BDNF expression. One of the most potent natural senolytics.',herbs:['Strawberry','Apple','Persimmon','Cucumber']},
+  {cls:'Flavonoids',sub:'Flavones',name:'Apigenin',tag:'notable',action:'Anxiolytic, anti-inflammatory, mild sedative, aromatase inhibitor',mech:'Positive allosteric modulator of GABA-A at benzodiazepine site — gentler than pharmaceuticals. Also inhibits CYP1B1 and acts as aromatase inhibitor.',herbs:['Passionflower','Lemon balm','Chamomile','Parsley','Celery seed']},
+  {cls:'Flavonoids',sub:'Flavones',name:'Luteolin',tag:'notable',action:'Anti-inflammatory, neuroprotective, antihistamine',mech:'Potent NF-κB inhibitor; inhibits microglial activation (brain inflammation); mast cell stabiliser stronger than quercetin in some assays.',herbs:['Lemon balm','Dandelion','Calendula','Thyme','Artichoke']},
+  {cls:'Flavonoids',sub:'Flavones',name:'Vitexin',tag:'studied',action:'Cardioprotective, anxiolytic, antispasmodic',mech:'Inhibits phosphodiesterase; mild GABA-A modulation; reduces cardiac ischaemia markers in vivo.',herbs:['Passionflower','Hawthorn','Mung bean']},
+  {cls:'Flavonoids',sub:'Flavones',name:'Acacetin',tag:'general',action:'Antiarrhythmic, anti-inflammatory',mech:'Blocks hERG potassium channels in cardiac tissue; inhibits iNOS expression. Notable active compound in damiana.',herbs:['Damiana','Agrimony']},
+  {cls:'Flavonoids',sub:'Flavanones',name:'Hesperidin',tag:'studied',action:'Vascular, anti-inflammatory, antioxidant',mech:'Reduces vascular permeability; inhibits TNF-α; metabolised to hesperetin which crosses the blood-brain barrier.',herbs:['Hibiscus','Citrus peel','Lemon']},
+  {cls:'Flavonoids',sub:'Flavanones',name:'Naringenin',tag:'studied',action:'Metabolic, hepatoprotective, antifungal',mech:'Activates PPAR-α fat metabolism regulator; antifungal against Candida species; inhibits CYP3A4.',herbs:['Hibiscus','Grapefruit','Tomato']},
+  {cls:'Flavonoids',sub:'Flavanols',name:'EGCG',tag:'notable',action:'Anticancer, antioxidant, metabolic, antiviral',mech:'Inhibits VEGF tumour blood vessel growth; activates AMPK; broad antiviral via viral surface binding.',herbs:['Green tea','White tea','Cacao']},
+  {cls:'Flavonoids',sub:'Anthocyanins',name:'Cyanidin',tag:'studied',action:'Anti-inflammatory, antioxidant, vision support',mech:'Inhibits COX-2; regenerates rhodopsin in retinal cells; crosses blood-brain barrier and reduces neuroinflammation.',herbs:['Hibiscus','Elderberry','Bilberry','Black rice']},
+  {cls:'Flavonoids',sub:'Flavonolignans',name:'Silymarin',tag:'notable',action:'Hepatoprotective, antifibrotic, antitoxin',mech:'Inhibits hepatocyte membrane peroxidation; upregulates glutathione; used clinically for amanita mushroom poisoning. Complex of silybin, silychristin, silydianin.',herbs:['Milk thistle']},
+  {cls:'Flavonoids',sub:'Flavonolignans',name:'Silybin',tag:'notable',action:'Hepatoprotective, anticancer, liver regenerative',mech:'Inhibits RNA polymerase I in liver cells; activates p53 tumour suppressor; stimulates liver protein synthesis for tissue repair.',herbs:['Milk thistle']},
+  {cls:'Terpenoids',sub:'Monoterpenes',name:'Linalool',tag:'studied',action:'Anxiolytic, sedative, analgesic',mech:'Modulates GABA-A receptors; inhibits NMDA glutamate receptors; reduces pain signalling in the spinal cord.',herbs:['Lavender','Lemon balm','Coriander','Basil']},
+  {cls:'Terpenoids',sub:'Monoterpenes',name:'Thymol',tag:'notable',action:'Antimicrobial, antifungal, expectorant',mech:'Disrupts bacterial and fungal cell membranes. Stronger than many antibiotics against certain biofilms.',herbs:['Thyme','Oregano','Ajowan']},
+  {cls:'Terpenoids',sub:'Monoterpenes',name:'Citral',tag:'studied',action:'Antimicrobial, sedative, antifungal',mech:'Disrupts fungal ergosterol synthesis; modulates GABA-A receptors. Responsible for lemon balm sedative action.',herbs:['Lemon balm','Lemongrass','Lemon verbena']},
+  {cls:'Terpenoids',sub:'Monoterpenes',name:'1,8-Cineole',tag:'studied',action:'Expectorant, anti-inflammatory, cognitive',mech:'Reduces respiratory mucus viscosity; inhibits LTB4 and TNF-α; shown to improve cognitive performance.',herbs:['Mugwort','Eucalyptus','Rosemary','Sage']},
+  {cls:'Terpenoids',sub:'Sesquiterpenes',name:'Beta-caryophyllene',tag:'notable',action:'Anti-inflammatory, analgesic, anxiolytic — CB2 agonist',mech:'Only dietary terpene known to directly activate CB2 cannabinoid receptors. Reduces neuroinflammation without psychoactivity.',herbs:['Clove','Black pepper','Hops','Cannabis']},
+  {cls:'Terpenoids',sub:'Sesquiterpenes',name:'Bisabolol',tag:'studied',action:'Anti-inflammatory, wound healing, penetration enhancer',mech:'Inhibits COX-2 and 5-LOX; enhances skin absorption of co-applied compounds by 30-50%.',herbs:['Chamomile','Calendula']},
+  {cls:'Terpenoids',sub:'Sesquiterpenes',name:'Parthenolide',tag:'notable',action:'Anti-inflammatory, anticancer, migraine prevention',mech:'Inhibits NF-κB by alkylating p65 subunit; selectively targets leukaemia stem cells — a rare and significant mechanism.',herbs:['Feverfew','Mugwort (minor)']},
+  {cls:'Terpenoids',sub:'Triterpenes',name:'Oleanolic acid',tag:'studied',action:'Hepatoprotective, anti-inflammatory, antiviral',mech:'Inhibits NF-κB; activates Nrf2; inhibits viral RNA polymerase. Found in free form and as saponin backbone.',herbs:['Olive leaf','Nettle','Calendula']},
+  {cls:'Terpenoids',sub:'Triterpenes',name:'Ursolic acid',tag:'notable',action:'Anticancer, muscle-supporting, anti-inflammatory',mech:'Activates IGF-1 signalling in muscle; inhibits STAT3 cancer pathway; inhibits 5-alpha reductase.',herbs:['Lemon balm','Olive leaf','Rosemary','Apple peel']},
+  {cls:'Terpenoids',sub:'Steroidal triterpenes',name:'Withanolides',tag:'notable',action:'Adaptogenic, anti-stress, anti-inflammatory, testosterone support',mech:'Steroidal lactones structurally similar to human steroid hormones — modulate glucocorticoid receptors and HPA axis cortisol. KSM-66 reduced cortisol 27% in RCT.',herbs:['Ashwagandha']},
+  {cls:'Terpenoids',sub:'Iridoids',name:'Oleuropein',tag:'notable',action:'Antiviral, antibacterial, antihypertensive, antioxidant',mech:'Iridoid glycoside hydrolysed to elenolic acid in gut; prevents viral envelope binding to host cells; ACE inhibition lowers blood pressure.',herbs:['Olive leaf']},
+  {cls:'Terpenoids',sub:'Carotenoids',name:'Beta-carotene',tag:'studied',action:'Pro-vitamin A, antioxidant, mucosal immune support',mech:'Cleaved to retinol by intestinal enzymes; quenches singlet oxygen radicals; supports mucosal immune barriers.',herbs:['Moringa','Calendula','Dandelion','Nettle']},
+  {cls:'Terpenoids',sub:'Carotenoids',name:'Lutein + Zeaxanthin',tag:'studied',action:'Eye protection, antioxidant — macular support',mech:'Accumulate exclusively in the macula; filter high-energy blue light. Only carotenoids found in the human eye.',herbs:['Moringa','Calendula','Nettle','Marigold']},
+  {cls:'Alkaloids',sub:'Isoquinolines',name:'Berberine',tag:'notable',action:'Antidiabetic, antimicrobial, cardioprotective',mech:'Activates AMPK — same pathway as metformin; inhibits hepatic glucose production; disrupts bacterial cell membranes; reduces LDL via LDL receptor upregulation.',herbs:['Barberry','Goldenseal','Oregon grape','Coptis']},
+  {cls:'Alkaloids',sub:'Purines',name:'Caffeine',tag:'studied',action:'CNS stimulant, ergogenic, diuretic',mech:'Adenosine receptor antagonist — blocks drowsiness signalling; half-life 5-6 hours.',herbs:['Green tea','Guarana','Cola nut','Coffee']},
+  {cls:'Alkaloids',sub:'Piperidines',name:'Piperine',tag:'notable',action:'Bioavailability enhancer, anti-inflammatory',mech:'Inhibits CYP3A4 and P-glycoprotein in gut — prevents premature breakdown of co-ingested compounds. Increases curcumin absorption by 2000%.',herbs:['Black pepper','Long pepper']},
+  {cls:'Alkaloids',sub:'Pyrrolizidines',name:'Pyrrolizidine alkaloids',tag:'notable',action:'⚠ Hepatotoxic — internal use restricted',mech:'Metabolised to pyrrole derivatives that alkylate DNA; cause hepatic veno-occlusive disease. Comfrey restricted to topical use only.',herbs:['Comfrey (topical only)','Borage (trace)','Coltsfoot']},
+  {cls:'Alkaloids',sub:'Indazoles',name:'Nigellicine / Nigellidine',tag:'general',action:'Anti-inflammatory, antimicrobial (supporting role)',mech:'Indazole alkaloids contributing to nigella overall action profile; secondary to thymoquinone.',herbs:['Nigella','Black seed']},
+  {cls:'Phenolic acids',sub:'Hydroxycinnamic acids',name:'Rosmarinic acid',tag:'notable',action:'Anti-inflammatory, antiviral, neuroprotective, anxiolytic',mech:'Inhibits COX-2 and 5-LOX; acetylcholinesterase inhibitor (same mechanism as Alzheimer\'s drugs); antiviral against enveloped viruses.',herbs:['Lemon balm','Rosemary','Sage','Melissa']},
+  {cls:'Phenolic acids',sub:'Hydroxycinnamic acids',name:'Chlorogenic acid',tag:'notable',action:'Antidiabetic, hepatoprotective, antioxidant',mech:'Inhibits glucose-6-phosphatase reducing hepatic glucose; slows intestinal glucose absorption; activates AMPK. Reduces postprandial glucose in human trials.',herbs:['Dandelion','Moringa','Coffee','Artichoke']},
+  {cls:'Phenolic acids',sub:'Hydroxycinnamic acids',name:'Caffeic acid',tag:'studied',action:'Anti-inflammatory, antioxidant, antifungal',mech:'Inhibits 5-LOX and COX; chelates iron reducing oxidative reactions; antifungal via cell wall disruption.',herbs:['Nettle','Dandelion','Calendula','Echinacea']},
+  {cls:'Phenolic acids',sub:'Hydroxybenzoic acids',name:'Gallic acid',tag:'studied',action:'Antioxidant, antimicrobial, anticancer',mech:'Potent free radical scavenger; inhibits topoisomerase II in cancer cell replication; anti-biofilm against drug-resistant pathogens.',herbs:['Nigella','Raspberry leaf','Milk thistle','Pomegranate']},
+  {cls:'Phenolic acids',sub:'Hydroxybenzoic acids',name:'Ellagic acid',tag:'notable',action:'Anticancer, antiviral — metabolised to urolithins by gut bacteria',mech:'Inhibits DNA topoisomerase; metabolised to urolithins (A/B/C) by gut microbiome. Urolithin A activates mitophagy — significant anti-aging data.',herbs:['Raspberry leaf','Nettle','Pomegranate','Walnut']},
+  {cls:'Phenolic acids',sub:'Quinones',name:'Thymoquinone',tag:'notable',action:'Antimicrobial, antifungal, antiviral, anti-inflammatory, anticancer',mech:'Simultaneously inhibits COX-1/2, 5-LOX, and NF-κB. Disrupts microbial cell membranes; modulates Th1/Th2 immune balance. Outperforms fluconazole against Candida in some assays.',herbs:['Nigella','Black seed']},
+  {cls:'Phenolic acids',sub:'Naphthodianthrones',name:'Hypericin',tag:'notable',action:'Antidepressant, antiviral, photosensitiser',mech:'Inhibits monoamine reuptake (serotonin, dopamine, noradrenaline); photosensitiser for photodynamic cancer therapy; antiviral against enveloped viruses.',herbs:['St John\'s Wort']},
+  {cls:'Phenolic acids',sub:'Phloroglucinols',name:'Hyperforin',tag:'notable',action:'Antidepressant, antimicrobial, anticancer',mech:'Inhibits SERT, NET, DAT, and GABA-T simultaneously — unique multi-target mechanism. Activates TRPC6 ion channel. Potent antibacterial against MRSA.',herbs:['St John\'s Wort']},
+  {cls:'Saponins',sub:'Triterpenoid saponins',name:'Withanolide glycosides',tag:'notable',action:'Adaptogenic, anti-stress, hormone modulation',mech:'Glycoside forms of withanolides — sugar improves bioavailability; modulate glucocorticoid receptors; reduce cortisol at physiological doses.',herbs:['Ashwagandha']},
+  {cls:'Saponins',sub:'Steroidal saponins',name:'Beta-sitosterol',tag:'notable',action:'Cholesterol reduction, prostate support, anti-inflammatory',mech:'Competes with dietary cholesterol for intestinal absorption; binds 5-alpha reductase reducing DHT; activates immune NK cells.',herbs:['Nettle root','Moringa','Saw palmetto','Pumpkin seed']},
+  {cls:'Saponins',sub:'Other',name:'Fulvic acid',tag:'notable',action:'Mineral chelation, mitochondrial support, anti-inflammatory',mech:'Low molecular weight organic acid; chelates minerals into absorbable forms; donates and accepts electrons in mitochondrial electron transport chain; inhibits tau protein aggregation.',herbs:['Shilajit']},
+  {cls:'Glycosides',sub:'Iridoid glycosides',name:'Oleuropein',tag:'notable',action:'Antiviral, antibacterial, antihypertensive',mech:'Hydrolysed to elenolic acid (aglycone); prevents viral envelope binding to host cells; ACE inhibition. Strongest antioxidant activity among olive compounds.',herbs:['Olive leaf']},
+  {cls:'Glycosides',sub:'Phenolic glycosides',name:'Salicin',tag:'notable',action:'Anti-inflammatory, analgesic — aspirin precursor',mech:'Metabolised to salicylic acid in the gut — direct precursor of aspirin. Weaker but gentler on the stomach. COX inhibition.',herbs:['White willow bark','Meadowsweet','Poplar']},
+  {cls:'Glycosides',sub:'Glucosinolates',name:'Glucomoringin / Isothiocyanates',tag:'notable',action:'Anticancer, antimicrobial, liver detoxification',mech:'Myrosinase converts to isothiocyanate (similar to sulforaphane); activates phase II liver detox enzymes. Heat deactivates myrosinase — use raw powder.',herbs:['Moringa','Broccoli','Mustard']},
+  {cls:'Tannins',sub:'Hydrolysable tannins',name:'Ellagitannins',tag:'notable',action:'Antioxidant, antimicrobial — gut metabolised to urolithins',mech:'Hydrolysed to ellagic acid; metabolised to urolithins by gut microbiome. Urolithin A activates mitophagy.',herbs:['Raspberry leaf','Pomegranate','Oak gall']},
+  {cls:'Tannins',sub:'Condensed tannins',name:'Proanthocyanidins (OPCs)',tag:'notable',action:'Vascular, antioxidant, anti-inflammatory',mech:'Inhibit collagenase and elastase preserving vascular walls; stronger antioxidant than vitamin C and E in some assays.',herbs:['Hibiscus','Raspberry leaf','Grape seed','Pine bark']},
+  {cls:'Polysaccharides',sub:'Beta-glucans',name:'Beta-1,3/1,6-D-glucans',tag:'notable',action:'Immune modulation, anti-tumour, cholesterol lowering',mech:'Bind Dectin-1 and CR3 receptors on macrophages and NK cells; activate innate immunity. Also bind cholesterol in gut reducing absorption.',herbs:['Lion\'s mane','Reishi','Shiitake','Oats']},
+  {cls:'Polysaccharides',sub:'Neurotrophin stimulators',name:'Hericenones',tag:'notable',action:'NGF stimulation, nerve myelination, cognitive support',mech:'Lipophilic aromatic compounds from lion\'s mane fruiting body; cross blood-brain barrier; stimulate NGF synthesis in hippocampus.',herbs:['Lion\'s mane (fruiting body)']},
+  {cls:'Polysaccharides',sub:'Neurotrophin stimulators',name:'Erinacines',tag:'notable',action:'NGF + BDNF stimulation, neuroprotection',mech:'From lion\'s mane mycelium; cross blood-brain barrier more efficiently than hericenones; stimulate both NGF and BDNF.',herbs:['Lion\'s mane (mycelium)']},
+  {cls:'Polysaccharides',sub:'Fructooligosaccharides',name:'Inulin / FOS',tag:'notable',action:'Prebiotic, gut microbiome support, mineral absorption',mech:'Selectively fermented by Bifidobacterium and Lactobacillus; produces butyrate; increases calcium and magnesium absorption.',herbs:['Dandelion root','Chicory root','Jerusalem artichoke']},
+  {cls:'Polysaccharides',sub:'Mucilaginous polysaccharides',name:'Arabinogalactans (mucilage)',tag:'studied',action:'Demulcent, mucosal protection, anti-inflammatory',mech:'Forms colloidal gel on gut and respiratory mucosa; mechanically protective; reduces cytokine-driven mucosal inflammation via IL-6 downregulation.',herbs:['Marshmallow','Mullein','Slippery elm','Aloe vera']},
+  {cls:'Other classes',sub:'Curcuminoids',name:'Curcumin',tag:'notable',action:'Anti-inflammatory, antioxidant, anticancer, neuroprotective',mech:'Simultaneously inhibits NF-κB, COX-2, and 5-LOX. Poor bioavailability alone — improved by piperine (black pepper) or liposomal delivery.',herbs:['Turmeric','Ginger (trace)']},
+  {cls:'Other classes',sub:'Stilbenes',name:'Resveratrol',tag:'notable',action:'Anti-aging, antioxidant, cardioprotective, anticancer',mech:'Activates SIRT1 longevity pathway; inhibits COX-1/2 and NF-κB; activates AMPK. Synergistic with quercetin.',herbs:['Red grape skin','Japanese knotweed']},
+  {cls:'Other classes',sub:'Volatile oils',name:'Eugenol',tag:'studied',action:'Analgesic, antimicrobial, anti-inflammatory',mech:'TRPV1 desensitisation (topical analgesic); COX inhibition. Used clinically in clove oil for dental pain.',herbs:['Clove','Basil','Cinnamon']},
+];
+
+// ─── TAXONOMY DATA ────────────────────────────────────────────────
+const ACTIONS=[
+  {sys:'Nervous/Endocrine',name:'Adaptogen',short:'Modulates the HPA stress-response axis — improves resilience without overstimulating.',mech:'Upregulates HSP70 heat-shock proteins; modulates cortisol via HPA axis. Must be non-toxic, non-specific, and normalising to qualify.',sci:'Coined Brekhman & Dardymov (1969). Very few herbs genuinely meet all three criteria.',compounds:['Withanolides','Ginsenosides','Fulvic acid','Beta-glucans'],herbs:['Ashwagandha','Shilajit','Lion\'s mane','Rhodiola','Eleuthero']},
+  {sys:'Detox/Metabolic',name:'Alterative',short:'Gradually restores healthy metabolic function — particularly waste and lymphatic elimination.',mech:'Enhances lymphatic drainage; liver phase I/II detoxification; increases renal clearance of metabolic byproducts.',sci:'Historical "blood purifier" — now understood as combined lymphagogue + hepatic + depurative action.',compounds:['Taraxacin','Chlorogenic acid','Caffeic acid','Inulin/FOS'],herbs:['Dandelion','Nettle','Cleavers','Burdock']},
+  {sys:'Nervous',name:'Nervine',short:'Acts on the nervous system — tonifying, relaxing, or stimulating depending on subtype and dose.',mech:'Relaxant: GABA-A positive allosteric modulation. Tonic: AChE inhibition. Stimulant: monoamine reuptake inhibition.',sci:'Three mechanistically distinct subtypes. Same herb can shift between them with dose.',compounds:['Apigenin (GABA-A)','Rosmarinic acid (AChE inhibitor)','Hypericin/Hyperforin'],herbs:['Ashwagandha','Passionflower','Lemon balm','Damiana','St John\'s Wort']},
+  {sys:'Liver',name:'Hepatoprotective',short:'Protects liver cells from oxidative damage and supports regeneration.',mech:'Silymarin inhibits hepatocyte membrane peroxidation; upregulates glutathione; modulates CYP450 enzymes.',sci:'Measured by reduction in ALT/AST liver enzymes. Silymarin used in emergency medicine for death cap mushroom poisoning.',compounds:['Silymarin / Silybin','Oleanolic acid','Chlorogenic acid'],herbs:['Milk thistle','Dandelion root','Olive leaf','Schisandra']},
+  {sys:'Nervous/Cognitive',name:'Adaptogen-Nootropic',short:'Stimulates nerve growth factor (NGF) and promotes neuroplasticity.',mech:'Hericenones and erinacines cross the blood-brain barrier and stimulate NGF synthesis in hippocampus. Mycelium vs fruiting body matters.',sci:'Erinacines are more potent BBB-crossers than hericenones.',compounds:['Hericenones (fruiting body)','Erinacines (mycelium)','Beta-glucans'],herbs:['Lion\'s mane','Bacopa','Gotu kola']},
+  {sys:'Renal',name:'Diuretic',short:'Increases urine output — typically aquaretic, not electrolyte-depleting like pharmaceutical diuretics.',mech:'Inhibits renal tubular sodium reabsorption or modulates aldosterone. Dandelion leaf replaces lost potassium unlike pharmaceuticals.',sci:'Aquaretic = water loss only. Loop diuretic = electrolyte loss. Critical safety distinction.',compounds:['Taraxacin','Caffeic acid','Chlorogenic acid','Quercetin'],herbs:['Dandelion leaf','Nettle','Cleavers','Corn silk']},
+  {sys:'Mucosal',name:'Emollient / Demulcent',short:'Soothes and mechanically protects mucous membranes via mucilaginous polysaccharides.',mech:'Mucilage forms colloidal gel on mucosal surfaces — physically protective and anti-inflammatory via IL-6 downregulation.',sci:'Cold water extraction preserves mucilage better than hot — important for marshmallow preparation.',compounds:['Arabinogalactans (mucilage)','Beta-sitosterol','Flavonoids'],herbs:['Marshmallow','Mullein','Hibiscus','Slippery elm']},
+  {sys:'Respiratory',name:'Expectorant',short:'Facilitates removal of mucus from the respiratory tract via two distinct mechanisms.',mech:'Stimulating: volatile oils irritate bronchial mucosa → reflex secretion. Relaxing: saponins reduce mucus viscosity. Mullein does both.',sci:'Relaxing expectorants suit dry lungs; stimulating suit damp, congested states.',compounds:['Saponins','Volatile monoterpenes (cineole, thymol)','Mucilage'],herbs:['Mullein','Elecampane','Thyme','Grindelia']},
+  {sys:'Immune',name:'Antimicrobial',short:'Inhibits bacterial, viral, or fungal pathogen growth via multiple distinct mechanisms.',mech:'Thymoquinone disrupts cell membranes; oleuropein prevents viral capsid binding; calendula triterpenoids inhibit gram-positive bacteria.',sci:'Measured by MIC assays. Activity is pathogen-specific — broad claims should be scrutinised.',compounds:['Thymoquinone','Oleuropein','Rosmarinic acid','Gallic acid','Thymol'],herbs:['Nigella','Olive leaf','Calendula','St John\'s Wort','Thyme']},
+  {sys:'Immune',name:'Immunomodulator',short:'Normalises immune function — bidirectional, can upregulate or downregulate as needed.',mech:'Beta-glucans bind Dectin-1 receptors on macrophages; thymoquinone modulates Th1/Th2 balance; fulvic acid activates NK cells.',sci:'Distinct from immunostimulant. Bidirectional regulation critical for autoimmune contexts.',compounds:['Beta-glucans','Thymoquinone','Fulvic acid','Withanolides'],herbs:['Lion\'s mane','Nigella','Shilajit','Echinacea','Reishi']},
+  {sys:'Systemic',name:'Anti-inflammatory',short:'Reduces inflammatory mediator production across multiple pathways simultaneously.',mech:'COX-1/2 inhibition reduces prostaglandins; NF-κB suppression reduces TNF-α and IL-1β; 5-LOX inhibition reduces leukotrienes.',sci:'Multi-pathway action superior to single-target. NSAIDs cause gut damage via COX-1 inhibition — multi-pathway herbs avoid this.',compounds:['Withanolides','Oleuropein','Thymoquinone','Luteolin','Quercetin'],herbs:['Ashwagandha','Olive leaf','Nigella','Nettle','Turmeric']},
+  {sys:'Systemic',name:'Antioxidant',short:'Neutralises reactive oxygen species and activates the body\'s own antioxidant defence systems.',mech:'Polyphenols donate electrons to free radicals; Nrf2/ARE pathway upregulates endogenous enzymes (SOD, catalase, glutathione peroxidase).',sci:'Nrf2 activation — turning on the body\'s own defences — is the superior mechanism. Clove and hibiscus among highest-ORAC plants.',compounds:['Polyphenols','Anthocyanins','Rosmarinic acid','Gallic acid','Ellagic acid'],herbs:['Clove','Hibiscus','Olive leaf','Moringa','Nigella','Calendula']},
+  {sys:'Digestive',name:'Carminative',short:'Relieves intestinal gas and smooth muscle spasm via volatile oil action.',mech:'Monoterpenes inhibit calcium channels in GI smooth muscle → antispasmodic. Also reduces gas-producing bacterial fermentation.',sci:'Must contain volatile oils — aqueous extracts lose most carminative action through evaporation. Use tinctures or fresh herb teas.',compounds:['Eugenol (clove)','Thymol/Carvacrol','Menthol','Linalool'],herbs:['Clove','Peppermint','Fennel','Ginger','Chamomile']},
+  {sys:'Liver/Digestive',name:'Cholagogue / Choleretic',short:'Stimulates bile production (choleretic) or bile release from gallbladder (cholagogue).',mech:'Bitter sesquiterpenes stimulate cholecystokinin release → gallbladder contraction. Some compounds increase bile acid synthesis in hepatocytes.',sci:'Choleretic = make more bile. Cholagogue = release stored bile. Avoid cholagogues in active gallstone obstruction.',compounds:['Taraxacin (sesquiterpene bitters)','Silybin','Caffeic acid'],herbs:['Dandelion root','Milk thistle','Artichoke','Barberry']},
+  {sys:'Digestive',name:'Bitter tonic / Amara',short:'Stimulates the full digestive cascade via bitter receptor activation on tongue and gut.',mech:'TAS2R bitter receptors trigger cephalic-phase digestive response: HCl, pepsin, pancreatic enzymes, bile — all simultaneously.',sci:'Must be tasted to work. Encapsulating or sweetening bitter herbs neutralises this mechanism entirely.',compounds:['Taraxacin','Sesquiterpene lactones','Iridoid glycosides'],herbs:['Dandelion leaf','Mugwort','Gentian','Wormwood']},
+  {sys:'Systemic',name:'Tonic / Tropho-restorative',short:'Rebuilds and nourishes a specific tissue or organ over extended time.',mech:'Supplies minerals, vitamins, phytosterols that directly feed deficient tissues; enhances organ-specific enzyme activity. Works over weeks to months.',sci:'Distinct from adaptogens (stress axis) and stimulants (receptor firing). Cumulative, not acute.',compounds:['Minerals + vitamins','Beta-sitosterol','Flavonoids','Inulin/FOS'],herbs:['Nettle','Moringa','Dandelion','Ashwagandha']},
+  {sys:'Nervous',name:'Anxiolytic',short:'Reduces anxiety without sedation at lower therapeutic doses.',mech:'Apigenin and flavones bind GABA-A at benzodiazepine site; 5-HT1A partial agonism; rosmarinic acid inhibits GABA transaminase.',sci:'Withanolides, apigenin, and rosmarinic acid all have human RCT evidence for anxiety reduction.',compounds:['Apigenin (GABA-A)','Rosmarinic acid (GABA-T inhibitor)','Withanolides','Linalool'],herbs:['Ashwagandha','Passionflower','Lemon balm','Damiana','Lavender']},
+  {sys:'Nervous',name:'Sedative / Hypnotic',short:'Promotes sleep onset and CNS depression at higher doses.',mech:'Binds GABA-A at benzodiazepine site; inhibits orexin signalling (wakefulness system). Dose-dependent shift from anxiolytic to sedative.',sci:'Graded: lemon balm (mild) → passionflower (moderate) → valerian/hops (strong).',compounds:['Apigenin (high dose)','Citral/Linalool','Valerenic acid (valerian)'],herbs:['Passionflower','Lemon balm','Mugwort','Valerian','Hops']},
+  {sys:'Reproductive',name:'Emmenagogue',short:'Stimulates or regulates menstrual flow — acts on uterine smooth muscle.',mech:'Uterotonic action via oxytocin receptor sensitisation; some terpenoids mimic prostaglandins at uterine smooth muscle.',sci:'Contraindicated in pregnancy. Mugwort is the most-documented Western emmenagogue.',compounds:['Thujone (monoterpene)','Sesquiterpene lactones','Volatile oils'],herbs:['Mugwort','Damiana','Pennyroyal','Blue cohosh']},
+  {sys:'Musculoskeletal/Digestive',name:'Antispasmodic',short:'Relaxes smooth or skeletal muscle spasm.',mech:'Calcium channel blockade in smooth muscle; inhibition of acetylcholine at neuromuscular junction reduces skeletal spasm.',sci:'Distinct mechanisms for smooth vs skeletal muscle.',compounds:['Apigenin/Flavones','Monoterpenes','Scopoletin (coumarin)'],herbs:['Passionflower','Lemon balm','Marshmallow','Cramp bark']},
+  {sys:'Integumentary',name:'Vulnerary',short:'Promotes wound healing and skin tissue repair.',mech:'Stimulates fibroblast proliferation and collagen synthesis; modulates TGF-β1; reduces MMP activity. Bisabolol enhances skin absorption.',sci:'Calendula triterpenoids among most evidenced vulnerary compounds. Comfrey topical only.',compounds:['Faradiol/Arnidiol (triterpenoids)','Bisabolol','Rosmarinic acid','Mucilage'],herbs:['Calendula','Marshmallow','Comfrey (topical)','Yarrow']},
+  {sys:'Cardiovascular',name:'Haemostatic / Styptic',short:'Promotes blood clotting and reduces bleeding.',mech:'Tannins precipitate proteins on wound surfaces; vitamin K precursors support coagulation cascade; vasoconstriction reduces blood flow.',sci:'Tannin-rich herbs most reliable. Styptic = topical; haemostatic = systemic.',compounds:['Ellagitannins','Proanthocyanidins','Gallotannins'],herbs:['Raspberry leaf','Nettle','Yarrow','Shepherd\'s purse']},
+  {sys:'Immune/Thermoregulatory',name:'Diaphoretic',short:'Induces perspiration to reduce fever and enhance skin elimination.',mech:'Stimulates cholinergic sweat gland activation; peripheral vasodilation allows heat dissipation via skin.',sci:'Hot diaphoretics increase surface circulation. Cool diaphoretics (hibiscus) reduce temperature via evaporative cooling.',compounds:['Volatile monoterpenes','Flavonoids','Organic acids'],herbs:['Hibiscus','Elderflower','Peppermint','Yarrow']},
+  {sys:'Immune/Integumentary',name:'Antifungal',short:'Inhibits fungal cell membrane synthesis or disrupts fungal biofilm.',mech:'Thymoquinone and oleuropein disrupt ergosterol biosynthesis. Thymoquinone outperforms fluconazole against Candida in some in vitro assays.',sci:'MIC data exists for nigella and olive leaf against Candida species specifically.',compounds:['Thymoquinone','Oleuropein','Gallic acid','Triterpenoids (calendula)'],herbs:['Nigella','Olive leaf','Calendula','Pau d\'arco','Oregano']},
+  {sys:'Cognitive',name:'Nootropic',short:'Enhances memory, focus, and cognitive performance via multiple mechanisms.',mech:'AChE inhibition increases acetylcholine availability; cerebral blood flow increase; BDNF/CREB upregulation; NGF stimulation.',sci:'Rosmarinic acid and withanolides have AChE inhibition in human trials. Lion\'s mane NGF stimulation is unique.',compounds:['Rosmarinic acid (AChE inhibitor)','Withanolides','Hericenones/Erinacines (NGF)'],herbs:['Ashwagandha','Lion\'s mane','Lemon balm','Bacopa','Ginkgo']},
+  {sys:'Reproductive',name:'Aphrodisiac / Sexual tonic',short:'Enhances libido, sexual function, and reproductive organ perfusion.',mech:'PDE5 inhibition increases cGMP → relaxes vascular smooth muscle (same pathway as sildenafil); dopaminergic stimulation; withanolides and fulvic acid support testosterone.',sci:'Damiana and ashwagandha have human RCT data. Shilajit increased testosterone 23% in one trial.',compounds:['Acacetin/Apigenin (PDE5)','Withanolides (testosterone)','Fulvic acid (testosterone)'],herbs:['Damiana','Ashwagandha','Shilajit','Tribulus']},
+  {sys:'Immune',name:'Antiviral',short:'Inhibits viral replication, entry, or assembly.',mech:'Oleuropein prevents viral envelope glycoprotein binding to host cell receptors; hypericin disrupts viral envelopes; thymoquinone inhibits viral proteases.',sci:'Best evidence: olive leaf oleuropein (broad spectrum), St John\'s Wort hypericin (enveloped viruses), nigella thymoquinone.',compounds:['Oleuropein','Hypericin','Thymoquinone','Rosmarinic acid'],herbs:['Olive leaf','St John\'s Wort','Nigella','Elderberry']},
+  {sys:'Lymphatic',name:'Lymphagogue',short:'Stimulates lymphatic circulation and clears lymphatic congestion.',mech:'Increases lymphocyte and macrophage activity in lymph nodes; promotes interstitial fluid drainage into lymphatic capillaries.',sci:'One of the most neglected systems in conventional medicine but central to traditional herbal practice.',compounds:['Flavonoids (lymphatic tone)','Polysaccharides','Caffeic acid'],herbs:['Calendula','Nettle','Cleavers','Echinacea']},
+  {sys:'Endocrine/Metabolic',name:'Hypoglycaemic',short:'Lowers blood glucose via multiple distinct mechanisms.',mech:'Inhibits intestinal alpha-glucosidase; increases GLUT-4 translocation in muscle; activates AMPK; inhibits hepatic glucose-6-phosphatase.',sci:'Nigella, moringa, olive leaf have clinical evidence. Chlorogenic acid reduces postprandial glucose in human trials.',compounds:['Thymoquinone (AMPK)','Chlorogenic acid','Isothiocyanates (GLUT-4)','Oleuropein'],herbs:['Nigella','Moringa','Olive leaf','Dandelion','Berberine herbs']},
+  {sys:'Cardiovascular',name:'Cardiotonic',short:'Strengthens cardiac muscle contractility and regulates heart rhythm.',mech:'Positive inotropic via Na+/K+ ATPase modulation; fulvic acid improves mitochondrial ATP production in cardiomyocytes.',sci:'Hawthorn most evidence-based cardiotonic herb.',compounds:['Fulvic acid (mitochondrial ETC)','Proanthocyanidins','Vitexin'],herbs:['Shilajit','Hawthorn','Motherwort']},
+  {sys:'Cardiovascular',name:'Hypotensive',short:'Reduces blood pressure via vasodilation or ACE inhibition.',mech:'ACE inhibitor peptides block angiotensin II; NO-mediated endothelial vasodilation; calcium channel antagonism; anthocyanins improve endothelial flexibility.',sci:'Hibiscus anthocyanins reduce systolic BP ~7mmHg in meta-analysis. Olive leaf oleuropein has strong ACE inhibition data.',compounds:['Oleuropein (ACE inhibition)','Thymoquinone','Anthocyanins (NO)','Quercetin'],herbs:['Olive leaf','Nigella','Hibiscus','Hawthorn','Garlic']},
+];
+
+// ─── STATE ────────────────────────────────────────────────────────
+let userStack = JSON.parse(localStorage.getItem('chi_phyto_stack')||'[]');
+let savedHerbs = JSON.parse(localStorage.getItem('chi_saved_herbs')||JSON.stringify([
+  'Ashwagandha','Nettle','Lemon balm','Passionflower','Dandelion','Milk thistle','Nigella','Olive leaf','Moringa','Mugwort','Hibiscus','Calendula'
+]));
+let activeTab = 'compounds';
+let compoundFilter = 'All';
+let compoundScope = 'all';
+let actionFilter = 'All';
+let actionScope = 'all';
+let acFocused = -1;
+let pendingHerb = '';
+
+const PCLS=[...new Set(COMPOUNDS.map(c=>c.cls))];
+const TSYS=[...new Set(ACTIONS.map(a=>a.sys))].sort();
+const CLASS_COLORS={'Flavonoids':'#e8a840','Terpenoids':'#5cab7a','Alkaloids':'#9b8de0','Phenolic acids':'#aaaaaa','Saponins':'#6aaddd','Glycosides':'#7abf6a','Tannins':'#cc7a5a','Polysaccharides':'#cc6a9a','Other classes':'#888880'};
+const SYS_COLORS={'Nervous/Endocrine':'#6aaddd','Nervous/Cognitive':'#6aaddd','Nervous':'#6aaddd','Cognitive':'#6aaddd','Detox/Metabolic':'#7abf6a','Endocrine/Metabolic':'#7abf6a','Liver':'#e8a840','Liver/Digestive':'#e8a840','Digestive':'#e8a840','Renal':'#5cab7a','Mucosal':'#5cab7a','Lymphatic':'#5cab7a','Integumentary':'#5cab7a','Respiratory':'#6aaddd','Immune':'#cc7a5a','Immune/Integumentary':'#cc7a5a','Immune/Thermoregulatory':'#cc7a5a','Systemic':'#aaaaaa','Cardiovascular':'#dd6a6a','Reproductive':'#cc6a9a','Musculoskeletal/Digestive':'#aaaaaa'};
+
+function isy(s){ return userStack.some(h=>s.toLowerCase().includes(h.toLowerCase())||h.toLowerCase().includes(s.toLowerCase().replace(' ✓','').replace(' (minor)','').replace(' root','').replace(' leaf','').replace(' fruiting body','').replace(' mycelium',''))); }
+function hexToRgba(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return`rgba(${r},${g},${b},${a})`;}
+
+let toastTimer=null;
+function showToast(msg, color, showArrow=false){
+  const t=document.getElementById('toast');
+  const m=document.getElementById('toast-msg');
+  const d=document.getElementById('toast-dot');
+  const a=document.getElementById('toast-arrow');
+  clearTimeout(toastTimer);
+  m.textContent=msg;
+  d.style.background=color||'#7acca0';
+  a.style.display=showArrow?'inline':'none';
+  t.classList.add('show');
+  toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ─── STACK MANAGEMENT ────────────────────────────────────────────
+function saveStack(){ localStorage.setItem('chi_phyto_stack', JSON.stringify(userStack)); }
+
+function addHerbToStack(name){
+  const clean = name.trim();
+  if(!clean) return;
+  if(userStack.some(h=>h.toLowerCase()===clean.toLowerCase())){
+    viewStackHerb(clean);
+    return;
+  }
+  userStack.push(clean);
+  saveStack();
+  activeStackHerb = clean;
+  renderQBar();
+  renderStackInput();
+  showHerbProfile(clean);
+  renderCurrentTab();
+  const col = herbColor(clean);
+  showToast(clean + ' added to stack', col);
+  setTimeout(()=>{
+    document.getElementById('herb-profile').scrollIntoView({behavior:'smooth',block:'nearest'});
+    document.getElementById('herb-profile').classList.add('pulse');
+    setTimeout(()=>document.getElementById('herb-profile').classList.remove('pulse'),800);
+  },150);
+}
+
+function removeFromStack(name){
+  userStack = userStack.filter(h=>h.toLowerCase()!==name.toLowerCase());
+  if(activeStackHerb.toLowerCase()===name.toLowerCase()){
+    activeStackHerb='';
+    document.getElementById('herb-profile').className='herb-profile';
+  }
+  saveStack();
+  renderQBar();
+  renderStackInput();
+  renderSavedList();
+  renderCurrentTab();
+}
+
+function clearStack(){
+  if(!confirm('Clear all herbs from your stack?')) return;
+  userStack=[];
+  activeStackHerb='';
+  saveStack();
+  document.getElementById('herb-profile').className='herb-profile';
+  renderQBar();
+  renderStackInput();
+  renderSavedList();
+  renderCurrentTab();
+}
+
+// ─── QUICK ACCESS BAR ────────────────────────────────────────────
+const HERB_COLORS=['#5cab7a','#e8a840','#6aaddd','#9b8de0','#cc7a5a','#cc6a9a','#7abf6a','#dd6a6a'];
+function herbColor(name){ let h=0; for(let i=0;i<name.length;i++) h=(h*31+name.charCodeAt(i))&0xffff; return HERB_COLORS[h%HERB_COLORS.length]; }
+
+function renderQBar(){
+  const c = document.getElementById('qbar-herbs');
+  const clr = document.getElementById('qbar-clear');
+  if(!userStack.length){
+    c.innerHTML='<span class="qbar-empty">No herbs added yet — use the input below</span>';
+    clr.style.display='none';
+    return;
+  }
+  clr.style.display='inline-block';
+  c.innerHTML = userStack.map(h=>{
+    const col=herbColor(h);
+    return `<button class="qpill" onclick="qpillClick('${h.replace(/'/g,"\\'")}')">
+      <span class="qdot" style="background:${col}"></span>${h}
+    </button>`;
+  }).join('');
+}
+
+function qpillClick(name){
+  document.querySelectorAll('.qpill').forEach(p=>p.classList.remove('active'));
+  event.target.closest('.qpill').classList.add('active');
+  viewStackHerb(name);
+}
+
+// ─── SAVED HERBS PANEL ───────────────────────────────────────────
+function toggleSavedPanel(){
+  const p=document.getElementById('saved-panel');
+  const isShow=p.classList.contains('show');
+  if(isShow){ p.classList.remove('show'); document.getElementById('saved-toggle-btn').style.borderColor=''; }
+  else{ p.classList.add('show'); document.getElementById('saved-toggle-btn').style.borderColor='rgba(200,149,42,.4)'; renderSavedList(); }
+}
+
+function renderSavedList(){
+  const list=document.getElementById('saved-list');
+  if(!list) return;
+  if(!savedHerbs.length){ list.innerHTML='<span style="font-size:13px;color:var(--muted);font-style:italic">No saved herbs found. Save herbs from the Herbadex to see them here.</span>'; return; }
+  list.innerHTML=savedHerbs.map(h=>{
+    const inStack=userStack.some(s=>s.toLowerCase()===h.toLowerCase());
+    return `<span class="saved-herb-pill${inStack?' in-stack':''}" onclick="${inStack?`viewStackHerb('${h.replace(/'/g,"\\'")}');toggleSavedPanel()`:`addHerbToStack('${h.replace(/'/g,"\\'")}');renderSavedList()`}">
+      ${inStack?'✓ ':''}<span>${h}</span>${!inStack?'<span class="sh-add">+</span>':''}
+    </span>`;
+  }).join('');
+}
+
+function addAllSaved(){
+  let added=0;
+  savedHerbs.forEach(h=>{
+    if(!userStack.some(s=>s.toLowerCase()===h.toLowerCase())){ userStack.push(h); added++; }
+  });
+  if(added){
+    saveStack(); renderQBar(); renderStackInput(); renderSavedList(); renderCurrentTab();
+    showToast(added + ' herbs added to stack', '#7acca0');
+    setTimeout(()=>document.getElementById('my-stack').scrollIntoView({behavior:'smooth',block:'nearest'}),150);
+  } else {
+    showToast('All saved herbs already in stack', '#e8a840');
+  }
+}
+
+// ─── HERB INPUT & AUTOCOMPLETE ───────────────────────────────────
+let activeStackHerb = '';
+
+function renderStackInput(){
+  const c=document.getElementById('stack-count-label');
+  c.textContent=userStack.length+' herb'+(userStack.length!==1?'s':'');
+  const s=document.getElementById('my-stack');
+  if(!userStack.length){ s.innerHTML='<span class="stack-empty">Your herb stack is empty. Start typing a herb name above.</span>'; return; }
+  s.innerHTML=userStack.map(h=>{
+    const col=herbColor(h);
+    const isActive = h.toLowerCase()===activeStackHerb.toLowerCase();
+    return `<span class="stack-pill${isActive?' active-pill':''}" style="background:${hexToRgba(col,0.18)};border-color:${hexToRgba(col,isActive?0.7:0.4)}">
+      <span class="sp-name" onclick="viewStackHerb('${h.replace(/'/g,"\\'")}')">${h}</span>
+      <span class="sp-x" title="Remove" onclick="removeFromStack('${h.replace(/'/g,"\\'")}')">×</span>
+    </span>`;
+  }).join('');
+}
+
+function viewStackHerb(name){
+  activeStackHerb = name;
+  renderStackInput();
+  showHerbProfile(name);
+  const col = herbColor(name);
+  showToast('Viewing ' + name, col);
+  setTimeout(()=>{
+    document.getElementById('herb-profile').scrollIntoView({behavior:'smooth',block:'nearest'});
+    document.getElementById('herb-profile').classList.add('pulse');
+    setTimeout(()=>document.getElementById('herb-profile').classList.remove('pulse'),800);
+  },100);
+}
+
+function onHerbInput(){
+  const val = document.getElementById('herb-input').value.trim().toLowerCase();
+  const drop = document.getElementById('ac-drop');
+  pendingHerb = '';
+  acFocused = -1;
+  if(!val || val.length < 2){ drop.classList.remove('show'); drop.innerHTML=''; return; }
+  const matches = HERB_DB.filter(h=>h.toLowerCase().startsWith(val)).concat(
+    HERB_DB.filter(h=>!h.toLowerCase().startsWith(val)&&h.toLowerCase().includes(val))
+  ).slice(0,10);
+  if(!matches.length){ drop.classList.remove('show'); return; }
+  drop.innerHTML = matches.map((h,i)=>{
+    const inStack = userStack.some(s=>s.toLowerCase()===h.toLowerCase());
+    const compCount = COMPOUNDS.filter(c=>c.herbs.some(ch=>ch.toLowerCase().includes(h.toLowerCase()))).length;
+    return `<div class="ac-item" data-name="${h}" onclick="selectHerb('${h.replace(/'/g,"\\'")}')">
+      <span class="ac-name">${h}${inStack?' ✓':''}</span>
+      <span class="ac-cls">${compCount} compounds</span>
+    </div>`;
+  }).join('');
+  drop.classList.add('show');
+}
+
+function onHerbKey(e){
+  const drop = document.getElementById('ac-drop');
+  const items = drop.querySelectorAll('.ac-item');
+  if(e.key==='ArrowDown'){ e.preventDefault(); acFocused=Math.min(acFocused+1,items.length-1); items.forEach((el,i)=>el.classList.toggle('focused',i===acFocused)); }
+  else if(e.key==='ArrowUp'){ e.preventDefault(); acFocused=Math.max(acFocused-1,0); items.forEach((el,i)=>el.classList.toggle('focused',i===acFocused)); }
+  else if(e.key==='Enter'){ e.preventDefault(); if(acFocused>=0&&items[acFocused]) selectHerb(items[acFocused].dataset.name); else confirmAddHerb(); }
+  else if(e.key==='Escape'){ drop.classList.remove('show'); }
+}
+
+function selectHerb(name){
+  document.getElementById('herb-input').value = name;
+  pendingHerb = name;
+  document.getElementById('ac-drop').classList.remove('show');
+  showHerbProfile(name);
+}
+
+function confirmAddHerb(){
+  const val = pendingHerb || document.getElementById('herb-input').value.trim();
+  if(!val){ return; }
+  addHerbToStack(val);
+  document.getElementById('herb-input').value='';
+  pendingHerb='';
+  document.getElementById('ac-drop').classList.remove('show');
+}
+
+document.addEventListener('click', e=>{
+  if(!e.target.closest('.herb-input-wrap')) {
+    document.getElementById('ac-drop').classList.remove('show');
+    document.getElementById('ac-drop-lookup').classList.remove('show');
+  }
+});
+
+// ─── HERB LOOKUP (no stack add, just profile view) ────────────────
+let lookupFocused = -1;
+function onLookupInput(){
+  const val = document.getElementById('herb-lookup-input').value.trim().toLowerCase();
+  const drop = document.getElementById('ac-drop-lookup');
+  lookupFocused = -1;
+  if(!val || val.length < 2){ drop.classList.remove('show'); drop.innerHTML=''; return; }
+  const matches = HERB_DB.filter(h=>h.toLowerCase().startsWith(val)).concat(
+    HERB_DB.filter(h=>!h.toLowerCase().startsWith(val)&&h.toLowerCase().includes(val))
+  ).slice(0,10);
+  if(!matches.length){ drop.classList.remove('show'); return; }
+  drop.innerHTML = matches.map(h=>{
+    const inStack = userStack.some(s=>s.toLowerCase()===h.toLowerCase());
+    const compCount = COMPOUNDS.filter(c=>c.herbs.some(ch=>ch.toLowerCase().includes(h.toLowerCase()))).length;
+    return `<div class="ac-item" data-name="${h}" onclick="selectLookupHerb('${h.replace(/'/g,"\\'")}')">
+      <span class="ac-name">${h}${inStack?' ✓':''}</span>
+      <span class="ac-cls">${compCount} compounds</span>
+    </div>`;
+  }).join('');
+  drop.classList.add('show');
+}
+function onLookupKey(e){
+  const drop = document.getElementById('ac-drop-lookup');
+  const items = drop.querySelectorAll('.ac-item');
+  if(e.key==='ArrowDown'){ e.preventDefault(); lookupFocused=Math.min(lookupFocused+1,items.length-1); items.forEach((el,i)=>el.classList.toggle('focused',i===lookupFocused)); }
+  else if(e.key==='ArrowUp'){ e.preventDefault(); lookupFocused=Math.max(lookupFocused-1,0); items.forEach((el,i)=>el.classList.toggle('focused',i===lookupFocused)); }
+  else if(e.key==='Enter'){ e.preventDefault(); if(lookupFocused>=0&&items[lookupFocused]) selectLookupHerb(items[lookupFocused].dataset.name); }
+  else if(e.key==='Escape'){ drop.classList.remove('show'); }
+}
+function selectLookupHerb(name){
+  document.getElementById('herb-lookup-input').value = name;
+  document.getElementById('ac-drop-lookup').classList.remove('show');
+  showHerbProfile(name);
+  showToast('Viewing ' + name, herbColor(name));
+  setTimeout(()=>{
+    document.getElementById('herb-profile').scrollIntoView({behavior:'smooth',block:'nearest'});
+    document.getElementById('herb-profile').classList.add('pulse');
+    setTimeout(()=>document.getElementById('herb-profile').classList.remove('pulse'),800);
+  },100);
+}
+
+// ─── HERB PROFILE PANEL ──────────────────────────────────────────
+function showHerbProfile(name){
+  const panel = document.getElementById('herb-profile');
+  const matchedCompounds = COMPOUNDS.filter(c=>c.herbs.some(h=>h.toLowerCase().includes(name.toLowerCase())||name.toLowerCase().includes(h.toLowerCase().replace(' root','').replace(' leaf',''))));
+  const matchedActions = ACTIONS.filter(a=>a.herbs.some(h=>h.toLowerCase().includes(name.toLowerCase())||name.toLowerCase().includes(h.toLowerCase())));
+  const systems = [...new Set(matchedActions.map(a=>a.sys))];
+  const compClasses = [...new Set(matchedCompounds.map(c=>c.cls))];
+  const inStack = userStack.some(h=>h.toLowerCase()===name.toLowerCase());
+  panel.className = 'herb-profile show';
+
+  // compound class pills (clickable)
+  const classPills = compClasses.map(c=>`<span class="pill clickable" style="background:${hexToRgba(CLASS_COLORS[c]||'#aaa',0.18)};color:${CLASS_COLORS[c]||'#aaa'};border:1px solid ${hexToRgba(CLASS_COLORS[c]||'#aaa',0.3)}" onclick="jumpToCompoundClass('${c}')">${c}</span>`).join('');
+
+  // full compound rows
+  const compoundRows = matchedCompounds.map(c=>`
+    <div style="padding:.65rem 0;border-bottom:1px solid rgba(255,255,255,.05);display:flex;flex-direction:column;gap:.25rem">
+      <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+        <span class="pill clickable pill-gold" style="font-size:12px;padding:2px 9px" onclick="jumpToCompound('${c.name.replace(/'/g,"\\'")}')">${c.name}</span>
+        <span style="font-size:10px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase">${c.sub}</span>
+      </div>
+      <div style="font-size:12.5px;color:rgba(245,240,232,.65);line-height:1.55">${c.action}</div>
+      <div style="font-size:11.5px;color:rgba(245,240,232,.4);line-height:1.6;font-style:italic">${linkMech(c.mech)}</div>
+    </div>`).join('');
+
+  // full action rows
+  const actionRows = matchedActions.map(a=>{
+    const col=SYS_COLORS[a.sys]||'#aaa';
+    return `<div style="padding:.65rem 0;border-bottom:1px solid rgba(255,255,255,.05);display:flex;flex-direction:column;gap:.25rem">
+      <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+        <span class="pill clickable pill-teal" style="font-size:12px;padding:2px 9px" onclick="jumpToAction('${a.name.replace(/'/g,"\\'")}')">${a.name}</span>
+        <span class="pill clickable" style="font-size:10px;padding:1px 7px;background:${hexToRgba(col,0.15)};color:${col};border:1px solid ${hexToRgba(col,0.3)}" onclick="jumpToSystem('${a.sys}')">${a.sys}</span>
+      </div>
+      <div style="font-size:12.5px;color:rgba(245,240,232,.65);line-height:1.55">${a.short}</div>
+    </div>`;
+  }).join('');
+
+  panel.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem">
+      <div class="hp-name">${name}</div>
+      <div style="display:flex;gap:.5rem;align-items:center">
+        ${inStack
+          ? `<span style="font-size:11px;color:#7acca0;background:rgba(74,140,101,.15);border:1px solid rgba(74,140,101,.3);padding:.25rem .7rem;border-radius:999px">✓ In stack</span>
+             <button onclick="removeFromStack('${name.replace(/'/g,"\\'")}');activeStackHerb='';document.getElementById('herb-profile').className='herb-profile'" style="font-size:12px;padding:.3rem .8rem;border-radius:5px;border:1px solid rgba(200,149,42,.3);background:transparent;color:var(--muted);cursor:pointer">Remove</button>`
+          : `<button onclick="addHerbToStack('${name.replace(/'/g,"\\'")}');renderStackInput()" style="font-size:12px;padding:.3rem .8rem;border-radius:5px;border:none;background:var(--gold);color:var(--forest);cursor:pointer;font-weight:500">+ Add to stack</button>`
+        }
+      </div>
+    </div>
+
+    ${compClasses.length ? `
+    <div class="hp-section">
+      <div class="hp-label">Compound classes <span style="font-weight:400;text-transform:none;letter-spacing:0;color:rgba(245,240,232,.3);font-size:9.5px">tap to filter</span></div>
+      <div class="hp-pills" style="margin-bottom:.5rem">${classPills}</div>
+    </div>` : ''}
+
+    ${matchedCompounds.length ? `
+    <div class="hp-section">
+      <div class="hp-label" style="margin-bottom:.25rem">Key compounds (${matchedCompounds.length}) <span style="font-weight:400;text-transform:none;letter-spacing:0;color:rgba(245,240,232,.3);font-size:9.5px">tap name to open full entry</span></div>
+      <div>${compoundRows}</div>
+    </div>` : ''}
+
+    ${matchedActions.length ? `
+    <div class="hp-section" style="margin-top:.85rem">
+      <div class="hp-label" style="margin-bottom:.25rem">Herbal actions (${matchedActions.length}) <span style="font-weight:400;text-transform:none;letter-spacing:0;color:rgba(245,240,232,.3);font-size:9.5px">tap to open · tap system to filter</span></div>
+      <div>${actionRows}</div>
+    </div>` : ''}
+
+    ${!matchedCompounds.length && !matchedActions.length ? `
+    <p style="font-size:13px;color:var(--muted);font-style:italic">No data found for "${name}" yet — full data available once the herb database is uploaded.</p>` : ''}
+  `;
+}
+
+// ─── JUMP FUNCTIONS — profile pill clicks ────────────────────────
+function jumpToCompoundClass(cls){
+  setTab('compounds');
+  compoundFilter=cls;
+  document.querySelectorAll('#compound-filters .fp').forEach(b=>{b.classList.toggle('on',b.textContent===cls);});
+  document.getElementById('srch-compounds').value='';
+  renderCompounds();
+  document.getElementById('view-compounds').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function jumpToCompound(name){
+  setTab('compounds');
+  compoundFilter='All';
+  document.querySelectorAll('#compound-filters .fp').forEach(b=>b.classList.toggle('on',b.textContent==='All'));
+  document.getElementById('srch-compounds').value=name;
+  // open that card
+  openP.add(name);
+  renderCompounds();
+  document.getElementById('view-compounds').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function jumpToAction(name){
+  setTab('actions');
+  actionFilter='All';
+  document.querySelectorAll('#action-filters .fp').forEach(b=>b.classList.toggle('on',b.textContent==='All'));
+  document.getElementById('srch-actions').value=name;
+  openT.add(name);
+  renderActions();
+  document.getElementById('view-actions').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function jumpToSystem(sys){
+  setTab('actions');
+  actionFilter=sys;
+  document.querySelectorAll('#action-filters .fp').forEach(b=>b.classList.toggle('on',b.textContent===sys));
+  document.getElementById('srch-actions').value='';
+  renderActions();
+  document.getElementById('view-actions').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ─── TABS ─────────────────────────────────────────────────────────
+const TABS = ['compounds','systems','trad'];
+function setTab(t){
+  activeTab=t;
+  TABS.forEach(id=>{
+    const tabBtn=document.getElementById('tab-'+id);
+    const viewEl=document.getElementById('view-'+id);
+    if(tabBtn) tabBtn.classList.toggle('on',id===t);
+    if(viewEl) viewEl.style.display=id===t?'block':'none';
+  });
+  renderCurrentTab();
+  // auto-scroll to the content section, below the herb stack
+  setTimeout(()=>{
+    document.getElementById('view-'+t).scrollIntoView({behavior:'smooth',block:'start'});
+  },80);
+}
+
+function renderCurrentTab(){
+  if(activeTab==='compounds') renderCompounds();
+  else if(activeTab==='systems') renderSystems();
+  else if(activeTab==='trad') renderTrad();
+}
+
+// ─── BUILD FILTERS ────────────────────────────────────────────────
+function buildFilters(){
+  const pf=document.getElementById('compound-filters');
+  ['All',...PCLS].forEach(c=>{
+    const b=document.createElement('button');
+    b.className='fp'+(c==='All'?' on':'');
+    b.textContent=c;
+    b.onclick=()=>{compoundFilter=c;document.querySelectorAll('#compound-filters .fp').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderCompounds();};
+    pf.appendChild(b);
+  });
+}
+
+function setCompoundFilter(scope){
+  compoundScope=scope;
+  document.getElementById('rt-all-c').classList.toggle('on',scope==='all');
+  document.getElementById('rt-yours-c').classList.toggle('on',scope==='yours');
+  renderCompounds();
+}
+function setActionFilter(scope){
+  actionScope=scope;
+  document.getElementById('rt-all-a').classList.toggle('on',scope==='all');
+  document.getElementById('rt-yours-a').classList.toggle('on',scope==='yours');
+  renderActions();
+}
+
+// ─── RENDER COMPOUNDS ────────────────────────────────────────────
+let openP=new Set();
+function renderCompounds(){
+  const q=document.getElementById('srch-compounds').value.toLowerCase().trim();
+  let filtered=COMPOUNDS.filter(c=>{
+    if(compoundFilter!=='All'&&c.cls!==compoundFilter) return false;
+    if(compoundScope==='yours'&&!c.herbs.some(h=>isy(h))) return false;
+    if(!q) return true;
+    return c.name.toLowerCase().includes(q)||c.action.toLowerCase().includes(q)||c.mech.toLowerCase().includes(q)||c.sub.toLowerCase().includes(q)||c.herbs.some(h=>h.toLowerCase().includes(q));
+  });
+  // Sort: stack matches first
+  filtered.sort((a,b)=>{
+    const ay=a.herbs.some(h=>isy(h)), by=b.herbs.some(h=>isy(h));
+    if(ay&&!by) return -1; if(!ay&&by) return 1; return 0;
+  });
+  document.getElementById('c-total').textContent=COMPOUNDS.length;
+  document.getElementById('c-shown').textContent=filtered.length;
+  document.getElementById('c-stack').textContent=COMPOUNDS.filter(c=>c.herbs.some(h=>isy(h))).length;
+  const groups={};
+  filtered.forEach(c=>{const k=c.cls+'||'+c.sub;if(!groups[k])groups[k]={cls:c.cls,sub:c.sub,items:[]};groups[k].items.push(c);});
+  const ORDER=['Flavonoids','Terpenoids','Alkaloids','Phenolic acids','Saponins','Glycosides','Tannins','Polysaccharides','Other classes'];
+  const sorted=Object.values(groups).sort((a,b)=>ORDER.indexOf(a.cls)-ORDER.indexOf(b.cls)||a.sub.localeCompare(b.sub));
+  let html='';
+  if(!filtered.length) html='<div class="empty">No compounds found. Try a different filter or search.</div>';
+  else sorted.forEach(g=>{
+    const col=CLASS_COLORS[g.cls]||'#aaa';
+    html+=`<div class="sec-head"><span class="sec-title" style="color:${col}">${g.sub}</span><span class="sec-count">${g.items.length} · ${g.cls}</span></div><div class="grid">`;
+    g.items.forEach(c=>{
+      const inY=c.herbs.some(h=>isy(h)), isO=openP.has(c.name);
+      const tagLbl=c.tag==='notable'?'★ high value':c.tag==='studied'?'well studied':'general';
+      const tagCls=c.tag==='notable'?'pill-gold':c.tag==='studied'?'pill-purple':'pill-gray';
+      html+=`<button class="crd${isO?' open':''}${inY?' yours-match':''}" onclick="togP('${c.name.replace(/'/g,"\\'")}')">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:4px;margin-bottom:4px">
+          <span class="cn">${c.name}${inY?'<span style="color:#7acca0;font-size:10px;margin-left:3px">✓</span>':''}</span>
+          <span class="pill ${tagCls}" style="flex-shrink:0;font-size:10px;white-space:nowrap">${tagLbl}</span>
+        </div>
+        <div class="ct">${c.sub}</div>
+        <div class="cs">${c.action}</div>
+        <div class="detail">
+          <div class="dl">Mechanism</div><div class="mbox">${linkMech(c.mech)}</div>
+          <div class="dl">Herb sources</div>
+          <div class="pill-row">${c.herbs.map(h=>`<span class="pill ${isy(h)?'pill-green':'pill-gray'}">${h}${isy(h)?' ✓':''}</span>`).join('')}</div>
+        </div>
+      </button>`;
+    });
+    html+='</div>';
+  });
+  document.getElementById('compounds-out').innerHTML=html;
+}
+function togP(n){if(openP.has(n))openP.delete(n);else openP.add(n);renderCompounds();}
+
+// ─── RENDER HERB LOOKUP ──────────────────────────────────────────
+function renderHerbLookup(){
+  const q=document.getElementById('srch-herb').value.trim();
+  if(!q){ document.getElementById('herb-lookup-out').innerHTML='<div class="empty">Type a herb name above</div>'; return; }
+  showHerbProfileInline(q, 'herb-lookup-out');
+}
+
+function showHerbProfileInline(name, targetId){
+  const matchedCompounds = COMPOUNDS.filter(c=>c.herbs.some(h=>h.toLowerCase().includes(name.toLowerCase())||name.toLowerCase().includes(h.toLowerCase().replace(' root','').replace(' leaf',''))));
+  const matchedActions = ACTIONS.filter(a=>a.herbs.some(h=>h.toLowerCase().includes(name.toLowerCase())||name.toLowerCase().includes(h.toLowerCase())));
+  if(!matchedCompounds.length && !matchedActions.length){
+    document.getElementById(targetId).innerHTML=`<div class="empty">No data found for "<strong>${name}</strong>" — try a different spelling, or upload the herb database to expand coverage.</div>`;
+    return;
+  }
+  const systems=[...new Set(matchedActions.map(a=>a.sys))];
+  const compClasses=[...new Set(matchedCompounds.map(c=>c.cls))];
+  let html=`<div style="margin-bottom:1.5rem">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:500;color:var(--gold-light);margin-bottom:.25rem">${name}</div>
+    <div style="font-size:12px;color:var(--muted)">${compClasses.length} compound classes · ${matchedCompounds.length} compounds · ${matchedActions.length} herbal actions · ${systems.length} body systems</div>
+  </div>`;
+  if(compClasses.length){
+    html+=`<div class="sec-head"><span class="sec-title">Compound classes</span></div>
+    <div class="pill-row" style="margin-bottom:1rem">${compClasses.map(c=>`<span class="pill" style="background:${hexToRgba(CLASS_COLORS[c]||'#aaa',0.2)};color:${CLASS_COLORS[c]||'#aaa'};border:1px solid ${hexToRgba(CLASS_COLORS[c]||'#aaa',0.35)};font-size:12.5px;padding:3px 10px">${c}</span>`).join('')}</div>`;
+  }
+  if(matchedCompounds.length){
+    html+=`<div class="sec-head"><span class="sec-title">Compounds found in ${name}</span><span class="sec-count">${matchedCompounds.length}</span></div><div class="grid">`;
+    matchedCompounds.forEach(c=>{
+      html+=`<div class="crd" style="cursor:default">
+        <div class="cn">${c.name}</div>
+        <div class="ct">${c.sub}</div>
+        <div class="cs">${c.action}</div>
+        <div class="dl" style="margin-top:8px">Mechanism</div>
+        <div class="mbox">${c.mech}</div>
+      </div>`;
+    });
+    html+='</div>';
+  }
+  if(matchedActions.length){
+    html+=`<div class="sec-head"><span class="sec-title">Herbal actions</span><span class="sec-count">${matchedActions.length}</span></div><div class="grid wide">`;
+    matchedActions.forEach(a=>{
+      const col=SYS_COLORS[a.sys]||'#aaa';
+      html+=`<div class="crd" style="cursor:default">
+        <div style="display:flex;justify-content:space-between;gap:6px;margin-bottom:4px">
+          <span class="cn">${a.name}</span>
+          <span class="sys-tag" style="background:${hexToRgba(col,0.15)};color:${col}">${a.sys}</span>
+        </div>
+        <div class="cs">${a.short}</div>
+        <div class="dl" style="margin-top:8px">Key compounds</div>
+        <div class="pill-row">${a.compounds.map(c=>`<span class="pill pill-purple">${c}</span>`).join('')}</div>
+      </div>`;
+    });
+    html+='</div>';
+  }
+  document.getElementById(targetId).innerHTML=html;
+}
+
+// ─── RENDER ACTIONS ──────────────────────────────────────────────
+let openT=new Set();
+function renderActions(){
+  const q=document.getElementById('srch-actions').value.toLowerCase().trim();
+  let filtered=ACTIONS.filter(a=>{
+    if(actionFilter!=='All'&&a.sys!==actionFilter) return false;
+    if(actionScope==='yours'&&!a.herbs.some(h=>isy(h))) return false;
+    if(!q) return true;
+    return a.name.toLowerCase().includes(q)||a.sys.toLowerCase().includes(q)||a.short.toLowerCase().includes(q)||a.mech.toLowerCase().includes(q)||a.compounds.some(c=>c.toLowerCase().includes(q))||a.herbs.some(h=>h.toLowerCase().includes(q));
+  });
+  filtered.sort((a,b)=>{const ay=a.herbs.some(h=>isy(h)),by=b.herbs.some(h=>isy(h));if(ay&&!by)return -1;if(!ay&&by)return 1;return 0;});
+  document.getElementById('a-total').textContent=ACTIONS.length;
+  document.getElementById('a-shown').textContent=filtered.length;
+  document.getElementById('a-stack').textContent=ACTIONS.filter(a=>a.herbs.some(h=>isy(h))).length;
+  const groups={};
+  filtered.forEach(a=>{if(!groups[a.sys])groups[a.sys]=[];groups[a.sys].push(a);});
+  let html='';
+  if(!filtered.length) html='<div class="empty">No actions found.</div>';
+  else Object.entries(groups).forEach(([sys,items])=>{
+    const col=SYS_COLORS[sys]||'#aaa';
+    html+=`<div class="sec-head"><span class="sec-title" style="color:${col}" data-def="${sys}">${sys}</span><span class="sec-count">${items.length} action${items.length>1?'s':''}</span></div><div class="grid wide">`;
+    items.forEach(a=>{
+      const inY=a.herbs.some(h=>isy(h)), isO=openT.has(a.name);
+      html+=`<button class="crd${isO?' open':''}${inY?' yours-match':''}" onclick="togT('${a.name.replace(/'/g,"\\'")}')">
+        <div style="display:flex;justify-content:space-between;gap:4px;margin-bottom:3px">
+          <span class="cn">${a.name}${inY?'<span style="color:#7acca0;font-size:10px;margin-left:3px">✓</span>':''}</span>
+          <span class="sys-tag" style="background:${hexToRgba(col,0.15)};color:${col};flex-shrink:0;font-size:10px;white-space:nowrap">${a.sys}</span>
+        </div>
+        <div class="cs">${a.short}</div>
+        <div class="detail">
+          <div class="dl">Mechanism</div><div class="mbox">${linkMech(a.mech)}</div>
+          <div class="dl">Scientific note</div><p class="dt" style="margin-bottom:5px">${a.sci}</p>
+          <div class="dl">Key compounds</div>
+          <div class="pill-row">${a.compounds.map(c=>`<span class="pill pill-purple">${c}</span>`).join('')}</div>
+          <div class="dl">Herb sources</div>
+          <div class="pill-row">${a.herbs.map(h=>`<span class="pill ${isy(h)?'pill-green':'pill-gray'}">${h}${isy(h)?' ✓':''}</span>`).join('')}</div>
+        </div>
+      </button>`;
+    });
+    html+='</div>';
+  });
+  document.getElementById('actions-out').innerHTML=html;
+}
+function togT(n){if(openT.has(n))openT.delete(n);else openT.add(n);renderActions();}
+
+// ─── RENDER SYSTEMS ──────────────────────────────────────────────
+function renderSystems(){
+  const systems={};
+  ACTIONS.forEach(a=>{if(!systems[a.sys])systems[a.sys]={actions:[],herbs:new Set()};systems[a.sys].actions.push(a);a.herbs.forEach(h=>systems[a.sys].herbs.add(h));});
+  let html='';
+  Object.entries(systems).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([sys,data])=>{
+    const col=SYS_COLORS[sys]||'#aaa';
+    const yourHerbs=userStack.filter(h=>data.herbs.has(h)||[...data.herbs].some(dh=>dh.toLowerCase().includes(h.toLowerCase())));
+    html+=`<div class="sec-head"><span class="sec-title" style="color:${col}" data-def="${sys}" data-herbs="${[...data.herbs].join('|')}">${sys}</span><span class="sec-count">${data.actions.length} actions · ${data.herbs.size} herb sources${yourHerbs.length?` · <span style="color:#7acca0">${yourHerbs.length} in your stack</span>`:''}</span></div>
+    <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem">
+      ${data.actions.map(a=>`<span class="pill pill-gold">${a.name}</span>`).join('')}
+    </div>
+    ${yourHerbs.length?`<div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.5rem">${yourHerbs.map(h=>`<span class="pill pill-green">${h} ✓</span>`).join('')}</div>`:''}
+    <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.25rem">${[...data.herbs].filter(h=>!yourHerbs.includes(h)).map(h=>`<span class="pill pill-gray">${h}</span>`).join('')}</div>`;  });
+  document.getElementById('systems-out').innerHTML=html||'<div class="empty">No data.</div>';
+}
+
+// ─── RENDER TRADITIONAL SYSTEMS ──────────────────────────────────
+function renderTrad(){
+  const TRAD=[
+    {sys:'Ayurveda',color:'#e8a840',items:[
+      {term:'Rasayana',meaning:'Rejuvenating class. Rebuilds ojas (vital essence). Maps to: adaptogens + tonics + polysaccharide-rich herbs.',herbs:['Ashwagandha','Shilajit','Moringa','Lion\'s mane']},
+      {term:'Medhya',meaning:'Cognitive / mind-strengthening herbs. Maps to: NGF-stimulating polysaccharides + AChE-inhibiting phenolics.',herbs:['Lion\'s mane','Bacopa','Lemon balm']},
+      {term:'Balya',meaning:'Strength-building. Maps to: anabolic saponins + mineral-dense tonics.',herbs:['Ashwagandha','Nettle','Moringa']},
+      {term:'Deepana / Pachana',meaning:'Digestive fire stimulants. Maps to: bitter iridoid glycosides + carminative monoterpenes.',herbs:['Dandelion','Mugwort','Ginger','Clove']},
+      {term:'Rasa (taste)',meaning:'Six tastes: bitter (alkaloids/iridoids), astringent (tannins), pungent (volatile terpenes), sweet (polysaccharides/saponins), sour, salty.',herbs:[]},
+    ]},
+    {sys:'TCM',color:'#6aaddd',items:[
+      {term:'Qi tonic',meaning:'Builds energy and organ function. Maps to: polysaccharide-rich adaptogens.',herbs:['Lion\'s mane','Astragalus','Ginseng']},
+      {term:'Blood tonic',meaning:'Nourishes blood and circulation. Maps to: iron-rich nutritives + vascular flavonoids.',herbs:['Nettle','Dandelion','Moringa']},
+      {term:'Yin tonic',meaning:'Cooling, moistening, restorative. Maps to: demulcent polysaccharides + cooling flavonoids.',herbs:['Marshmallow','Lemon balm','Hibiscus']},
+      {term:'Yang tonic',meaning:'Warming, stimulating, androgenic. Maps to: steroidal saponins + withanolides.',herbs:['Ashwagandha','Shilajit','Damiana']},
+      {term:'Five organ systems',meaning:'Liver, kidney, heart, spleen, lung. Each herb classified by its primary organ affinity — determines which conditions it addresses.',herbs:[]},
+    ]},
+    {sys:'Galenic / Unani',color:'#7abf6a',items:[
+      {term:'Hot + dry',meaning:'Stimulating, drying. Maps to: pungent volatile terpenes + alkaloids.',herbs:['Mugwort','Black pepper','Ginger']},
+      {term:'Cold + moist',meaning:'Soothing, hydrating. Maps to: mucilaginous polysaccharides + cooling flavonoids.',herbs:['Marshmallow','Lemon balm','Hibiscus']},
+      {term:'Hot + moist',meaning:'Nourishing + warming. Maps to: nutrient-dense tonics with warming saponins.',herbs:['Moringa','Ashwagandha']},
+      {term:'Cold + dry',meaning:'Astringent, anti-inflammatory. Maps to: tannins + cooling phenolics.',herbs:['Raspberry leaf','Nettle','Oak bark']},
+      {term:'Four degrees',meaning:'Each quality (hot/cold/wet/dry) rated 1-4 in intensity. Degree 1 = gentle food-level herb. Degree 4 = toxic/heroic dose range.',herbs:[]},
+    ]},
+  ];
+  let html='';
+  TRAD.forEach(t=>{
+    html+=`<div class="sec-head"><span class="sec-title" style="color:${t.color}">${t.sys}</span></div>
+    <div class="grid wide" style="margin-bottom:1.5rem">`;
+    t.items.forEach(item=>{
+      const yourHerbs=userStack.filter(h=>item.herbs.some(ih=>ih.toLowerCase().includes(h.toLowerCase())||h.toLowerCase().includes(ih.toLowerCase())));
+      html+=`<div class="crd" style="cursor:default">
+        <div class="cn">${item.term}</div>
+        <div class="cs" style="margin-top:5px">${item.meaning}</div>
+        ${item.herbs.length?`<div class="pill-row" style="margin-top:8px">${item.herbs.map(h=>{const inY=yourHerbs.some(y=>y.toLowerCase().includes(h.toLowerCase()));return`<span class="pill ${inY?'pill-green':'pill-gray'}">${h}${inY?' ✓':''}</span>`;}).join('')}</div>`:''}
+      </div>`;
+    });
+    html+='</div>';
+  });
+  document.getElementById('trad-out').innerHTML=html;
+}
+
+// ─── REVERSE: HERB → PROPERTIES ──────────────────────────────────
+function renderRevHerb(){
+  const q=document.getElementById('srch-rev-herb').value.trim();
+  if(!q){ document.getElementById('rev-herb-out').innerHTML='<div class="empty">Type a herb name to see everything it contains and does</div>'; return; }
+  showHerbProfileInline(q,'rev-herb-out');
+}
+
+// ─── REVERSE: COMPOUND → HERBS ───────────────────────────────────
+function renderRevCompound(){
+  const q=document.getElementById('srch-rev-compound').value.toLowerCase().trim();
+  const out=document.getElementById('rev-compound-out');
+  if(!q){ out.innerHTML='<div class="empty">Type a compound name to see which herbs contain it</div>'; return; }
+  const matched=COMPOUNDS.filter(c=>c.name.toLowerCase().includes(q)||c.sub.toLowerCase().includes(q));
+  if(!matched.length){ out.innerHTML=`<div class="empty">No compounds found matching "<strong>${q}</strong>"</div>`; return; }
+  let html='';
+  matched.forEach(c=>{
+    const stackHerbs=c.herbs.filter(h=>isy(h));
+    html+=`<div class="sec-head"><span class="sec-title" style="color:${CLASS_COLORS[c.cls]||'#aaa'}">${c.name}</span><span class="sec-count">${c.cls} · ${c.sub}</span></div>
+    <div class="mbox" style="margin-bottom:1rem">${c.mech}</div>
+    ${stackHerbs.length?`<div style="margin-bottom:.5rem;font-size:12px;color:var(--muted)">In your stack:</div><div class="pill-row" style="margin-bottom:1rem">${stackHerbs.map(h=>`<span class="pill pill-green">${h} ✓</span>`).join('')}</div>`:''}
+    <div style="margin-bottom:.5rem;font-size:12px;color:var(--muted)">All herb sources:</div>
+    <div class="grid" style="margin-bottom:1.5rem">${c.herbs.map(h=>{const inY=isy(h);return`<div class="crd${inY?' yours-match':''}" style="cursor:default;padding:.7rem .9rem"><div class="cn" style="font-size:15px">${h}${inY?'<span style="color:#7acca0;font-size:10px;margin-left:4px">✓ in stack</span>':''}</div></div>`;}).join('')}</div>`;
+  });
+  out.innerHTML=html;
+}
+
+// ─── REVERSE: ACTION → YOUR HERBS ────────────────────────────────
+function renderRevAction(){
+  const q=document.getElementById('srch-rev-action').value.toLowerCase().trim();
+  const out=document.getElementById('rev-action-out');
+  if(!q){ out.innerHTML='<div class="empty">Type an action or body system — see which of your stack herbs qualify</div>'; return; }
+  const matchedActions=ACTIONS.filter(a=>a.name.toLowerCase().includes(q)||a.sys.toLowerCase().includes(q)||a.short.toLowerCase().includes(q));
+  if(!matchedActions.length){ out.innerHTML=`<div class="empty">No actions or systems found matching "<strong>${q}</strong>"</div>`; return; }
+  let html='';
+  matchedActions.forEach(a=>{
+    const col=SYS_COLORS[a.sys]||'#aaa';
+    const stackMatches=userStack.filter(h=>a.herbs.some(ah=>ah.toLowerCase().includes(h.toLowerCase())||h.toLowerCase().includes(ah.toLowerCase())));
+    html+=`<div class="sec-head"><span class="sec-title" style="color:${col}">${a.name}</span><span class="sec-count">${a.sys}</span></div>
+    <div class="cs" style="margin-bottom:.75rem">${a.short}</div>
+    ${stackMatches.length
+      ? `<div style="font-size:12px;color:#7acca0;margin-bottom:.5rem">Your stack herbs with this action (${stackMatches.length}):</div>
+         <div class="pill-row" style="margin-bottom:1rem">${stackMatches.map(h=>`<span class="pill pill-green">✓ ${h}</span>`).join('')}</div>`
+      : userStack.length
+        ? `<div style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:1rem">None of your current stack herbs have this action. Consider adding: ${a.herbs.slice(0,3).join(', ')}.</div>`
+        : `<div style="font-size:13px;color:var(--muted);font-style:italic;margin-bottom:1rem">Add herbs to your stack to see which ones cover this action.</div>`
+    }
+    <div style="font-size:12px;color:var(--muted);margin-bottom:.5rem">All herbs with this action:</div>
+    <div class="pill-row" style="margin-bottom:1.5rem">${a.herbs.map(h=>{const inS=userStack.some(s=>h.toLowerCase().includes(s.toLowerCase())||s.toLowerCase().includes(h.toLowerCase()));return`<span class="pill ${inS?'pill-green':'pill-gray'}">${h}${inS?' ✓':''}</span>`;}).join('')}</div>`;
+  });
+  out.innerHTML=html;
+}
+
+// ─── INIT ────────────────────────────────────────────────────────
+buildFilters();
+renderQBar();
+renderStackInput();
+renderCurrentTab();
+</script>
+<script>
+// NAV DROPDOWNS
+function toggleDD(id){
+  document.querySelectorAll('.nav-dd').forEach(d=>{if(d.id!=='dd-'+id)d.classList.remove('open');});
+  const el=document.getElementById('dd-'+id);
+  if(el)el.classList.toggle('open');
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.nav-dd'))document.querySelectorAll('.nav-dd').forEach(d=>d.classList.remove('open'));
+});
+</script>
+
+
+
+<style>
+/* ── HOVER TERM TOOLTIPS ── */
+.chi-term{border-bottom:1px dashed rgba(200,149,42,.45);cursor:help;transition:border-color .15s;}
+.chi-term:hover{border-bottom-color:rgba(200,149,42,.9);}
+.chi-tooltip{
+  position:fixed;z-index:2000;
+  background:var(--forest);
+  border:1px solid rgba(200,149,42,.35);
+  border-radius:8px;
+  padding:.85rem 1.1rem;
+  max-width:320px;min-width:200px;
+  box-shadow:0 8px 28px rgba(0,0,0,.55);
+  pointer-events:none;
+  opacity:0;
+  transform:translateY(4px);
+  transition:opacity .18s,transform .18s;
+}
+.chi-tooltip.show{opacity:1;transform:translateY(0);}
+.chi-tooltip-term{
+  font-family:'Cormorant Garamond',serif;
+  font-size:15px;font-weight:500;
+  color:var(--gold-light);
+  margin-bottom:.3rem;
+}
+.chi-tooltip-def{
+  font-size:12.5px;
+  color:rgba(245,240,232,.78);
+  line-height:1.62;
+}
+.chi-tooltip-herbs{
+  margin-top:.55rem;
+  padding-top:.5rem;
+  border-top:1px solid rgba(255,255,255,.08);
+}
+.chi-tooltip-herbs-label{
+  font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(245,240,232,.3);margin-bottom:.35rem;
+}
+.chi-tooltip-herb-pills{
+  display:flex;flex-wrap:wrap;gap:.3rem;
+}
+.chi-tooltip-herb-pill{
+  font-size:11px;padding:2px 7px;border-radius:4px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  color:rgba(245,240,232,.6);
+}
+.chi-tooltip-herb-pill.in-stack{
+  background:rgba(200,149,42,.18);
+  border-color:rgba(200,149,42,.4);
+  color:var(--gold-light);
+  font-weight:500;
+}
+.chi-tooltip-footer{
+  font-size:10.5px;
+  color:rgba(245,240,232,.28);
+  margin-top:.45rem;
+  display:flex;align-items:center;gap:5px;
+}
+</style>
+<script>
+
+// ── HOVER TERM TOOLTIPS ──────────────────────────────────────────
+(function(){
+  const DEFS = {
+    'adaptogen': {l:'Adaptogen',d:'A herb that helps the body resist physical and mental stress without causing harm. Works by modulating the HPA axis — your central stress system. Examples: ashwagandha, rhodiola, shilajit.'},
+  'adaptogenic': {l:'Adaptogenic',d:'Having the properties of an adaptogen — helping the body resist stress and return to balance without overstimulating any one system.'},
+  'nervine': {l:'Nervine',d:'A herb that supports and nourishes the nervous system. Nervine tonics (oat straw) rebuild; nervine relaxants (passionflower, lemon balm) calm; nervine stimulants (rosemary) activate.'},
+  'nootropic': {l:'Nootropic',d:"A substance that enhances cognitive function — memory, focus, creativity — without significant side effects. Lion's mane and lemon balm are herbal nootropics."},
+  'carminative': {l:'Carminative',d:'A herb that relieves intestinal gas and gut spasm, typically through volatile oils that relax smooth muscle in the gut wall. Examples: fennel, peppermint, clove, ginger.'},
+  'demulcent': {l:'Demulcent',d:'A herb that soothes irritated or inflamed mucous membranes by forming a protective coating. Marshmallow root and slippery elm are classic demulcents.'},
+  'expectorant': {l:'Expectorant',d:"A herb that helps clear mucus from the lungs and airways. Stimulating expectorants (thyme) increase secretion; relaxing expectorants (mullein, marshmallow) thin mucus so it's easier to clear."},
+  'diuretic': {l:'Diuretic',d:'Increases urine production. Most herbal diuretics (dandelion, nettle) are aquaretics — they increase water output without depleting potassium, unlike pharmaceutical loop diuretics.'},
+  'aquaretic': {l:'Aquaretic',d:'A type of diuretic that increases water excretion without significant electrolyte loss. Safer for long-term use than pharmaceutical diuretics. Dandelion leaf is a well-known aquaretic.'},
+  'hepatoprotective': {l:'Hepatoprotective',d:'Protects liver cells from damage. Silymarin in milk thistle is the most clinically validated hepatoprotective compound — used in emergency medicine for toxic liver injury.'},
+  'cholagogue': {l:'Cholagogue',d:'A herb that stimulates the gallbladder to release stored bile — aiding fat digestion and liver detoxification. Dandelion root is a well-known cholagogue.'},
+  'choleretic': {l:'Choleretic',d:'Stimulates the liver to produce more bile. Distinct from a cholagogue (which releases stored bile). Dandelion root and milk thistle do both.'},
+  'vulnerary': {l:'Vulnerary',d:'A herb that promotes wound healing and tissue repair, typically by stimulating collagen synthesis. Calendula is the most evidenced vulnerary herb.'},
+  'emmenagogue': {l:'Emmenagogue',d:'Stimulates or regulates menstrual flow by acting on uterine smooth muscle. Mugwort is the most documented Western example. Contraindicated in pregnancy.'},
+  'diaphoretic': {l:'Diaphoretic',d:'Promotes sweating, traditionally used to break fevers. Hot diaphoretics (ginger, elderflower) increase circulation; cool diaphoretics (hibiscus, peppermint) lower temperature.'},
+  'styptic': {l:'Styptic',d:'Stops external bleeding when applied topically. Tannin-rich herbs (yarrow, raspberry leaf) precipitate proteins on wound surfaces and contract blood vessels.'},
+  'antispasmodic': {l:'Antispasmodic',d:'Relaxes muscle spasm — either in the digestive tract or skeletal muscle. Works mainly by blocking calcium channels in smooth muscle.'},
+  'anxiolytic': {l:'Anxiolytic',d:'Reduces anxiety without necessarily causing sedation. Ashwagandha, passionflower and lemon balm have anxiolytic action at lower doses before becoming sedative at higher doses.'},
+  'hypnotic': {l:'Hypnotic',d:'Promotes sleep — stronger in effect than a simple relaxant. Valerian, hops and high-dose passionflower are hypnotics.'},
+  'sedative': {l:'Sedative',d:'Calms the nervous system and reduces excitability. Milder than a hypnotic. Passionflower and lemon balm are sedatives at standard doses.'},
+  'immunomodulator': {l:'Immunomodulator',d:'Normalises immune function — can stimulate an underactive immune system or calm an overactive one. Different from a simple immune stimulant. Nigella and medicinal mushrooms are immunomodulators.'},
+  'antiviral': {l:'Antiviral',d:'Inhibits viral replication or entry. Oleuropein in olive leaf prevents viral entry by binding to viral envelope proteins before they can attach to host cells.'},
+  'antimicrobial': {l:'Antimicrobial',d:'Active against bacteria, fungi or viruses. Thymoquinone in nigella is broadly antimicrobial — it disrupts microbial cell membrane integrity.'},
+  'lymphagogue': {l:'Lymphagogue',d:'Stimulates lymphatic circulation and clears lymphatic congestion. Calendula and cleavers are lymphagogues — supporting immune cell movement and tissue drainage.'},
+  'trophorestorative': {l:'Trophorestorative',d:"Restores and rebuilds the function of a specific organ or system over time through regular use. Milk thistle is trophorestorative for the liver; lion's mane for the nervous system."},
+  'alterative': {l:'Alterative',d:'Gradually improves metabolism and nutrition, traditionally said to "alter" the body towards better health. Cleavers, nettle and burdock are classic alteratives.'},
+  'bitter tonic': {l:'Bitter tonic',d:'A herb that stimulates digestion through bitter taste receptors (TAS2R) on the tongue. Must be tasted to work — capsules bypass the mechanism. Dandelion, mugwort and gentian are bitter tonics.'},
+  'flavonoid': {l:'Flavonoid',d:'The largest class of plant polyphenols — over 6,000 known. Includes quercetin, apigenin, luteolin and kaempferol. Broadly anti-inflammatory, antioxidant and cardioprotective.'},
+  'flavonoids': {l:'Flavonoids',d:'The largest class of plant polyphenols — over 6,000 known. Broadly anti-inflammatory, antioxidant and cardioprotective. Found in almost every herb.'},
+  'alkaloid': {l:'Alkaloid',d:'Nitrogen-containing plant compounds — often bitter, pharmacologically potent, and the basis of many pharmaceuticals (morphine, caffeine, berberine). Work on specific receptors with clear dose-dependence.'},
+  'alkaloids': {l:'Alkaloids',d:'Nitrogen-containing plant compounds — often bitter and pharmacologically potent. Include berberine (barberry), caffeine (green tea) and many pharmaceutical drugs derived from plants.'},
+  'tannin': {l:'Tannin',d:'Polyphenols that bind and precipitate proteins — creating an astringent sensation. Protect wound surfaces, reduce inflammation and have antimicrobial properties. High in raspberry leaf, green tea and witch hazel.'},
+  'tannins': {l:'Tannins',d:'Polyphenolic compounds with an astringent action — they bind proteins and contract tissue. Found in raspberry leaf, oak bark, green tea. Useful for wound healing and diarrhoea.'},
+  'saponin': {l:'Saponin',d:'Soap-like plant compounds that foam in water. Improve cell membrane permeability (enhancing nutrient absorption), have immune-stimulating properties, and lower cholesterol.'},
+  'saponins': {l:'Saponins',d:'Soap-like compounds found in ashwagandha, liquorice and many herbs. Enhance bioavailability of other compounds, support immune function and have cholesterol-lowering effects.'},
+  'terpenoid': {l:'Terpenoid',d:'The largest class of plant compounds — built from five-carbon isoprene units. Includes essential oil components (monoterpenes), withanolides (diterpenes), silymarin (triterpenoid) and carotenoids.'},
+  'terpenoids': {l:'Terpenoids',d:"The most diverse class of plant compounds. Responsible for most herbal scents (monoterpenes) and many therapeutic actions. Includes everything from lemon balm's citral to ashwagandha's withanolides."},
+  'polysaccharide': {l:'Polysaccharide',d:"Long-chain sugars found in medicinal mushrooms and herbs. Beta-glucans in lion's mane activate immune surveillance; arabinogalactans in marshmallow coat and protect gut mucosa."},
+  'polysaccharides': {l:'Polysaccharides',d:'Complex carbohydrate chains with significant immune-modulating and protective effects. Beta-glucans (mushrooms), arabinogalactans (marshmallow) and inulin (dandelion) are key examples.'},
+  'phenolic acid': {l:'Phenolic acid',d:'Simple polyphenols including rosmarinic acid (lemon balm), chlorogenic acid (dandelion) and caffeic acid (nettle). Anti-inflammatory, antioxidant and often involved in enzyme inhibition.'},
+  'phenolic acids': {l:'Phenolic acids',d:'Simple polyphenolic compounds with antioxidant and anti-inflammatory properties. Rosmarinic acid in lemon balm inhibits both AChE and GABA-T — making it uniquely cognitive and calming.'},
+  'iridoid': {l:'Iridoid',d:'A type of terpenoid found in olives, valerian and plantain — often bitter and anti-inflammatory. Oleuropein (olive leaf) is an iridoid glycoside.'},
+  'iridoids': {l:'Iridoids',d:'Bitter terpenoid compounds found in olive leaf (oleuropein), valerian and plantain. Among the most studied natural anti-inflammatory and antimicrobial compound classes.'},
+  'withanolide': {l:'Withanolide',d:'Steroidal lactone compounds unique to ashwagandha (Withania somnifera). Structurally similar to human steroid hormones — modulate glucocorticoid receptors, reduce cortisol, and support testosterone.'},
+  'withanolides': {l:'Withanolides',d:'The primary bioactive compounds in ashwagandha. Reduce cortisol by up to 27% in double-blind trials by modulating the HPA axis. Also support testosterone and thyroid function.'},
+  'glycoside': {l:'Glycoside',d:'A compound consisting of a sugar molecule attached to an active compound (aglycone). The sugar improves solubility and stability; digestive enzymes split it, releasing the active aglycone.'},
+  'glycosides': {l:'Glycosides',d:"Compounds where a sugar is bonded to an active molecule. The sugar acts as a delivery vehicle — gut bacteria or digestive enzymes release the active aglycone where it's needed."},
+  'bioavailability': {l:'Bioavailability',d:'The proportion of a compound that actually reaches systemic circulation after ingestion. Fat-soluble compounds need dietary fat to absorb. Piperine in black pepper increases curcumin bioavailability by 2,000%.'},
+  'hpa axis': {l:'HPA Axis',d:"Hypothalamic-Pituitary-Adrenal axis — your body's central stress response system. Chronic activation keeps cortisol elevated, impairing sleep, immunity and cognition. Adaptogens specifically modulate this system."},
+  'nf-κb': {l:'NF-κB',d:'A key molecular switch controlling inflammation genes. When activated it triggers cytokine production. Ashwagandha withanolides, olive leaf oleuropein and nigella thymoquinone all inhibit NF-κB.'},
+  'nrf2': {l:'Nrf2',d:"A master regulator of cellular antioxidant defence. When activated by sulforaphane, quercetin or thymoquinone, it switches on genes producing SOD, catalase and glutathione — your body's own antioxidant enzymes."},
+  'gaba': {l:'GABA',d:"Gamma-aminobutyric acid — your brain's primary inhibitory neurotransmitter. Low GABA = anxiety and poor sleep. Passionflower's apigenin binds GABA-A receptors; lemon balm's rosmarinic acid slows GABA breakdown."},
+  'cox-2': {l:'COX-2',d:'Cyclooxygenase-2 — the enzyme that produces inflammatory prostaglandins. NSAIDs like ibuprofen block it. Many herbs (quercetin, oleuropein, thymoquinone) also inhibit COX-2 without the gut side effects.'},
+  'cox': {l:'COX (COX-1/COX-2)',d:'Cyclooxygenase enzymes that produce prostaglandins — chemical messengers of pain and inflammation. Many anti-inflammatory herbs inhibit COX. COX-2-specific inhibitors cause less gut damage than COX-1 inhibitors.'},
+  'apoptosis': {l:'Apoptosis',d:"Programmed cell death — the body's controlled process for removing damaged cells. Some plant compounds are studied because they trigger apoptosis in cancer cells while leaving healthy cells unaffected."},
+  'ngf': {l:'NGF (Nerve Growth Factor)',d:"A protein that supports the survival and growth of nerve cells. Hericenones and erinacines from lion's mane mushroom are the only known dietary compounds that directly stimulate NGF synthesis in the brain."},
+  'bdnf': {l:'BDNF',d:"Brain-Derived Neurotrophic Factor — a protein that supports brain cell growth, learning and memory. Lion's mane erinacines stimulate BDNF production in the hippocampus."},
+  'ampk': {l:'AMPK',d:'A master metabolic switch in every cell. When activated it increases glucose uptake, burns fat and reduces inflammation. Berberine and chlorogenic acid activate AMPK via the same pathway as metformin.'},
+  'silymarin': {l:'Silymarin',d:'The active complex in milk thistle — a mixture of flavonolignans. One of the most clinically validated hepatoprotective compounds; used in emergency medicine for death cap mushroom poisoning.'},
+  'oleuropein': {l:'Oleuropein',d:'The primary bioactive compound in olive leaf. Has antimicrobial, antiviral, antihypertensive and antioxidant actions. Prevents viral entry by binding to viral capsid proteins before they reach host cells.'},
+  'thymoquinone': {l:'Thymoquinone',d:'Primary bioactive in nigella (black seed). Simultaneously inhibits COX-1/2, 5-LOX and NF-κB — a rare triple anti-inflammatory mechanism. Also disrupts microbial membranes and modulates Th1/Th2 immune balance.'},
+  'rosmarinic acid': {l:'Rosmarinic acid',d:'A phenolic acid in lemon balm, rosemary and sage. Inhibits acetylcholinesterase (improving focus) and GABA transaminase (promoting calm) simultaneously — making it uniquely both cognitive and anxiolytic.'},
+  'beta-glucan': {l:'Beta-glucan',d:"A type of polysaccharide found in medicinal mushrooms. Binds to Dectin-1 receptors on immune cells, activating the body's innate immune response — the same alert system normally triggered by fungal pathogens."},
+  'beta-glucans': {l:'Beta-glucans',d:"Polysaccharides in medicinal mushrooms (lion's mane, reishi, turkey tail) that activate macrophage and NK cell immune surveillance via Dectin-1 receptor binding."},
+  'mitophagy': {l:'Mitophagy',d:'A cellular cleaning process where damaged mitochondria are broken down and recycled. Urolithin A — produced from ellagic acid in raspberry leaf — activates mitophagy and is one of the most studied anti-aging compounds.'},
+  'senolytic': {l:'Senolytic',d:'Clears senescent cells — old, damaged cells that have stopped dividing but release inflammatory signals that accelerate aging. Fisetin (strawberry) is one of the most studied natural senolytics.'},
+  'phytoestrogen': {l:'Phytoestrogen',d:'A plant compound that weakly mimics oestrogen. Isoflavones (red clover) and lignans (flaxseed) are phytoestrogens. Effects can be oestrogenic or anti-oestrogenic depending on hormonal context.'},
+  'nervous system': {l:'Nervous System',d:'Controls all body functions through electrical signals. Includes brain, spinal cord and peripheral nerves. Nervines calm it; adaptogens regulate its stress response; nootropics improve its efficiency.'},
+  'immune system': {l:'Immune System',d:"The body's defence network. Overactivation causes allergies and autoimmunity; underactivation causes frequent illness. Immunomodulators like nigella normalise rather than simply stimulate it."},
+  'digestive system': {l:'Digestive System',d:'Breaks down food across 9 metres of gut. Bitter herbs stimulate it via TAS2R receptors; demulcents soothe it; prebiotics feed its microbiome; bitters must be tasted to work.'},
+  'cardiovascular': {l:'Cardiovascular System',d:'Heart and blood vessels. Herbs support it via blood pressure regulation (olive leaf ACE inhibition), vessel wall integrity (proanthocyanidins) and anti-inflammatory action (quercetin).'},
+  'endocrine': {l:'Endocrine System',d:'Hormone-producing glands — adrenals, thyroid, pancreas, gonads. Controls metabolism, stress and reproduction. Adaptogens specifically target the HPA axis (stress hormones) within this system.'},
+  'respiratory': {l:'Respiratory System',d:'Lungs and airways. Expectorants clear mucus; antispasmodics relax bronchial spasm; demulcents soothe irritated mucosa; antimicrobials address infection.'},
+  'hepatic': {l:'Hepatic / Liver',d:'The liver has 500+ functions — detoxification, bile production, hormone processing. Hepatoprotective herbs protect liver cells; choleretics stimulate bile; cholagogues release stored bile.'},
+  'lymphatic': {l:'Lymphatic System',d:'Vessels and nodes draining fluid from tissues and hosting immune cells. Lymphagogue herbs (calendula, cleavers) stimulate lymph flow and clear congestion.'}
+  };
+
+  // Create tooltip element
+  const tip = document.createElement('div');
+  tip.className = 'chi-tooltip';
+  tip.innerHTML = '<div class="chi-tooltip-term"></div><div class="chi-tooltip-def"></div><div class="chi-tooltip-herbs" style="display:none"><div class="chi-tooltip-herbs-label">Herb sources</div><div class="chi-tooltip-herb-pills"></div></div><div class="chi-tooltip-footer">📚 CHI Glossary</div>';
+  document.body.appendChild(tip);
+
+  let hideTimer;
+
+  function showTip(el, e){
+    const term = el.dataset.term || el.textContent.trim();
+    const def = DEFS[term.toLowerCase()];
+    const herbs = el.dataset.herbs ? el.dataset.herbs.split('|').filter(Boolean) : [];
+
+    // Need either a definition or herb list to show anything
+    if(!def && !herbs.length) return;
+
+    tip.querySelector('.chi-tooltip-term').textContent = def ? def.l : term;
+    tip.querySelector('.chi-tooltip-def').textContent = def ? def.d : '';
+
+    // Herb pills
+    const herbSection = tip.querySelector('.chi-tooltip-herbs');
+    const pillsWrap = tip.querySelector('.chi-tooltip-herb-pills');
+    if(herbs.length){
+      const stack = JSON.parse(localStorage.getItem('chi_phyto_stack')||'[]').map(h=>h.toLowerCase());
+      pillsWrap.innerHTML = herbs.sort().map(h=>{
+        const inStack = stack.some(s=>s.includes(h.toLowerCase())||h.toLowerCase().includes(s));
+        return `<span class="chi-tooltip-herb-pill${inStack?' in-stack':''}">${h}${inStack?' ✓':''}</span>`;
+      }).join('');
+      herbSection.style.display='block';
+    } else {
+      herbSection.style.display='none';
+    }
+
+    clearTimeout(hideTimer);
+    positionTip(e);
+    tip.classList.add('show');
+  }
+
+  function positionTip(e){
+    const pad = 14, tw = 300, th = 160;
+    let x = e.clientX + pad;
+    let y = e.clientY + pad;
+    if(x + tw > window.innerWidth) x = e.clientX - tw - pad;
+    if(y + th > window.innerHeight) y = e.clientY - th - pad;
+    tip.style.left = x + 'px';
+    tip.style.top = y + 'px';
+  }
+
+  document.addEventListener('mouseover', function(e){
+    const el = e.target.closest('.chi-term,[data-herbs]');
+    if(!el) return;
+    showTip(el, e);
+  });
+
+  document.addEventListener('mousemove', function(e){
+    if(tip.classList.contains('show') && e.target.closest('.chi-term,[data-herbs]'))
+      positionTip(e);
+  });
+
+  document.addEventListener('mouseout', function(e){
+    if(!e.target.closest('.chi-term,[data-herbs]')) return;
+    hideTimer = setTimeout(()=>tip.classList.remove('show'), 250);
+  });
+
+  // Auto-tag known terms in the page after render
+  // Uses a MutationObserver so it catches dynamically rendered content too
+  const tagged = new WeakSet();
+  const termKeys = Object.keys(DEFS).sort((a,b)=>b.length-a.length); // longest first
+
+  function tagNode(node){
+    if(node.nodeType !== Node.TEXT_NODE) return;
+    if(!node.textContent.trim()) return;
+    const parent = node.parentElement;
+    if(!parent) return;
+    // Skip: already tagged, inside script/style/input, inside a chi-term
+    if(parent.closest('.chi-term,.chi-tooltip,script,style,input,textarea,a,button')) return;
+    if(tagged.has(node)) return;
+    tagged.add(node);
+
+    let text = node.textContent;
+    let changed = false;
+    let html = text;
+
+    termKeys.forEach(term=>{
+      if(!html.toLowerCase().includes(term)) return;
+      const re = new RegExp('(?<![\w-])(' + term.replace(/[-[\]{}()*+?.,\\^$|#\s]/g,'\\$&') + ')(?![\w-])', 'gi');
+      if(re.test(html)){
+        html = html.replace(re, `<span class="chi-term" data-term="${term}">$1</span>`);
+        changed = true;
+      }
+    });
+
+    if(changed){
+      const span = document.createElement('span');
+      span.innerHTML = html;
+      parent.replaceChild(span, node);
+    }
+  }
+
+  function tagTree(root){
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+    const nodes = [];
+    let n;
+    while((n = walker.nextNode())) nodes.push(n);
+    nodes.forEach(tagNode);
+  }
+
+  // Tag existing content on load
+  document.addEventListener('DOMContentLoaded', ()=>{
+    tagTree(document.body);
+  });
+
+  // Watch for dynamic content (React renders, JS-injected HTML)
+  const observer = new MutationObserver(muts=>{
+    muts.forEach(m=>{
+      m.addedNodes.forEach(n=>{
+        if(n.nodeType === Node.ELEMENT_NODE) tagTree(n);
+        else if(n.nodeType === Node.TEXT_NODE) tagNode(n);
+      });
+    });
+  });
+  observer.observe(document.body, {childList:true, subtree:true});
+})();
+
+</script>
+</body>
+</html>

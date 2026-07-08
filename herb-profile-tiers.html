@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herb Profile — C.H.I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#1a3a2a;--forest-mid:#2d5c42;--forest-light:#4a8c65;
+  --parchment:#f5f0e8;--charcoal:#2a2a25;
+  --gold:#c8952a;--gold-light:#e8b84b;--night:#0c1a10;
+  --bg:#0c1a10;--header:#1a3a2a;
+  --card:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.08);
+  --text:#f5f0e8;--muted:rgba(245,240,232,0.52);
+  --accent:#c8952a;--accent-light:#e8b84b;
+  --tag-bg:rgba(74,140,101,0.15);--tag-border:rgba(74,140,101,0.3);--tag-text:#7acca0;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
+  background-image:radial-gradient(ellipse 80% 50% at 50% -5%,rgba(74,140,101,0.12),transparent 60%),radial-gradient(ellipse 50% 40% at 95% 100%,rgba(200,149,42,0.06),transparent 55%);}
+
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:var(--header);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:50;}
+.nav-logo{text-decoration:none;display:flex;flex-direction:column;}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-light);letter-spacing:.1em;}
+.nav-full{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.5);}
+.nav-right{display:flex;align-items:center;gap:1.5rem;}
+.nav-right a{color:rgba(245,240,232,.6);text-decoration:none;font-size:13px;transition:color .2s;}
+.nav-right a:hover,.nav-right a.active{color:var(--gold-light);}
+.nav-join{background:var(--gold);color:var(--forest)!important;padding:.5rem 1rem;border-radius:4px;font-weight:500;}
+@media(max-width:760px){.nav-right a:not(.nav-join){display:none;}}
+
+.demo-bar{display:flex;align-items:center;justify-content:center;gap:1rem;padding:.85rem 1rem;background:repeating-linear-gradient(45deg,rgba(200,149,42,.08),rgba(200,149,42,.08) 10px,transparent 10px,transparent 20px);border-bottom:1px dashed rgba(200,149,42,.35);flex-wrap:wrap;}
+.demo-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);}
+.demo-toggle{display:inline-flex;background:rgba(0,0,0,.25);border:1px solid rgba(200,149,42,.35);border-radius:999px;padding:3px;}
+.demo-toggle button{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:500;padding:.4rem 1.1rem;border-radius:999px;cursor:pointer;transition:all .2s;}
+.demo-toggle button.on{background:var(--gold);color:var(--forest);}
+.demo-note{font-size:11px;color:var(--muted);font-style:italic;}
+
+.wrap{max-width:920px;margin:0 auto;padding:2.5rem 1.5rem 5rem;}
+.fade{opacity:0;transform:translateY(10px);animation:fade .6s ease forwards;}
+@keyframes fade{to{opacity:1;transform:none;}}
+
+/* HERO */
+.herb-hero{display:flex;gap:1.5rem;align-items:stretch;background:var(--card);border:1px solid var(--card-border);border-radius:14px;padding:1.75rem 1.9rem;position:relative;overflow:hidden;}
+.herb-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 90% at 100% 0%,rgba(74,140,101,.14),transparent 55%);pointer-events:none;}
+.type-label{writing-mode:vertical-rl;transform:rotate(180deg);text-align:center;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--forest);background:var(--gold);border-radius:6px;padding:1rem .55rem;font-weight:600;flex-shrink:0;}
+.hero-main{flex:1;min-width:0;position:relative;z-index:1;}
+.hero-common{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:500;line-height:1.02;}
+.hero-latin{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--gold-light);margin-top:.15rem;}
+.hero-trad{font-size:13px;color:var(--muted);margin-top:.25rem;}
+.hero-tags{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem;}
+.htag{font-size:11px;letter-spacing:.04em;padding:.3rem .7rem;border-radius:999px;background:var(--tag-bg);border:1px solid var(--tag-border);color:var(--tag-text);}
+.htag.safe{background:rgba(74,140,101,.18);border-color:rgba(74,140,101,.4);color:#7acca0;}
+.hero-acts{display:flex;gap:.5rem;margin-top:1.1rem;flex-wrap:wrap;}
+.btn{font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:500;border-radius:6px;padding:.55rem 1rem;cursor:pointer;border:1px solid transparent;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+.btn-primary{background:var(--gold);color:var(--forest);}
+.btn-primary:hover{background:var(--gold-light);}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid rgba(245,240,232,.22);}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold-light);}
+
+/* TABS */
+.tabs{display:flex;gap:.4rem;margin-top:1.75rem;border-bottom:1px solid var(--card-border);}
+.tab{background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:.85rem 1.2rem;cursor:pointer;transition:color .2s,border-color .2s;display:inline-flex;align-items:center;gap:8px;}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--gold-light);border-bottom-color:var(--gold);}
+.tab .lock{font-size:11px;}
+.panel{display:none;padding-top:1.75rem;}
+.panel.active{display:block;animation:fade .4s ease forwards;}
+
+/* ESSENTIAL */
+.ess-grid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;}
+.field{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:1.1rem 1.25rem;}
+.field.wide{grid-column:1/-1;}
+.field-label{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem;display:flex;align-items:center;gap:7px;}
+.field-val{font-size:14.5px;line-height:1.7;color:rgba(245,240,232,.86);}
+.field-val strong{color:var(--text);font-weight:600;}
+.pill-row{display:flex;flex-wrap:wrap;gap:.4rem;}
+.pill{font-size:12px;padding:.25rem .65rem;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--card-border);color:rgba(245,240,232,.8);}
+
+/* ADVANCE */
+.adv-group{margin-bottom:1.6rem;}
+.adv-group-title{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:500;color:var(--gold-light);margin-bottom:.7rem;display:flex;align-items:center;gap:.6rem;}
+.adv-group-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(200,149,42,.3),transparent);}
+.acc{background:var(--card);border:1px solid var(--card-border);border-radius:10px;margin-bottom:.55rem;overflow:hidden;}
+.acc-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.95rem 1.2rem;cursor:pointer;user-select:none;transition:background .2s;}
+.acc-head:hover{background:rgba(255,255,255,.03);}
+.acc-title{font-size:14px;font-weight:500;display:flex;align-items:center;gap:.6rem;}
+.acc-title .dot{width:7px;height:7px;border-radius:50%;background:var(--forest-light);flex-shrink:0;}
+.acc-chev{color:var(--muted);transition:transform .25s;flex-shrink:0;}
+.acc.open .acc-chev{transform:rotate(180deg);}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+.acc.open .acc-body{max-height:600px;}
+.acc-inner{padding:0 1.2rem 1.1rem;font-size:14px;line-height:1.75;color:rgba(245,240,232,.82);}
+.acc-inner .mhra{display:block;margin-top:.5rem;font-size:11.5px;color:var(--muted);font-style:italic;}
+
+/* PHYTOCHEMISTRY */
+.phyto{background:var(--card);border:1px solid rgba(200,149,42,.25);border-radius:12px;padding:1.4rem 1.5rem;margin-bottom:1.8rem;}
+.phyto-h{font-family:'Cormorant Garamond',serif;font-size:23px;font-weight:500;color:var(--gold-light);}
+.phyto-sub{font-size:12.5px;color:var(--muted);margin:.2rem 0 1.1rem;line-height:1.6;}
+.class-cap{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);margin-bottom:.55rem;}
+.class-row{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.4rem;}
+.class-chip{font-size:12px;padding:.4rem .8rem;border-radius:999px;border:1px solid var(--card-border);background:rgba(255,255,255,.04);color:var(--muted);cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+.class-chip.present{border-color:rgba(200,149,42,.45);background:rgba(200,149,42,.12);color:var(--gold-light);}
+.class-chip:hover{border-color:var(--gold);transform:translateY(-1px);}
+.class-chip .pdot{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.6;}
+.cmp-head{display:grid;grid-template-columns:1.2fr 1fr 1.5fr;gap:.7rem;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);padding-bottom:.6rem;border-bottom:1px solid var(--card-border);}
+.cmp{display:grid;grid-template-columns:1.2fr 1fr 1.5fr;gap:.7rem;align-items:start;padding:.9rem 0;border-bottom:1px solid var(--card-border);}
+.cmp:last-child{border-bottom:none;}
+.cmp-name{font-weight:600;font-size:14px;}
+.cmp-bar{height:5px;background:rgba(255,255,255,.07);border-radius:999px;margin-top:.5rem;overflow:hidden;max-width:130px;}
+.cmp-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--forest-light),var(--gold));border-radius:999px;}
+.cmp-badge{display:inline-block;font-size:10.5px;padding:.18rem .55rem;border-radius:5px;background:rgba(74,140,101,.18);border:1px solid rgba(74,140,101,.35);color:var(--tag-text);margin-bottom:.35rem;}
+.cmp-sub{font-size:11.5px;color:var(--muted);}
+.cmp-action{font-size:13px;color:rgba(245,240,232,.82);line-height:1.6;}
+@media(max-width:640px){.cmp,.cmp-head{grid-template-columns:1fr;}.cmp-head{display:none;}.cmp{border-bottom:1px solid var(--card-border);padding:1rem 0;}}
+
+/* LOCKED UPSELL */
+.locked{text-align:center;padding:3rem 1.5rem;background:var(--card);border:1px dashed rgba(200,149,42,.35);border-radius:12px;}
+.locked-ico{font-size:30px;}
+.locked h3{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;margin:.6rem 0 .4rem;}
+.locked p{font-size:14px;color:var(--muted);max-width:440px;margin:0 auto 1.3rem;line-height:1.7;}
+.locked .preview{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:center;max-width:560px;margin:0 auto 1.5rem;}
+.locked .preview span{font-size:11px;padding:.25rem .6rem;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--card-border);color:var(--muted);}
+
+@media(max-width:640px){
+  .ess-grid{grid-template-columns:1fr;}
+  .hero-common{font-size:32px;}
+  .type-label{writing-mode:horizontal-tb;transform:none;padding:.4rem .8rem;}
+  .herb-hero{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-chi">C.H.I</span>
+    <span class="nav-full">Collective Herbal Intelligence</span>
+  </a>
+  <div class="nav-right">
+    <a href="herb-match.html">Herb Match</a>
+    <a href="phytochemistry.html">Plant Intelligence</a>
+    <a href="supreme.html">Herbadex</a>
+    <a href="resources.html">Resources</a>
+    <a href="community.html">Community</a>
+    <a href="profile.html" class="active">Profile</a>
+    <a href="inbox.html" class="nav-inbox" title="Inbox">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12v9H2V4z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M2 4l6 5 6-5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+    </a>
+    <a href="join.html" class="nav-cta">Join CHI</a>
+  </div>
+</nav>
+
+<div class="demo-bar">
+  <span class="demo-label">Demo · viewing as</span>
+  <div class="demo-toggle">
+    <button id="t-basic" class="on" onclick="setTier('basic')">Basic</button>
+    <button id="t-advance" onclick="setTier('advance')">Advance</button>
+    <button id="t-business" onclick="setTier('business')">Business</button>
+  </div>
+  <span class="demo-note">Switch account level to see what each unlocks.</span>
+</div>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="herb-hero fade">
+    <div class="type-label">Adaptogen</div>
+    <div class="hero-main">
+      <div class="hero-common">Ashwagandha</div>
+      <div class="hero-latin">Withania somnifera</div>
+      <div class="hero-trad">Traditional names: Ashwagandha (Sanskrit, “smell of the horse”) · Indian Winter Cherry · Indian Ginseng</div>
+      <div class="hero-tags">
+        <span class="htag safe">✓ Generally safe</span>
+        <span class="htag">Ayurveda</span>
+        <span class="htag">Root used</span>
+        <span class="htag">Origin: India</span>
+      </div>
+      <div class="hero-acts">
+        <button class="btn btn-primary">🔖 Save to herbs</button>
+        <button class="btn btn-ghost">＋ Add to stack</button>
+        <button class="btn btn-ghost">Share</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs fade" style="animation-delay:.05s">
+    <button class="tab active" data-tab="essential" onclick="setTab('essential',this)">Essential</button>
+    <button class="tab" data-tab="advance" onclick="setTab('advance',this)">Advance <span class="lock" id="adv-lock">🔒</span></button>
+  </div>
+
+  <!-- ESSENTIAL -->
+  <div class="panel active" id="panel-essential">
+    <div class="ess-grid">
+      <div class="field"><div class="field-label">🌿 Common name</div><div class="field-val">Ashwagandha — also Indian Winter Cherry, Indian Ginseng</div></div>
+      <div class="field"><div class="field-label">📜 Traditional name</div><div class="field-val">Ashwagandha (Sanskrit) · Asgandh (Unani)</div></div>
+      <div class="field"><div class="field-label">🔬 Botanical name</div><div class="field-val"><em>Withania somnifera</em> · family Solanaceae</div></div>
+      <div class="field"><div class="field-label">🗺 Location</div><div class="field-val">Native to India, Nepal, and parts of North Africa and the Middle East; now cultivated widely in dry regions.</div></div>
+      <div class="field"><div class="field-label">🌱 Part(s) used</div><div class="field-val pill-row"><span class="pill">Root (primary)</span><span class="pill">Leaf (topical/traditional)</span></div></div>
+      <div class="field"><div class="field-label">🏷 Type</div><div class="field-val pill-row"><span class="pill">Adaptogen</span><span class="pill">Nervine</span><span class="pill">Rasayana (rejuvenative)</span></div></div>
+      <div class="field wide"><div class="field-label">🕰 History</div><div class="field-val">One of the most revered herbs in Ayurveda, used for over 3,000 years as a <em>rasayana</em> — a rejuvenating tonic believed to restore vitality and longevity. Its Sanskrit name, “smell of the horse,” points both to the root’s scent and to the traditional idea that it imparts the strength and stamina of a stallion. It travelled through Unani medicine and folk traditions across the Middle East and Africa before reaching modern Western herbalism.</div></div>
+      <div class="field wide"><div class="field-label">💚 Benefits to the body</div><div class="field-val">Traditionally used to support the body’s resilience to stress and to promote calm, steady energy. It is also traditionally used to support restful sleep, healthy stamina, and a settled mind. Research suggests it may support a balanced stress response. <span style="color:var(--muted);font-style:italic;font-size:12px;">(Language kept MHRA-compliant — “traditionally used / may support / research suggests”.)</span></div></div>
+      <div class="field"><div class="field-label">⚖️ Dosages</div><div class="field-val"><strong>Root powder:</strong> 3–6 g daily.<br><strong>Standardised extract:</strong> 300–600 mg daily.<br><strong>Tincture:</strong> 2–4 ml, up to 3× daily.</div></div>
+      <div class="field"><div class="field-label">🫖 Preparation</div><div class="field-val">Powder stirred into warm milk with a little honey (the classic Ayurvedic <em>moon milk</em>), capsules, or tincture. Gentle simmering as a decoction suits the root.</div></div>
+      <div class="field"><div class="field-label">⏰ Timings</div><div class="field-val">Often taken in the <strong>evening</strong> for its calming, sleep-supportive use; a morning dose suits those using it for daytime steadiness. Commonly cycled (e.g. 6 weeks on, 1–2 off).</div></div>
+      <div class="field"><div class="field-label">⚠️ Cautions</div><div class="field-val">Best avoided in pregnancy. Use with care alongside sedatives, thyroid medication, or immunosuppressants, and with autoimmune or thyroid conditions. Part of the nightshade family — relevant for sensitive individuals. Seek professional guidance if unsure.</div></div>
+    </div>
+  </div>
+
+  <!-- ADVANCE -->
+  <div class="panel" id="panel-advance"></div>
+
+</div>
+
+<script>
+let tier = 'basic';
+
+// ── ADVANCE CONTENT (grouped) ──
+const advGroups = [
+  {title:'Pharmacology', items:[
+    {t:'Mechanism of action & pharmacology', d:'Research suggests activity on the HPA axis and modulation of cortisol, GABAergic signalling, and antioxidant pathways. Withanolides are studied for their effect on inflammatory mediators and cellular stress responses.'},
+  ]},
+  {title:'Clinical Use', items:[
+    {t:'Clinical applications & indications', d:'Traditionally used for stress resilience, fatigue, disturbed sleep, and convalescence. Research is exploring its role in stress, sleep quality and physical performance.', mhra:true},
+    {t:'Condition-specific protocols & combinations', d:'Commonly paired with rhodiola for stress-fatigue, with brahmi/bacopa for cognitive support, and with shatavari in women’s formulas. Protocols typically run 8–12 weeks.'},
+    {t:'Preparation methods & dosing', d:'Root decoction, milk decoction (ksheerapaka), powder (churna), standardised extracts (often 5% withanolides), and tinctures. Extract dosing 300–600 mg/day; powder 3–6 g/day.'},
+  ]},
+  {title:'Safety, Cautions & Special Populations', items:[
+    {t:'Contraindications — absolute & relative', d:'Relative: hyperthyroidism, active autoimmune conditions, and use with strong sedatives. Absolute caution in pregnancy.'},
+    {t:'Drug–herb interactions', d:'May potentiate sedatives, benzodiazepines, and CNS depressants; may affect thyroid medication and immunosuppressants; theoretical additive effect with antidiabetic and antihypertensive agents.'},
+    {t:'Safety profile & toxicity', d:'Generally well tolerated at traditional doses. High doses may cause GI upset or drowsiness. Long-term toxicity data is limited; periodic breaks are traditional practice.'},
+    {t:'Paediatric considerations', d:'Used traditionally in children in Ayurvedic practice at reduced, weight-adjusted doses, but robust modern paediatric data is limited — practitioner guidance advised.'},
+    {t:'Pregnancy & lactation safety', d:'Traditionally avoided in pregnancy (classified by some sources as an abortifacient at high doses). Insufficient data in lactation — best avoided unless professionally supervised.'},
+  ]},
+  {title:'Traditions & Energetics', items:[
+    {t:'Ayurvedic properties & applications', d:'Rasa (taste): bitter, astringent, sweet. Virya (energy): heating. Vipaka: sweet. Balances Vata and Kapha. A premier rasayana and balya (strength-giving) herb.'},
+    {t:'TCM properties & applications', d:'Not classical to TCM, but in integrative practice it is read as a warming, yang-supportive tonic for depletion and Shen (spirit) disturbance from chronic stress.'},
+    {t:'Western herbal energetics', d:'Considered warming and moistening; a trophorestorative to the nervous system and an adaptogen for the depleted, “tired-but-wired” picture.'},
+    {t:'Other tradition classifications', d:'Unani medicine knows it as Asgandh, a warm/dry tonic for vigour and the nervous system.'},
+  ]},
+  {title:'Identity, Quality & Sourcing', items:[
+    {t:'Botanical identity & adulterants', d:'True material is W. somnifera root. Watch for substitution with W. coagulans or leaf-heavy material; leaf has a different withanolide profile and higher withaferin A.'},
+    {t:'Quality markers & standardisation', d:'Standardised to total withanolides (commonly 2.5–5%) by HPLC. Root-only extracts are generally preferred to root-and-leaf for traditional use.'},
+    {t:'Sustainable sourcing & legal status', d:'Widely cultivated and not threatened. Legal to sell as a food supplement in the UK/EU; not a controlled substance. Look for organic, heavy-metal-tested sources.'},
+  ]},
+  {title:'Evidence', items:[
+    {t:'Research & clinical evidence', d:'A growing body of randomised trials examines stress, sleep, and exercise outcomes, with several systematic reviews noting promising but heterogeneous results and calling for larger, longer studies.', mhra:true},
+  ]},
+];
+
+// ── PHYTOCHEMISTRY ──
+const MASTER_CLASSES = ['Alkaloids','Flavonoids','Terpenoids','Saponins','Tannins','Glycosides','Polysaccharides','Phenolic acids'];
+const presentClasses = ['Alkaloids','Flavonoids','Terpenoids','Saponins','Glycosides','Polysaccharides'];
+const compounds = [
+  {name:'Withaferin A', cls:'Terpenoids', sub:'Withanolide · steroidal lactone', action:'The signature withanolide; studied for anti-inflammatory and cellular-stress modulation.', s:95},
+  {name:'Withanolide D', cls:'Terpenoids', sub:'Withanolide · steroidal lactone', action:'Associated with the herb’s adaptogenic, stress-axis activity.', s:80},
+  {name:'Sitoindosides VII–X', cls:'Saponins', sub:'Glycowithanolides', action:'Antioxidant and nervous-system support; tied to the anti-stress action.', s:65},
+  {name:'Withanosides', cls:'Glycosides', sub:'Sugar-bound withanolides', action:'Studied for neurite (nerve) support and regeneration.', s:55},
+  {name:'Somniferine', cls:'Alkaloids', sub:'Isoquinoline-type alkaloid', action:'Calming constituent — the root of the name somnifera (“sleep-bringing”).', s:45},
+  {name:'Beta-sitosterol', cls:'Terpenoids', sub:'Phytosterol', action:'Membrane-supporting sterol with mild anti-inflammatory interest.', s:40},
+  {name:'Root polysaccharides', cls:'Polysaccharides', sub:'Immunomodulating polysaccharides', action:'Tied to the root’s traditional restorative, immune-supportive use.', s:35},
+  {name:'Tropine / Anaferine', cls:'Alkaloids', sub:'Tropane & piperidine alkaloids', action:'Minor alkaloids characteristic of the nightshade family.', s:25},
+  {name:'Flavonoid glycosides', cls:'Flavonoids', sub:'Flavonols (kaempferol-type)', action:'Antioxidant supporting constituents.', s:30},
+];
+function phytoHTML(){
+  const chips = MASTER_CLASSES.map(c=>{
+    const on = presentClasses.includes(c);
+    return `<span class="class-chip${on?' present':''}" onclick="phytoClass('${c}',${on})">${on?'<span class="pdot"></span>':''}${c}</span>`;
+  }).join('');
+  const rows = compounds.map(c=>`
+    <div class="cmp">
+      <div><div class="cmp-name">${c.name}</div><div class="cmp-bar"><i style="width:${c.s}%"></i></div></div>
+      <div><span class="cmp-badge">${c.cls}</span><div class="cmp-sub">${c.sub}</div></div>
+      <div class="cmp-action">${c.action}</div>
+    </div>`).join('');
+  return `<div class="phyto">
+    <div class="phyto-h">Phytochemistry &amp; compounds</div>
+    <div class="phyto-sub">The chemistry behind the herb — the compound classes it contains, the named constituents, and what each is associated with. Tap a class to find every other herb in the database that shares it.</div>
+    <div class="class-cap">Compound classes present</div>
+    <div class="class-row">${chips}</div>
+    <div class="cmp-head"><div>Compound · prominence</div><div>Class / sub-class</div><div>Primary action</div></div>
+    ${rows}
+  </div>`;
+}
+function phytoClass(c, present){
+  alert(present
+    ? `In the live platform this opens the Phytochemistry tool, filtered to ${c} — every herb in the database that contains them, with their primary actions and sub-classes.`
+    : `${c}: not a notable constituent class in Ashwagandha. In the Phytochemistry tool you could still explore every herb that does contain them.`);
+}
+
+function renderAdvance(){
+  document.getElementById('panel-advance').innerHTML = phytoHTML() + advGroups.map((g,gi)=>`
+    <div class="adv-group">
+      <div class="adv-group-title">${g.title}</div>
+      ${g.items.map((it,ii)=>`
+        <div class="acc${gi===0&&ii===0?' open':''}">
+          <div class="acc-head" onclick="this.parentElement.classList.toggle('open')">
+            <div class="acc-title"><span class="dot"></span>${it.t}</div>
+            <svg class="acc-chev" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="acc-body"><div class="acc-inner">${it.d}${it.mhra?'<span class="mhra">Phrased to MHRA guidance — educational, not a medical claim.</span>':''}</div></div>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+function lockedPanel(){
+  const cats = advGroups.flatMap(g=>g.items.map(i=>i.t));
+  return `<div class="locked">
+    <div class="locked-ico">🔒</div>
+    <h3>Advance is part of Advance & Business plans</h3>
+    <p>Go deeper than the essentials — the full clinical and scientific profile of every herb, written for serious students and practitioners.</p>
+    <div class="preview">${cats.map(c=>`<span>${c}</span>`).join('')}</div>
+    <button class="btn btn-primary" onclick="alert('Opens the upgrade / pricing page.')">Upgrade to unlock</button>
+  </div>`;
+}
+
+function setTier(t){
+  tier = t;
+  ['basic','advance','business'].forEach(x=>document.getElementById('t-'+x).classList.toggle('on',x===t));
+  const unlocked = (t==='advance'||t==='business');
+  document.getElementById('adv-lock').style.display = unlocked ? 'none' : 'inline';
+  // if currently on a now-locked advance tab, re-render it
+  renderAdvancePanel(unlocked);
+}
+function renderAdvancePanel(unlocked){
+  if(unlocked){ renderAdvance(); } else { document.getElementById('panel-advance').innerHTML = lockedPanel(); }
+}
+
+function setTab(tab, btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+}
+
+// init
+setTier('basic');
+</script>
+</body>
+</html>

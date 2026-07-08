@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C.H.I — Collective Herbal Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --forest: #1a3a2a;
+    --forest-mid: #2d5c42;
+    --forest-light: #4a8c65;
+    --parchment: #f5f0e8;
+    --parchment-dark: #ede5d0;
+    --charcoal: #2a2a25;
+    --charcoal-mid: #4a4a42;
+    --gold: #c8952a;
+    --gold-light: #e8b84b;
+    --gold-pale: #f5e4b8;
+    --amber: #b87333;
+    --terracotta: #c4522a;
+    --teal-deep: #1a5c52;
+    --indigo: #2a2d6b;
+    --olive: #5c6b2a;
+    --amber-gold: #c8841a;
+    --mauve: #6b2a52;
+    --sage: #4a6b52;
+    --midnight: #1a1a4a;
+    --copper: #8b4513;
+    --clay: #8b5e3c;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--parchment);
+    color: var(--charcoal);
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 4rem;
+    height: 72px;
+    background: rgba(26, 58, 42, 0.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(200, 149, 42, 0.2);
+  }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 14px;
+    text-decoration: none;
+  }
+
+  .nav-logo-mark {
+    width: 42px; height: 42px;
+    position: relative;
+  }
+
+  .nav-logo-mark svg { width: 100%; height: 100%; }
+
+  .nav-logo-text { color: var(--parchment); }
+  .nav-logo-text .chi { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; letter-spacing: 0.15em; color: var(--gold-light); }
+  .nav-logo-text .full { font-size: 10px; font-weight: 300; letter-spacing: 0.12em; opacity: 0.75; text-transform: uppercase; display: block; margin-top: -2px; }
+
+  .nav-links { display: flex; align-items: center; gap: 2.5rem; }
+  .nav-links a { color: rgba(245, 240, 232, 0.75); text-decoration: none; font-size: 13px; font-weight: 400; letter-spacing: 0.04em; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--gold-light); }
+
+  .nav-cta {
+    background: var(--gold);
+    color: var(--forest) !important;
+    padding: 9px 22px;
+    border-radius: 3px;
+    font-weight: 500 !important;
+    letter-spacing: 0.06em;
+    font-size: 12px !important;
+    text-transform: uppercase;
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--gold-light) !important; color: var(--forest) !important; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    background: var(--forest);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    padding-top: 72px;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 60% at 80% 50%, rgba(74, 140, 101, 0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 80% at 10% 80%, rgba(200, 149, 42, 0.08) 0%, transparent 60%);
+  }
+
+  .hero-pattern {
+    position: absolute; inset: 0; opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 C30 5 35 15 30 30 C25 15 30 5 30 5Z M15 20 C15 20 25 25 30 30 C20 28 15 20 15 20Z M45 20 C45 20 35 25 30 30 C40 28 45 20 45 20Z M20 45 C20 45 26 38 30 30 C28 40 20 45 20 45Z M40 45 C40 45 34 38 30 30 C32 40 40 45 40 45Z' fill='%23ffffff'/%3E%3C/svg%3E");
+    background-size: 60px 60px;
+  }
+
+  .hero-inner {
+    position: relative; z-index: 2;
+    max-width: 1280px; margin: 0 auto;
+    padding: 0 4rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+    min-height: calc(100vh - 72px);
+  }
+
+  .hero-left { padding: 5rem 0; }
+
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(200, 149, 42, 0.15);
+    border: 1px solid rgba(200, 149, 42, 0.35);
+    color: var(--gold-light);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 7px 16px;
+    border-radius: 2px;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-tag::before {
+    content: '';
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero-h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(52px, 5.5vw, 78px);
+    font-weight: 300;
+    line-height: 1.05;
+    color: var(--parchment);
+    letter-spacing: -0.01em;
+    margin-bottom: 1.8rem;
+  }
+
+  .hero-h1 em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  .hero-h1 strong {
+    font-weight: 600;
+    display: block;
+  }
+
+  .hero-sub {
+    font-size: 17px;
+    font-weight: 300;
+    color: rgba(245, 240, 232, 0.68);
+    line-height: 1.75;
+    max-width: 460px;
+    margin-bottom: 3rem;
+  }
+
+  .hero-actions { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--gold);
+    color: var(--forest);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    border-radius: 3px;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-primary svg { transition: transform 0.2s; }
+  .btn-primary:hover svg { transform: translateX(3px); }
+
+  .btn-ghost {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: rgba(245, 240, 232, 0.7);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    transition: color 0.2s;
+    border-bottom: 1px solid rgba(245, 240, 232, 0.2);
+    padding-bottom: 2px;
+  }
+  .btn-ghost:hover { color: var(--parchment); border-color: rgba(245, 240, 232, 0.5); }
+
+  .hero-stats {
+    display: flex; gap: 3rem;
+    margin-top: 4rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid rgba(245, 240, 232, 0.1);
+  }
+
+  .stat-item { }
+  .stat-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px;
+    font-weight: 300;
+    color: var(--gold-light);
+    display: block;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-label {
+    font-size: 12px;
+    color: rgba(245, 240, 232, 0.5);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ── HERO RIGHT ── */
+  .hero-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 0;
+  }
+
+  .herb-card-stack {
+    position: relative;
+    width: 340px;
+    height: 480px;
+  }
+
+  .herb-card {
+    position: absolute;
+    width: 280px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 1.5rem;
+    backdrop-filter: blur(8px);
+  }
+
+  .herb-card.c1 { top: 0; left: 60px; transform: rotate(3deg); }
+  .herb-card.c2 { top: 60px; left: 30px; transform: rotate(-2deg); z-index: 2; }
+  .herb-card.c3 { top: 40px; left: 20px; transform: rotate(0deg); z-index: 3; background: rgba(26,58,42,0.9); border-color: rgba(200,149,42,0.3); }
+
+  .herb-card-cat {
+    display: inline-block;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+    margin-bottom: 1rem;
+  }
+
+  .cat-adaptogen { background: rgba(92,107,42,0.25); color: #a8c46b; border: 1px solid rgba(92,107,42,0.4); }
+  .cat-cognitive { background: rgba(42,45,107,0.3); color: #9fa3e8; border: 1px solid rgba(42,45,107,0.5); }
+
+  .herb-card-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--parchment);
+    margin-bottom: 4px;
+  }
+  .herb-card-latin {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: rgba(245,240,232,0.45);
+    margin-bottom: 1rem;
+  }
+
+  .herb-card-benefit {
+    font-size: 13px;
+    color: rgba(245,240,232,0.65);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .herb-card-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .herb-tag {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 2px;
+    color: rgba(245,240,232,0.5);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .herb-card-compounds {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(200,149,42,0.2);
+  }
+  .compounds-label { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(245,240,232,0.35); margin-bottom: 8px; }
+  .compound-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+  .compound-name { font-size: 12px; color: rgba(245,240,232,0.6); min-width: 100px; }
+  .compound-bar { flex: 1; height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+  .compound-fill { height: 100%; background: var(--gold); border-radius: 2px; }
+
+  /* ── SECTION BASE ── */
+  section { padding: 7rem 0; }
+  .container { max-width: 1280px; margin: 0 auto; padding: 0 4rem; }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-label::before {
+    content: '';
+    width: 32px; height: 1px;
+    background: var(--gold);
+    opacity: 0.6;
+  }
+
+  .section-h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4vw, 54px);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--charcoal);
+    margin-bottom: 1.25rem;
+  }
+
+  .section-h2 em { font-style: italic; color: var(--forest-mid); }
+
+  .section-intro {
+    font-size: 17px;
+    font-weight: 300;
+    color: var(--charcoal-mid);
+    max-width: 560px;
+    line-height: 1.75;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--parchment-dark), transparent);
+  }
+
+  /* ── PLATFORM SECTIONS ── */
+  .platform-section {
+    background: var(--parchment);
+  }
+
+  .platform-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    margin-top: 4rem;
+    border: 1px solid var(--parchment-dark);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .platform-card {
+    padding: 3rem;
+    background: var(--parchment);
+    border: 1px solid var(--parchment-dark);
+    position: relative;
+    transition: background 0.25s;
+    cursor: default;
+  }
+  .platform-card:hover { background: #f0e9d8; }
+
+  .platform-card-icon {
+    width: 48px; height: 48px;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1.5rem;
+    font-size: 22px;
+  }
+
+  .icon-symptom { background: rgba(196,82,42,0.12); }
+  .icon-research { background: rgba(26,92,82,0.12); }
+  .icon-builder { background: rgba(42,45,107,0.1); }
+  .icon-creations { background: rgba(139,67,19,0.1); }
+
+  .platform-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--charcoal);
+    margin-bottom: 0.75rem;
+  }
+
+  .platform-card p {
+    font-size: 15px;
+    color: var(--charcoal-mid);
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+  }
+
+  .platform-card-link {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--forest-mid);
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 1px;
+    transition: color 0.2s;
+  }
+  .platform-card-link:hover { color: var(--gold); }
+
+  .platform-card-number {
+    position: absolute;
+    top: 2rem; right: 2.5rem;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 64px;
+    font-weight: 300;
+    color: rgba(42,42,37,0.05);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  /* ── CATEGORY COLOURS ── */
+  .categories-section {
+    background: var(--forest);
+    padding: 5rem 0;
+  }
+
+  .categories-section .section-h2 { color: var(--parchment); }
+  .categories-section .section-intro { color: rgba(245,240,232,0.6); }
+  .categories-section .section-label { color: var(--gold-light); }
+  .categories-section .section-label::before { background: var(--gold-light); }
+
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    margin-top: 3.5rem;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .cat-pill {
+    padding: 1.75rem 1.5rem;
+    background: rgba(255,255,255,0.03);
+    display: flex; flex-direction: column;
+    gap: 10px;
+    transition: background 0.2s;
+    border-right: 1px solid rgba(255,255,255,0.05);
+  }
+  .cat-pill:last-child { border-right: none; }
+  .cat-pill:hover { background: rgba(255,255,255,0.07); }
+
+  .cat-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .cat-name { font-size: 12px; letter-spacing: 0.06em; color: rgba(245,240,232,0.65); }
+
+  .cat-dot-terracotta { background: #c4522a; }
+  .cat-dot-teal { background: #1a8c7c; }
+  .cat-dot-indigo { background: #5c62b8; }
+  .cat-dot-olive { background: #8ca43a; }
+  .cat-dot-amber { background: #c8841a; }
+  .cat-dot-mauve { background: #9a3a7a; }
+  .cat-dot-sage { background: #5a8a6a; }
+  .cat-dot-midnight { background: #5a5aaa; }
+  .cat-dot-copper { background: #b87333; }
+  .cat-dot-clay { background: #b07050; }
+
+  /* ── SUPREME ── */
+  .supreme-section { background: #f8f4ec; }
+
+  .supreme-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8rem;
+    align-items: center;
+  }
+
+  .supreme-ui {
+    background: var(--forest);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .supreme-ui-bar {
+    background: rgba(0,0,0,0.3);
+    padding: 14px 20px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .supreme-ui-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .d1 { background: #c4522a; }
+  .d2 { background: #c8841a; }
+  .d3 { background: #4a8c65; }
+
+  .supreme-ui-title {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.45);
+    margin-left: 8px;
+  }
+
+  .supreme-chat { padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+
+  .chat-msg {
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+
+  .chat-avatar {
+    width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 500;
+  }
+
+  .avatar-user { background: rgba(200,149,42,0.2); color: var(--gold-light); border: 1px solid rgba(200,149,42,0.3); }
+  .avatar-chi { background: rgba(74,140,101,0.2); color: #7acca0; border: 1px solid rgba(74,140,101,0.3); }
+
+  .chat-bubble {
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.65;
+    max-width: 240px;
+  }
+
+  .bubble-user { background: rgba(200,149,42,0.12); color: rgba(245,240,232,0.75); border: 1px solid rgba(200,149,42,0.15); }
+  .bubble-chi { background: rgba(255,255,255,0.05); color: rgba(245,240,232,0.7); border: 1px solid rgba(255,255,255,0.07); }
+
+  .chat-typing {
+    display: flex; align-items: center; gap: 4px;
+    padding: 12px 16px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.07);
+    width: fit-content;
+  }
+  .typing-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(245,240,232,0.35); animation: typingAnim 1.4s ease-in-out infinite; }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typingAnim { 0%,60%,100%{opacity:0.35;transform:translateY(0)} 30%{opacity:1;transform:translateY(-3px)} }
+
+  .supreme-input-area {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    display: flex; gap: 10px;
+  }
+
+  .supreme-input {
+    flex: 1;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: rgba(245,240,232,0.5);
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .supreme-send {
+    width: 38px; height: 38px;
+    background: var(--gold);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .supreme-rules {
+    margin-top: 2.5rem;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+
+  .rule-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 14px 16px;
+    background: rgba(26,58,42,0.05);
+    border-left: 3px solid var(--forest-light);
+    border-radius: 0 4px 4px 0;
+  }
+  .rule-icon { font-size: 16px; line-height: 1.4; }
+  .rule-text { font-size: 14px; color: var(--charcoal-mid); line-height: 1.5; }
+  .rule-text strong { color: var(--forest); font-weight: 500; display: block; font-size: 13px; margin-bottom: 2px; }
+
+  /* ── SAFETY ── */
+  .safety-section { background: var(--parchment); }
+
+  .safety-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+
+  .safety-card {
+    padding: 2.5rem;
+    border: 1px solid var(--parchment-dark);
+    border-radius: 6px;
+    background: var(--parchment);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .safety-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .safety-card.s1::before { background: var(--terracotta); }
+  .safety-card.s2::before { background: var(--teal-deep); }
+  .safety-card.s3::before { background: var(--gold); }
+
+  .safety-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 21px;
+    font-weight: 500;
+    color: var(--charcoal);
+    margin-bottom: 0.75rem;
+  }
+
+  .safety-card p {
+    font-size: 14px;
+    color: var(--charcoal-mid);
+    line-height: 1.7;
+  }
+
+  .safety-icon { font-size: 28px; margin-bottom: 1rem; }
+
+  /* ── PRICING ── */
+  .pricing-section { background: var(--forest); }
+  .pricing-section .section-h2 { color: var(--parchment); }
+  .pricing-section .section-intro { color: rgba(245,240,232,0.6); }
+  .pricing-section .section-label { color: var(--gold-light); }
+  .pricing-section .section-label::before { background: var(--gold-light); }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 3.5rem;
+    max-width: 780px;
+  }
+
+  .pricing-card {
+    padding: 2.5rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    background: rgba(255,255,255,0.04);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pricing-card.featured {
+    background: rgba(200,149,42,0.08);
+    border-color: rgba(200,149,42,0.35);
+  }
+
+  .pricing-badge {
+    position: absolute; top: 1.5rem; right: 1.5rem;
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    background: rgba(200,149,42,0.2);
+    color: var(--gold-light);
+    border: 1px solid rgba(200,149,42,0.3);
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+
+  .pricing-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px;
+    font-weight: 300;
+    color: var(--parchment);
+    line-height: 1;
+    margin: 1rem 0 0.25rem;
+  }
+  .pricing-price sup { font-size: 22px; vertical-align: top; margin-top: 10px; display: inline-block; }
+  .pricing-period { font-size: 13px; color: rgba(245,240,232,0.45); margin-bottom: 1.75rem; }
+
+  .pricing-card h3 {
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.55);
+    font-weight: 400;
+  }
+
+  .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 2rem; }
+  .pricing-features li {
+    font-size: 14px;
+    color: rgba(245,240,232,0.65);
+    display: flex; align-items: flex-start; gap: 10px;
+  }
+  .pricing-features li::before {
+    content: '—';
+    color: var(--gold);
+    font-family: 'Cormorant Garamond', serif;
+    flex-shrink: 0;
+  }
+
+  .btn-pricing {
+    display: block; text-align: center;
+    padding: 13px 24px;
+    border-radius: 3px;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  .btn-pricing-primary { background: var(--gold); color: var(--forest); }
+  .btn-pricing-primary:hover { background: var(--gold-light); }
+  .btn-pricing-ghost { background: transparent; color: rgba(245,240,232,0.6); border: 1px solid rgba(255,255,255,0.15); }
+  .btn-pricing-ghost:hover { border-color: rgba(255,255,255,0.35); color: var(--parchment); }
+
+  /* ── MANIFESTO ── */
+  .manifesto-section {
+    background: var(--parchment-dark);
+    padding: 5rem 0;
+  }
+
+  .manifesto-inner {
+    max-width: 780px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .manifesto-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(24px, 3vw, 36px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--charcoal);
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+  }
+
+  .manifesto-quote strong { font-weight: 600; font-style: normal; color: var(--forest); }
+
+  .manifesto-attribution {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #111a13;
+    padding: 4rem 0 2.5rem;
+    border-top: 1px solid rgba(200,149,42,0.2);
+  }
+
+  .footer-inner {
+    max-width: 1280px; margin: 0 auto; padding: 0 4rem;
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 4rem;
+    padding-bottom: 3rem;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    margin-bottom: 2rem;
+  }
+
+  .footer-brand .chi-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    color: var(--gold-light);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .footer-brand .chi-full {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.35);
+    display: block;
+    margin-bottom: 1rem;
+  }
+  .footer-brand p { font-size: 13px; color: rgba(245,240,232,0.4); line-height: 1.7; max-width: 260px; }
+
+  .footer-col h4 {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.4);
+    margin-bottom: 1.25rem;
+  }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .footer-col ul li a {
+    font-size: 14px;
+    color: rgba(245,240,232,0.55);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-col ul li a:hover { color: var(--gold-light); }
+
+  .footer-bottom {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-disclaimer {
+    font-size: 12px;
+    color: rgba(245,240,232,0.25);
+    max-width: 600px;
+    line-height: 1.6;
+  }
+  .footer-copy { font-size: 12px; color: rgba(245,240,232,0.2); flex-shrink: 0; margin-left: 2rem; }
+
+  /* ── SCROLL ANIMATIONS ── */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 1024px) {
+    nav { padding: 0 2rem; }
+    .nav-links { gap: 1.5rem; }
+    .hero-inner { gap: 3rem; padding: 0 2rem; }
+    .container { padding: 0 2rem; }
+    .hero-right { display: none; }
+    .hero-inner { grid-template-columns: 1fr; }
+    .hero-left { padding: 4rem 0; }
+    .platform-grid { grid-template-columns: 1fr; }
+    .categories-grid { grid-template-columns: repeat(2, 1fr); }
+    .supreme-inner { grid-template-columns: 1fr; gap: 3rem; }
+    .safety-grid { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .footer-bottom { flex-direction: column; gap: 1rem; align-items: flex-start; }
+    .footer-copy { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark">
+      <svg viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="21" cy="21" r="19" stroke="rgba(200,149,42,0.4)" stroke-width="1"/>
+        <ellipse cx="21" cy="21" rx="8" ry="19" stroke="rgba(200,149,42,0.25)" stroke-width="0.75"/>
+        <line x1="3" y1="21" x2="39" y2="21" stroke="rgba(200,149,42,0.25)" stroke-width="0.75"/>
+        <line x1="7" y1="13" x2="35" y2="13" stroke="rgba(200,149,42,0.15)" stroke-width="0.5"/>
+        <line x1="7" y1="29" x2="35" y2="29" stroke="rgba(200,149,42,0.15)" stroke-width="0.5"/>
+        <path d="M21 7 C21 7 24 12 21 21 C18 12 21 7 21 7Z" fill="#c8952a"/>
+        <path d="M21 35 C21 35 24 30 21 21 C18 30 21 35 21 35Z" fill="rgba(200,149,42,0.5)"/>
+        <path d="M14 14 C14 14 18 17 21 21 C17 19 14 14 14 14Z" fill="rgba(200,149,42,0.7)"/>
+        <path d="M28 14 C28 14 24 17 21 21 C25 19 28 14 28 14Z" fill="rgba(200,149,42,0.5)"/>
+      </svg>
+    </div>
+    <div class="nav-logo-text">
+      <span class="chi">C.H.I</span>
+      <span class="full">Collective Herbal Intelligence</span>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a href="#platform">Platform</a>
+    <a href="#safety">Safety</a>
+    <a href="#supreme">SUPREME</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#" class="nav-cta">Join CHI</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-pattern"></div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-tag">Now in early access</div>
+      <h1 class="hero-h1">
+        Plant intelligence<br>
+        for the <em>world.</em><br>
+        <strong>Built with care.</strong>
+      </h1>
+      <p class="hero-sub">
+        CHI brings together thousands of years of herbal wisdom and modern research into one platform — with the safety architecture and depth of knowledge to actually serve your health.
+      </p>
+      <div class="hero-actions">
+        <a href="#" class="btn-primary">
+          Begin your journey
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#platform" class="btn-ghost">See the platform →</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-number">2,400+</span>
+          <span class="stat-label">Herbs &amp; Foods</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">10</span>
+          <span class="stat-label">Action categories</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">Zero</span>
+          <span class="stat-label">Advertising. Ever.</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="herb-card-stack">
+        <div class="herb-card c1">
+          <span class="herb-card-cat cat-cognitive">Cognitive support</span>
+          <div class="herb-card-name">Lion's Mane</div>
+          <div class="herb-card-latin">Hericium erinaceus</div>
+          <div class="herb-card-benefit">Traditionally associated with nerve growth support and cognitive clarity.</div>
+          <div class="herb-card-tags">
+            <span class="herb-tag">Tea</span>
+            <span class="herb-tag">Capsule</span>
+            <span class="herb-tag">Tincture</span>
+          </div>
+        </div>
+        <div class="herb-card c2">
+          <span class="herb-card-cat cat-adaptogen">Adaptogen</span>
+          <div class="herb-card-name">Ashwagandha</div>
+          <div class="herb-card-latin">Withania somnifera</div>
+          <div class="herb-card-benefit">A cornerstone of Ayurvedic practice for over 3,000 years.</div>
+          <div class="herb-card-tags">
+            <span class="herb-tag">Powder</span>
+            <span class="herb-tag">Capsule</span>
+          </div>
+        </div>
+        <div class="herb-card c3">
+          <span class="herb-card-cat cat-adaptogen">Adaptogen / Stress</span>
+          <div class="herb-card-name">Damiana</div>
+          <div class="herb-card-latin">Turnera diffusa</div>
+          <div class="herb-card-benefit">Traditionally used for mood, hormonal balance, and nervous system support across Mesoamerican healing traditions.</div>
+          <div class="herb-card-compounds">
+            <div class="compounds-label">Active compounds</div>
+            <div class="compound-row">
+              <span class="compound-name">Flavonoids</span>
+              <div class="compound-bar"><div class="compound-fill" style="width: 78%"></div></div>
+            </div>
+            <div class="compound-row">
+              <span class="compound-name">Arbutin</span>
+              <div class="compound-bar"><div class="compound-fill" style="width: 55%"></div></div>
+            </div>
+            <div class="compound-row">
+              <span class="compound-name">Beta-sitosterol</span>
+              <div class="compound-bar"><div class="compound-fill" style="width: 42%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PLATFORM SECTIONS -->
+<section class="platform-section" id="platform">
+  <div class="container">
+    <p class="section-label fade-up">The platform</p>
+    <h2 class="section-h2 fade-up">Four tools. <em>One purpose.</em></h2>
+    <p class="section-intro fade-up">Every section of CHI is built around the same commitment — accurate knowledge, clearly presented, with your safety as a non-negotiable.</p>
+    <div class="platform-grid fade-up">
+      <div class="platform-card">
+        <div class="platform-card-number">01</div>
+        <div class="platform-card-icon icon-symptom">🔍</div>
+        <h3>Symptom Finder</h3>
+        <p>Input what you're experiencing. Receive herb and food suggestions weighted by confidence, with plain-language explanations of why each one targets that symptom — including when the connection is non-obvious.</p>
+        <a href="#" class="platform-card-link">Explore →</a>
+      </div>
+      <div class="platform-card">
+        <div class="platform-card-number">02</div>
+        <div class="platform-card-icon icon-research">🌿</div>
+        <h3>Herbal Researcher</h3>
+        <p>Deep-dive database covering herbs and natural foods from every healing tradition on earth. Not limited to what you own. Every entry includes history, compounds, risks, preparation, and community discussion.</p>
+        <a href="#" class="platform-card-link">Explore →</a>
+      </div>
+      <div class="platform-card">
+        <div class="platform-card-number">03</div>
+        <div class="platform-card-icon icon-builder">🔥</div>
+        <h3>Herbal Builder</h3>
+        <p>Formulation tool for capsules, teas, tinctures, and herbal smoke blends. AI-assisted ratios, synergies, and dosage guidance. Every formula cross-checked against your health profile before you build.</p>
+        <a href="#" class="platform-card-link">Explore →</a>
+      </div>
+      <div class="platform-card">
+        <div class="platform-card-number">04</div>
+        <div class="platform-card-icon icon-creations">✦</div>
+        <h3>Herbal Creations</h3>
+        <p>Topical and cosmetic applications — soaps, creams, hair care, and more. Herb-to-product guidance with full preparation instructions. The healing properties of plants applied where they meet the body directly.</p>
+        <a href="#" class="platform-card-link">Explore →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="categories-section">
+  <div class="container">
+    <p class="section-label fade-up">Knowledge architecture</p>
+    <h2 class="section-h2 fade-up">Every herb. <em>Precisely placed.</em></h2>
+    <p class="section-intro fade-up">Each herb and food carries a primary action category — colour-coded consistently across every tool, every search, every result in the platform.</p>
+    <div class="categories-grid fade-up">
+      <div class="cat-pill"><div class="cat-dot cat-dot-terracotta"></div><span class="cat-name">Anti-inflammatory</span></div>
+      <div class="cat-pill"><div class="cat-dot cat-dot-teal"></div><span class="cat-name">Antiviral / Antimicrobial</span></div>
+      <div class="cat-pill"><div class="cat-dot cat-dot-indigo"></div><span class="cat-name">Cognitive support</span></div>
+      <div class="cat-pill"><div class="cat-dot cat-dot-olive"></div><span class="cat-name">Adaptogen / Stress</span></div>
+      <div class="cat-pill"><div class="cat-dot cat-dot-amber"></div><span class="cat-name">Digestive / Gut</span></div>
+      <div class="cat-pill"><div class="cat-dot cat-dot-mauve"></div><span class="cat-name">Hormonal / Reproductive</span></div>
+      <div class="cat-pill"><div class="cat-dot cat-dot-sage"></div><span class="cat-name">Detox / Liver</span></div>
+      <div class="cat-pill"><div class="cat-dot cat-dot-midnight"></div><span class="cat-name">Nervous system / Sleep</span></div>
+      <div class="cat-pill"><div class="cat-dot cat-dot-copper"></div><span class="cat-name">Immune support</span></div>
+      <div class="cat-pill"><div class="cat-dot cat-dot-clay"></div><span class="cat-name">Skin / Topical</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SUPREME -->
+<section class="supreme-section" id="supreme">
+  <div class="container">
+    <div class="supreme-inner">
+      <div>
+        <p class="section-label fade-up">AI intelligence</p>
+        <h2 class="section-h2 fade-up">Meet <em>SUPREME<br>HERBTELLGENCE</em></h2>
+        <p class="section-intro fade-up">CHI's intelligent guide. Warm, direct, and knowledgeable — without pretending to be something it isn't. Strictly focused on herbalism, botanical medicine, and the platform's own knowledge base.</p>
+        <div class="supreme-rules fade-up">
+          <div class="rule-item">
+            <span class="rule-icon">🌿</span>
+            <div class="rule-text"><strong>Herbalism only</strong>No general medical diagnoses. No off-topic responses. The restriction is a feature, not a limitation.</div>
+          </div>
+          <div class="rule-item">
+            <span class="rule-icon">⚖</span>
+            <div class="rule-text"><strong>Honest language</strong>Never "treats" or "cures." Always "traditionally used for" and "studies suggest." Accuracy over confidence.</div>
+          </div>
+          <div class="rule-item">
+            <span class="rule-icon">🎓</span>
+            <div class="rule-text"><strong>Adapts to your level</strong>Newcomer, Developing, or Informed — SUPREME adjusts depth and terminology to meet you where you are.</div>
+          </div>
+        </div>
+      </div>
+      <div class="fade-up">
+        <div class="supreme-ui">
+          <div class="supreme-ui-bar">
+            <div class="supreme-ui-dot d1"></div>
+            <div class="supreme-ui-dot d2"></div>
+            <div class="supreme-ui-dot d3"></div>
+            <span class="supreme-ui-title">Herbadex</span>
+          </div>
+          <div class="supreme-chat">
+            <div class="chat-msg">
+              <div class="chat-avatar avatar-user">J</div>
+              <div class="chat-bubble bubble-user">What herbs work well with ashwagandha for stress and sleep?</div>
+            </div>
+            <div class="chat-msg">
+              <div class="chat-avatar avatar-chi">✦</div>
+              <div class="chat-bubble bubble-chi">Ashwagandha pairs well with passionflower and lemon balm for sleep — both have calming nervine actions that complement its adaptogenic support without sedative overlap concerns. For stress specifically, rhodiola can work alongside it, though timing matters...</div>
+            </div>
+            <div class="chat-msg">
+              <div class="chat-avatar avatar-user">J</div>
+              <div class="chat-bubble bubble-user">Any clashes with my medications?</div>
+            </div>
+            <div class="chat-msg">
+              <div class="chat-avatar avatar-chi">✦</div>
+              <div class="chat-bubble bubble-chi">For that I'll need to check your health profile. Head to your profile settings to add your medications — then the Interaction Checker will flag anything relevant automatically across every search you do.</div>
+            </div>
+            <div class="chat-msg" style="margin-top: 4px;">
+              <div class="chat-avatar avatar-chi">✦</div>
+              <div class="chat-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
+            </div>
+          </div>
+          <div class="supreme-input-area">
+            <input class="supreme-input" type="text" placeholder="Ask Herbadex..." readonly>
+            <button class="supreme-send">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8l12-5-5 12-2-4-5-3z" fill="#1a3a2a"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SAFETY -->
+<section class="safety-section" id="safety">
+  <div class="container">
+    <p class="section-label fade-up">Built-in protection</p>
+    <h2 class="section-h2 fade-up">Safety is not <em>small print.</em></h2>
+    <p class="section-intro fade-up">Every feature in CHI is built around the understanding that natural does not mean safe to combine freely. The safety architecture is visible, central, and always on.</p>
+    <div class="safety-grid">
+      <div class="safety-card s1 fade-up">
+        <div class="safety-icon">⚠</div>
+        <h3>Health Profile Filtering</h3>
+        <p>Build your profile with medications, conditions, and sensitivities. Every search result, builder formula, and AI response is automatically cross-referenced — hard rejections for known clashes, advisory flags for moderate interactions.</p>
+      </div>
+      <div class="safety-card s2 fade-up">
+        <div class="safety-icon">⚗</div>
+        <h3>Interaction Checker</h3>
+        <p>Full herb-pharma and herb-herb interaction database. Covers the CYP450 enzyme pathway in plain language. Real examples: St John's Wort and antidepressants, ginkgo and blood thinners. Food-drug interactions included.</p>
+      </div>
+      <div class="safety-card s3 fade-up">
+        <div class="safety-icon">✦</div>
+        <h3>Honest Language Framework</h3>
+        <p>Platform-wide compliance with UK MHRA guidelines. No "treats," "cures," or "heals" anywhere on CHI. Not because we're required to — because that's what intellectual honesty looks like applied to health information.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<div class="manifesto-section">
+  <div class="manifesto-inner">
+    <p class="manifesto-quote fade-up">
+      "CHI exists because people deserve <strong>plant knowledge treated with the same respect as pharmaceutical knowledge</strong> — presented honestly, with safety as architecture, not afterthought."
+    </p>
+    <span class="manifesto-attribution fade-up">— The CHI code</span>
+  </div>
+</div>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="container">
+    <p class="section-label fade-up">Access</p>
+    <h2 class="section-h2 fade-up">Simple pricing. <em>No advertising.</em></h2>
+    <p class="section-intro fade-up">Full platform access. No upsells. No data sold. No ads — ever. CHI exists to serve the people who use it.</p>
+    <div class="pricing-grid fade-up">
+      <div class="pricing-card featured">
+        <div class="pricing-badge">Full access</div>
+        <h3>Monthly</h3>
+        <div class="pricing-price"><sup>£</sup>9</div>
+        <div class="pricing-period">per month, cancel anytime</div>
+        <ul class="pricing-features">
+          <li>Symptom Finder unlimited</li>
+          <li>Full herb &amp; food database</li>
+          <li>Herbal Builder — all formats</li>
+          <li>Herbadex</li>
+          <li>Interaction Checker</li>
+          <li>Health Profile — full integration</li>
+          <li>Community features</li>
+        </ul>
+        <a href="#" class="btn-pricing btn-pricing-primary">Start for £9/month</a>
+      </div>
+      <div class="pricing-card">
+        <h3>Digital protocols</h3>
+        <div class="pricing-price" style="font-size: 38px; margin-top: 0.5rem;"><sup>£</sup>8—15</div>
+        <div class="pricing-period">one-time purchase per protocol</div>
+        <ul class="pricing-features">
+          <li>Gut health &amp; bad breath</li>
+          <li>Energy &amp; fatigue</li>
+          <li>Detox &amp; skin clarity</li>
+          <li>Hormonal balance &amp; libido</li>
+          <li>Sleep &amp; nervous system</li>
+        </ul>
+        <a href="#" class="btn-pricing btn-pricing-ghost">Browse protocols</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <span class="chi-logo">C.H.I</span>
+        <span class="chi-full">Collective Herbal Intelligence</span>
+        <p>Plant intelligence for the world. Herb knowledge from every tradition, presented with depth, care, and honesty.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="#">Symptom Finder</a></li>
+          <li><a href="#">Herbal Researcher</a></li>
+          <li><a href="#">Herbal Builder</a></li>
+          <li><a href="#">Herbal Creations</a></li>
+          <li><a href="#">Herbadex</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Knowledge</h4>
+        <ul>
+          <li><a href="#">Herb database</a></li>
+          <li><a href="#">Natural foods</a></li>
+          <li><a href="#">Interaction checker</a></li>
+          <li><a href="#">Weight &amp; wellness</a></li>
+          <li><a href="#">Digital protocols</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>CHI</h4>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">The CHI code</a></li>
+          <li><a href="#">Privacy policy</a></li>
+          <li><a href="#">Vendor marketplace</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-disclaimer">CHI provides educational herbal information only. Nothing on this platform constitutes medical advice. Users with health conditions or taking medication should consult a qualified healthcare professional before using any herb or making changes to their diet or medication.</p>
+      <span class="footer-copy">© 2025 C.H.I</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => {
+        entry.target.classList.add('visible');
+      }, 80);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+document.querySelectorAll('.platform-card').forEach((card, i) => {
+  card.style.transitionDelay = `${i * 80}ms`;
+});
+</script>
+</body>
+</html>

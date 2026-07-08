@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+(function(){
+  try{
+    var s = localStorage.getItem('chi_font_scale');
+    if(s && s !== '100'){
+      var scale = parseInt(s,10)/100;
+      document.documentElement.style.setProperty('--chi-zoom', scale);
+      // Apply on DOM ready
+      document.addEventListener('DOMContentLoaded', function(){
+        document.body.style.zoom = scale;
+        // Firefox fallback (no zoom support pre-126)
+        if(!('zoom' in document.body.style) || navigator.userAgent.indexOf('Firefox')>-1){
+          var supportsZoom = CSS.supports && CSS.supports('zoom', '1.5');
+          if(!supportsZoom){
+            document.body.style.transform = 'scale('+scale+')';
+            document.body.style.transformOrigin = 'top center';
+            document.body.style.width = (100/scale)+'%';
+          }
+        }
+      });
+    }
+  }catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile — C.H.I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#1a3a2a;--forest-mid:#2d5c42;--forest-light:#4a8c65;
+  --parchment:#f5f0e8;--parchment-dark:#ede5d0;
+  --charcoal:#2a2a25;--charcoal-mid:#4a4a42;
+  --gold:#c8952a;--gold-light:#e8b84b;--night:#0c1a10;
+  --bg:#0c1a10;--header:#1a3a2a;
+  --card:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.08);
+  --text:#f5f0e8;--muted:rgba(245,240,232,0.5);
+  --accent:#c8952a;--accent-light:#e8b84b;
+  --tag-bg:rgba(74,140,101,0.15);--tag-border:rgba(74,140,101,0.3);--tag-text:#7acca0;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
+  background-image:radial-gradient(ellipse 70% 50% at 50% -5%,rgba(74,140,101,0.12),transparent 60%),radial-gradient(ellipse 50% 40% at 90% 100%,rgba(200,149,42,0.06),transparent 55%);}
+
+/* NAV DROPDOWNS */
+@keyframes ddFade{from{opacity:0;transform:translateX(-50%) translateY(-4px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+.demo-bar{display:flex;align-items:center;justify-content:center;gap:1rem;padding:.85rem 1rem;background:repeating-linear-gradient(45deg,rgba(200,149,42,.08),rgba(200,149,42,.08) 10px,transparent 10px,transparent 20px);border-bottom:1px dashed rgba(200,149,42,.35);flex-wrap:wrap;}
+.demo-bar .demo-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);}
+.demo-toggle{display:inline-flex;background:rgba(0,0,0,.25);border:1px solid rgba(200,149,42,.35);border-radius:999px;padding:3px;}
+.demo-toggle button{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:500;padding:.4rem 1.1rem;border-radius:999px;cursor:pointer;transition:all .2s;}
+.demo-toggle button.on{background:var(--gold);color:var(--forest);}
+.demo-note{font-size:11px;color:var(--muted);font-style:italic;}
+
+.wrap{max-width:880px;margin:0 auto;padding:3rem 1.5rem 5rem;}
+.fade{opacity:0;transform:translateY(10px);animation:fade .6s ease forwards;}
+@keyframes fade{to{opacity:1;transform:none;}}
+
+.phead{display:flex;gap:1.75rem;align-items:flex-start;background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:2rem;position:relative;overflow:hidden;}
+.phead::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 0% 0%,rgba(74,140,101,.12),transparent 55%);pointer-events:none;}
+.avatar{width:96px;height:96px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:42px;color:var(--gold-light);background:linear-gradient(150deg,var(--forest-mid),var(--forest));border:2px solid var(--gold);position:relative;z-index:1;overflow:hidden;background-size:cover;background-position:center;}
+.avatar-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:rgba(12,26,16,.6);color:var(--parchment);opacity:0;cursor:pointer;transition:opacity .2s;}
+.avatar-overlay span{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;}
+.avatar:hover .avatar-overlay{opacity:1;}
+.avatar.has-photo #avatar-initial{display:none;}
+.avatar-remove{font-size:11px;color:var(--muted);cursor:pointer;}
+.avatar-remove:hover{color:var(--gold-light);}
+.phead-main{flex:1;min-width:0;position:relative;z-index:1;}
+.pname{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:500;line-height:1.05;}
+.pmeta{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;margin:.5rem 0 .9rem;}
+.rank-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold-light);background:rgba(200,149,42,.12);border:1px solid rgba(200,149,42,.3);border-radius:999px;padding:.28rem .7rem;}
+.level-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--forest);background:var(--gold);border-radius:999px;padding:.28rem .7rem;}
+.psince{font-size:12px;color:var(--muted);}
+.pbio{font-size:14.5px;line-height:1.7;color:rgba(245,240,232,.78);max-width:46ch;}
+.pactions{display:flex;flex-direction:column;gap:.6rem;position:relative;z-index:1;align-items:flex-end;}
+.btn{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;border-radius:6px;padding:.6rem 1.2rem;cursor:pointer;border:1px solid transparent;transition:all .2s;white-space:nowrap;display:inline-flex;align-items:center;gap:7px;justify-content:center;}
+.btn-primary{background:var(--gold);color:var(--forest);border-color:var(--gold);}
+.btn-primary:hover{background:var(--gold-light);}
+.btn-ghost{background:transparent;color:var(--text);border-color:rgba(245,240,232,.22);}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold-light);}
+.btn-following{background:rgba(74,140,101,.18);color:var(--tag-text);border-color:var(--tag-border);}
+
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--card-border);border:1px solid var(--card-border);border-radius:10px;overflow:hidden;margin-top:1.25rem;}
+.stat{background:var(--bg);padding:1.1rem .5rem;text-align:center;cursor:pointer;transition:background .18s;position:relative;}
+.stat:hover{background:rgba(200,149,42,.06);}
+.stat.active{background:rgba(200,149,42,.1);}
+.stat.active::after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--gold);}
+.stat.active .stat-num{color:var(--gold-light);}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:var(--gold-light);}
+.stat-lbl{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+
+/* SAVED SUB-CATEGORIES */
+.saved-subcats{display:flex;gap:.5rem;flex-wrap:wrap;margin:1.25rem 0;}
+.saved-subcat{background:var(--card);border:1px solid var(--card-border);border-radius:8px;padding:.5rem .9rem;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--muted);cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:7px;}
+.saved-subcat:hover{border-color:rgba(200,149,42,.3);color:var(--text);}
+.saved-subcat.active{background:rgba(200,149,42,.12);border-color:rgba(200,149,42,.4);color:var(--gold-light);}
+.saved-subcat span{font-size:11px;opacity:.7;background:rgba(255,255,255,.08);padding:1px 7px;border-radius:999px;}
+
+/* SAVED POSTS & MY POSTS */
+.saved-post,.my-post{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:1.1rem 1.2rem;margin-bottom:.75rem;transition:border-color .2s;}
+.saved-post:hover,.my-post:hover{border-color:rgba(200,149,42,.3);}
+.sp-meta{font-size:11.5px;color:var(--muted);margin-bottom:.4rem;}
+.sp-group{color:var(--tag-text);}
+.sp-title{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--text);text-decoration:none;display:block;margin-bottom:.4rem;line-height:1.3;}
+.sp-title:hover{color:var(--gold-light);}
+.sp-excerpt{font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:.6rem;}
+
+/* SAVED MATCH RESULTS */
+.saved-match{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:1.2rem;margin-bottom:.85rem;}
+.sm-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.85rem;}
+.sm-date{font-size:12px;color:var(--gold-light);font-weight:500;}
+.sm-context{background:rgba(255,255,255,.02);border-radius:8px;padding:.85rem 1rem;margin-bottom:1rem;}
+.sm-q{font-size:13px;color:var(--text);line-height:1.7;}
+.sm-q span{color:var(--muted);}
+.sm-herbs-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem;}
+.sm-herbs{display:flex;flex-wrap:wrap;gap:.5rem;}
+.sm-herb-link{font-size:13px;color:var(--tag-text);text-decoration:none;border:1px solid rgba(74,140,101,.3);border-radius:6px;padding:.4rem .85rem;transition:all .15s;}
+.sm-herb-link:hover{background:rgba(74,140,101,.12);border-color:rgba(74,140,101,.5);}
+
+/* TABS */
+.tabs{display:flex;gap:.4rem;margin-top:2.25rem;border-bottom:1px solid var(--card-border);}
+.tab{background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;padding:.85rem 1.1rem;cursor:pointer;transition:color .2s,border-color .2s;display:inline-flex;align-items:center;gap:8px;}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--gold-light);border-bottom-color:var(--gold);}
+.tab .count{font-size:11px;background:var(--card);border:1px solid var(--card-border);border-radius:999px;padding:1px 7px;color:var(--muted);}
+.panel{display:none;padding-top:1.75rem;margin-top:1.5rem;border-top:1px solid var(--card-border);}
+.panel.active{display:block;animation:fade .4s ease forwards;}
+
+.sec-sub{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:1.1rem;}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:.3rem;}
+.panel-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;}
+
+/* SETTINGS */
+.settings-group{margin-bottom:1.75rem;background:var(--card);border:1px solid var(--card-border);border-radius:12px;overflow:hidden;}
+.settings-group-title{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);padding:.85rem 1.25rem;border-bottom:1px solid var(--card-border);background:rgba(200,149,42,.04);}
+.setting-row{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;padding:1.1rem 1.25rem;border-bottom:1px solid var(--card-border);}
+.setting-row:last-child{border-bottom:none;}
+.setting-info{flex:1;min-width:0;}
+.setting-label{font-size:14px;color:var(--text);font-weight:500;margin-bottom:2px;}
+.setting-label.danger{color:#dd7777;}
+.setting-desc{font-size:12.5px;color:var(--muted);line-height:1.55;}
+.font-scale-control{display:flex;gap:.3rem;flex-shrink:0;}
+.fs-btn{font-size:12.5px;padding:.4rem .7rem;border-radius:6px;border:1px solid var(--card-border);background:transparent;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.fs-btn:hover{border-color:rgba(200,149,42,.4);color:var(--text);}
+.fs-btn.active{background:rgba(200,149,42,.18);border-color:rgba(200,149,42,.5);color:var(--gold-light);font-weight:500;}
+.setting-action-btn{font-size:12.5px;padding:.5rem 1rem;border-radius:6px;border:1px solid var(--card-border);background:transparent;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap;flex-shrink:0;}
+.setting-action-btn:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
+.setting-action-btn.danger{border-color:rgba(220,100,100,.3);color:#dd7777;}
+.setting-action-btn.danger:hover{border-color:rgba(220,100,100,.6);background:rgba(220,100,100,.08);}
+.toggle{position:relative;display:inline-block;width:42px;height:24px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;cursor:pointer;inset:0;background:var(--card-border);border-radius:24px;transition:.2s;}
+.toggle-slider::before{content:'';position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:var(--muted);border-radius:50%;transition:.2s;}
+.toggle input:checked + .toggle-slider{background:rgba(74,140,101,.5);}
+.toggle input:checked + .toggle-slider::before{transform:translateX(18px);background:#7acca0;}
+.settings-footnote{font-size:11.5px;color:rgba(245,240,232,.35);line-height:1.65;margin-top:.5rem;}
+.settings-footnote a{color:var(--gold);text-decoration:none;}
+.settings-footnote a:hover{text-decoration:underline;}
+
+/* COMPANIONS */
+.section{margin-top:2.5rem;}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.3rem;}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;}
+.companions{display:flex;gap:.75rem;flex-wrap:wrap;}
+.companion{display:flex;align-items:center;gap:.6rem;background:var(--card);border:1px solid var(--card-border);border-radius:999px;padding:.4rem .85rem .4rem .4rem;transition:border-color .2s;text-decoration:none;color:inherit;}
+.companion:hover{border-color:var(--gold);}
+.comp-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;flex-shrink:0;}
+.comp-name{font-size:13px;font-weight:500;line-height:1.1;}
+.comp-rank{font-size:10px;color:var(--muted);}
+
+/* HERB STACK */
+.stack{display:flex;flex-direction:column;gap:.9rem;}
+.herb{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:1.1rem 1.25rem;transition:border-color .2s;}
+.herb:hover{border-color:rgba(200,149,42,.35);}
+.herb-top{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;}
+.herb-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+.herb-name{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:500;color:var(--text);text-decoration:none;cursor:pointer;transition:color .2s;}
+.herb-name:hover{color:var(--gold-light);text-decoration:underline;text-underline-offset:3px;}
+.herb-form{font-size:12.5px;color:var(--muted);}
+.herb-status{margin-left:auto;font-size:10px;letter-spacing:.07em;text-transform:uppercase;padding:.25rem .65rem;border-radius:999px;}
+.st-active{background:rgba(74,140,101,.18);color:#7acca0;border:1px solid rgba(74,140,101,.35);}
+.st-break{background:rgba(200,149,42,.15);color:var(--gold-light);border:1px solid rgba(200,149,42,.3);}
+.st-complete{background:rgba(245,240,232,.06);color:var(--muted);border:1px solid var(--card-border);}
+.note-wrap{margin-top:.85rem;padding-top:.85rem;border-top:1px solid var(--card-border);}
+.note-label{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:.45rem;display:flex;align-items:center;gap:6px;}
+.note-text{font-size:14px;line-height:1.7;color:rgba(245,240,232,.82);font-style:italic;}
+.note-empty{font-size:13px;color:var(--muted);font-style:italic;}
+.note-edit{display:none;}
+.note-edit textarea{width:100%;background:rgba(0,0,0,.25);border:1px solid var(--card-border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;padding:.7rem .85rem;resize:vertical;min-height:70px;outline:none;}
+.note-edit textarea:focus{border-color:var(--gold);}
+.note-actions{display:flex;gap:.5rem;margin-top:.5rem;}
+.mini-btn{font-size:12px;padding:.4rem .9rem;border-radius:5px;cursor:pointer;border:1px solid transparent;font-family:'DM Sans',sans-serif;}
+.mini-save{background:var(--gold);color:var(--forest);}
+.mini-cancel{background:transparent;color:var(--muted);border-color:var(--card-border);}
+.note-editlink{font-size:12px;color:var(--accent);cursor:pointer;margin-top:.5rem;display:inline-block;}
+.note-editlink:hover{color:var(--gold-light);}
+.note-ask{font-size:12.5px;color:var(--accent);cursor:pointer;margin-top:.6rem;display:inline-flex;align-items:center;gap:5px;}
+.note-ask:hover{color:var(--gold-light);}
+
+/* SAVED HERBS */
+.privacy-toggle{display:inline-flex;align-items:center;gap:.5rem;font-size:12px;color:var(--muted);}
+.switch{display:inline-flex;background:rgba(0,0,0,.25);border:1px solid var(--card-border);border-radius:999px;padding:2px;}
+.switch button{background:none;border:none;color:var(--muted);font-size:11px;font-family:'DM Sans',sans-serif;padding:.25rem .7rem;border-radius:999px;cursor:pointer;}
+.switch button.on{background:var(--forest-light);color:var(--night);}
+.saved-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.8rem;}
+.saved{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:1rem 1.1rem;transition:border-color .2s;}
+.saved:hover{border-color:rgba(200,149,42,.35);}
+.saved-top{display:flex;align-items:center;gap:.55rem;}
+.saved-name{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:500;text-decoration:none;color:var(--text);}
+.saved-name:hover{color:var(--gold-light);}
+.saved-trad{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-top:.35rem;}
+.saved-prim{font-size:13px;color:rgba(245,240,232,.7);line-height:1.55;margin-top:.5rem;}
+.saved-actions{display:flex;gap:.5rem;margin-top:.85rem;}
+.locked-note{background:var(--card);border:1px dashed var(--card-border);border-radius:10px;padding:2rem;text-align:center;color:var(--muted);font-size:14px;}
+
+/* ACHIEVEMENTS */
+.level-card{background:linear-gradient(150deg,rgba(45,92,66,.4),rgba(26,58,42,.2));border:1px solid rgba(200,149,42,.3);border-radius:12px;padding:1.5rem 1.75rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;}
+.level-ring{width:84px;height:84px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;flex-direction:column;background:conic-gradient(var(--gold) var(--pct,40%),rgba(255,255,255,.08) 0);position:relative;}
+.level-ring::after{content:'';position:absolute;inset:6px;border-radius:50%;background:var(--bg);}
+.level-ring span{position:relative;z-index:1;}
+.level-num{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:var(--gold-light);line-height:1;}
+.level-word{font-size:8.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);}
+.level-info{flex:1;min-width:200px;}
+.level-rank{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;}
+.level-sub{font-size:13px;color:var(--muted);margin:.2rem 0 .7rem;}
+.xp-bar{height:8px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;}
+.xp-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold-light));border-radius:999px;transition:width .8s ease;}
+.xp-text{font-size:11px;color:var(--muted);margin-top:.4rem;}
+.ach-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.8rem;margin-top:1.5rem;}
+.ach{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:1.1rem;position:relative;overflow:hidden;}
+.ach.done{border-color:rgba(200,149,42,.4);}
+.ach.done::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 100% 0%,rgba(200,149,42,.12),transparent 60%);pointer-events:none;}
+.ach.locked{opacity:.62;}
+.ach-top{display:flex;align-items:center;gap:.7rem;}
+.ach-icon{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(255,255,255,.05);border:1px solid var(--card-border);flex-shrink:0;}
+.ach.done .ach-icon{background:rgba(200,149,42,.15);border-color:rgba(200,149,42,.4);}
+.ach-name{font-size:14.5px;font-weight:500;display:flex;align-items:center;gap:6px;}
+.ach-xp{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);}
+.ach-desc{font-size:12.5px;color:var(--muted);line-height:1.55;margin:.7rem 0 .6rem;}
+.ach-prog{height:6px;background:rgba(255,255,255,.07);border-radius:999px;overflow:hidden;}
+.ach-prog-fill{height:100%;background:var(--forest-light);border-radius:999px;}
+.ach.done .ach-prog-fill{background:var(--gold);}
+.ach-prog-text{font-size:11px;color:var(--muted);margin-top:.35rem;}
+.ach-check{margin-left:auto;color:var(--gold-light);font-size:15px;}
+
+body[data-view="public"] .owner-only{display:none!important;}
+body[data-view="owner"] .public-only{display:none!important;}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:1.5rem;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--header);border:1px solid rgba(200,149,42,.3);border-radius:12px;padding:1.75rem;width:100%;max-width:440px;}
+.modal h3{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;margin-bottom:.3rem;}
+.modal p{font-size:13px;color:rgba(245,240,232,.7);margin-bottom:1.1rem;}
+.modal textarea{width:100%;background:rgba(0,0,0,.25);border:1px solid var(--card-border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:.75rem;min-height:90px;resize:vertical;outline:none;}
+.modal textarea:focus{border-color:var(--gold);}
+.modal-actions{display:flex;justify-content:flex-end;gap:.6rem;margin-top:1rem;}
+
+/* GALLERY */
+.gallery-grid-profile{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:.75rem;}
+.gallery-card-profile{border-radius:10px;overflow:hidden;background:var(--card);border:1px solid var(--card-border);cursor:pointer;transition:all .18s;position:relative;}
+.gallery-card-profile:hover{border-color:rgba(200,149,42,.35);transform:translateY(-2px);}
+.gcp-img{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:linear-gradient(135deg,rgba(26,58,42,.6),rgba(74,140,101,.15));}
+.gcp-placeholder{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:40px;background:linear-gradient(135deg,rgba(26,58,42,.6),rgba(74,140,101,.15));}
+.gcp-body{padding:.6rem .75rem .75rem;}
+.gcp-herb{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500;color:var(--text);margin-bottom:2px;}
+.gcp-herb.unid{color:var(--muted);font-style:italic;}
+.gcp-meta{display:flex;align-items:center;justify-content:space-between;}
+.gcp-part{font-size:11px;color:var(--muted);}
+.gcp-loves{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:3px;}
+.gcp-founder{position:absolute;top:.5rem;right:.5rem;font-size:10px;padding:2px 7px;border-radius:999px;background:rgba(74,140,101,.2);color:var(--tag-text);border:1px solid rgba(74,140,101,.35);}
+.gcp-pending{position:absolute;top:.5rem;left:.5rem;font-size:10px;padding:2px 7px;border-radius:999px;background:rgba(200,149,42,.2);color:var(--gold-light);border:1px solid rgba(200,149,42,.3);}
+.gallery-empty{text-align:center;padding:3rem 1rem;color:var(--muted);}
+.gallery-empty p{font-size:14px;line-height:1.7;margin-bottom:1.25rem;}
+.gallery-cta{display:inline-flex;align-items:center;gap:7px;padding:.65rem 1.25rem;background:rgba(74,140,101,.15);border:1px solid rgba(74,140,101,.3);border-radius:6px;color:var(--tag-text);text-decoration:none;font-size:13px;transition:all .18s;}
+.gallery-cta:hover{background:rgba(74,140,101,.25);}
+.founder-banner{background:rgba(74,140,101,.08);border:1px solid rgba(74,140,101,.2);border-radius:8px;padding:.75rem 1rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:.75rem;font-size:13px;color:var(--text);}
+.founder-banner .fb-badge{font-size:20px;}
+.founder-banner strong{color:var(--tag-text);}
+
+@media(max-width:600px){
+  .phead{flex-direction:column;align-items:center;text-align:center;}
+  .pbio{max-width:100%;}
+  .pactions{flex-direction:row;width:100%;align-items:center;justify-content:center;}
+  .stats{grid-template-columns:repeat(2,1fr);}
+  .tabs{overflow-x:auto;}
+}
+
+/* ===== CANONICAL NAV (do not duplicate) ===== */
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:var(--forest,#1a3a2a);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:1000;}
+.nav-logo{text-decoration:none;display:flex;flex-direction:column;}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-light,#e8b84b);letter-spacing:.1em;}
+.nav-full{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.5);}
+.nav-right{display:flex;align-items:center;gap:1.25rem;}
+.nav-right>a,.nav-right>.nav-dd{color:rgba(245,240,232,.6);text-decoration:none;font-size:13px;transition:color .2s;}
+.nav-right>a:hover,.nav-right>a.active{color:var(--gold-light,#e8b84b);}
+.nav-cta{background:var(--gold,#c8952a);color:var(--forest,#1a3a2a)!important;padding:.5rem 1rem;border-radius:4px;font-weight:500;}
+.nav-inbox{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:6px;border:1px solid rgba(255,255,255,0.08);color:rgba(245,240,232,.6);transition:all .2s;text-decoration:none;}
+.nav-inbox:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light,#e8b84b);}
+.nav-dd{position:relative;display:inline-flex;align-items:center;gap:4px;cursor:pointer;font-size:13px;color:rgba(245,240,232,.6);background:none;border:none;font-family:'DM Sans',sans-serif;padding:0;height:64px;}
+.nav-dd:hover,.nav-dd.open{color:var(--gold-light,#e8b84b);}
+.nav-dd-arrow{font-size:8px;opacity:.5;transition:transform .2s;}
+.nav-dd.open .nav-dd-arrow{transform:rotate(180deg);}
+.nav-dd-menu{position:absolute;top:calc(100% - 1px);left:50%;transform:translateX(-50%);background:var(--forest,#1a3a2a);border:1px solid rgba(200,149,42,.22);border-radius:0 0 8px 8px;padding:.4rem 0;min-width:180px;display:none;z-index:1001;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.nav-dd.open .nav-dd-menu{display:block;animation:ddFade .15s ease forwards;}
+@keyframes ddFade{from{opacity:0;transform:translateX(-50%) translateY(-4px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.nav-dd-menu a{display:flex;align-items:center;gap:.55rem;padding:.55rem 1.1rem;font-size:13px;color:rgba(245,240,232,.7);text-decoration:none;transition:all .15s;white-space:nowrap;}
+.nav-dd-menu a:hover{background:rgba(200,149,42,.08);color:var(--gold-light,#e8b84b);}
+.nav-dd-menu a.active{color:var(--gold-light,#e8b84b);}
+.nav-dd-divider{height:1px;background:rgba(255,255,255,.07);margin:.3rem 0;}
+.nav-dd-icon{font-size:14px;width:16px;text-align:center;flex-shrink:0;}
+@media(max-width:760px){.nav-right>a:not(.nav-cta):not(.nav-inbox){display:none;}.nav-dd{display:none;}}
+/* ===== END CANONICAL NAV ===== */
+</style>
+</head>
+<body data-view="owner">
+
+<nav>
+  <a href="home.html" class="nav-logo">
+    <span class="nav-chi">C.H.I</span>
+    <span class="nav-full">Collective Herbal Intelligence</span>
+  </a>
+  <div class="nav-right">
+    <div class="nav-dd" id="dd-tools" onclick="toggleDD('tools')">
+      <span>Tools</span>
+      <span class="nav-dd-arrow">▼</span>
+      <div class="nav-dd-menu">
+        <a href="herb-match.html"><span class="nav-dd-icon">🌿</span>Herb Match</a>
+        <a href="phytochemistry.html"><span class="nav-dd-icon">⬡</span>Plant Intelligence</a>
+        <a href="supreme.html"><span class="nav-dd-icon">📖</span>Herbadex</a>
+        <a href="herb-identifier.html"><span class="nav-dd-icon">🔍</span>Herb Identifier</a>
+      </div>
+    </div>
+    <div class="nav-dd" id="dd-community" onclick="toggleDD('community')">
+      <span>Community</span>
+      <span class="nav-dd-arrow">▼</span>
+      <div class="nav-dd-menu">
+        <a href="community.html"><span class="nav-dd-icon">💬</span>Community Feed</a>
+        <a href="garden.html"><span class="nav-dd-icon">🌱</span>Herbal Garden</a>
+        <a href="glossary.html"><span class="nav-dd-icon">📚</span>Glossary</a>
+      </div>
+    </div>
+    <div class="nav-dd" id="dd-profile" onclick="toggleDD('profile')">
+      <span style="color:var(--gold-light)">Profile</span>
+      <span class="nav-dd-arrow">▼</span>
+      <div class="nav-dd-menu">
+        <a href="profile.html" class="active"><span class="nav-dd-icon">🌿</span>My Profile</a>
+        <a href="inbox.html"><span class="nav-dd-icon">✉️</span>Inbox</a>
+        <a href="profile.html#achievements"><span class="nav-dd-icon">🏆</span>Achievements</a>
+        <a href="profile.html#settings"><span class="nav-dd-icon">⚙️</span>Settings</a>
+        <div class="nav-dd-divider"></div>
+        <a href="privacy-policy.html"><span class="nav-dd-icon">🔒</span>Privacy Policy</a>
+        <a href="terms.html"><span class="nav-dd-icon">📄</span>Terms</a>
+        <a href="disclaimer.html"><span class="nav-dd-icon">⚠️</span>Disclaimer</a>
+        <div class="nav-dd-divider"></div>
+        <a href="index.html" onclick="localStorage.clear()"><span class="nav-dd-icon">↩</span>Sign out</a>
+      </div>
+    </div>
+    <a href="inbox.html" class="nav-inbox" title="Inbox">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12v9H2V4z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M2 4l6 5 6-5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+    </a>
+    <a href="join.html" class="nav-cta">Join CHI</a>
+  </div>
+</nav>
+
+<div class="demo-bar">
+  <span class="demo-label">Demo</span>
+  <div class="demo-toggle">
+    <button id="t-owner" class="on" onclick="setView('owner')">Owner's own view</button>
+    <button id="t-public" onclick="setView('public')">Public view</button>
+  </div>
+  <span class="demo-note">Same profile, two perspectives — this bar wouldn't appear on the live site.</span>
+</div>
+
+<div class="wrap">
+
+  <div class="phead fade">
+    <div class="avatar" id="p-avatar">
+      <span id="avatar-initial">S</span>
+      <div class="avatar-overlay owner-only" onclick="document.getElementById('avatar-input').click()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L19 6h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z" stroke="currentColor" stroke-width="1.6"/><circle cx="13" cy="13" r="3.5" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span>Change</span>
+      </div>
+    </div>
+    <input type="file" id="avatar-input" accept="image/png,image/jpeg,image/webp" style="display:none" onchange="handleAvatarFile(event)">
+    <div class="phead-main">
+      <div class="pname">Sage Rowan</div>
+      <div class="pmeta">
+        <span class="level-badge" id="hdr-level">★ Level 5</span>
+        <span class="rank-badge">🌿 <span id="hdr-rank">Sprout</span></span>
+        <span class="psince">Member since March 2024</span>
+      </div>
+      <div class="pbio">Kitchen-garden herbalist working through the nervines and adaptogens. Slow mornings, bitter teas, and a deep love of anything in the mint family.</div>
+    </div>
+    <div class="pactions" id="p-actions"></div>
+  </div>
+
+  <div class="section fade" style="animation-delay:.05s">
+    <div class="sec-head"><div class="sec-title">Companions</div></div>
+    <div class="sec-sub">The members Sage grows alongside — like companion planting, partners who help each other thrive.</div>
+    <div class="companions" id="companions"></div>
+  </div>
+
+  <!-- INVENTORY PANEL (clickable navigation) -->
+  <div class="stats fade" id="stats" style="animation-delay:.1s"></div>
+
+  <!-- PANELS -->
+
+  <!-- HERB STACK -->
+  <div class="panel active" id="panel-stack">
+    <div class="sec-sub" id="stack-sub"></div>
+    <div class="stack" id="stack"></div>
+  </div>
+
+  <!-- SAVED -->
+  <div class="panel" id="panel-saved">
+    <div class="panel-head">
+      <div class="sec-sub" style="margin:0;max-width:48ch;" id="saved-sub"></div>
+      <div class="privacy-toggle owner-only">
+        <span>Visibility</span>
+        <div class="switch">
+          <button id="sv-pub" class="on" onclick="setSavedPrivacy(true)">Public</button>
+          <button id="sv-priv" onclick="setSavedPrivacy(false)">Private</button>
+        </div>
+      </div>
+    </div>
+    <div class="saved-subcats">
+      <button class="saved-subcat active" data-sub="herbs" onclick="setSavedSub('herbs',this)">🌿 Herbs <span id="sc-herbs">0</span></button>
+      <button class="saved-subcat" data-sub="posts" onclick="setSavedSub('posts',this)">📝 Posts <span id="sc-posts">0</span></button>
+      <button class="saved-subcat" data-sub="matches" onclick="setSavedSub('matches',this)">🎯 Herb Match results <span id="sc-matches">0</span></button>
+    </div>
+    <div id="saved-body"></div>
+  </div>
+
+  <!-- POSTS -->
+  <div class="panel" id="panel-posts">
+    <div class="sec-sub" id="posts-sub"></div>
+    <div id="posts-body"></div>
+  </div>
+
+  <!-- GALLERY -->
+  <div class="panel" id="panel-gallery">
+    <div id="gallery-body"></div>
+  </div>
+
+  <!-- ACHIEVEMENTS -->
+  <div class="panel" id="panel-ach">
+    <div class="sec-sub">Complete tasks across CHI to earn XP and level up. Your level is a badge of how deep you've gone — into the herbs and into the community.</div>
+    <div class="level-card" id="level-card"></div>
+    <div class="ach-grid" id="ach-grid"></div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="panel" id="panel-settings">
+    <div class="sec-sub">Accessibility, privacy and account controls. Changes save automatically to this device.</div>
+
+    <!-- DISPLAY -->
+    <div class="settings-group">
+      <div class="settings-group-title">Display</div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Text size</div>
+          <div class="setting-desc">Scale the whole site up for easier reading. Applies to every page.</div>
+        </div>
+        <div class="font-scale-control" id="font-scale-control">
+          <button class="fs-btn" data-scale="100" onclick="setFontScale(100,this)">100%</button>
+          <button class="fs-btn" data-scale="110" onclick="setFontScale(110,this)">110%</button>
+          <button class="fs-btn" data-scale="125" onclick="setFontScale(125,this)">125%</button>
+          <button class="fs-btn" data-scale="150" onclick="setFontScale(150,this)">150%</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRIVACY -->
+    <div class="settings-group">
+      <div class="settings-group-title">Privacy</div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Saved herbs visibility</div>
+          <div class="setting-desc">Your saved herbs are private by default. Only you can see them.</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="set-saved-private" checked onchange="saveSetting('saved_private',this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Show herb stack on public profile</div>
+          <div class="setting-desc">Let other members see the herbs in your stack when they visit your profile.</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="set-stack-public" checked onchange="saveSetting('stack_public',this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Show garden photos on public profile</div>
+          <div class="setting-desc">Display your Herbal Garden contributions on your public profile.</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="set-gallery-public" checked onchange="saveSetting('gallery_public',this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Allow direct messages</div>
+          <div class="setting-desc">Let other members send you messages through your inbox.</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="set-allow-dms" checked onchange="saveSetting('allow_dms',this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- SECURITY -->
+    <div class="settings-group">
+      <div class="settings-group-title">Security</div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Sign out everywhere</div>
+          <div class="setting-desc">Sign out of CHI on this and all other devices. You'll need to sign in again.</div>
+        </div>
+        <button class="setting-action-btn" onclick="signOutEverywhere()">Sign out everywhere</button>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Auto-lock after inactivity</div>
+          <div class="setting-desc">Automatically sign out after 30 minutes of inactivity on shared devices.</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="set-autolock" onchange="saveSetting('autolock',this.checked)">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- DATA -->
+    <div class="settings-group">
+      <div class="settings-group-title">Your data</div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label">Download my data</div>
+          <div class="setting-desc">Export everything CHI holds about you — stack, saved herbs, settings — as a file.</div>
+        </div>
+        <button class="setting-action-btn" onclick="downloadMyData()">Download</button>
+      </div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label danger">Clear all local data</div>
+          <div class="setting-desc">Remove your stack, saved herbs and preferences from this device. This cannot be undone.</div>
+        </div>
+        <button class="setting-action-btn danger" onclick="clearLocalData()">Clear data</button>
+      </div>
+    </div>
+
+    <p class="settings-footnote">CHI never sells your data. Read our <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms</a>. For account deletion, contact us through the <a href="privacy-policy.html#contact">Privacy Policy</a> page.</p>
+  </div>
+
+</div>
+
+<div class="modal-overlay" id="msg-modal">
+  <div class="modal">
+    <h3 id="msg-title">Message Sage</h3>
+    <p id="msg-sub">Ask Sage anything about their herb stack or experience.</p>
+    <textarea id="msg-text" placeholder="Write your message…"></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeMsg()">Cancel</button>
+      <button class="btn btn-primary" onclick="sendMsg()">Send message</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const PROFILE_NAME = 'Sage';
+let following = false;
+let savedPublic = true;
+
+const slug = n => n.trim().toLowerCase().replace(/'/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+
+// ── DATA ──
+const companions = [
+  {name:'Mariam H', rank:'🌿 Sprout', color:'#c07ab0'},
+  {name:'The Root Walker', rank:'🌳 The Root', color:'#9fa3e8'},
+  {name:'Fern Keeper', rank:'🌿 Sprout', color:'#e8b84b'},
+  {name:'Amara Roots', rank:'🌱 Seed', color:'#e8856a'},
+  {name:'Cyrus B', rank:'🌿 Sprout', color:'#7acca0'},
+];
+
+let stack = [
+  {name:'Shatavari', color:'#9a3a7a', form:'Capsule · 500mg · Morning', status:'active',
+   note:'Two caps with breakfast through the colder months — steadies my energy without the wired feeling I get from ashwagandha.'},
+  {name:'Passionflower', color:'#3a3a8a', form:'Tea · Evening', status:'active',
+   note:'One cup an hour before bed, blended with lemon balm. The looping-thoughts kind of nights are where it earns its place.'},
+  {name:'Ashwagandha', color:'#7a9a2a', form:'Powder · Morning', status:'break',
+   note:'On a break for the summer — I cycle it 6 weeks on, 2 off so it keeps working.'},
+  {name:'Milk Thistle', color:'#4a7a5a', form:'Tincture · Daily', status:'complete', note:''},
+];
+
+// ── SYNC WITH SHARED STACK (chi_phyto_stack) ──
+// Herbs added via Plant Intelligence / Community live in localStorage as a
+// simple name array. Merge any that aren't already shown here so the profile
+// reflects the user's real, current stack across the whole platform.
+(function syncStack(){
+  try{
+    const shared = JSON.parse(localStorage.getItem('chi_phyto_stack') || '[]');
+    if(!Array.isArray(shared)) return;
+    const STACK_COLORS = ['#5cab7a','#e8a840','#6aaddd','#9b8de0','#cc7a5a','#cc6a9a','#7abf6a','#dd6a6a'];
+    shared.forEach(name=>{
+      if(typeof name !== 'string') return;
+      const exists = stack.some(h => h.name.toLowerCase() === name.toLowerCase());
+      if(!exists){
+        let hash=0; for(let i=0;i<name.length;i++) hash=(hash*31+name.charCodeAt(i))&0xffff;
+        stack.push({
+          name: name,
+          color: STACK_COLORS[hash % STACK_COLORS.length],
+          form: 'Added from your stack',
+          status: 'active',
+          note: ''
+        });
+      }
+    });
+  }catch(e){}
+})();
+
+let savedHerbsList = [
+  {name:'Tulsi (Holy Basil)', color:'#5c8c4a', trad:'Ayurveda', prim:'Adaptogen that lifts mood and steadies the stress response.'},
+  {name:"Lion's Mane", color:'#5c62b8', trad:'Functional mushroom', prim:'Supports focus, memory and nerve health.'},
+  {name:'Nettle', color:'#3a8c5a', trad:'Western herbalism', prim:'Mineral-rich tonic; traditionally used for allergies and joints.'},
+  {name:'Reishi', color:'#9a3a3a', trad:'TCM', prim:'Calming immune adaptogen, the "mushroom of immortality".'},
+  {name:'Gotu Kola', color:'#4a8c8c', trad:'Ayurveda', prim:'Brahmi-adjacent; supports circulation and clear thinking.'},
+];
+
+// Saved posts (saved from other members' profiles / community)
+let savedPosts = JSON.parse(localStorage.getItem('chi_saved_posts') || '[]');
+if(!savedPosts.length){
+  savedPosts = [
+    {id:'demo1', title:'Three weeks on a lemon balm + passionflower evening blend', author:'Mariam_H', group:'Sleep & Stress', excerpt:'I started this after months of 2am wake-ups. By week two the difference was hard to ignore — falling back asleep got easier.', date:'2 weeks ago'},
+    {id:'demo2', title:'Why I switched from capsules to tinctures for my adaptogens', author:'The_Root_Walker', group:'Stacks', excerpt:'Bioavailability was the main reason, but the ritual of it matters more than I expected.', date:'1 month ago'},
+  ];
+}
+
+// Saved Herb Match results
+let savedMatches = JSON.parse(localStorage.getItem('chi_saved_matches') || '[]');
+
+// The user's own published posts
+let myPosts = JSON.parse(localStorage.getItem('chi_my_posts') || '[]');
+if(!myPosts.length){
+  myPosts = [
+    {id:'mp1', title:'My winter respiratory blend — mullein, thyme, marshmallow', group:'Immunity', excerpt:'Built this over two seasons of trial and error. Sharing the ratios that finally worked for me.', date:'3 days ago', reactions:12},
+    {id:'mp2', title:'What three years of growing ashwagandha taught me', group:'Stacks', excerpt:'The root mass doubles every year if you let it. Here is how I harvest and cure it.', date:'2 weeks ago', reactions:34},
+  ];
+}
+
+// Achievements — progress/target drive XP. Done = progress >= target.
+const achievements = [
+  {icon:'🌱', name:'First Steps', desc:'Save your first herb to Saved Herbs.', progress:1, target:1, xp:20},
+  {icon:'📦', name:'Stacked', desc:'Add 5 herbs to your Herb Stack.', progress:4, target:5, xp:40},
+  {icon:'🖊', name:'Note Keeper', desc:'Write usage notes on 10 herbs.', progress:8, target:10, xp:50},
+  {icon:'🔍', name:'Explorer', desc:'Explore 50 herbs in the Herbadex.', progress:148, target:50, xp:40},
+  {icon:'📚', name:'Scholar', desc:'Explore 200 herbs in the Herbadex.', progress:148, target:200, xp:80},
+  {icon:'✍️', name:'Storyteller', desc:'Publish 10 posts to the community.', progress:23, target:10, xp:50},
+  {icon:'🤝', name:'Good Company', desc:'Grow 5 companions.', progress:5, target:5, xp:40},
+  {icon:'🧭', name:'Journey Maker', desc:'Document a full journey of linked posts.', progress:0, target:1, xp:60},
+  {icon:'📷', name:'Identifier', desc:'Identify 10 herbs with the camera tool.', progress:6, target:10, xp:40},
+  {icon:'🌍', name:'Tradition Traveller', desc:'Explore herbs from 5 healing traditions.', progress:7, target:5, xp:50},
+  {icon:'🔥', name:'Daily Devotion', desc:'Keep a 30-day visit streak.', progress:18, target:30, xp:70},
+  {icon:'🌳', name:'Rooted', desc:'Reach Level 7 to become The Root.', progress:5, target:7, xp:100},
+];
+
+// ── GALLERY DATA ── (auto-populated from Garden contributions)
+const PLACEHOLDER_IMG = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400"><rect width="400" height="400" fill="#1a3a2a"/><text x="200" y="210" text-anchor="middle" font-size="80" fill="#2d5c42">🌿</text></svg>');
+
+let galleryPhotos = [
+  {id:1, herb:'Ashwagandha', latin:'Withania somnifera', part:'root', note:'Dried roots from my garden. Third year growing — the root mass doubles every year.', img:PLACEHOLDER_IMG, loves:24, identified:true, founder:true, ts:Date.now()-86400000*2},
+  {id:2, herb:'Passionflower', latin:'Passiflora incarnata', part:'whole', note:'Growing up a south-facing fence. Produces 200+ flowers in a good summer.', img:PLACEHOLDER_IMG, loves:33, identified:true, founder:true, ts:Date.now()-86400000*5},
+  {id:3, herb:'Unknown', latin:null, part:'leaf', note:'Found this on a walking trail in Surrey. Slightly fuzzy leaf, mild smell. Anyone know what this is?', img:PLACEHOLDER_IMG, loves:8, identified:false, founder:false, ts:Date.now()-3600000*5},
+];
+
+function renderGallery(){
+  const owner = document.body.dataset.view === 'owner';
+  const el = document.getElementById('gallery-body');
+  const count = galleryPhotos.length;
+
+  const isFounder = galleryPhotos.some(p => p.founder);
+
+  let html = '';
+
+  // Founder banner
+  if(isFounder){
+    html += `<div class="founder-banner">
+      <span class="fb-badge">🌱</span>
+      <div><strong>Garden Founder</strong> — ${PROFILE_NAME} is one of the first 100 contributors to the CHI Herbal Garden. This badge is permanent.</div>
+    </div>`;
+  }
+
+  if(!count){
+    html += `<div class="gallery-empty">
+      <p>${owner ? 'You haven\'t contributed any photos to the Herbal Garden yet.<br>Share your herbs, plants and collections — every photo builds the community database.' : PROFILE_NAME + ' hasn\'t contributed to the Herbal Garden yet.'}</p>
+      ${owner ? `<a href="garden.html" class="gallery-cta">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v5M4 3l2.5-2L9 3M2 9v2a1 1 0 001 1h7a1 1 0 001-1V9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Contribute to the Garden
+      </a>` : ''}
+    </div>`;
+    el.innerHTML = html;
+    return;
+  }
+
+  html += `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
+    <div style="font-size:13px;color:var(--muted)">${count} photo${count!==1?'s':''} contributed to the <a href="garden.html" style="color:var(--tag-text);text-decoration:none">Herbal Garden →</a></div>
+    ${owner ? `<a href="garden.html" class="gallery-cta" style="font-size:12px;padding:.4rem .85rem">+ Add photo</a>` : ''}
+  </div>`;
+
+  html += '<div class="gallery-grid-profile">';
+  galleryPhotos.sort((a,b)=>b.ts-a.ts).forEach(p=>{
+    html += `<div class="gallery-card-profile" onclick="window.location='garden.html'">
+      <div class="gcp-placeholder">${p.identified ? '🌿' : '❓'}</div>
+      ${p.founder ? '<span class="gcp-founder">🌱 Founder</span>' : ''}
+      ${!p.identified ? '<span class="gcp-pending">Needs ID</span>' : ''}
+      <div class="gcp-body">
+        <div class="gcp-herb${!p.identified?' unid':''}">${p.herb}</div>
+        <div class="gcp-meta">
+          <span class="gcp-part">${p.part}</span>
+          <span class="gcp-loves">🤍 ${p.loves}</span>
+        </div>
+      </div>
+    </div>`;
+  });
+  html += '</div>';
+
+  el.innerHTML = html;
+}
+
+// ── LEVEL MATH ──
+function totalXP(){ return achievements.filter(a=>a.progress>=a.target).reduce((s,a)=>s+a.xp,0); }
+const XP_PER_LEVEL = 100;
+function levelInfo(){
+  const xp = totalXP();
+  const level = Math.floor(xp / XP_PER_LEVEL) + 1;
+  const into = xp % XP_PER_LEVEL;
+  const rank = level >= 7 ? 'The Root' : level >= 4 ? 'Sprout' : 'Seed';
+  const emoji = level >= 7 ? '🌳' : level >= 4 ? '🌿' : '🌱';
+  return {xp, level, into, pct: Math.round(into/XP_PER_LEVEL*100), rank, emoji};
+}
+
+// ── VIEW ──
+function setView(mode){
+  document.body.dataset.view = mode;
+  document.getElementById('t-owner').classList.toggle('on', mode==='owner');
+  document.getElementById('t-public').classList.toggle('on', mode==='public');
+  renderActions(); renderStack(); renderSaved(); renderPosts(); renderStats();
+  document.getElementById('stack-sub').textContent = mode==='owner'
+    ? 'How you use herbs in daily life. Tap any herb to open its Herbadex page; tap a note to add or edit how you use it.'
+    : `How ${PROFILE_NAME} uses herbs in daily life. Tap any herb to open its Herbadex page. Curious about a note? Send a message.`;
+  document.getElementById('saved-sub').textContent = mode==='owner'
+    ? 'Herbs, posts and Herb Match results you\u2019ve saved to revisit.'
+    : `What ${PROFILE_NAME} has saved — herbs, posts and results they\u2019re keeping.`;
+  renderGallery();
+}
+function renderActions(){
+  const el = document.getElementById('p-actions');
+  if(document.body.dataset.view === 'owner'){
+    el.innerHTML = `<button class="btn btn-ghost" onclick="alert('Opens profile editor (name, bio, themes).')">Edit profile</button>`
+      + (hasAvatarPhoto ? ` <span class="avatar-remove" onclick="removeAvatar()">Remove photo</span>` : '');
+  } else {
+    el.innerHTML = `
+      <button class="btn ${following?'btn-following':'btn-primary'}" onclick="toggleFollow()">${following?'✓ Following':'+ Follow'}</button>
+      <button class="btn btn-ghost" onclick="openMsg()">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M14 10a2 2 0 0 1-2 2H4l-3 3V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v6z" stroke="currentColor" stroke-width="1.5"/></svg>
+        Message
+      </button>`;
+  }
+}
+function toggleFollow(){ following=!following; renderActions(); }
+
+// ── TABS ──
+function setTab(tab, el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  const panel = document.getElementById('panel-'+tab);
+  if(panel) panel.classList.add('active');
+  // Sync active state on the inventory stat strip
+  document.querySelectorAll('.stat').forEach(s=>s.classList.remove('active'));
+  const activeStat = document.querySelector('.stat[data-tab="'+tab+'"]');
+  if(activeStat) activeStat.classList.add('active');
+}
+
+// ── STATS / INVENTORY NAV ──
+function renderStats(){
+  const L = levelInfo();
+  const isOwner = document.body.dataset.view !== 'public';
+  document.getElementById('stats').innerHTML = `
+    <div class="stat active" data-tab="stack" onclick="setTab('stack',this)"><div class="stat-num">${stack.length}</div><div class="stat-lbl">Stack</div></div>
+    <div class="stat" data-tab="saved" onclick="setTab('saved',this)"><div class="stat-num">${isOwner ? savedCount() : '—'}</div><div class="stat-lbl">Saved</div></div>
+    <div class="stat" data-tab="gallery" onclick="setTab('gallery',this)"><div class="stat-num">${galleryPhotos.length}</div><div class="stat-lbl">Garden photos</div></div>
+    <div class="stat" data-tab="posts" onclick="setTab('posts',this)"><div class="stat-num">${myPosts.length}</div><div class="stat-lbl">Posts</div></div>
+    <div class="stat" data-tab="ach" onclick="setTab('ach',this)"><div class="stat-num">${L.level}</div><div class="stat-lbl">Level</div></div>`;
+  document.getElementById('hdr-level').textContent = '★ Level ' + L.level;
+  document.getElementById('hdr-rank').textContent = L.rank;
+}
+
+function savedCount(){
+  return savedHerbsList.length + savedPosts.length + savedMatches.length;
+}
+
+// ── COMPANIONS ──
+function renderCompanions(){
+  document.getElementById('companions').innerHTML = companions.map(c => `
+    <a class="companion" href="profile.html?user=${slug(c.name)}">
+      <div class="comp-av" style="background:${c.color}22;border:1px solid ${c.color}55;color:${c.color};">${c.name.charAt(0)}</div>
+      <div><div class="comp-name">${c.name}</div><div class="comp-rank">${c.rank}</div></div>
+    </a>`).join('');
+}
+
+// ── HERB STACK ──
+function renderStack(){
+  const owner = document.body.dataset.view === 'owner';
+  document.getElementById('stack').innerHTML = stack.map((h, i) => {
+    let noteBlock;
+    if(owner){
+      noteBlock = `
+        <div class="note-wrap">
+          <div class="note-label">🖊 How I use this</div>
+          <div class="note-display" id="nd-${i}">
+            ${h.note ? `<div class="note-text">${escapeHtml(h.note)}</div>` : `<div class="note-empty">No note yet — add how you use this herb.</div>`}
+            <span class="note-editlink" onclick="editNote(${i})">${h.note?'Edit note':'+ Add note'}</span>
+          </div>
+          <div class="note-edit" id="ne-${i}">
+            <textarea id="nt-${i}" placeholder="e.g. One cup before bed, blended with lemon balm…">${escapeHtml(h.note)}</textarea>
+            <div class="note-actions">
+              <button class="mini-btn mini-save" onclick="saveNote(${i})">Save note</button>
+              <button class="mini-btn mini-cancel" onclick="cancelNote(${i})">Cancel</button>
+            </div>
+          </div>
+        </div>`;
+    } else {
+      noteBlock = h.note ? `
+        <div class="note-wrap">
+          <div class="note-label">🌿 How ${PROFILE_NAME} uses this</div>
+          <div class="note-text">${escapeHtml(h.note)}</div>
+          <span class="note-ask" onclick="openMsg('${escapeHtml(h.name)}')">Ask ${PROFILE_NAME} about this →</span>
+        </div>` : '';
+    }
+    return `
+      <div class="herb">
+        <div class="herb-top">
+          <span class="herb-dot" style="background:${h.color}"></span>
+          <a class="herb-name" href="supreme.html?herb=${slug(h.name)}">${h.name}</a>
+          <span class="herb-form">${h.form}</span>
+          <span class="herb-status ${({active:'st-active',break:'st-break',complete:'st-complete'})[h.status]}">${({active:'Active',break:'On break',complete:'Completed'})[h.status]}</span>
+        </div>
+        ${noteBlock}
+      </div>`;
+  }).join('');
+}
+function editNote(i){ document.getElementById('nd-'+i).style.display='none'; document.getElementById('ne-'+i).style.display='block'; document.getElementById('nt-'+i).focus(); }
+function cancelNote(i){ document.getElementById('nt-'+i).value=stack[i].note; document.getElementById('ne-'+i).style.display='none'; document.getElementById('nd-'+i).style.display='block'; }
+function saveNote(i){ stack[i].note=document.getElementById('nt-'+i).value.trim(); renderStack(); }
+
+// ── SAVED (Herbs / Posts / Matches) ──
+let savedSub = 'herbs';
+
+function setSavedPrivacy(pub){
+  savedPublic=pub;
+  document.getElementById('sv-pub').classList.toggle('on',pub);
+  document.getElementById('sv-priv').classList.toggle('on',!pub);
+  renderSaved();
+}
+
+function setSavedSub(sub, btn){
+  savedSub = sub;
+  document.querySelectorAll('.saved-subcat').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderSaved();
+}
+
+function renderSaved(){
+  const owner = document.body.dataset.view === 'owner';
+  const body = document.getElementById('saved-body');
+
+  // Update sub-category counts
+  document.getElementById('sc-herbs').textContent = savedHerbsList.length;
+  document.getElementById('sc-posts').textContent = savedPosts.length;
+  document.getElementById('sc-matches').textContent = savedMatches.length;
+
+  if(!owner && !savedPublic){
+    body.innerHTML = `<div class="locked-note">🔒 ${PROFILE_NAME} keeps their saved items private.</div>`;
+    return;
+  }
+
+  if(savedSub === 'herbs'){
+    if(!savedHerbsList.length){ body.innerHTML = emptyNote('No saved herbs yet. Bookmark herbs from the Herbadex or other members\' profiles.'); return; }
+    body.innerHTML = `<div class="saved-grid">` + savedHerbsList.map((h,i)=>`
+      <div class="saved">
+        <div class="saved-top">
+          <span class="herb-dot" style="background:${h.color}"></span>
+          <a class="saved-name" href="supreme.html?herb=${slug(h.name)}">${h.name}</a>
+        </div>
+        <div class="saved-trad">${h.trad}</div>
+        <div class="saved-prim">${h.prim}</div>
+        <div class="saved-actions owner-only">
+          <button class="mini-btn mini-save" onclick="addToStack(${i})">＋ Add to stack</button>
+          <button class="mini-btn mini-cancel" onclick="removeSavedHerb(${i})">Remove</button>
+        </div>
+      </div>`).join('') + `</div>`;
+  }
+  else if(savedSub === 'posts'){
+    if(!savedPosts.length){ body.innerHTML = emptyNote('No saved posts yet. Tap "Save" on any community post or another member\'s post to keep it here.'); return; }
+    body.innerHTML = savedPosts.map((p,i)=>`
+      <div class="saved-post">
+        <div class="sp-meta"><span class="sp-group">${p.group}</span> · by ${p.author} · ${p.date}</div>
+        <a class="sp-title" href="community.html">${p.title}</a>
+        <div class="sp-excerpt">${p.excerpt}</div>
+        <div class="saved-actions owner-only">
+          <button class="mini-btn mini-cancel" onclick="removeSavedPost(${i})">Remove</button>
+        </div>
+      </div>`).join('');
+  }
+  else if(savedSub === 'matches'){
+    if(!savedMatches.length){ body.innerHTML = emptyNote('No saved Herb Match results yet. After a consultation, tap "Save these results" to keep the full breakdown here.'); return; }
+    body.innerHTML = savedMatches.map((m,i)=>`
+      <div class="saved-match">
+        <div class="sm-head">
+          <div class="sm-date">🎯 Herb Match · ${m.date}</div>
+          <button class="mini-btn mini-cancel owner-only" onclick="removeSavedMatch(${i})">Remove</button>
+        </div>
+        <div class="sm-context">
+          <div class="sm-q"><span>Main concern:</span> ${m.concern||'—'}</div>
+          <div class="sm-q"><span>Duration:</span> ${m.duration||'—'}</div>
+          <div class="sm-q"><span>Goals:</span> ${m.goals||'—'}</div>
+          ${m.lifestyle?`<div class="sm-q"><span>Lifestyle:</span> ${m.lifestyle}</div>`:''}
+        </div>
+        <div class="sm-herbs-label">Recommended herbs</div>
+        <div class="sm-herbs">
+          ${(m.herbs||[]).map(h=>`<a class="sm-herb-link" href="supreme.html?herb=${slug(h)}">${h} →</a>`).join('')}
+        </div>
+      </div>`).join('');
+  }
+}
+
+function emptyNote(msg){
+  return `<div style="text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:14px;line-height:1.7;font-style:italic">${msg}</div>`;
+}
+
+function addToStack(i){
+  const h = savedHerbsList[i];
+  stack.push({name:h.name, color:h.color, form:'Newly added · set a form', status:'active', note:''});
+  savedHerbsList.splice(i,1);
+  renderSaved(); renderStack(); renderStats();
+}
+function removeSavedHerb(i){ savedHerbsList.splice(i,1); renderSaved(); renderStats(); }
+function removeSavedPost(i){ savedPosts.splice(i,1); localStorage.setItem('chi_saved_posts',JSON.stringify(savedPosts)); renderSaved(); renderStats(); }
+function removeSavedMatch(i){ savedMatches.splice(i,1); localStorage.setItem('chi_saved_matches',JSON.stringify(savedMatches)); renderSaved(); renderStats(); }
+
+// ── POSTS (user's own published posts) ──
+function renderPosts(){
+  const owner = document.body.dataset.view === 'owner';
+  document.getElementById('posts-sub').textContent = owner
+    ? 'Posts you\'ve published to the community.'
+    : `Posts ${PROFILE_NAME} has shared with the community.`;
+  const body = document.getElementById('posts-body');
+  if(!myPosts.length){ body.innerHTML = emptyNote('No posts yet. Share your knowledge with the community to see your posts here.'); return; }
+  body.innerHTML = myPosts.map(p=>`
+    <div class="my-post">
+      <div class="sp-meta"><span class="sp-group">${p.group}</span> · ${p.date} · ${p.reactions||0} reactions</div>
+      <a class="sp-title" href="community.html">${p.title}</a>
+      <div class="sp-excerpt">${p.excerpt}</div>
+    </div>`).join('');
+}
+
+// ── ACHIEVEMENTS ──
+function renderAchievements(){
+  const L = levelInfo();
+  const nextRankAt = L.level<4?4:L.level<7?7:null;
+  document.getElementById('level-card').innerHTML = `
+    <div class="level-ring" style="--pct:${L.pct}%"><span><span class="level-num">${L.level}</span><span class="level-word">Level</span></span></div>
+    <div class="level-info">
+      <div class="level-rank">${L.emoji} ${L.rank}</div>
+      <div class="level-sub">${nextRankAt ? `Reach Level ${nextRankAt} to rank up.` : 'Top rank reached — keep the streak alive.'}</div>
+      <div class="xp-bar"><div class="xp-fill" style="width:${L.pct}%"></div></div>
+      <div class="xp-text">${L.into} / ${XP_PER_LEVEL} XP toward Level ${L.level+1} · ${L.xp} XP total</div>
+    </div>`;
+  document.getElementById('ach-grid').innerHTML = achievements.map(a=>{
+    const done = a.progress>=a.target;
+    const pct = Math.min(100, Math.round(a.progress/a.target*100));
+    return `<div class="ach ${done?'done':'locked'}">
+      <div class="ach-top">
+        <div class="ach-icon">${a.icon}</div>
+        <div><div class="ach-name">${a.name}</div><div class="ach-xp">${a.xp} XP</div></div>
+        ${done?'<span class="ach-check">✓</span>':''}
+      </div>
+      <div class="ach-desc">${a.desc}</div>
+      <div class="ach-prog"><div class="ach-prog-fill" style="width:${pct}%"></div></div>
+      <div class="ach-prog-text">${done?'Complete':`${Math.min(a.progress,a.target)} / ${a.target}`}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── MESSAGE ──
+function openMsg(aboutHerb){
+  document.getElementById('msg-title').textContent = `Message ${PROFILE_NAME}`;
+  document.getElementById('msg-sub').textContent = aboutHerb ? `Ask ${PROFILE_NAME} about how they use ${aboutHerb}.` : `Ask ${PROFILE_NAME} anything about their herb stack or experience.`;
+  document.getElementById('msg-text').value = aboutHerb ? `Hi ${PROFILE_NAME}, I saw ${aboutHerb} in your stack — ` : '';
+  document.getElementById('msg-modal').classList.add('open');
+  document.getElementById('msg-text').focus();
+}
+function closeMsg(){ document.getElementById('msg-modal').classList.remove('open'); }
+function sendMsg(){ closeMsg(); alert('Message sent (demo). On the live site this opens a thread in the Messages hub.'); }
+
+function escapeHtml(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// ── AVATAR UPLOAD ──
+let hasAvatarPhoto = false;
+function handleAvatarFile(e){
+  const file=e.target.files[0]; if(!file) return;
+  if(!/^image\/(png|jpeg|webp)$/.test(file.type)){ alert('Please choose a PNG, JPG or WEBP image.'); e.target.value=''; return; }
+  const reader=new FileReader();
+  reader.onload=ev=>{ const img=new Image(); img.onload=()=>{
+    const size=256, c=document.createElement('canvas'); c.width=size; c.height=size;
+    const ctx=c.getContext('2d'); const m=Math.min(img.width,img.height);
+    ctx.drawImage(img,(img.width-m)/2,(img.height-m)/2,m,m,0,0,size,size);
+    const d=c.toDataURL('image/jpeg',0.85); applyAvatar(d);
+    try{localStorage.setItem('chi_avatar',d);}catch(err){alert('Photo set for this session, but too large to save locally.');}
+  }; img.src=ev.target.result; };
+  reader.readAsDataURL(file); e.target.value='';
+}
+function applyAvatar(d){ const a=document.getElementById('p-avatar'); a.style.backgroundImage=`url('${d}')`; a.classList.add('has-photo'); hasAvatarPhoto=true; renderActions(); }
+function removeAvatar(){ const a=document.getElementById('p-avatar'); a.style.backgroundImage=''; a.classList.remove('has-photo'); hasAvatarPhoto=false; try{localStorage.removeItem('chi_avatar');}catch(e){} renderActions(); }
+function restoreAvatar(){ try{const d=localStorage.getItem('chi_avatar'); if(d) applyAvatar(d);}catch(e){} }
+
+// ── SETTINGS ──
+function setFontScale(scale, btn){
+  localStorage.setItem('chi_font_scale', scale);
+  document.querySelectorAll('.fs-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  const s = scale/100;
+  document.body.style.zoom = s === 1 ? '' : s;
+  if(navigator.userAgent.indexOf('Firefox')>-1 && !(CSS.supports && CSS.supports('zoom','1.5'))){
+    if(s===1){ document.body.style.transform=''; document.body.style.width=''; }
+    else { document.body.style.transform='scale('+s+')'; document.body.style.transformOrigin='top center'; document.body.style.width=(100/s)+'%'; }
+  }
+}
+
+function saveSetting(key, val){
+  try{ localStorage.setItem('chi_setting_'+key, val ? '1':'0'); }catch(e){}
+}
+
+function loadSettings(){
+  const fs = localStorage.getItem('chi_font_scale') || '100';
+  const fsBtn = document.querySelector('.fs-btn[data-scale="'+fs+'"]');
+  if(fsBtn) fsBtn.classList.add('active');
+  else { const def = document.querySelector('.fs-btn[data-scale="100"]'); if(def) def.classList.add('active'); }
+  const toggles = {
+    'set-saved-private':'saved_private',
+    'set-stack-public':'stack_public',
+    'set-gallery-public':'gallery_public',
+    'set-allow-dms':'allow_dms',
+    'set-autolock':'autolock',
+  };
+  Object.entries(toggles).forEach(([id,key])=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    const stored = localStorage.getItem('chi_setting_'+key);
+    if(stored !== null) el.checked = stored === '1';
+  });
+}
+
+function signOutEverywhere(){
+  if(confirm('Sign out of CHI on all devices? You will need to sign in again.')){
+    localStorage.removeItem('chi_logged_in');
+    localStorage.removeItem('chi_session');
+    window.location.href = 'index.html';
+  }
+}
+
+function downloadMyData(){
+  const data = {};
+  for(let i=0;i<localStorage.length;i++){
+    const k = localStorage.key(i);
+    if(k && k.startsWith('chi_')) data[k] = localStorage.getItem(k);
+  }
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'chi-my-data-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function clearLocalData(){
+  if(confirm('Remove all your CHI data from this device? Your stack, saved herbs and preferences will be erased. This cannot be undone.')){
+    const keys = [];
+    for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k && k.startsWith('chi_')) keys.push(k); }
+    keys.forEach(k=>localStorage.removeItem(k));
+    alert('Your local data has been cleared.');
+    window.location.reload();
+  }
+}
+
+(function(){
+  let lockTimer;
+  function resetLock(){
+    clearTimeout(lockTimer);
+    if(localStorage.getItem('chi_setting_autolock')==='1'){
+      lockTimer = setTimeout(()=>{
+        localStorage.removeItem('chi_logged_in');
+        window.location.href = 'index.html';
+      }, 30*60*1000);
+    }
+  }
+  ['click','keydown','mousemove','touchstart'].forEach(ev=>document.addEventListener(ev, resetLock, {passive:true}));
+  resetLock();
+})();
+
+// init
+restoreAvatar();
+renderCompanions();
+renderStats();
+renderAchievements();
+renderGallery();
+renderPosts();
+loadSettings();
+setView('owner');
+
+// Handle #achievements / #settings deep links from nav dropdown
+(function(){
+  const hash = window.location.hash.replace('#','');
+  if(hash === 'achievements'){ setTab('ach'); }
+  else if(hash === 'settings'){ setTab('settings'); }
+  if(hash){
+    setTimeout(()=>{ const p=document.getElementById('panel-'+(hash==='achievements'?'ach':hash)); if(p) p.scrollIntoView({behavior:'smooth',block:'start'}); }, 200);
+  }
+})();
+window.addEventListener('hashchange', ()=>{
+  const hash = window.location.hash.replace('#','');
+  if(hash === 'achievements'){ setTab('ach'); }
+  else if(hash === 'settings'){ setTab('settings'); }
+});
+</script>
+<script>
+
+</script>
+<script>
+/* CANONICAL NAV DROPDOWN TOGGLE */
+function toggleDD(id){
+  document.querySelectorAll('.nav-dd').forEach(function(d){if(d.id!=='dd-'+id)d.classList.remove('open');});
+  var el=document.getElementById('dd-'+id);
+  if(el)el.classList.toggle('open');
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.nav-dd'))document.querySelectorAll('.nav-dd').forEach(function(d){d.classList.remove('open');});
+});
+</script>
+</body>
+</html>

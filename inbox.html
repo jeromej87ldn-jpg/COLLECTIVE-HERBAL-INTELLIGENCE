@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inbox — C.H.I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#1a3a2a;--forest-mid:#2d5c42;--forest-light:#4a8c65;
+  --gold:#c8952a;--gold-light:#e8b84b;--night:#0c1a10;
+  --parchment:#f5f0e8;--muted:rgba(245,240,232,0.5);
+  --card:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.08);
+  --text:#f5f0e8;--accent:#c8952a;
+  --tag-bg:rgba(74,140,101,0.15);--tag-border:rgba(74,140,101,0.3);--tag-text:#7acca0;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--night);color:var(--text);min-height:100vh;
+  background-image:radial-gradient(ellipse 70% 50% at 50% -5%,rgba(74,140,101,0.08),transparent 60%);}
+
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:var(--forest);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:100;}
+.nav-logo{text-decoration:none;display:flex;flex-direction:column;}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-light);letter-spacing:.1em;}
+.nav-full{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.5);}
+.nav-right{display:flex;align-items:center;gap:1.5rem;}
+.nav-right a{color:rgba(245,240,232,.6);text-decoration:none;font-size:13px;transition:color .2s;}
+.nav-right a:hover,.nav-right a.active{color:var(--gold-light);}
+.nav-cta{background:var(--gold);color:var(--forest)!important;padding:.5rem 1rem;border-radius:4px;font-weight:500;}
+.nav-inbox{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:6px;border:1px solid rgba(200,149,42,.4);color:var(--gold-light)!important;}
+@media(max-width:760px){.nav-right a:not(.nav-cta):not(.nav-inbox){display:none;}}
+
+/* LAYOUT */
+.page{max-width:900px;margin:0 auto;padding:2.5rem 2.5rem 5rem;display:grid;grid-template-columns:280px 1fr;gap:1.25rem;min-height:calc(100vh - 64px);}
+@media(max-width:680px){.page{grid-template-columns:1fr;padding:1.25rem 1rem 4rem;}}
+
+/* LEFT PANEL */
+.inbox-left{}
+.inbox-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.inbox-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--text);}
+.compose-btn{display:flex;align-items:center;gap:6px;font-size:12px;padding:.4rem .85rem;background:var(--gold);color:var(--forest);border:none;border-radius:5px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;transition:background .2s;}
+.compose-btn:hover{background:var(--gold-light);}
+
+/* FOLDER TABS */
+.folder-tabs{display:flex;gap:.3rem;margin-bottom:1rem;}
+.ftab{font-size:12px;padding:.35rem .85rem;border-radius:5px;border:1px solid var(--card-border);background:transparent;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;display:flex;align-items:center;gap:5px;}
+.ftab:hover{color:var(--text);}
+.ftab.on{background:var(--card);color:var(--text);border-color:rgba(200,149,42,.3);}
+.ftab .badge{background:var(--gold);color:var(--forest);font-size:9px;font-weight:600;border-radius:999px;padding:1px 5px;line-height:1.4;}
+
+/* MESSAGE LIST */
+.msg-list{display:flex;flex-direction:column;gap:.3rem;}
+.msg-item{display:flex;gap:.75rem;align-items:flex-start;padding:.85rem 1rem;background:var(--card);border:1px solid var(--card-border);border-radius:8px;cursor:pointer;transition:border-color .15s;}
+.msg-item:hover{border-color:rgba(200,149,42,.3);}
+.msg-item.active{border-color:rgba(200,149,42,.5);background:rgba(200,149,42,.06);}
+.msg-item.unread .msg-from{font-weight:500;color:var(--text);}
+.msg-avatar{width:36px;height:36px;border-radius:50%;background:var(--forest-mid);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500;color:var(--gold-light);flex-shrink:0;}
+.msg-meta{flex:1;min-width:0;}
+.msg-from{font-size:13px;color:rgba(245,240,232,.7);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.msg-preview{font-size:12px;color:rgba(245,240,232,.35);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.msg-time{font-size:10.5px;color:rgba(245,240,232,.25);flex-shrink:0;padding-top:2px;}
+.unread-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:5px;}
+
+/* RIGHT PANEL — CONVERSATION */
+.inbox-right{background:var(--card);border:1px solid var(--card-border);border-radius:10px;display:flex;flex-direction:column;min-height:500px;}
+.conv-header{padding:1.1rem 1.5rem;border-bottom:1px solid var(--card-border);display:flex;align-items:center;justify-content:space-between;}
+.conv-name{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;}
+.conv-sub{font-size:12px;color:var(--muted);margin-top:1px;}
+.conv-actions{display:flex;gap:.5rem;}
+.conv-btn{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:5px;border:1px solid var(--card-border);background:transparent;cursor:pointer;color:var(--muted);transition:all .15s;}
+.conv-btn:hover{border-color:rgba(200,149,42,.3);color:var(--gold-light);}
+
+.conv-body{flex:1;padding:1.25rem 1.5rem;overflow-y:auto;display:flex;flex-direction:column;gap:1rem;}
+.bubble-wrap{display:flex;gap:.65rem;align-items:flex-end;}
+.bubble-wrap.mine{flex-direction:row-reverse;}
+.bubble-av{width:28px;height:28px;border-radius:50%;background:var(--forest-mid);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:500;color:var(--gold-light);flex-shrink:0;}
+.bubble{max-width:72%;padding:.65rem .9rem;border-radius:10px;font-size:13.5px;line-height:1.6;}
+.bubble.theirs{background:rgba(255,255,255,.06);border:1px solid var(--card-border);color:rgba(245,240,232,.85);border-bottom-left-radius:3px;}
+.bubble.mine{background:rgba(200,149,42,.15);border:1px solid rgba(200,149,42,.25);color:var(--text);border-bottom-right-radius:3px;}
+.bubble-time{font-size:10px;color:rgba(245,240,232,.2);margin-top:3px;}
+.bubble-wrap.mine .bubble-time{text-align:right;}
+
+.conv-input{padding:1rem 1.25rem;border-top:1px solid var(--card-border);display:flex;gap:.65rem;align-items:flex-end;}
+.conv-textarea{flex:1;background:rgba(255,255,255,.05);border:1px solid var(--card-border);border-radius:7px;padding:.65rem .9rem;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--text);outline:none;resize:none;min-height:42px;max-height:120px;line-height:1.5;transition:border-color .2s;}
+.conv-textarea::placeholder{color:rgba(245,240,232,.2);}
+.conv-textarea:focus{border-color:rgba(200,149,42,.4);}
+.send-btn{padding:.6rem 1.1rem;background:var(--gold);color:var(--forest);border:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:background .2s;flex-shrink:0;height:42px;display:flex;align-items:center;gap:6px;}
+.send-btn:hover{background:var(--gold-light);}
+
+/* EMPTY STATE */
+.empty-conv{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;color:var(--muted);}
+.empty-icon{font-size:36px;margin-bottom:1rem;opacity:.4;}
+.empty-conv p{font-size:13.5px;line-height:1.7;}
+
+/* COMPOSE MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:1.5rem;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--forest);border:1px solid rgba(200,149,42,.3);border-radius:12px;width:100%;max-width:480px;}
+.modal-head{padding:1.25rem 1.5rem;border-bottom:1px solid var(--card-border);display:flex;align-items:center;justify-content:space-between;}
+.modal-head h3{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;}
+.modal-close{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1;padding:.25rem;}
+.modal-close:hover{color:var(--text);}
+.modal-body{padding:1.25rem 1.5rem;}
+.mfield{margin-bottom:1rem;}
+.mfield label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:.35rem;}
+.mfield input,.mfield textarea{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--card-border);border-radius:6px;padding:.65rem .9rem;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--text);outline:none;transition:border-color .2s;}
+.mfield input:focus,.mfield textarea:focus{border-color:rgba(200,149,42,.4);}
+.mfield input::placeholder,.mfield textarea::placeholder{color:rgba(245,240,232,.2);}
+.mfield textarea{resize:none;min-height:100px;line-height:1.6;}
+.modal-foot{padding:.85rem 1.5rem 1.25rem;display:flex;justify-content:flex-end;gap:.6rem;}
+.btn-cancel{padding:.55rem 1rem;border-radius:5px;background:transparent;border:1px solid var(--card-border);color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;}
+.btn-send-msg{padding:.55rem 1.25rem;background:var(--gold);color:var(--forest);border:none;border-radius:5px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-chi">C.H.I</span>
+    <span class="nav-full">Collective Herbal Intelligence</span>
+  </a>
+  <div class="nav-right">
+    <a href="herb-match.html">Herb Match</a>
+    <a href="phytochemistry.html">Plant Intelligence</a>
+    <a href="supreme.html">Herbadex</a>
+    <a href="resources.html">Resources</a>
+    <a href="community.html">Community</a>
+    <a href="profile.html">Profile</a>
+    <a href="inbox.html" class="nav-inbox active" title="Inbox">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12v9H2V4z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M2 4l6 5 6-5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+    </a>
+    <a href="join.html" class="nav-cta">Join CHI</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- LEFT: MESSAGE LIST -->
+  <div class="inbox-left">
+    <div class="inbox-header">
+      <span class="inbox-title">Inbox</span>
+      <button class="compose-btn" onclick="openCompose()">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 11l2-2L10 3 10 3l-2-2L2 7l-2 4z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+        New message
+      </button>
+    </div>
+
+    <div class="folder-tabs">
+      <button class="ftab on" onclick="setFolder(this,'inbox')">Inbox <span class="badge">3</span></button>
+      <button class="ftab" onclick="setFolder(this,'sent')">Sent</button>
+    </div>
+
+    <div class="msg-list" id="msg-list"></div>
+  </div>
+
+  <!-- RIGHT: CONVERSATION -->
+  <div class="inbox-right" id="conv-panel">
+    <div class="empty-conv" id="empty-conv">
+      <div class="empty-icon">✉️</div>
+      <p>Select a message to read it,<br>or compose a new one.</p>
+    </div>
+    <div id="conv-view" style="display:none;flex-direction:column;height:100%">
+      <div class="conv-header">
+        <div>
+          <div class="conv-name" id="conv-name"></div>
+          <div class="conv-sub" id="conv-sub"></div>
+        </div>
+        <div class="conv-actions">
+          <button class="conv-btn" title="Delete" onclick="deleteConv()">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 3h9M5 3V2h3v1M4 3l.5 8h4L9 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="conv-body" id="conv-body"></div>
+      <div class="conv-input">
+        <textarea class="conv-textarea" id="reply-input" placeholder="Write a reply…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendReply()}" oninput="autoResize(this)"></textarea>
+        <button class="send-btn" onclick="sendReply()">
+          Send
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M11 6.5L1 1l2 5.5-2 5.5 10-5.5z" fill="currentColor"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- COMPOSE MODAL -->
+<div class="modal-overlay" id="compose-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>New message</h3>
+      <button class="modal-close" onclick="closeCompose()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="mfield">
+        <label>To (username or email)</label>
+        <input type="text" id="compose-to" placeholder="e.g. herbalist_jerome or user@email.com">
+      </div>
+      <div class="mfield">
+        <label>Subject</label>
+        <input type="text" id="compose-subject" placeholder="What's it about?">
+      </div>
+      <div class="mfield">
+        <label>Message</label>
+        <textarea id="compose-body" placeholder="Write your message…"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeCompose()">Cancel</button>
+      <button class="btn-send-msg" onclick="sendNewMessage()">Send message</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ME = localStorage.getItem('chi_display_name') || 'You';
+
+// Demo messages
+const MESSAGES = [
+  {id:1, from:'McLean', avatar:'M', subject:'Re: Ashwagandha stacking', preview:'Tried the 600mg split dose you mentioned — noticed a real difference after week two...', time:'2h ago', unread:true,
+    thread:[
+      {from:'McLean', text:'Hey, just wanted to follow up on the ashwagandha conversation. Tried the 600mg split dose you mentioned — morning and evening. Noticed a real difference after week two. Sleep is noticeably deeper.', time:'2 hours ago'},
+      {from:ME, text:'That\'s great to hear. The split dose is supposed to maintain steadier blood levels. How\'s the morning dose sitting — any grogginess?', time:'1 hour ago'},
+      {from:'McLean', text:'No grogginess at all actually. If anything I feel more alert in the mornings now. Could that be the cortisol reduction?', time:'45 min ago'},
+    ]
+  },
+  {id:2, from:'Carrie', avatar:'C', subject:'Herb Match feedback', preview:'Went through the full flow — the organ explanation section is really good. One thing I noticed...', time:'Yesterday', unread:true,
+    thread:[
+      {from:'Carrie', text:'Went through the full Herb Match flow on my phone. The organ explanation section is really good — that\'s the bit that made it feel different from just a search engine.', time:'Yesterday, 4:12pm'},
+      {from:'Carrie', text:'One thing I noticed — on screen 4 (goals) the chips are a bit small on mobile, hard to tap accurately. Might be worth making them slightly taller.', time:'Yesterday, 4:15pm'},
+    ]
+  },
+  {id:3, from:'CHI Community', avatar:'⬡', subject:'Welcome to C.H.I', preview:'Your account is ready. Explore the Herbadex, try Herb Match, and connect with the community...', time:'3 days ago', unread:false,
+    thread:[
+      {from:'CHI Community', text:'Welcome to Collective Herbal Intelligence. Your account is now active. Start by exploring the Herbadex, try the Herb Match consultation, and introduce yourself in the community. The knowledge is yours — the journey starts now.', time:'3 days ago'},
+    ]
+  },
+];
+
+let activeId = null;
+let folder = 'inbox';
+
+function setFolder(el, f){
+  folder = f;
+  document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  renderList();
+  clearConv();
+}
+
+function renderList(){
+  const list = document.getElementById('msg-list');
+  const msgs = folder === 'sent' ? [] : MESSAGES;
+  if(!msgs.length){
+    list.innerHTML = '<div style="font-size:13px;color:var(--muted);text-align:center;padding:2rem 0;font-style:italic">No messages here yet.</div>';
+    return;
+  }
+  list.innerHTML = msgs.map(m=>`
+    <div class="msg-item${m.unread?' unread':''}${m.id===activeId?' active':''}" onclick="openConv(${m.id})">
+      <div class="msg-avatar">${m.avatar}</div>
+      <div class="msg-meta">
+        <div class="msg-from">${m.from}</div>
+        <div class="msg-preview">${m.subject}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <div class="msg-time">${m.time}</div>
+        ${m.unread?'<div class="unread-dot"></div>':''}
+      </div>
+    </div>`).join('');
+}
+
+function openConv(id){
+  const msg = MESSAGES.find(m=>m.id===id);
+  if(!msg) return;
+  activeId = id;
+  msg.unread = false;
+  renderList();
+
+  document.getElementById('empty-conv').style.display='none';
+  const cv = document.getElementById('conv-view');
+  cv.style.display='flex';
+  document.getElementById('conv-name').textContent = msg.from;
+  document.getElementById('conv-sub').textContent = msg.subject;
+
+  const body = document.getElementById('conv-body');
+  body.innerHTML = msg.thread.map(b=>{
+    const mine = b.from === ME;
+    const av = mine ? ME.charAt(0).toUpperCase() : b.from.charAt(0).toUpperCase();
+    return `<div class="bubble-wrap${mine?' mine':''}">
+      <div class="bubble-av">${av}</div>
+      <div>
+        <div class="bubble ${mine?'mine':'theirs'}">${b.text}</div>
+        <div class="bubble-time">${b.time}</div>
+      </div>
+    </div>`;
+  }).join('');
+  body.scrollTop = body.scrollHeight;
+}
+
+function sendReply(){
+  const input = document.getElementById('reply-input');
+  const text = input.value.trim();
+  if(!text || !activeId) return;
+  const msg = MESSAGES.find(m=>m.id===activeId);
+  msg.thread.push({from:ME, text, time:'Just now'});
+  input.value = '';
+  input.style.height = '';
+  openConv(activeId);
+}
+
+function deleteConv(){
+  if(!activeId) return;
+  const idx = MESSAGES.findIndex(m=>m.id===activeId);
+  if(idx>-1) MESSAGES.splice(idx,1);
+  clearConv();
+  renderList();
+}
+
+function clearConv(){
+  activeId = null;
+  document.getElementById('empty-conv').style.display='flex';
+  document.getElementById('conv-view').style.display='none';
+}
+
+function openCompose(){ document.getElementById('compose-modal').classList.add('open'); }
+function closeCompose(){ document.getElementById('compose-modal').classList.remove('open'); }
+
+function sendNewMessage(){
+  const to = document.getElementById('compose-to').value.trim();
+  const subject = document.getElementById('compose-subject').value.trim();
+  const body = document.getElementById('compose-body').value.trim();
+  if(!to || !body) return;
+  closeCompose();
+  document.getElementById('compose-to').value='';
+  document.getElementById('compose-subject').value='';
+  document.getElementById('compose-body').value='';
+  // In production: Supabase insert message here
+  alert('Message sent to ' + to);
+}
+
+function autoResize(el){
+  el.style.height='auto';
+  el.style.height=Math.min(el.scrollHeight,120)+'px';
+}
+
+renderList();
+</script>
+</body>
+</html>

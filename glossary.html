@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glossary — C.H.I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#1a3a2a;--forest-mid:#2d5c42;--forest-light:#4a8c65;
+  --parchment:#f5f0e8;--gold:#c8952a;--gold-light:#e8b84b;--night:#0c1a10;
+  --bg:#0c1a10;--header:#1a3a2a;--card:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.08);
+  --text:#f5f0e8;--muted:rgba(245,240,232,0.52);--accent:#c8952a;
+  --tag-bg:rgba(74,140,101,0.15);--tag-border:rgba(74,140,101,0.3);--tag-text:#7acca0;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
+  background-image:radial-gradient(ellipse 80% 50% at 50% -5%,rgba(74,140,101,0.12),transparent 60%);}
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:var(--header);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:50;}
+.nav-logo{text-decoration:none;display:flex;flex-direction:column;}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-light);letter-spacing:.1em;}
+.nav-full{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.5);}
+.nav-right{display:flex;align-items:center;gap:1.5rem;}
+.nav-right a{color:rgba(245,240,232,.6);text-decoration:none;font-size:13px;transition:color .2s;}
+.nav-right a:hover,.nav-right a.active{color:var(--gold-light);}
+.nav-join{background:var(--gold);color:var(--forest)!important;padding:.5rem 1rem;border-radius:4px;font-weight:500;}
+@media(max-width:760px){.nav-right a:not(.nav-join){display:none;}}
+
+.wrap{max-width:820px;margin:0 auto;padding:3rem 1.5rem 5rem;}
+.page-h{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:500;line-height:1.05;}
+.page-sub{font-size:15px;color:var(--muted);line-height:1.7;margin-top:.5rem;max-width:60ch;}
+
+.search-box{position:relative;margin:1.75rem 0 1rem;}
+.search-box input{width:100%;background:var(--card);border:1px solid var(--card-border);border-radius:10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;padding:.9rem 1rem .9rem 2.6rem;outline:none;}
+.search-box input:focus{border-color:var(--gold);}
+.search-box svg{position:absolute;left:.95rem;top:50%;transform:translateY(-50%);color:var(--muted);}
+.count-line{font-size:12.5px;color:var(--muted);margin-bottom:1rem;}
+
+.az{position:sticky;top:64px;background:var(--bg);padding:.7rem 0;display:flex;flex-wrap:wrap;gap:.25rem;border-bottom:1px solid var(--card-border);z-index:40;margin-bottom:1rem;}
+.az a{font-size:12.5px;font-weight:500;color:var(--muted);text-decoration:none;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;border-radius:6px;transition:all .15s;}
+.az a:hover{background:var(--card);color:var(--gold-light);}
+.az a.empty{opacity:.25;pointer-events:none;}
+
+.letter{margin-bottom:.6rem;scroll-margin-top:120px;}
+.letter-head{display:flex;align-items:center;gap:.8rem;width:100%;background:none;border:none;cursor:pointer;padding:.7rem .2rem;border-bottom:1px solid var(--card-border);text-align:left;}
+.letter-glyph{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:var(--gold-light);line-height:1;width:34px;}
+.letter-meta{flex:1;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+.letter-chev{color:var(--muted);transition:transform .25s;}
+.letter.collapsed .letter-chev{transform:rotate(-90deg);}
+.letter-body{padding-top:.5rem;}
+.letter.collapsed .letter-body{display:none;}
+
+.term{padding:1rem .2rem;border-bottom:1px solid rgba(255,255,255,.05);}
+.term-top{display:flex;align-items:baseline;gap:.7rem;flex-wrap:wrap;}
+.term-name{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:500;color:var(--text);}
+.term-cat{font-size:10px;letter-spacing:.07em;text-transform:uppercase;padding:.2rem .55rem;border-radius:999px;background:var(--tag-bg);border:1px solid var(--tag-border);color:var(--tag-text);}
+.term-def{font-size:14.5px;line-height:1.7;color:rgba(245,240,232,.82);margin-top:.4rem;}
+.no-results{text-align:center;padding:3rem;color:var(--muted);font-style:italic;display:none;}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo"><span class="nav-chi">C.H.I</span><span class="nav-full">Collective Herbal Intelligence</span></a>
+  <div class="nav-right">
+    <a href="symptom-finder.html">Symptom Finder</a>
+    <a href="supreme.html">Herbadex</a>
+    <a href="phytochemistry.html">Plant Intelligence</a>
+    <a href="community.html">Community</a>
+    <a href="profile.html">Profile</a>
+    <a href="glossary.html" class="active">Glossary</a>
+    <a href="join.html" class="nav-join">Join CHI</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="page-h">Glossary</div>
+  <div class="page-sub">Every technical, scientific and traditional term used across CHI — explained in plain English. If a word in a herb profile ever goes over your head, it lives here.</div>
+
+  <div class="search-box">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.6"/><path d="M11 11l3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    <input id="search" type="text" placeholder="Search a term or definition…" oninput="filterTerms()">
+  </div>
+  <div class="count-line" id="count-line"></div>
+
+  <div class="az" id="az"></div>
+  <div id="glossary"></div>
+  <div class="no-results" id="no-results">No terms match that search.</div>
+</div>
+
+<script>
+const TERMS = [
+  {t:'5-HT1A', c:'Pharmacology', d:'A serotonin receptor subtype in the brain. Partial agonism at this receptor produces anti-anxiety effects without full sedation — the mechanism of several anxiolytic herbs.'},
+  {t:'5-LOX (5-lipoxygenase)', c:'Pharmacology', d:'An enzyme that produces leukotrienes — inflammatory chemicals involved in allergies and asthma. Herbs that inhibit 5-LOX reduce this inflammatory pathway alongside or instead of COX inhibition.'},
+  {t:'ACE inhibitor', c:'Pharmacology', d:'Angiotensin-converting enzyme inhibitor. Blocks a step in the chain that raises blood pressure. Oleuropein in olive leaf works partly through this pathway — the same mechanism as some blood pressure medications.'},
+  {t:'AChE (acetylcholinesterase)', c:'Pharmacology', d:'The enzyme that breaks down acetylcholine in the brain. Inhibiting it increases acetylcholine — improving memory and focus. Rosmarinic acid in lemon balm works this way, the same mechanism as drugs used in early Alzheimer\'s treatment.'},
+  {t:'Aglycone', c:'Chemistry', d:'The active part of a glycoside after the sugar has been removed during digestion. The aglycone is usually the compound that produces the medicinal effect — for example, elenolic acid released from oleuropein.'},
+  {t:'AMPK', c:'Pharmacology', d:'Adenosine monophosphate-activated protein kinase — a master metabolic switch in every cell. When activated it increases glucose uptake, burns fat and reduces inflammation. Berberine and chlorogenic acid activate AMPK through the same pathway as metformin.'},
+  {t:'Anthocyanins', c:'Chemistry', d:'A subgroup of flavonoids responsible for red, purple and blue pigments in plants — hibiscus, elderberry, bilberry. Potent antioxidants with anti-inflammatory and cardiovascular effects.'},
+  {t:'Antispasmodic', c:'Pharmacology', d:'A herb or compound that relaxes muscle spasm — either in the digestive tract or in skeletal muscle. Works mainly by blocking calcium channels in smooth muscle.'},
+  {t:'Anxiolytic', c:'Pharmacology', d:'Something that reduces anxiety without necessarily causing sedation. Many herbs (ashwagandha, passionflower, lemon balm) have anxiolytic action at lower doses before becoming sedative at higher doses.'},
+  {t:'Apoptosis', c:'Pharmacology', d:'Programmed cell death — the body\'s controlled process for removing damaged or unnecessary cells. Several plant compounds are studied because they trigger apoptosis in cancer cells while leaving healthy cells unaffected.'},
+  {t:'Aquaretic', c:'Pharmacology', d:'A type of diuretic that increases water excretion without causing significant loss of electrolytes like potassium or sodium. Most herbal diuretics (dandelion, nettle) are aquaretics — safer for long-term use than pharmaceutical loop diuretics.'},
+  {t:'Arabinogalactans', c:'Chemistry', d:'A type of polysaccharide found in marshmallow, echinacea and other herbs. Forms a protective gel on mucous membranes and activates immune cells in the gut.'},
+  {t:'BBB (blood-brain barrier)', c:'Pharmacology', d:'A protective barrier of specialised cells that controls what can pass from the bloodstream into the brain. Some plant compounds (hericenones, erinacines, rosmarinic acid) can cross it — a requirement for any herb to have direct effects on the brain.'},
+  {t:'BDNF', c:'Pharmacology', d:'Brain-derived neurotrophic factor — a protein that supports the growth and maintenance of brain cells, learning and memory. Lion\'s mane erinacines stimulate BDNF production.'},
+  {t:'Beta-glucans', c:'Chemistry', d:'A type of polysaccharide found in medicinal mushrooms (lion\'s mane, reishi) and oats. They bind to Dectin-1 receptors on immune cells, activating the body\'s innate immune response.'},
+  {t:'Carminative', c:'Pharmacology', d:'A herb that relieves intestinal gas and smooth muscle spasm, typically through volatile oils that relax the gut wall. Fennel, peppermint and clove are carminatives.'},
+  {t:'Carotenoids', c:'Chemistry', d:'Fat-soluble plant pigments — the reds, oranges and yellows of plants. Beta-carotene converts to vitamin A; lutein and zeaxanthin accumulate in the eye. Found in moringa, calendula, dandelion and nettle.'},
+  {t:'CB2 receptor', c:'Pharmacology', d:'A cannabinoid receptor found mainly in immune tissues and the nervous system. Unlike CB1 (which produces the psychoactive effects of cannabis), CB2 activation reduces inflammation without psychoactivity. Beta-caryophyllene in clove and black pepper is the only dietary compound known to directly activate it.'},
+  {t:'Cholagogue', c:'Pharmacology', d:'A herb that stimulates the gallbladder to release stored bile — aiding fat digestion and liver detoxification. Dandelion root is a well-known cholagogue.'},
+  {t:'Choleretic', c:'Pharmacology', d:'A herb that stimulates the liver to produce more bile. Distinct from a cholagogue (which releases stored bile). Dandelion root and milk thistle do both.'},
+  {t:'Cholecystokinin (CCK)', c:'Pharmacology', d:'A hormone released in the gut in response to bitter-tasting compounds. Triggers bile release from the gallbladder and digestive enzyme release from the pancreas — the mechanism behind bitter digestive herbs.'},
+  {t:'COX (COX-1, COX-2)', c:'Pharmacology', d:'Cyclooxygenase enzymes that produce prostaglandins — chemical messengers of inflammation and pain. Ibuprofen and aspirin block COX. Many anti-inflammatory herbs (quercetin, oleuropein, thymoquinone) also inhibit COX, but herbs that hit COX-2 specifically cause less gut damage than those targeting COX-1.'},
+  {t:'CYP3A4', c:'Pharmacology', d:'A liver enzyme responsible for breaking down roughly half of all medications. Herbs like St John\'s Wort strongly induce it (making drugs less effective); piperine from black pepper inhibits it (making drugs and other herbs more potent). Critical for drug-herb interactions.'},
+  {t:'Cytokine', c:'Pharmacology', d:'A signalling protein released by immune cells. Inflammatory cytokines (TNF-α, IL-1β, IL-6) drive inflammation and tissue damage when overproduced. Many herbs work by reducing cytokine levels.'},
+  {t:'Dectin-1', c:'Pharmacology', d:'An immune receptor on macrophages and other white blood cells that recognises beta-glucan structures — normally a signal that a fungal pathogen is present. Medicinal mushroom beta-glucans trigger this receptor to activate the immune system.'},
+  {t:'Demulcent', c:'Pharmacology', d:'A herb that soothes irritated or inflamed mucous membranes — throat, stomach or bowel — by forming a protective coating. Marshmallow and slippery elm are classic demulcents.'},
+  {t:'Diaphoretic', c:'Pharmacology', d:'A herb that promotes sweating, used traditionally to break fevers and help the body eliminate waste through the skin. Hot diaphoretics (ginger, elderflower) increase circulation; cool diaphoretics (hibiscus, peppermint) lower temperature.'},
+  {t:'DHT (dihydrotestosterone)', c:'Pharmacology', d:'A potent androgen hormone converted from testosterone by the enzyme 5-alpha reductase. High DHT is linked to hair loss and benign prostate enlargement. Beta-sitosterol in nettle root and saw palmetto inhibit this conversion.'},
+  {t:'Ellagitannins', c:'Chemistry', d:'A type of hydrolysable tannin that breaks down in the gut to produce ellagic acid, which gut bacteria then convert to urolithins — compounds with anti-aging and anti-inflammatory properties. Found in raspberry leaf and pomegranate.'},
+  {t:'Emmenagogue', c:'Pharmacology', d:'A herb that stimulates or regulates menstrual flow by acting on uterine smooth muscle. Mugwort is the most documented Western example. Important safety note: emmenagogues are contraindicated in pregnancy.'},
+  {t:'Emollient', c:'Pharmacology', d:'A herb that softens and soothes skin or mucous membranes externally. Similar to demulcent (internal) — both work through mucilaginous polysaccharides.'},
+  {t:'Ergosterol', c:'Chemistry', d:'The fungal equivalent of cholesterol — found in fungal cell membranes. Many antifungal compounds (including thymoquinone and oleuropein) work by disrupting ergosterol synthesis, similar to pharmaceutical azole antifungals.'},
+  {t:'Expectorant', c:'Pharmacology', d:'A herb that helps the body clear mucus from the lungs and airways. Stimulating expectorants (thyme, elecampane) increase mucus secretion; relaxing expectorants (mullein, marshmallow) reduce its viscosity, making it easier to clear.'},
+  {t:'Flavonols', c:'Chemistry', d:'A subgroup of flavonoids including quercetin, kaempferol and rutin. Among the most widely distributed plant compounds, with strong antioxidant and anti-inflammatory properties.'},
+  {t:'Flavonolignans', c:'Chemistry', d:'A hybrid compound class — part flavonoid, part lignan. Silymarin from milk thistle is the most important example, responsible for its exceptional liver-protective action.'},
+  {t:'Free radicals / ROS', c:'Chemistry', d:'Unstable molecules with unpaired electrons — reactive oxygen species (ROS) — that damage cells by stealing electrons from proteins, fats and DNA. Antioxidant plant compounds neutralise them.'},
+  {t:'Fulvic acid', c:'Chemistry', d:'A low-molecular-weight organic acid found in soil and concentrated in shilajit. Chelates minerals into more absorbable forms, and participates in mitochondrial electron transport, improving cellular energy production.'},
+  {t:'Glucosinolates', c:'Chemistry', d:'Sulphur-containing compounds found in moringa, broccoli and mustard family plants. Converted by the enzyme myrosinase into isothiocyanates (similar to sulforaphane) — which activate the liver\'s phase II detoxification system and have anticancer properties.'},
+  {t:'Haemostatic', c:'Pharmacology', d:'Something that stops or slows bleeding. Haemostatic herbs (yarrow, raspberry leaf, nettle) work through tannins that precipitate proteins on wound surfaces and vitamin K precursors that support blood clotting.'},
+  {t:'Hepatoprotective', c:'Pharmacology', d:'Protects liver cells from damage. Silymarin in milk thistle is the most studied hepatoprotective plant compound — used clinically for toxic liver injury.'},
+  {t:'Hericenones', c:'Chemistry', d:'Aromatic compounds found in the fruiting body of lion\'s mane mushroom. Cross the blood-brain barrier and stimulate nerve growth factor (NGF) synthesis in the hippocampus, supporting neuroplasticity and memory.'},
+  {t:'Erinacines', c:'Chemistry', d:'Diterpene compounds found in the mycelium (root network) of lion\'s mane mushroom. Cross the blood-brain barrier more efficiently than hericenones and stimulate both NGF and BDNF — making them particularly studied for neurodegeneration prevention.'},
+  {t:'Hypnotic', c:'Pharmacology', d:'A herb or compound that promotes sleep — stronger in effect than a simple relaxant. Valerian, hops and high-dose passionflower are hypnotics.'},
+  {t:'IGF-1', c:'Pharmacology', d:'Insulin-like growth factor 1 — a hormone that promotes cell and tissue growth, particularly in muscle. Ursolic acid (lemon balm, rosemary) activates IGF-1 signalling in skeletal muscle.'},
+  {t:'IL-1β / IL-6', c:'Pharmacology', d:'Interleukin inflammatory cytokines. IL-6 in particular is elevated in chronic inflammation and many diseases. Demulcent herbs (marshmallow, mullein) have been shown to reduce IL-6 in mucosal tissue.'},
+  {t:'Iridoids', c:'Chemistry', d:'A type of terpenoid found in olives, valerian, plantain and many other plants. Often bitter and anti-inflammatory. Oleuropein (olive leaf) is an iridoid glycoside — one of the most studied natural antimicrobials.'},
+  {t:'Isothiocyanates', c:'Chemistry', d:'Sulphur-containing compounds released when glucosinolates are broken down by myrosinase. Sulforaphane (from broccoli) and glucomoringin (from moringa) are isothiocyanates — they strongly activate the liver\'s detox enzymes and have anticancer properties.'},
+  {t:'Leukotrienes', c:'Pharmacology', d:'Inflammatory chemicals produced by the 5-LOX enzyme pathway, involved in asthma, allergies and skin inflammation. Several herbs inhibit 5-LOX to reduce leukotriene production.'},
+  {t:'Lymphagogue', c:'Pharmacology', d:'A herb that stimulates lymphatic circulation and clears lymphatic congestion — supporting immune cell movement and drainage of tissue fluid. Calendula and cleavers are lymphagogues.'},
+  {t:'MAO / MAO-A inhibitor', c:'Pharmacology', d:'Monoamine oxidase is an enzyme that breaks down serotonin, dopamine and noradrenaline. MAO inhibitors increase these neurotransmitters, producing antidepressant effects. Hypericin in St John\'s Wort has mild MAO inhibitory action.'},
+  {t:'Mitophagy', c:'Pharmacology', d:'A cellular cleaning process where damaged mitochondria (energy-producing organelles) are broken down and recycled. Urolithin A — produced from ellagic acid in raspberry leaf — activates mitophagy and is one of the most studied compounds in anti-aging research.'},
+  {t:'Monoterpenes', c:'Chemistry', d:'The smallest terpene molecules (10 carbons), responsible for the scent of most herbs. Menthol (peppermint), thymol (thyme), linalool (lavender) and citral (lemon balm) are monoterpenes. Volatile and easily lost with heat.'},
+  {t:'Mucilage', c:'Chemistry', d:'A thick, slippery polysaccharide produced by some plants — notably marshmallow and mullein — that forms a protective gel when wet. This gel coats and soothes irritated mucous membranes in the gut and lungs.'},
+  {t:'Myrosinase', c:'Chemistry', d:'An enzyme in moringa and brassica plants that converts glucosinolates into active isothiocyanates. Heat destroys myrosinase — which is why raw moringa powder preserves more of its detoxifying potential than heated products.'},
+  {t:'NF-κB', c:'Pharmacology', d:'Nuclear factor kappa B — a key molecular switch that controls inflammation genes. When activated it triggers the production of inflammatory cytokines. Many anti-inflammatory herbs (ashwagandha withanolides, olive leaf oleuropein, nigella thymoquinone) work by blocking NF-κB.'},
+  {t:'NGF (nerve growth factor)', c:'Pharmacology', d:'A protein that supports the survival, development and function of nerve cells. Hericenones and erinacines from lion\'s mane mushroom stimulate NGF production in the brain — making lion\'s mane unique among herbs for nerve regeneration support.'},
+  {t:'NK cells (natural killer cells)', c:'Pharmacology', d:'A type of immune cell that destroys virus-infected cells and cancer cells without needing prior exposure. Beta-glucans in medicinal mushrooms and beta-sitosterol in nettle/moringa activate NK cells.'},
+  {t:'Nrf2 / ARE pathway', c:'Pharmacology', d:'A master regulator of cellular antioxidant defence. When activated by compounds like sulforaphane, quercetin or thymoquinone, Nrf2 switches on genes that produce the body\'s own antioxidant enzymes (SOD, catalase, glutathione peroxidase) — a more powerful protection than dietary antioxidants alone.'},
+  {t:'Oleuropein', c:'Chemistry', d:'The primary bioactive compound in olive leaf — an iridoid glycoside. Converted to elenolic acid (its active aglycone) in the gut. Has antimicrobial, antiviral, antihypertensive and antioxidant actions, and is one of the most clinically studied herbal compounds.'},
+  {t:'Orexin', c:'Pharmacology', d:'A brain peptide that promotes wakefulness and appetite. Some sedative herbs and compounds inhibit orexin signalling as part of their sleep-promoting mechanism.'},
+  {t:'Phytoestrogen', c:'Chemistry', d:'A plant compound that weakly mimics the hormone oestrogen by binding to oestrogen receptors. Isoflavones (red clover) and lignans (flaxseed) are phytoestrogens. Effects can be oestrogenic or anti-oestrogenic depending on context.'},
+  {t:'Proanthocyanidins (OPCs)', c:'Chemistry', d:'Condensed tannins — chains of catechin units. Found in grape seed, pine bark, hibiscus and raspberry leaf. Among the most potent natural vascular protectives, strengthening capillary walls by inhibiting collagenase.'},
+  {t:'Prostaglandins', c:'Pharmacology', d:'Hormone-like chemicals produced via the COX enzyme pathway that mediate inflammation, pain and fever. NSAIDs and COX-inhibiting herbs reduce prostaglandin production.'},
+  {t:'RCT (randomised controlled trial)', c:'General', d:'The gold standard of clinical research — a study where participants are randomly assigned to the herb or a placebo, and neither the participant nor the researcher knows who got which. When CHI mentions RCT evidence, this is what it means.'},
+  {t:'Rosmarinic acid', c:'Chemistry', d:'A phenolic acid found in lemon balm, rosemary and sage. One of the most studied natural compounds for brain health — inhibits AChE (improving acetylcholine), reduces inflammation via COX-2 and 5-LOX inhibition, and has antiviral properties.'},
+  {t:'Senolytic', c:'Pharmacology', d:'A compound that selectively clears senescent cells — old, damaged cells that have stopped dividing but release inflammatory signals that accelerate aging. Fisetin (strawberry) is one of the most studied natural senolytics.'},
+  {t:'Sesquiterpenes', c:'Chemistry', d:'Terpene molecules built from three isoprene units (15 carbons). Larger and less volatile than monoterpenes — responsible for deeper herbal aromas. Beta-caryophyllene (clove, black pepper) is a notable sesquiterpene.'},
+  {t:'Silymarin', c:'Chemistry', d:'The active complex in milk thistle — a mixture of flavonolignans (silybin, silychristin, silydianin). Among the most clinically validated hepatoprotective compounds; used in emergency medicine for amanita (death cap mushroom) poisoning.'},
+  {t:'SIRT1', c:'Pharmacology', d:'Sirtuin 1 — an enzyme linked to longevity and cellular stress resistance. Activated by resveratrol, fisetin and other plant compounds. Often described as a "longevity gene" activator.'},
+  {t:'SOD (superoxide dismutase)', c:'Pharmacology', d:'One of the body\'s primary antioxidant enzymes, converting superoxide radicals into less harmful compounds. Nrf2-activating herbs (sulforaphane, quercetin) upregulate SOD production.'},
+  {t:'STAT3', c:'Pharmacology', d:'A transcription factor involved in cancer cell survival and proliferation. Ursolic acid (lemon balm, rosemary) and several other plant compounds inhibit STAT3, which is why they show anticancer activity in laboratory research.'},
+  {t:'Styptic', c:'Pharmacology', d:'Stops external bleeding when applied topically. Tannin-rich herbs (yarrow, raspberry leaf, witch hazel) are styptics — the tannins precipitate proteins and contract blood vessels on the wound surface.'},
+  {t:'Sulforaphane', c:'Chemistry', d:'An isothiocyanate produced from glucosinolates in broccoli sprouts and moringa. The strongest known natural activator of the Nrf2 antioxidant pathway. Active in human clinical trials for inflammation, neuroprotection and cancer prevention.'},
+  {t:'TAS2R', c:'Pharmacology', d:'Bitter taste receptors found on the tongue and throughout the gut lining. When activated by bitter herbs (dandelion, mugwort, gentian), they trigger the full cephalic-phase digestive response — stomach acid, bile, pancreatic enzymes — simultaneously. Must be tasted to work: capsulated bitter herbs bypass this mechanism.'},
+  {t:'Terpenoids (terpenes)', c:'Chemistry', d:'The largest and most diverse class of plant compounds, built from repeating five-carbon isoprene units. Includes volatile scent compounds (monoterpenes), deeper bioactives (sesqui-, di-, tri-terpenes), and large structural compounds (carotenoids, sterols). Responsible for the smell of most herbs.'},
+  {t:'Th1/Th2 balance', c:'Pharmacology', d:'Two arms of the immune system. Th1 drives cellular immunity (fighting viruses and bacteria); Th2 drives humoral immunity (antibodies). When they become imbalanced, autoimmune conditions or allergies can result. Herbs like nigella (thymoquinone) are studied for normalising this balance.'},
+  {t:'Thymoquinone', c:'Chemistry', d:'The primary bioactive compound in nigella (black seed) — a benzoquinone phenol. One of the most multi-functional natural compounds known: simultaneously inhibits COX-1/2, 5-LOX and NF-κB; disrupts microbial membranes; modulates immune balance. Outperforms standard antifungals against Candida in some laboratory studies.'},
+  {t:'TNF-α', c:'Pharmacology', d:'Tumour necrosis factor alpha — a key pro-inflammatory cytokine. Elevated in chronic inflammation, autoimmune disease and metabolic disorders. Many anti-inflammatory herbs reduce TNF-α production.'},
+  {t:'Triterpenes', c:'Chemistry', d:'Large terpene molecules (30 carbons) found in herb roots, bark and resins. Oleanolic acid, ursolic acid and withanolides are triterpenes. Often anti-inflammatory, hepatoprotective or adaptogenic.'},
+  {t:'Urolithins', c:'Chemistry', d:'Compounds produced when gut bacteria metabolise ellagic acid (from ellagitannins in raspberry leaf and pomegranate). Urolithin A is the most studied form — it activates mitophagy and has significant anti-aging and anti-inflammatory research behind it. Production depends on gut microbiome composition.'},
+  {t:'Vulnerary', c:'Pharmacology', d:'A herb that promotes wound healing and tissue repair, typically by stimulating collagen synthesis and reducing the enzymes that degrade healing tissue. Calendula is the most evidenced vulnerary herb.'},
+  {t:'Adaptogen', c:'Pharmacology', d:'A herb traditionally said to help the body cope with stress and return to balance, supporting energy and resilience rather than targeting a single symptom.'},
+  {t:'Adulterant', c:'Quality', d:'A cheaper, incorrect or contaminating plant or substance mixed into a herb product — by mistake or to cut costs. A key reason quality testing matters.'},
+  {t:'Alkaloids', c:'Chemistry', d:'A large family of nitrogen-containing plant compounds, often biologically active and sometimes potent. Caffeine and morphine are alkaloids.'},
+  {t:'Anti-inflammatory', c:'Pharmacology', d:'Something that may help calm inflammation — the body\u2019s redness, heat and swelling response to injury or stress.'},
+  {t:'Antioxidant', c:'Chemistry', d:'A compound that helps protect cells from damage caused by unstable molecules called free radicals.'},
+  {t:'Autoimmune', c:'Safety', d:'When the immune system mistakenly attacks the body\u2019s own tissues. Relevant because some herbs may stimulate immune activity.'},
+  {t:'Ayurveda', c:'Tradition', d:'A traditional system of medicine from India, over 3,000 years old, based on balancing the body, mind and natural elements.'},
+  {t:'Balya', c:'Ayurveda', d:'An Ayurvedic term for a herb that gives strength and tone to the body.'},
+  {t:'Benzodiazepine', c:'Safety', d:'A class of sedative medicines used for anxiety or sleep. Flagged because some calming herbs may add to their effect.'},
+  {t:'Bioavailability', c:'Pharmacology', d:'How much of a compound your body can actually absorb and use after you take it.'},
+  {t:'Botanical name', c:'Botany', d:'The official two-part Latin name of a plant (e.g. Withania somnifera), used worldwide so there is no confusion between common names. Also called the binomial or Latin name.'},
+  {t:'Churna', c:'Ayurveda', d:'In Ayurveda, a finely ground herbal powder.'},
+  {t:'CNS depressant', c:'Safety', d:'Something that slows down the central nervous system (brain and spinal cord) — for example, causing drowsiness.'},
+  {t:'Constituent', c:'Chemistry', d:'Any individual compound found within a herb. The \u201cactive constituents\u201d are the ones thought to produce its effects.'},
+  {t:'Contraindication', c:'Safety', d:'A reason not to use a herb in a particular situation. \u201cAbsolute\u201d means never; \u201crelative\u201d means use with caution.'},
+  {t:'Convalescence', c:'General', d:'The recovery period after an illness, when gentle restorative herbs are traditionally used.'},
+  {t:'Decoction', c:'Preparation', d:'A preparation made by simmering tougher plant parts — roots or bark — in water to draw out their compounds.'},
+  {t:'Dosha', c:'Ayurveda', d:'In Ayurveda, one of three mind-body energies: Vata, Pitta and Kapha. Balance between them is seen as the basis of health.'},
+  {t:'Drug\u2013herb interaction', c:'Safety', d:'When a herb changes how a medicine works — making it stronger, weaker, or causing unwanted effects.'},
+  {t:'Energetics', c:'Tradition', d:'A traditional way of describing a herb by its qualities — warming or cooling, drying or moistening — rather than by its chemistry.'},
+  {t:'Extract', c:'Preparation', d:'A concentrated form of a herb, where the active parts have been drawn out using water, alcohol or another solvent.'},
+  {t:'Family (plant family)', c:'Botany', d:'A broad botanical grouping of related plants. For example, Solanaceae is the nightshade family.'},
+  {t:'Flavonoids', c:'Chemistry', d:'A widespread group of plant compounds, often antioxidant, responsible for many of the colours found in plants.'},
+  {t:'Functional mushroom', c:'General', d:'A mushroom used for health support rather than as food alone — such as reishi or lion\u2019s mane.'},
+  {t:'GABA / GABAergic', c:'Pharmacology', d:'GABA is a calming chemical messenger in the brain. \u201cGABAergic\u201d describes anything that works through it, often producing a relaxing effect.'},
+  {t:'GDPR (UK GDPR)', c:'Regulatory', d:'The UK\u2019s data-protection law, governing how personal information must be collected, stored and used.'},
+  {t:'Genus', c:'Botany', d:'The first part of a plant\u2019s Latin name — a group of closely related species.'},
+  {t:'Glycosides', c:'Chemistry', d:'Compounds where a sugar is attached to another molecule. The sugar often changes how the compound is absorbed or activated in the body.'},
+  {t:'Glycowithanolides', c:'Chemistry', d:'Withanolides bound to a sugar — a sub-group found in ashwagandha, studied for antioxidant and anti-stress effects.'},
+  {t:'HPA axis', c:'Pharmacology', d:'The hypothalamic\u2013pituitary\u2013adrenal axis: the body\u2019s central stress-response system, which controls hormones such as cortisol.'},
+  {t:'Hyperthyroidism', c:'Safety', d:'An overactive thyroid gland. Relevant because some herbs may further raise thyroid activity.'},
+  {t:'ICO', c:'Regulatory', d:'The Information Commissioner\u2019s Office — the UK regulator for data protection and privacy.'},
+  {t:'Immunomodulator', c:'Pharmacology', d:'Something that adjusts the immune system\u2019s activity — turning it up or down toward balance.'},
+  {t:'Immunosuppressant', c:'Safety', d:'A medicine that deliberately lowers immune activity (for example after a transplant). Flagged alongside immune-stimulating herbs.'},
+  {t:'Indication', c:'Pharmacology', d:'The condition or purpose a herb is traditionally used for.'},
+  {t:'Infusion', c:'Preparation', d:'A preparation made by steeping delicate plant parts — leaves or flowers — in hot water, much like a tea.'},
+  {t:'Ksheerapaka', c:'Ayurveda', d:'An Ayurvedic milk decoction — a herb gently simmered in milk and water.'},
+  {t:'Lactation', c:'Safety', d:'Breastfeeding — a period when herb safety needs particular care.'},
+  {t:'Materia medica', c:'General', d:'The collected body of knowledge about medicinal substances and how they are used.'},
+  {t:'Mechanism of action', c:'Pharmacology', d:'How a herb or compound actually produces its effect in the body, at a biological level.'},
+  {t:'MHRA', c:'Regulatory', d:'The Medicines and Healthcare products Regulatory Agency — the UK body that regulates medicines and sets the rules on what health claims may be made.'},
+  {t:'Monograph', c:'General', d:'A detailed, structured profile of a single herb, covering its identity, uses, dosing and safety.'},
+  {t:'Native', c:'Botany', d:'Growing naturally in a particular region, without having been introduced by humans.'},
+  {t:'Nervine', c:'Pharmacology', d:'A herb that supports the nervous system — often by calming or gently restoring it.'},
+  {t:'Paediatric', c:'Safety', d:'Relating to children, whose dosing and safety considerations differ from adults.'},
+  {t:'Pharmacology', c:'Pharmacology', d:'The science of how substances interact with the body.'},
+  {t:'Phenolic acids', c:'Chemistry', d:'A group of antioxidant plant compounds built around a phenol structure.'},
+  {t:'Phytochemistry', c:'Chemistry', d:'The study of the chemical compounds produced by plants.'},
+  {t:'Phytosterol', c:'Chemistry', d:'A plant version of cholesterol. Some phytosterols are studied for anti-inflammatory effects.'},
+  {t:'Polysaccharides', c:'Chemistry', d:'Large chains of sugar molecules. In herbs and mushrooms they are often linked to immune support.'},
+  {t:'Posology', c:'Pharmacology', d:'The study of dosage — how much of a herb to take, and how often.'},
+  {t:'Qi (Chi)', c:'Tradition', d:'In Traditional Chinese Medicine, the vital life-force energy flowing through the body. It is also the meaning behind the name C.H.I.'},
+  {t:'Rasa', c:'Ayurveda', d:'In Ayurveda, the taste of a herb (such as bitter or sweet), believed to point to its effects.'},
+  {t:'Rasayana', c:'Ayurveda', d:'An Ayurvedic rejuvenating tonic, taken to restore vitality and promote longevity.'},
+  {t:'Relative contraindication', c:'Safety', d:'A situation where a herb may be used, but only with caution and good reason.'},
+  {t:'Saponins', c:'Chemistry', d:'Soapy plant compounds — they foam in water — studied for effects on immunity, cholesterol and inflammation.'},
+  {t:'Sedative', c:'Pharmacology', d:'Something that promotes calm or sleep.'},
+  {t:'Shen', c:'Tradition', d:'In Traditional Chinese Medicine, the \u201cspirit\u201d or mind.'},
+  {t:'Sitoindosides', c:'Chemistry', d:'Specific glycowithanolide compounds in ashwagandha, linked to its anti-stress and antioxidant action.'},
+  {t:'Solanaceae', c:'Botany', d:'The nightshade plant family, which includes tomato, potato, pepper and ashwagandha.'},
+  {t:'Special category data', c:'Regulatory', d:'Under UK GDPR, especially sensitive personal data — including health data — that requires extra protection.'},
+  {t:'Species', c:'Botany', d:'The second part of a Latin name — the specific kind of plant within a genus.'},
+  {t:'Standardisation', c:'Quality', d:'Processing a herbal extract so that every batch contains a guaranteed, consistent amount of a key compound.'},
+  {t:'Steroidal lactone', c:'Chemistry', d:'A compound type combining a steroid-like structure with a lactone ring. Withanolides are steroidal lactones.'},
+  {t:'Tannins', c:'Chemistry', d:'Astringent plant compounds — the \u201cdrying\u201d feel of strong tea or red wine — traditionally used to tone tissues.'},
+  {t:'TCM', c:'Tradition', d:'Traditional Chinese Medicine — an ancient system based on balancing energies such as Qi, Yin and Yang.'},
+  {t:'Terpenoids', c:'Chemistry', d:'A huge, diverse family of plant compounds behind many scents and flavours, and home to many active medicinal molecules.'},
+  {t:'Tincture', c:'Preparation', d:'A liquid herbal extract made by soaking a herb in alcohol (or glycerine) to capture its compounds.'},
+  {t:'Toxicity', c:'Safety', d:'The capacity of a substance to cause harm — usually at higher doses.'},
+  {t:'Trophorestorative', c:'Pharmacology', d:'A herb that slowly nourishes and restores a specific organ or body system back to health.'},
+  {t:'Unani', c:'Tradition', d:'A traditional system of medicine with Greek and Arabic roots, practised across South Asia and the Middle East.'},
+  {t:'Vata / Pitta / Kapha', c:'Ayurveda', d:'The three doshas, or mind-body energies, in Ayurveda. Their balance is seen as the foundation of health.'},
+  {t:'Vipaka', c:'Ayurveda', d:'In Ayurveda, the after-effect of a herb once it has been fully digested.'},
+  {t:'Virya', c:'Ayurveda', d:'In Ayurveda, the heating or cooling potency of a herb.'},
+  {t:'Withanolides', c:'Chemistry', d:'The signature active compounds in ashwagandha — steroidal lactones studied for stress, inflammation and cellular effects.'},
+  {t:'Yin / Yang', c:'Tradition', d:'In Traditional Chinese Medicine, two complementary opposite forces — cool/receptive and warm/active — whose balance underlies health.'},
+];
+
+const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+function firstLetter(t){ const c=t.trim()[0].toUpperCase(); return /[A-Z]/.test(c)?c:'#'; }
+
+function buildAZ(){
+  const have = new Set(TERMS.map(x=>firstLetter(x.t)));
+  document.getElementById('az').innerHTML = LETTERS.map(L=>
+    have.has(L) ? `<a href="#L-${L}">${L}</a>` : `<a class="empty">${L}</a>`
+  ).join('');
+}
+function render(list){
+  const byLetter={};
+  list.forEach(x=>{ const L=firstLetter(x.t); (byLetter[L]=byLetter[L]||[]).push(x); });
+  const html = LETTERS.filter(L=>byLetter[L]).map(L=>{
+  const items = byLetter[L].sort((a,b)=>a.t.localeCompare(b.t)).map(x=>{
+    const anchor = x.t.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+    return `
+      <div class="term" id="term-${anchor}">
+        <div class="term-top"><span class="term-name">${x.t}</span><span class="term-cat">${x.c}</span></div>
+        <div class="term-def">${x.d}</div>
+      </div>`;
+  }).join('');
+    return `<div class="letter" id="L-${L}">
+      <button class="letter-head" onclick="this.parentElement.classList.toggle('collapsed')">
+        <span class="letter-glyph">${L}</span>
+        <span class="letter-meta">${byLetter[L].length} term${byLetter[L].length>1?'s':''}</span>
+        <svg class="letter-chev" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="letter-body">${items}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('glossary').innerHTML = html;
+  document.getElementById('no-results').style.display = list.length ? 'none':'block';
+  document.getElementById('count-line').textContent = `${list.length} term${list.length===1?'':'s'}`;
+}
+function filterTerms(){
+  const q=document.getElementById('search').value.trim().toLowerCase();
+  if(!q){ render(TERMS); buildAZ(); return; }
+  const list=TERMS.filter(x=>x.t.toLowerCase().includes(q)||x.d.toLowerCase().includes(q)||x.c.toLowerCase().includes(q));
+  render(list);
+  const have=new Set(list.map(x=>firstLetter(x.t)));
+  document.getElementById('az').innerHTML = LETTERS.map(L=>have.has(L)?`<a href="#L-${L}">${L}</a>`:`<a class="empty">${L}</a>`).join('');
+}
+
+// init
+buildAZ();
+render(TERMS);
+
+// deep-link: if URL has #term-xxx, open that letter and scroll to term
+if(window.location.hash && window.location.hash.startsWith('#term-')){
+  const target = document.querySelector(window.location.hash);
+  if(target){
+    // make sure the letter section is open
+    const letter = target.closest('.letter');
+    if(letter) letter.classList.remove('collapsed');
+    setTimeout(()=>target.scrollIntoView({behavior:'smooth',block:'center'}),200);
+    target.style.background='rgba(200,149,42,.08)';
+    target.style.borderRadius='8px';
+    setTimeout(()=>target.style.background='',2000);
+  }
+}
+</script>
+</body>
+</html>

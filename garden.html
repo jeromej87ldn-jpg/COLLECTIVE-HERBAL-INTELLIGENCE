@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herbal Garden — C.H.I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#1a3a2a;--forest-mid:#2d5c42;--forest-light:#4a8c65;
+  --gold:#c8952a;--gold-light:#e8b84b;--night:#0c1a10;
+  --parchment:#f5f0e8;--muted:rgba(245,240,232,0.5);
+  --card:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.08);
+  --text:#f5f0e8;--accent:#c8952a;
+  --tag-bg:rgba(74,140,101,0.15);--tag-border:rgba(74,140,101,0.3);--tag-text:#7acca0;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--night);color:var(--text);min-height:100vh;
+  background-image:radial-gradient(ellipse 80% 50% at 50% -5%,rgba(74,140,101,0.12),transparent 60%);}
+
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:var(--forest);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:100;}
+.nav-logo{text-decoration:none;display:flex;flex-direction:column;}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-light);letter-spacing:.1em;}
+.nav-full{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.5);}
+.nav-right{display:flex;align-items:center;gap:1.5rem;}
+.nav-right a{color:rgba(245,240,232,.6);text-decoration:none;font-size:13px;transition:color .2s;}
+.nav-right a:hover,.nav-right a.active{color:var(--gold-light);}
+.nav-cta{background:var(--gold);color:var(--forest)!important;padding:.5rem 1rem;border-radius:4px;font-weight:500;}
+.nav-inbox{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:6px;border:1px solid var(--card-border);color:rgba(245,240,232,.6);transition:all .2s;}
+.nav-inbox:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
+@media(max-width:760px){.nav-right a:not(.nav-cta):not(.nav-inbox){display:none;}}
+
+/* HERO */
+.hero{background:linear-gradient(160deg,var(--forest) 0%,rgba(12,26,16,0) 65%);border-bottom:1px solid var(--card-border);padding:3rem 2.5rem 2.5rem;position:relative;overflow:hidden;}
+.hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 80% at 90% 50%,rgba(74,140,101,0.12),transparent 65%);pointer-events:none;}
+.hero-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1;}
+.hero-eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--tag-text);display:flex;align-items:center;gap:10px;margin-bottom:.75rem;}
+.hero-eyebrow::before{content:'';width:20px;height:1px;background:var(--tag-text);opacity:.6;}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,5vw,54px);font-weight:300;line-height:1.06;color:var(--parchment);margin-bottom:.75rem;}
+.hero-title em{font-style:italic;color:var(--gold-light);}
+.hero-desc{font-size:14px;color:var(--muted);line-height:1.85;max-width:580px;margin-bottom:1.5rem;}
+
+/* FOUNDER BADGE */
+.founder-callout{display:inline-flex;align-items:center;gap:.75rem;background:rgba(74,140,101,.1);border:1px solid rgba(74,140,101,.25);border-radius:8px;padding:.7rem 1.1rem;margin-bottom:2rem;}
+.fc-badge{font-size:18px;}
+.fc-text{font-size:13px;color:var(--text);line-height:1.5;}
+.fc-text strong{color:var(--tag-text);display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:1px;}
+
+/* STATS ROW */
+.stats-row{display:flex;gap:.75rem;margin-bottom:2.5rem;flex-wrap:wrap;}
+.stat{background:var(--card);border:1px solid var(--card-border);border-radius:8px;padding:.7rem 1.1rem;flex:1;min-width:100px;}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:var(--gold-light);}
+.stat-label{font-size:10.5px;color:var(--muted);margin-top:1px;}
+
+/* UPLOAD AREA */
+.upload-section{max-width:1100px;margin:0 auto;padding:0 2.5rem 2rem;}
+.upload-card{background:rgba(74,140,101,.06);border:1.5px dashed rgba(74,140,101,.3);border-radius:12px;padding:2rem;text-align:center;cursor:pointer;transition:all .2s;position:relative;}
+.upload-card:hover{background:rgba(74,140,101,.1);border-color:rgba(74,140,101,.5);}
+.upload-card.dragover{background:rgba(74,140,101,.15);border-color:rgba(74,140,101,.7);}
+.upload-icon{font-size:36px;margin-bottom:.75rem;display:block;}
+.upload-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--parchment);margin-bottom:.4rem;}
+.upload-sub{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:1rem;}
+.upload-rules{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.25rem;}
+.upload-rule{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:5px;}
+.upload-rule.yes{color:var(--tag-text);}
+.upload-rule.no{color:rgba(220,80,80,.7);}
+.upload-btn{display:inline-flex;align-items:center;gap:8px;padding:.7rem 1.5rem;background:var(--gold);color:var(--forest);border:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;transition:background .2s;}
+.upload-btn:hover{background:var(--gold-light);}
+input[type=file]{display:none;}
+
+/* FILTER BAR */
+.garden-controls{max-width:1100px;margin:0 auto;padding:1.5rem 2.5rem .75rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;}
+.garden-search{flex:1;min-width:180px;position:relative;}
+.garden-search input{width:100%;background:var(--card);border:1px solid var(--card-border);border-radius:6px;padding:.55rem .85rem .55rem 2.2rem;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color .2s;}
+.garden-search input:focus{border-color:rgba(200,149,42,.35);}
+.garden-search input::placeholder{color:rgba(245,240,232,.2);}
+.garden-search svg{position:absolute;left:.65rem;top:50%;transform:translateY(-50%);opacity:.3;pointer-events:none;}
+.filter-pills{display:flex;gap:.4rem;flex-wrap:wrap;}
+.fpill{font-size:11.5px;padding:.3rem .85rem;border-radius:999px;border:1px solid var(--card-border);background:transparent;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.fpill:hover{border-color:rgba(200,149,42,.3);color:var(--text);}
+.fpill.on{background:var(--tag-bg);color:var(--tag-text);border-color:var(--tag-border);}
+.sort-select{background:var(--card);border:1px solid var(--card-border);border-radius:6px;padding:.5rem .85rem;font-family:'DM Sans',sans-serif;font-size:12.5px;color:var(--muted);outline:none;cursor:pointer;}
+
+/* GALLERY GRID */
+.gallery-wrap{max-width:1100px;margin:0 auto;padding:0 2.5rem 5rem;}
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;}
+.gallery-card{background:var(--card);border:1px solid var(--card-border);border-radius:10px;overflow:hidden;cursor:pointer;transition:all .18s;position:relative;}
+.gallery-card:hover{border-color:rgba(200,149,42,.35);transform:translateY(-2px);}
+.gallery-card:hover .card-overlay{opacity:1;}
+.gc-img{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:rgba(74,140,101,.08);}
+.gc-img-placeholder{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:48px;background:linear-gradient(135deg,rgba(26,58,42,.6),rgba(74,140,101,.15));}
+.card-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(12,26,16,.9) 0%,transparent 50%);opacity:0;transition:opacity .2s;display:flex;flex-direction:column;justify-content:flex-end;padding:.85rem;}
+.card-overlay-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--parchment);}
+.card-overlay-sub{font-size:11.5px;color:rgba(245,240,232,.6);}
+.gc-body{padding:.75rem .85rem;}
+.gc-herb{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--text);margin-bottom:2px;}
+.gc-herb.unidentified{color:var(--muted);font-style:italic;}
+.gc-meta{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
+.gc-contributor{font-size:11.5px;color:var(--muted);}
+.gc-badge{font-size:10px;padding:1px 7px;border-radius:999px;background:rgba(200,149,42,.15);color:var(--gold-light);border:1px solid rgba(200,149,42,.25);}
+.gc-badge.founder{background:rgba(74,140,101,.15);color:var(--tag-text);border-color:var(--tag-border);}
+.gc-footer{display:flex;align-items:center;justify-content:space-between;padding:.5rem .85rem .75rem;border-top:1px solid var(--card-border);margin-top:.35rem;}
+.gc-heart{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color .15s;padding:0;}
+.gc-heart:hover{color:rgba(220,80,80,.8);}
+.gc-heart.loved{color:rgba(220,80,80,.9);}
+.gc-link{font-size:11.5px;color:var(--tag-text);text-decoration:none;transition:opacity .15s;}
+.gc-link:hover{opacity:.75;}
+.gc-pending{font-size:10.5px;color:rgba(200,149,42,.6);background:rgba(200,149,42,.08);border:1px solid rgba(200,149,42,.2);border-radius:4px;padding:1px 7px;}
+
+/* FOUNDERS SECTION */
+.founders-section{max-width:1100px;margin:0 auto;padding:0 2.5rem 2rem;}
+.section-head{display:flex;align-items:baseline;gap:.75rem;margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--card-border);}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--parchment);}
+.section-sub{font-size:12px;color:var(--muted);}
+.founders-grid{display:flex;flex-wrap:wrap;gap:.5rem;}
+.founder-pill{display:inline-flex;align-items:center;gap:.5rem;padding:.35rem .85rem .35rem .5rem;background:rgba(74,140,101,.1);border:1px solid rgba(74,140,101,.25);border-radius:999px;font-size:12.5px;color:var(--tag-text);transition:all .15s;}
+.founder-pill:hover{background:rgba(74,140,101,.18);}
+.founder-av{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:11px;font-weight:500;flex-shrink:0;}
+.founder-count{font-size:10.5px;color:rgba(74,204,160,.5);margin-left:2px;}
+
+/* UPLOAD MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:1.5rem;}
+.modal-overlay.open{display:flex;animation:fadeUp .2s ease forwards;}
+.modal{background:var(--forest);border:1px solid rgba(200,149,42,.3);border-radius:12px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;}
+.modal-head{padding:1.25rem 1.5rem;border-bottom:1px solid var(--card-border);display:flex;align-items:center;justify-content:space-between;}
+.modal-head h3{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;}
+.modal-close{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1;}
+.modal-close:hover{color:var(--text);}
+.modal-body{padding:1.25rem 1.5rem;}
+.mfield{margin-bottom:1rem;}
+.mfield label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:.35rem;}
+.mfield input,.mfield select,.mfield textarea{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--card-border);border-radius:6px;padding:.6rem .85rem;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--text);outline:none;transition:border-color .2s;}
+.mfield input:focus,.mfield select:focus,.mfield textarea:focus{border-color:rgba(200,149,42,.4);}
+.mfield input::placeholder,.mfield textarea::placeholder{color:rgba(245,240,232,.2);}
+.img-drop{border:1.5px dashed var(--card-border);border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:.5rem;}
+.img-drop:hover{border-color:rgba(74,140,101,.4);background:rgba(74,140,101,.05);}
+.img-drop.has-img{border-color:rgba(74,140,101,.4);}
+.img-drop p{font-size:13px;color:var(--muted);margin-top:.4rem;}
+.img-drop-preview{max-width:100%;max-height:180px;border-radius:6px;margin-top:.65rem;}
+.modal-rules{background:rgba(74,140,101,.06);border:1px solid rgba(74,140,101,.15);border-radius:6px;padding:.7rem .9rem;margin-bottom:1rem;}
+.modal-rules p{font-size:12px;color:var(--muted);line-height:1.65;}
+.modal-rules strong{color:var(--tag-text);}
+.modal-foot{padding:.85rem 1.5rem 1.25rem;display:flex;justify-content:flex-end;gap:.6rem;border-top:1px solid var(--card-border);}
+.btn-cancel{padding:.55rem 1rem;border-radius:5px;background:transparent;border:1px solid var(--card-border);color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;}
+.btn-submit{padding:.55rem 1.25rem;background:var(--gold);color:var(--forest);border:none;border-radius:5px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;}
+
+/* LIGHTBOX */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:300;display:none;align-items:center;justify-content:center;padding:1.5rem;}
+.lightbox.open{display:flex;}
+.lb-inner{max-width:700px;width:100%;background:var(--forest);border:1px solid rgba(200,149,42,.2);border-radius:12px;overflow:hidden;}
+.lb-img{width:100%;max-height:420px;object-fit:cover;display:block;}
+.lb-body{padding:1.25rem 1.5rem;}
+.lb-herb{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;color:var(--parchment);margin-bottom:.25rem;}
+.lb-latin{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--muted);margin-bottom:.75rem;}
+.lb-meta{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;margin-bottom:.75rem;}
+.lb-contributor{font-size:13px;color:var(--muted);}
+.lb-heart{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color .15s;}
+.lb-heart:hover,.lb-heart.loved{color:rgba(220,80,80,.9);}
+.lb-note{font-size:13.5px;color:rgba(245,240,232,.7);line-height:1.7;margin-bottom:1rem;}
+.lb-footer{display:flex;align-items:center;justify-content:space-between;padding-top:.75rem;border-top:1px solid var(--card-border);}
+.lb-close{background:none;border:1px solid var(--card-border);color:var(--muted);padding:.45rem .9rem;border-radius:5px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12.5px;transition:all .15s;}
+.lb-close:hover{border-color:var(--gold);color:var(--gold-light);}
+.lb-herbdex{font-size:12.5px;color:var(--tag-text);text-decoration:none;display:flex;align-items:center;gap:5px;transition:opacity .15s;}
+.lb-herbdex:hover{opacity:.75;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(max-width:600px){
+  .upload-section,.garden-controls,.gallery-wrap,.founders-section{padding-left:1.25rem;padding-right:1.25rem;}
+  .hero{padding:2.5rem 1.25rem 2rem;}
+  .gallery-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-chi">C.H.I</span>
+    <span class="nav-full">Collective Herbal Intelligence</span>
+  </a>
+  <div class="nav-right">
+    <a href="herb-match.html">Herb Match</a>
+    <a href="phytochemistry.html">Plant Intelligence</a>
+    <a href="supreme.html">Herbadex</a>
+    <a href="resources.html">Resources</a>
+    <a href="community.html">Community</a>
+    <a href="profile.html">Profile</a>
+    <a href="inbox.html" class="nav-inbox" title="Inbox">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12v9H2V4z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M2 4l6 5 6-5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+    </a>
+    <a href="join.html" class="nav-cta">Join CHI</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Community · Herbal Garden</div>
+    <h1 class="hero-title">The world's first<br>community-built <em>herb gallery.</em></h1>
+    <p class="hero-desc">Every photo here was taken by a CHI member — from their garden, windowsill, foraged walk, or herb collection. Together we're building a visual reference that belongs to everyone. Only living or harvested plant matter. No products. No packaging.</p>
+    <div class="founder-callout">
+      <span class="fc-badge">🌱</span>
+      <div class="fc-text">
+        <strong>Garden Founder badge</strong>
+        Be among the first 100 contributors and earn the Garden Founder badge permanently on your profile. <strong id="founder-spots-left">69 spots remaining.</strong>
+      </div>
+    </div>
+    <div class="stats-row" id="garden-stats"></div>
+  </div>
+</div>
+
+<!-- UPLOAD -->
+<div class="upload-section">
+  <div class="upload-card" onclick="openUpload()" id="upload-drop-zone">
+    <span class="upload-icon">📸</span>
+    <div class="upload-title">Contribute to the garden</div>
+    <p class="upload-sub">Share a photo of a herb, plant, or your collection. Your photo links directly to the Herbadex once identified.</p>
+    <div class="upload-rules">
+      <span class="upload-rule yes">✓ Whole plants</span>
+      <span class="upload-rule yes">✓ Leaves & stems</span>
+      <span class="upload-rule yes">✓ Roots & flowers</span>
+      <span class="upload-rule yes">✓ Living or harvested</span>
+      <span class="upload-rule no">✗ Capsules or powders</span>
+      <span class="upload-rule no">✗ Packaging</span>
+      <span class="upload-rule no">✗ Non-plant subjects</span>
+    </div>
+    <button class="upload-btn" onclick="openUpload();event.stopPropagation()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 4l3-3 3 3M2 10v2a1 1 0 001 1h8a1 1 0 001-1v-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Upload a photo
+    </button>
+  </div>
+</div>
+
+<!-- FOUNDERS -->
+<div class="founders-section">
+  <div class="section-head">
+    <span class="section-title">Garden Founders</span>
+    <span class="section-sub">First 100 contributors · permanent badge</span>
+  </div>
+  <div class="founders-grid" id="founders-grid"></div>
+</div>
+
+<!-- CONTROLS -->
+<div class="garden-controls">
+  <div class="garden-search">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.4"/><path d="M9.5 9.5l3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    <input type="text" placeholder="Search herbs, plants or contributors…" id="gallery-search" oninput="renderGallery()">
+  </div>
+  <div class="filter-pills" id="filter-pills"></div>
+  <select class="sort-select" id="sort-select" onchange="renderGallery()">
+    <option value="newest">Newest first</option>
+    <option value="loved">Most loved</option>
+    <option value="herb">By herb name</option>
+  </select>
+</div>
+
+<!-- GALLERY -->
+<div class="gallery-wrap">
+  <div class="gallery-grid" id="gallery-grid"></div>
+</div>
+
+<!-- UPLOAD MODAL -->
+<div class="modal-overlay" id="upload-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Add to the garden</h3>
+      <button class="modal-close" onclick="closeUpload()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-rules">
+        <p><strong>Plants only.</strong> Living or recently harvested plant matter — leaves, stems, roots, flowers, whole plants. No capsules, powders, packaging or non-plant subjects. Posts not meeting these rules will be removed.</p>
+      </div>
+      <div class="mfield">
+        <label>Photo</label>
+        <div class="img-drop" id="img-drop" onclick="document.getElementById('garden-file').click()">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="opacity:.35;margin:0 auto"><rect x="3" y="5" width="22" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="12" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M3 20l6-5 4 4 3-3 6 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p>Click to upload · JPG, PNG, HEIC · Max 12MB</p>
+          <img class="img-drop-preview" id="upload-preview" style="display:none">
+        </div>
+        <input type="file" id="garden-file" accept="image/*" onchange="handleGardenImage(this)">
+      </div>
+      <div class="mfield">
+        <label>Herb name (if you know it)</label>
+        <input type="text" id="upload-herb" placeholder="e.g. Lemon balm, Ashwagandha, Unknown — needs ID…" list="herb-suggestions">
+        <datalist id="herb-suggestions"></datalist>
+      </div>
+      <div class="mfield">
+        <label>Part of plant</label>
+        <select id="upload-part">
+          <option value="whole">Whole plant</option>
+          <option value="leaf">Leaf / leaves</option>
+          <option value="stem">Stem / twig</option>
+          <option value="root">Root</option>
+          <option value="flower">Flower</option>
+          <option value="seed">Seed / berry</option>
+          <option value="bark">Bark</option>
+          <option value="collection">My collection</option>
+        </select>
+      </div>
+      <div class="mfield">
+        <label>Note (optional)</label>
+        <textarea id="upload-note" placeholder="Where did you grow or find this? Anything interesting about it?" rows="2" style="resize:none;line-height:1.6"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeUpload()">Cancel</button>
+      <button class="btn-submit" onclick="submitPhoto()">Add to garden</button>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <div class="lb-inner" onclick="event.stopPropagation()" id="lb-content"></div>
+</div>
+
+<script>
+const ME = localStorage.getItem('chi_display_name') || 'Jerome';
+const ME_INIT = ME.charAt(0).toUpperCase();
+
+// ── HERB LIST FOR AUTOCOMPLETE ────────────────────────────────────
+const HERB_LIST = ['Ashwagandha','Lion\'s mane','Nigella','Olive leaf','Nettle','Dandelion','Milk thistle','Moringa','Passionflower','Lemon balm','Mugwort','Hibiscus','Calendula','Marshmallow','Shilajit','Chamomile','Lavender','Peppermint','Rosemary','Thyme','Oregano','Sage','Echinacea','Elderberry','Valerian','Hawthorn','Ginkgo','Turmeric','Ginger','Garlic','Feverfew','Yarrow','Comfrey','Plantain','Skullcap'];
+const ds = document.getElementById('herb-suggestions');
+HERB_LIST.forEach(h=>{ const opt=document.createElement('option'); opt.value=h; ds.appendChild(opt); });
+
+// ── GALLERY DATA ──────────────────────────────────────────────────
+const PLACEHOLDER = 'data:image/svg+xml,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400"><rect width="400" height="400" fill="%231a3a2a"/><text x="200" y="210" text-anchor="middle" font-size="80" fill="%232d5c42">🌿</text></svg>`);
+
+let PHOTOS = [
+  {id:1,herb:'Ashwagandha',latin:'Withania somnifera',part:'root',contributor:'Sage_R',badge:'founder',note:'Dried roots from my garden. Third year growing — the root mass doubles every year.',img:PLACEHOLDER,loves:24,loved:false,identified:true,ts:Date.now()-86400000*2},
+  {id:2,herb:'Lion\'s mane',latin:'Hericium erinaceus',part:'whole',contributor:'The_Root_Walker',badge:'founder',note:'Fresh fruiting body. Grew these on oak logs indoors over winter. The pom-pom stage lasts about 3 days before they need harvesting.',img:PLACEHOLDER,loves:31,loved:false,identified:true,ts:Date.now()-86400000*3},
+  {id:3,herb:'Lemon balm',latin:'Melissa officinalis',part:'leaf',contributor:'Mariam_H',badge:'founder',note:'Peak volatile oil content before flowering. Pinching the tips keeps it bushy and fragrant.',img:PLACEHOLDER,loves:18,loved:false,identified:true,ts:Date.now()-86400000},
+  {id:4,herb:'Unknown',latin:null,part:'leaf',contributor:'Rhea_K',badge:null,note:'Found this on a walking trail in Surrey. Slightly fuzzy leaf, mild smell. Anyone know what this is?',img:PLACEHOLDER,loves:8,loved:false,identified:false,ts:Date.now()-3600000*5},
+  {id:5,herb:'Calendula',latin:'Calendula officinalis',part:'flower',contributor:'Fern_Keeper',badge:'founder',note:'Late summer harvest. Dried these for infused oil — just the flower heads, no stems.',img:PLACEHOLDER,loves:27,loved:false,identified:true,ts:Date.now()-86400000*4},
+  {id:6,herb:'Nettle',latin:'Urtica dioica',part:'leaf',contributor:'Dev_P',badge:null,note:'Spring harvest before flowering. Gloves essential. Blanching for 30 seconds removes the sting completely.',img:PLACEHOLDER,loves:15,loved:false,identified:true,ts:Date.now()-86400000*1.5},
+  {id:7,herb:'Passionflower',latin:'Passiflora incarnata',part:'whole',contributor:'Amara_Roots',badge:'founder',note:'Growing up a south-facing fence. This vine produces 200+ flowers in a good summer.',img:PLACEHOLDER,loves:33,loved:false,identified:true,ts:Date.now()-86400000*5},
+  {id:8,herb:'Mugwort',latin:'Artemisia vulgaris',part:'stem',contributor:'Tomas_B',badge:'founder',note:'Harvested just before flowering when volatile oil content peaks. The silver underside of the leaf is the tell.',img:PLACEHOLDER,loves:11,loved:false,identified:true,ts:Date.now()-86400000*2.5},
+  {id:9,herb:'Unknown',latin:null,part:'root',contributor:'Saoirse_M',badge:null,note:'Dug this up from an old allotment. Thick white root, slightly sweet smell when cut. Chicory? Marshmallow? Not sure.',img:PLACEHOLDER,loves:6,loved:false,identified:false,ts:Date.now()-3600000*2},
+  {id:10,herb:'Hibiscus',latin:'Hibiscus sabdariffa',part:'flower',contributor:'Mariam_H',badge:'founder',note:'Dried calyxes. The deep burgundy colour tells you the anthocyanin content is high. Grown from seed indoors.',img:PLACEHOLDER,loves:22,loved:false,identified:true,ts:Date.now()-86400000*6},
+  {id:11,herb:'Dandelion',latin:'Taraxacum officinale',part:'root',contributor:'Sage_R',badge:'founder',note:'Autumn harvest — root is at maximum inulin content before the plant goes dormant. Sliced and dried for tea.',img:PLACEHOLDER,loves:19,loved:false,identified:true,ts:Date.now()-86400000*7},
+  {id:12,herb:'Chamomile',latin:'Matricaria chamomilla',part:'flower',contributor:'Fern_Keeper',badge:'founder',note:'German chamomile. Harvest when flowers face upward and centres are raised — that\'s when volatile oil is highest.',img:PLACEHOLDER,loves:28,loved:false,identified:true,ts:Date.now()-86400000*8},
+];
+
+const FOUNDERS = [
+  {name:'Sage_R',color:'#4a8c65',count:4},
+  {name:'The_Root_Walker',color:'#5c62b8',count:3},
+  {name:'Mariam_H',color:'#9a3a7a',count:3},
+  {name:'Fern_Keeper',color:'#e8b84b',count:2},
+  {name:'Amara_Roots',color:'#7acca0',count:2},
+  {name:'Tomas_B',color:'#e8a840',count:2},
+];
+
+// ── STATS ────────────────────────────────────────────────────────
+function renderStats(){
+  const identified = PHOTOS.filter(p=>p.identified).length;
+  const herbs = [...new Set(PHOTOS.filter(p=>p.identified).map(p=>p.herb))].length;
+  document.getElementById('garden-stats').innerHTML = [
+    {v:PHOTOS.length, l:'Photos contributed'},
+    {v:herbs, l:'Herbs identified'},
+    {v:FOUNDERS.length, l:'Garden Founders'},
+    {v:PHOTOS.reduce((a,p)=>a+p.loves,0), l:'Total loves'},
+  ].map(s=>`<div class="stat"><div class="stat-val">${s.v}</div><div class="stat-label">${s.l}</div></div>`).join('');
+  document.getElementById('founder-spots-left').textContent = (100 - FOUNDERS.length) + ' spots remaining.';
+}
+
+// ── FOUNDERS ─────────────────────────────────────────────────────
+function renderFounders(){
+  document.getElementById('founders-grid').innerHTML = FOUNDERS.map(f=>`
+    <div class="founder-pill">
+      <div class="founder-av" style="background:${f.color}22;color:${f.color}">${f.name.charAt(0)}</div>
+      ${f.name}
+      <span class="founder-count">${f.count} 📸</span>
+    </div>`).join('');
+}
+
+// ── FILTERS ──────────────────────────────────────────────────────
+const FILTERS = ['All','Identified','Needs ID','Whole plant','Leaf','Root','Flower','Stem','Collection'];
+let activeFilter = 'All';
+
+function buildFilters(){
+  const row = document.getElementById('filter-pills');
+  FILTERS.forEach(f=>{
+    const b = document.createElement('button');
+    b.className = 'fpill' + (f==='All'?' on':'');
+    b.textContent = f;
+    b.onclick = ()=>{
+      activeFilter = f;
+      document.querySelectorAll('.fpill').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on');
+      renderGallery();
+    };
+    row.appendChild(b);
+  });
+}
+
+// ── RENDER GALLERY ───────────────────────────────────────────────
+function renderGallery(){
+  const q = document.getElementById('gallery-search').value.toLowerCase().trim();
+  const sort = document.getElementById('sort-select').value;
+
+  let photos = [...PHOTOS].filter(p=>{
+    if(activeFilter === 'Identified') return p.identified;
+    if(activeFilter === 'Needs ID') return !p.identified;
+    if(activeFilter === 'Whole plant') return p.part === 'whole';
+    if(activeFilter === 'Leaf') return p.part === 'leaf';
+    if(activeFilter === 'Root') return p.part === 'root';
+    if(activeFilter === 'Flower') return p.part === 'flower';
+    if(activeFilter === 'Stem') return p.part === 'stem';
+    if(activeFilter === 'Collection') return p.part === 'collection';
+    return true;
+  });
+
+  if(q) photos = photos.filter(p=>
+    p.herb.toLowerCase().includes(q) ||
+    p.contributor.toLowerCase().includes(q) ||
+    (p.note && p.note.toLowerCase().includes(q))
+  );
+
+  if(sort === 'newest') photos.sort((a,b)=>b.ts-a.ts);
+  else if(sort === 'loved') photos.sort((a,b)=>b.loves-a.loves);
+  else if(sort === 'herb') photos.sort((a,b)=>a.herb.localeCompare(b.herb));
+
+  const grid = document.getElementById('gallery-grid');
+  if(!photos.length){
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--muted);font-style:italic">No photos found. Be the first to contribute.</div>';
+    return;
+  }
+
+  grid.innerHTML = photos.map(p=>`
+    <div class="gallery-card" onclick="openLightbox(${p.id})">
+      <div style="position:relative">
+        <img class="gc-img" src="${p.img}" alt="${p.herb}" loading="lazy">
+        <div class="card-overlay">
+          <div class="card-overlay-name">${p.herb}</div>
+          <div class="card-overlay-sub">${p.part} · by ${p.contributor}</div>
+        </div>
+        ${!p.identified?'<div style="position:absolute;top:.5rem;left:.5rem;font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(200,149,42,.3);color:var(--gold-light);border:1px solid rgba(200,149,42,.4)">Needs ID</div>':''}
+      </div>
+      <div class="gc-body">
+        <div class="gc-herb${!p.identified?' unidentified':''}">${p.herb}</div>
+        <div class="gc-meta">
+          <span class="gc-contributor">by ${p.contributor}</span>
+          ${p.badge==='founder'?'<span class="gc-badge founder">🌱 Founder</span>':''}
+        </div>
+      </div>
+      <div class="gc-footer">
+        <button class="gc-heart${p.loved?' loved':''}" onclick="lovePhoto(${p.id},event)">
+          ${p.loved?'❤️':'🤍'} ${p.loves}
+        </button>
+        ${p.identified ? `<a class="gc-link" href="supreme.html?herb=${p.herb.toLowerCase().replace(/[^a-z0-9]/g,'-')}" onclick="event.stopPropagation()">Herbadex →</a>` : '<span class="gc-pending">Awaiting ID</span>'}
+      </div>
+    </div>`).join('');
+}
+
+function lovePhoto(id, e){
+  e.stopPropagation();
+  const p = PHOTOS.find(x=>x.id===id);
+  p.loved = !p.loved;
+  p.loves += p.loved ? 1 : -1;
+  renderGallery();
+}
+
+// ── LIGHTBOX ─────────────────────────────────────────────────────
+function openLightbox(id){
+  const p = PHOTOS.find(x=>x.id===id);
+  document.getElementById('lb-content').innerHTML = `
+    <img class="lb-img" src="${p.img}" alt="${p.herb}">
+    <div class="lb-body">
+      <div class="lb-herb">${p.herb}${!p.identified?' <span style="font-size:14px;color:var(--muted);font-family:\'DM Sans\',sans-serif;font-style:normal">· Awaiting identification</span>':''}</div>
+      ${p.latin?`<div class="lb-latin">${p.latin}</div>`:''}
+      <div class="lb-meta">
+        <span class="lb-contributor">📸 by ${p.contributor}</span>
+        ${p.badge==='founder'?'<span class="gc-badge founder">🌱 Garden Founder</span>':''}
+        <span style="font-size:11.5px;color:rgba(245,240,232,.25)">${p.part}</span>
+      </div>
+      ${p.note?`<div class="lb-note">${p.note}</div>`:''}
+      <div class="lb-footer">
+        <button class="lb-heart${p.loved?' loved':''}" onclick="lovePhoto(${p.id},event);document.querySelector('.lb-heart').textContent='${p.loved?'🤍':'❤️'} '+(${p.loves}${p.loved?'-1':'+1'})">
+          ${p.loved?'❤️':'🤍'} ${p.loves}
+        </button>
+        <div style="display:flex;gap:.75rem;align-items:center">
+          ${p.identified?`<a class="lb-herbdex" href="supreme.html?herb=${p.herb.toLowerCase().replace(/[^a-z0-9]/g,'-')}"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7.5 3l4 3.5-4 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg> View in Herbadex</a>`:''}
+          <button class="lb-close" onclick="closeLightbox()">Close</button>
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('lightbox').classList.add('open');
+}
+
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('open');
+}
+
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closeLightbox(); closeUpload(); }});
+
+// ── UPLOAD ────────────────────────────────────────────────────────
+let uploadImg = null;
+
+function openUpload(){
+  document.getElementById('upload-modal').classList.add('open');
+}
+function closeUpload(){
+  document.getElementById('upload-modal').classList.remove('open');
+  uploadImg = null;
+  document.getElementById('upload-preview').style.display='none';
+  document.getElementById('upload-herb').value='';
+  document.getElementById('upload-note').value='';
+  document.getElementById('garden-file').value='';
+  document.getElementById('img-drop').classList.remove('has-img');
+}
+
+function handleGardenImage(input){
+  const file = input.files[0];
+  if(!file) return;
+  if(file.size > 12*1024*1024){ alert('Image must be under 12MB.'); return; }
+  const reader = new FileReader();
+  reader.onload = e=>{
+    uploadImg = e.target.result;
+    const prev = document.getElementById('upload-preview');
+    prev.src = uploadImg;
+    prev.style.display = 'block';
+    document.getElementById('img-drop').classList.add('has-img');
+  };
+  reader.readAsDataURL(file);
+}
+
+function submitPhoto(){
+  const herb = document.getElementById('upload-herb').value.trim() || 'Unknown';
+  const part = document.getElementById('upload-part').value;
+  const note = document.getElementById('upload-note').value.trim();
+
+  const isFounder = FOUNDERS.length < 100 && !FOUNDERS.find(f=>f.name===ME);
+  if(isFounder) FOUNDERS.push({name:ME, color:'#c8952a', count:1});
+  else {
+    const existing = FOUNDERS.find(f=>f.name===ME);
+    if(existing) existing.count++;
+  }
+
+  const newPhoto = {
+    id: PHOTOS.length + 1,
+    herb,
+    latin: null,
+    part,
+    contributor: ME,
+    badge: FOUNDERS.find(f=>f.name===ME) ? 'founder' : null,
+    note: note || null,
+    img: uploadImg || PLACEHOLDER,
+    loves: 0,
+    loved: false,
+    identified: herb.toLowerCase() !== 'unknown' && herb !== '',
+    ts: Date.now(),
+  };
+
+  PHOTOS.unshift(newPhoto);
+  closeUpload();
+  renderStats();
+  renderFounders();
+  renderGallery();
+
+  if(isFounder){
+    setTimeout(()=>alert(`🌱 Welcome, Garden Founder! Your contribution is now live. The Garden Founder badge has been added to your profile.`), 300);
+  }
+}
+
+document.getElementById('upload-modal').addEventListener('click', function(e){ if(e.target===this) closeUpload(); });
+
+// Drag and drop
+const dropZone = document.getElementById('upload-drop-zone');
+dropZone.addEventListener('dragover', e=>{ e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', ()=>dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e=>{ e.preventDefault(); dropZone.classList.remove('dragover'); const f=e.dataTransfer.files[0]; if(f&&f.type.startsWith('image/')){const inp=document.getElementById('garden-file');const dt=new DataTransfer();dt.items.add(f);inp.files=dt.files;handleGardenImage(inp);openUpload();}});
+
+// ── INIT ─────────────────────────────────────────────────────────
+buildFilters();
+renderStats();
+renderFounders();
+renderGallery();
+</script>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms and Conditions — C.H.I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root{--forest:#1a3a2a;--forest-mid:#2d5c42;--gold:#c8952a;--gold-light:#e8b84b;--night:#0c1a10;--parchment:#f5f0e8;--muted:rgba(245,240,232,0.45);--border:rgba(255,255,255,0.08);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--night);color:var(--parchment);min-height:100vh;}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:66px;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;background:rgba(10,20,12,0.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(200,149,42,0.12);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;letter-spacing:.16em;color:var(--gold-light);}
+.nav-full{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:rgba(245,240,232,0.35);}
+.nav-right{display:flex;gap:1.5rem;align-items:center;}
+.nav-right a{color:var(--muted);text-decoration:none;font-size:13px;transition:color .2s;}
+.nav-right a:hover{color:var(--gold-light);}
+.layout{display:grid;grid-template-columns:220px 1fr;max-width:1000px;margin:0 auto;padding:calc(66px + 3rem) 2rem 5rem;gap:4rem;}
+.sidebar{position:sticky;top:calc(66px + 2rem);align-self:start;}
+.sidebar-title{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:rgba(245,240,232,0.25);margin-bottom:.85rem;}
+.sidebar nav{display:flex;flex-direction:column;gap:3px;}
+.sidebar nav a{font-size:12px;color:rgba(245,240,232,0.35);text-decoration:none;padding:5px 0;border-left:2px solid transparent;padding-left:10px;transition:all .2s;}
+.sidebar nav a:hover,.sidebar nav a.active{color:var(--gold);border-left-color:var(--gold);}
+.draft-banner{background:rgba(196,82,42,0.08);border:1px solid rgba(196,82,42,0.2);border-radius:6px;padding:.85rem 1.25rem;margin-bottom:2.5rem;font-size:12px;color:rgba(232,133,106,0.8);}
+.draft-banner strong{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;}
+.eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;display:flex;align-items:center;gap:10px;}
+.eyebrow::before{content:'';width:20px;height:1px;background:var(--gold);opacity:.6;}
+h1{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;color:var(--parchment);margin-bottom:.5rem;line-height:1.05;}
+.meta{font-size:12px;color:rgba(245,240,232,0.25);margin-bottom:1.5rem;}
+.section-anchor{display:block;height:80px;margin-top:-80px;visibility:hidden;}
+h2{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:var(--parchment);margin:2.5rem 0 .85rem;padding-bottom:.6rem;border-bottom:1px solid var(--border);}
+h3{font-size:16px;font-weight:500;color:var(--parchment);margin:1.5rem 0 .5rem;}
+p{font-size:15px;color:var(--muted);line-height:1.85;margin-bottom:.9rem;}
+p strong{color:var(--parchment);font-weight:500;}
+ul{margin:.5rem 0 .9rem 0;padding-left:0;list-style:none;}
+ul li{font-size:15px;color:var(--muted);line-height:1.75;padding:.3rem 0 .3rem 1.25rem;position:relative;}
+ul li::before{content:'—';position:absolute;left:0;color:rgba(200,149,42,0.4);}
+.callout{border-radius:6px;padding:1.1rem 1.5rem;margin:1.25rem 0;}
+.callout-red{background:rgba(196,82,42,0.07);border:1px solid rgba(196,82,42,0.2);}
+.callout-amber{background:rgba(184,115,51,0.07);border:1px solid rgba(200,149,42,0.2);}
+.callout p{margin:0;font-size:14px;}
+.callout strong{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}
+.callout-red strong{color:rgba(232,133,106,0.8);}
+.callout-amber strong{color:var(--gold);}
+.placeholder{color:rgba(200,149,42,0.6);font-style:italic;}
+.seed-table{width:100%;border-collapse:collapse;margin:1rem 0;}
+.seed-table th{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);text-align:left;padding:.6rem .85rem;border-bottom:1px solid var(--border);}
+.seed-table td{font-size:14px;color:var(--muted);padding:.6rem .85rem;border-bottom:1px solid rgba(255,255,255,0.04);}
+.seed-table td:first-child{color:var(--parchment);font-weight:500;}
+footer{background:var(--night);border-top:1px solid rgba(255,255,255,0.05);padding:2rem 2.5rem;text-align:center;}
+footer p{font-size:12px;color:rgba(245,240,232,0.15);}
+footer a{color:var(--gold);text-decoration:none;}
+@media(max-width:768px){.layout{grid-template-columns:1fr;}.sidebar{display:none;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div><div class="nav-chi">C.H.I</div><div class="nav-full">Collective Herbal Intelligence</div></div>
+  </a>
+  <div class="nav-right">
+    <a href="about.html">About</a>
+    <a href="privacy-policy.html">Privacy Policy</a>
+    <a href="disclaimer.html">Disclaimer</a>
+  </div>
+</nav>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-title">Contents</div>
+    <nav>
+      <a href="#parties">1. The parties</a>
+      <a href="#service">2. What CHI provides</a>
+      <a href="#accounts">3. Accounts</a>
+      <a href="#seeds">4. Free accounts and seeds</a>
+      <a href="#subscriptions">5. Subscriptions</a>
+      <a href="#use">6. Acceptable use</a>
+      <a href="#health">7. Health and safety</a>
+      <a href="#ip">8. Intellectual property</a>
+      <a href="#liability">9. Limitation of liability</a>
+      <a href="#termination">10. Termination</a>
+      <a href="#privacy">11. Privacy</a>
+      <a href="#changes">12. Changes</a>
+      <a href="#law">13. Governing law</a>
+      <a href="#general">14. General</a>
+    </nav>
+  </aside>
+
+  <div class="content">
+    <div class="draft-banner"><strong>Draft — for solicitor review</strong>Complete before publication: full legal name, contact email, ICO registration number. Send to solicitor alongside Privacy Policy.</div>
+    <div class="eyebrow">Legal</div>
+    <h1>Terms and Conditions</h1>
+    <p class="meta">Last updated: 2025 · C.H.I — Collective Herbal Intelligence</p>
+
+    <div class="callout callout-red">
+      <p><strong>Please read this first</strong>CHI is an educational platform providing herbal knowledge. It is not a medical service. Nothing on CHI constitutes medical advice, diagnosis, or treatment. Always consult a qualified healthcare professional before making decisions about your health.</p>
+    </div>
+
+    <span class="section-anchor" id="parties"></span>
+    <h2>1. Who these terms are between</h2>
+    <p>These terms are a legal agreement between you (the user) and C.H.I — Collective Herbal Intelligence, operated by <span class="placeholder">[Full legal name — to be added]</span>, trading as C.H.I — Collective Herbal Intelligence. Contact: <span class="placeholder">[contact@chi.com — to be confirmed]</span>.</p>
+    <p>By using CHI you confirm that you are at least 18 years old and have the legal capacity to enter into a binding agreement.</p>
+
+    <span class="section-anchor" id="service"></span>
+    <h2>2. What CHI provides</h2>
+    <p>CHI is an educational herbal wellness platform providing the Herb Match, the Herbadex, the Herb Identifier, community space, personal profile with journal and herb passport, and private messaging between members.</p>
+    <p>CHI is explicitly not a medical service, clinic, healthcare provider, or replacement for professional medical advice. The tools are educational — they are not diagnostic instruments.</p>
+    <h3>AI-generated content</h3>
+    <p>CHI's tools are powered by Claude, an AI model by Anthropic. AI-generated content may contain errors. CHI does not warrant that any AI-generated output is complete, accurate, or suitable for any particular purpose.</p>
+
+    <span class="section-anchor" id="accounts"></span>
+    <h2>3. Accounts</h2>
+    <p>You are responsible for keeping your password secure and for all activity under your account. CHI uses email and password authentication only — no social login. One account per person. You must be 18 or over.</p>
+
+    <span class="section-anchor" id="seeds"></span>
+    <h2>4. Free accounts and the seed system</h2>
+    <p>Free accounts receive 100 seeds on signup plus a weekly 5-minute premium window from your first login each week. Seeds are the in-app currency used to access CHI's tools.</p>
+    <table class="seed-table">
+      <tr><th>Tool</th><th>Seed cost</th></tr>
+      <tr><td>Herb Match</td><td>15 seeds per query · 15 seeds per follow-up</td></tr>
+      <tr><td>Herbadex</td><td>5 seeds per herb profile</td></tr>
+      <tr><td>Herb Identifier</td><td>20 seeds per identification</td></tr>
+    </table>
+    <p><strong>Free seeds</strong> (100 on signup) expire after 32 days. <strong>Purchased seeds</strong> never expire — they remain in your account until used. Purchased seeds are non-refundable.</p>
+    <table class="seed-table">
+      <tr><th>Pack</th><th>Price</th><th>Per seed</th></tr>
+      <tr><td>100 seeds</td><td>£2</td><td>2p</td></tr>
+      <tr><td>500 seeds</td><td>£5</td><td>1p</td></tr>
+      <tr><td>1,000 seeds</td><td>£10</td><td>1p</td></tr>
+    </table>
+
+    <span class="section-anchor" id="subscriptions"></span>
+    <h2>5. Subscriptions</h2>
+    <p>CHI offers two subscription plans with identical features: <strong>Monthly — £9/month</strong> and <strong>Annual — £75/year</strong>. Subscribers have unlimited access to all tools, full journal, community, herb passport, and rank progression. The Herb Identifier retains a fair use limit of 5 identifications per day.</p>
+    <p>Subscriptions renew automatically. You may cancel at any time — access continues to the end of the billing period. Payment is processed by Stripe.</p>
+    <div class="callout callout-amber">
+      <p><strong>Cooling off period</strong>Under the Consumer Contracts Regulations 2013 you have a 14-day right to cancel and receive a full refund. If you access the service before 14 days, you may waive this right. At signup, CHI will ask you to confirm whether you want immediate access. If you choose immediate access, you acknowledge that the 14-day cancellation right is waived once you begin using the platform.</p>
+    </div>
+
+    <span class="section-anchor" id="use"></span>
+    <h2>6. Acceptable use</h2>
+    <p>You agree to use CHI only for lawful purposes, to treat other members with respect, and to share knowledge honestly using non-prescriptive language.</p>
+    <p>You agree not to make medical claims in community posts, post offensive or promotional content, scrape the herb database, create multiple accounts, impersonate other members, or use the Herb Identifier as the sole basis for consuming wild plants.</p>
+    <p><strong>Community standard:</strong> Share experiences, not diagnoses. No medical claims. No profanity. No promotional content. Moderated for respect — not for opinion.</p>
+
+    <span class="section-anchor" id="health"></span>
+    <h2>7. Health information and safety</h2>
+    <div class="callout callout-red"><p><strong>Most important clause</strong>Nothing on CHI is medical advice. Herb recommendations, profiles, and identifications are educational content generated by AI. They have not been assessed by a doctor for your specific circumstances. Use them to learn — not to replace professional medical care.</p></div>
+    <p>Always consult a healthcare professional before starting any herb protocol, particularly if you take prescription medications, are pregnant or breastfeeding, or have a diagnosed medical condition.</p>
+    <p><strong>Herb Identifier warning:</strong> Never consume or handle any wild plant based solely on the Herb Identifier's output. Always verify identification through multiple expert sources before foraging. CHI accepts no liability for any harm arising from plant misidentification.</p>
+
+    <span class="section-anchor" id="ip"></span>
+    <h2>8. Intellectual property</h2>
+    <p>CHI owns all intellectual property in the platform including design, code, and curated content. You retain ownership of content you create — journal entries, posts, messages. By posting you grant CHI a licence to display that content on the platform.</p>
+
+    <span class="section-anchor" id="liability"></span>
+    <h2>9. Limitation of liability</h2>
+    <p>CHI does not exclude liability for death or personal injury caused by negligence, fraud, or any liability that cannot be excluded by law.</p>
+    <p>To the fullest extent permitted by law, CHI is not liable for health outcomes from following herb recommendations, harm from plant misidentification, herb-medication interactions, loss of data from technical failures, or the accuracy of AI-generated content.</p>
+    <p>CHI's total liability for any claim is limited to the amount you paid in the 12 months preceding the claim.</p>
+
+    <span class="section-anchor" id="termination"></span>
+    <h2>10. Account termination</h2>
+    <p>You may close your account at any time. All personal data is permanently deleted within 30 days. CHI may suspend or terminate accounts that breach these terms. On termination for breach, unused purchased seeds are forfeited.</p>
+
+    <span class="section-anchor" id="privacy"></span>
+    <h2>11. Privacy</h2>
+    <p>Your use of CHI is also governed by our <a href="privacy-policy.html" style="color:var(--gold);text-decoration:none;">Privacy Policy</a>, incorporated into these terms by reference.</p>
+
+    <span class="section-anchor" id="changes"></span>
+    <h2>12. Changes to these terms</h2>
+    <p>When we make significant changes we will update the date above, send you an email notification, and display a notice when you next log in. Continued use after the effective date constitutes acceptance.</p>
+
+    <span class="section-anchor" id="law"></span>
+    <h2>13. Governing law</h2>
+    <p>These terms are governed by the laws of England and Wales. Any disputes are subject to the exclusive jurisdiction of the courts of England and Wales. Scottish and Northern Irish residents may also bring proceedings in their home jurisdiction.</p>
+
+    <span class="section-anchor" id="general"></span>
+    <h2>14. General provisions</h2>
+    <p>If any part of these terms is unenforceable, the remaining terms continue in full force. These terms, together with the Privacy Policy, constitute the entire agreement between you and CHI.</p>
+  </div>
+</div>
+
+<footer>
+  <p>C.H.I — Collective Herbal Intelligence · <a href="privacy-policy.html">Privacy Policy</a> · <a href="disclaimer.html">Medical Disclaimer</a> · © 2025</p>
+</footer>
+
+<script>
+const anchors = document.querySelectorAll('.section-anchor');
+const links = document.querySelectorAll('.sidebar nav a');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  anchors.forEach(a => { if (window.scrollY >= a.offsetTop - 100) cur = a.id; });
+  links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + cur));
+});
+</script>
+</body>
+</html>

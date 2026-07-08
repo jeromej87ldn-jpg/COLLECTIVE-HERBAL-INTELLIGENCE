@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community — C.H.I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#1a3a2a;--forest-mid:#2d5c42;--forest-light:#4a8c65;
+  --parchment:#f5f0e8;--parchment-dark:#ede5d0;--parchment-deep:#e0d5b8;
+  --charcoal:#2a2a25;--charcoal-mid:#4a4a42;
+  --gold:#c8952a;--gold-light:#e8b84b;--night:#0c1a10;--card:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.08);
+  --th-bg:#0c1a10;--th-header:#1a3a2a;--th-card:rgba(255,255,255,0.04);
+  --th-border:rgba(255,255,255,0.08);--th-text:#f5f0e8;
+  --th-muted:rgba(245,240,232,0.5);--th-accent:#c8952a;
+  --th-accent2:#e8b84b;--th-input:rgba(255,255,255,0.06);
+  --th-tag-bg:rgba(74,140,101,0.15);--th-tag-border:rgba(74,140,101,0.3);
+  --th-tag-text:#7acca0;--th-glow:rgba(74,140,101,0.1);
+}
+[data-theme="earth"]{--th-bg:#f5f0e8;--th-header:#2a1f14;--th-card:rgba(42,31,20,0.05);--th-border:rgba(42,31,20,0.12);--th-text:#2a1f14;--th-muted:rgba(42,31,20,0.5);--th-accent:#b87333;--th-accent2:#d4904a;--th-input:rgba(42,31,20,0.06);--th-tag-bg:rgba(184,115,51,0.12);--th-tag-border:rgba(184,115,51,0.28);--th-tag-text:#7a4020;--th-glow:rgba(184,115,51,0.07);}
+[data-theme="midnight"]{--th-bg:#08080f;--th-header:#10102a;--th-card:rgba(255,255,255,0.04);--th-border:rgba(255,255,255,0.08);--th-text:#f0f0ff;--th-muted:rgba(240,240,255,0.45);--th-accent:#9a7aff;--th-accent2:#c0a8ff;--th-input:rgba(255,255,255,0.06);--th-tag-bg:rgba(92,98,184,0.18);--th-tag-border:rgba(92,98,184,0.35);--th-tag-text:#c0a8ff;--th-glow:rgba(92,98,184,0.1);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--th-bg);color:var(--th-text);min-height:100vh;overflow-x:hidden;transition:background .4s,color .4s;}
+
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:var(--forest);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:100;}
+.nav-logo{text-decoration:none;display:flex;flex-direction:column;}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-light);letter-spacing:.1em;}
+.nav-full{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.5);}
+.nav-right{display:flex;align-items:center;gap:1.25rem;}
+.nav-right>a,.nav-right>.nav-dd{color:rgba(245,240,232,.6);text-decoration:none;font-size:13px;transition:color .2s;}
+.nav-right>a:hover,.nav-right>a.active{color:var(--gold-light);}
+.nav-cta{background:var(--gold);color:var(--forest)!important;padding:.5rem 1rem;border-radius:4px;font-weight:500;}
+.nav-inbox{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:6px;border:1px solid rgba(255,255,255,0.08);color:rgba(245,240,232,.6);transition:all .2s;text-decoration:none;}
+.nav-inbox:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
+.nav-dd{position:relative;display:inline-flex;align-items:center;gap:4px;cursor:pointer;font-size:13px;color:rgba(245,240,232,.6);background:none;border:none;font-family:'DM Sans',sans-serif;padding:0;height:64px;}
+.nav-dd:hover,.nav-dd.open{color:var(--gold-light);}
+.nav-dd-arrow{font-size:8px;opacity:.5;transition:transform .2s;}
+.nav-dd.open .nav-dd-arrow{transform:rotate(180deg);}
+.nav-dd-menu{position:absolute;top:calc(100% - 1px);left:50%;transform:translateX(-50%);background:var(--forest);border:1px solid rgba(200,149,42,.22);border-radius:0 0 8px 8px;padding:.4rem 0;min-width:180px;display:none;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.nav-dd.open .nav-dd-menu{display:block;animation:ddFade .15s ease forwards;}
+@keyframes ddFade{from{opacity:0;transform:translateX(-50%) translateY(-4px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.nav-dd-menu a{display:flex;align-items:center;gap:.55rem;padding:.55rem 1.1rem;font-size:13px;color:rgba(245,240,232,.7);text-decoration:none;transition:all .15s;white-space:nowrap;}
+.nav-dd-menu a:hover{background:rgba(200,149,42,.08);color:var(--gold-light);}
+.nav-dd-menu a.active{color:var(--gold-light);}
+.nav-dd-divider{height:1px;background:rgba(255,255,255,.07);margin:.3rem 0;}
+.nav-dd-icon{font-size:14px;width:16px;text-align:center;flex-shrink:0;}
+@media(max-width:760px){.nav-right>a:not(.nav-cta):not(.nav-inbox){display:none;}.nav-dd{display:none;}}
+
+
+
+/* GUIDELINES TICKER */
+.guide-ticker{background:var(--gold-light);border-bottom:1px solid rgba(26,58,42,.25);height:32px;overflow:hidden;display:flex;align-items:center;flex-shrink:0;}
+.guide-ticker-label{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--forest);padding:0 1rem 0 1.5rem;flex-shrink:0;white-space:nowrap;border-right:1px solid rgba(26,58,42,.2);height:100%;display:flex;align-items:center;font-weight:600;}
+.guide-ticker-track{display:flex;align-items:center;white-space:nowrap;animation:guideTicker 20s linear infinite;}
+.guide-ticker-track:hover{animation-play-state:paused;}
+.guide-rule{font-size:12px;color:var(--forest);padding:0 2.5rem;flex-shrink:0;}
+.guide-rule span{font-weight:500;font-style:italic;}
+@keyframes guideTicker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* BREADCRUMB */
+.breadcrumb{background:var(--th-header);border-bottom:1px solid var(--th-border);padding:8px 2.5rem;display:flex;align-items:center;gap:8px;font-size:12px;transition:background .4s,border-color .4s;}
+.breadcrumb a{color:rgba(245,240,232,0.45);text-decoration:none;}
+.breadcrumb a:hover{color:var(--gold-light);}
+.breadcrumb .sep{color:rgba(255,255,255,0.2);}
+.breadcrumb .cur{color:rgba(245,240,232,0.7);}
+
+/* PAGE HERO */
+.page-hero{background:var(--th-header);padding:1.5rem 2.5rem 1.25rem;position:relative;overflow:hidden;transition:background .4s;}
+.page-hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 85% 50%,var(--th-glow) 0%,transparent 65%);pointer-events:none;}
+.page-hero-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;}
+.page-hero-tag{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--th-accent);margin-bottom:.4rem;display:flex;align-items:center;gap:8px;}
+.page-hero-tag::before{content:'';width:22px;height:1px;background:var(--th-accent);opacity:.6;}
+.page-hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(24px,3vw,36px);font-weight:300;line-height:1.08;color:var(--th-text);margin-bottom:.4rem;transition:color .4s;}
+.page-hero h1 em{font-style:italic;color:var(--th-accent2);}
+.page-hero p{font-size:13.5px;font-weight:300;color:var(--th-muted);max-width:480px;line-height:1.65;transition:color .4s;}
+.write-btn{background:var(--th-accent);color:var(--night);border:none;padding:12px 28px;border-radius:3px;font-size:12px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:opacity .2s;flex-shrink:0;}
+.write-btn:hover{opacity:.85;}
+
+/* LAYOUT */
+.community-body{max-width:1100px;margin:0 auto;padding:2.5rem;display:grid;grid-template-columns:1fr 300px;gap:2rem;}
+
+/* FEED FILTERS */
+.feed-filters{display:flex;gap:.6rem;margin-bottom:2rem;flex-wrap:wrap;}
+.filter-btn{font-size:12px;letter-spacing:.07em;text-transform:uppercase;padding:7px 16px;border-radius:20px;cursor:pointer;border:1px solid var(--th-border);background:var(--th-input);color:var(--th-muted);transition:all .18s;font-family:'DM Sans',sans-serif;}
+.filter-btn:hover{border-color:var(--th-accent);color:var(--th-text);}
+.filter-btn.active{background:var(--th-tag-bg);border-color:var(--th-tag-border);color:var(--th-tag-text);}
+
+/* BLOG POST CARDS */
+.blog-card{background:var(--th-card);border:1px solid var(--th-border);border-radius:8px;overflow:hidden;margin-bottom:1.5rem;transition:background .4s,border-color .4s;}
+.blog-card:hover{border-color:rgba(200,149,42,0.2);}
+
+.blog-card-head{padding:1.25rem 1.5rem 0;}
+.blog-author{display:flex;align-items:center;gap:10px;margin-bottom:1rem;}
+.author-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:500;flex-shrink:0;}
+.author-name{font-size:13px;font-weight:500;color:var(--th-text);transition:color .4s;}
+.author-rank{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--th-accent);}
+.author-time{font-size:11px;color:var(--th-muted);margin-left:auto;flex-shrink:0;transition:color .4s;}
+
+.blog-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:var(--th-text);line-height:1.2;margin-bottom:.75rem;cursor:pointer;transition:color .4s;}
+.blog-title:hover{color:var(--th-accent2);}
+
+.blog-excerpt{font-size:14px;color:var(--th-muted);line-height:1.8;margin-bottom:1rem;transition:color .4s;}
+
+.blog-herbs{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:1rem;}
+.blog-herb-tag{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 10px;border-radius:20px;background:var(--th-tag-bg);border:1px solid var(--th-tag-border);color:var(--th-tag-text);cursor:pointer;transition:all .2s;text-decoration:none;}
+.blog-herb-tag:hover{border-color:var(--th-accent);}
+
+.blog-card-footer{padding:.85rem 1.5rem;border-top:1px solid var(--th-border);display:flex;align-items:center;gap:1.25rem;transition:border-color .4s;}
+.blog-action{display:flex;align-items:center;gap:5px;background:none;border:none;color:var(--th-muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:color .2s;padding:0;}
+.blog-action:hover{color:var(--th-accent);}
+/* Engagement reactions */
+.reactions{display:flex;gap:.5rem;flex-wrap:wrap;}
+.reaction-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;border:1px solid var(--th-border);background:var(--th-input);color:var(--th-muted);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;white-space:nowrap;}
+.reaction-btn:hover{border-color:var(--th-accent);color:var(--th-text);}
+.reaction-btn.active-tried{border-color:rgba(74,140,101,0.4);background:rgba(74,140,101,0.12);color:var(--th-tag-text);}
+.reaction-btn.active-learned{border-color:rgba(200,149,42,0.35);background:rgba(200,149,42,0.1);color:var(--th-accent2);}
+.reaction-btn.active-saving{border-color:rgba(92,98,184,0.35);background:rgba(92,98,184,0.1);color:#b0a8f0;}
+.reaction-count{font-size:11px;opacity:.7;}
+/* Follow button */
+.follow-btn{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;border:1px solid var(--th-border);background:transparent;color:var(--th-muted);font-size:11px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.follow-btn:hover{border-color:var(--th-accent);color:var(--th-accent);}
+.follow-btn.following{border-color:rgba(74,140,101,0.35);background:rgba(74,140,101,0.1);color:var(--th-tag-text);}
+.follow-btn.following::before{content:'✓ ';}
+/* Following sidebar */
+.following-list{}
+.following-member{display:flex;align-items:center;gap:10px;padding:.6rem 0;border-bottom:1px solid var(--th-border);transition:border-color .4s;}
+.following-member:last-child{border-bottom:none;}
+.fm-name{font-size:13px;color:var(--th-text);flex:1;transition:color .4s;}
+.fm-rank{font-size:10px;color:var(--th-accent);}
+.unfollow-btn{font-size:10px;color:var(--th-muted);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;transition:color .2s;}
+.unfollow-btn:hover{color:var(--th-accent);}
+.blog-read-more{margin-left:auto;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--th-accent);text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:1px;transition:opacity .2s;}
+.blog-read-more:hover{opacity:.7;}
+
+/* FULL POST VIEW */
+.full-post{display:none;}
+.full-post.open{display:block;}
+.feed-view.hidden{display:none;}
+
+.post-nav{display:flex;align-items:center;gap:10px;margin-bottom:2rem;}
+.back-btn{background:none;border:1px solid var(--th-border);color:var(--th-muted);padding:8px 16px;border-radius:3px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:7px;transition:all .2s;}
+.back-btn:hover{border-color:var(--th-accent);color:var(--th-accent);}
+
+.full-post-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,46px);font-weight:300;line-height:1.1;color:var(--th-text);margin-bottom:1.25rem;transition:color .4s;}
+.full-post-meta{display:flex;align-items:center;gap:12px;margin-bottom:2rem;flex-wrap:wrap;}
+.full-post-body{font-size:16px;color:var(--th-text);line-height:1.9;transition:color .4s;}
+.full-post-body p{margin-bottom:1.25rem;}
+.full-post-body h2{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:var(--th-text);margin:2rem 0 .85rem;transition:color .4s;}
+.full-post-body blockquote{border-left:3px solid var(--th-accent);padding:.85rem 1.25rem;margin:1.5rem 0;background:var(--th-tag-bg);border-radius:0 4px 4px 0;}
+.full-post-body blockquote p{margin:0;font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:300;font-style:italic;color:var(--th-text);}
+
+/* COMMENTS */
+.comments-section{margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--th-border);transition:border-color .4s;}
+.comments-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--th-text);margin-bottom:1.25rem;transition:color .4s;}
+.comment-card{display:flex;gap:10px;padding:.85rem 0;border-bottom:1px solid var(--th-border);transition:border-color .4s;}
+.comment-card:last-of-type{border-bottom:none;}
+.comment-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;flex-shrink:0;}
+.comment-body{flex:1;}
+.comment-author{font-size:13px;font-weight:500;color:var(--th-text);margin-bottom:3px;transition:color .4s;}
+.comment-author span{font-size:10px;font-weight:400;color:var(--th-accent);letter-spacing:.06em;text-transform:uppercase;margin-left:8px;}
+.comment-text{font-size:14px;color:var(--th-muted);line-height:1.65;transition:color .4s;}
+.add-comment{margin-top:1.25rem;display:flex;gap:10px;}
+.comment-input{flex:1;background:var(--th-input);border:1px solid var(--th-border);border-radius:4px;padding:10px 14px;font-size:14px;color:var(--th-text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s,background .4s,color .4s;}
+.comment-input:focus{border-color:var(--th-accent);}
+.comment-submit{background:var(--th-accent);color:var(--night);border:none;border-radius:4px;padding:10px 20px;font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;flex-shrink:0;}
+
+/* WRITE MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:2rem;overflow-y:auto;backdrop-filter:blur(4px);}
+.modal-overlay.open{display:flex;}
+.write-modal{background:var(--th-header);border:1px solid var(--th-border);border-radius:8px;padding:2rem;width:100%;max-width:700px;margin:auto;transition:background .4s,border-color .4s;}
+.write-modal h3{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400;color:var(--th-text);margin-bottom:1.5rem;transition:color .4s;}
+.wm-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--th-muted);display:block;margin-bottom:5px;margin-top:1rem;transition:color .4s;}
+.wm-input{width:100%;background:var(--th-input);border:1px solid var(--th-border);border-radius:4px;padding:11px 14px;font-size:15px;color:var(--th-text);font-family:'Cormorant Garamond',serif;outline:none;transition:border-color .2s,background .4s,color .4s;}
+.wm-input:focus{border-color:var(--th-accent);}
+.wm-body{width:100%;background:var(--th-input);border:1px solid var(--th-border);border-radius:4px;padding:12px 14px;font-size:14px;color:var(--th-text);font-family:'DM Sans',sans-serif;outline:none;resize:vertical;min-height:240px;line-height:1.8;transition:border-color .2s,background .4s,color .4s;}
+.wm-body:focus{border-color:var(--th-accent);}
+.wm-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:1.25rem;flex-wrap:wrap;gap:.85rem;}
+.wm-actions{display:flex;gap:.65rem;}
+.wm-cancel{background:none;border:1px solid var(--th-border);color:var(--th-muted);padding:10px 20px;border-radius:3px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.wm-cancel:hover{border-color:var(--th-muted);}
+.wm-publish{background:var(--th-accent);color:var(--night);border:none;padding:10px 24px;border-radius:3px;font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .2s;}
+.wm-publish:hover{opacity:.85;}
+.wm-note{font-size:12px;color:var(--th-muted);font-style:italic;transition:color .4s;}
+/* Image upload */
+.img-upload-area{border:1px dashed var(--th-border);border-radius:6px;padding:1.25rem;text-align:center;cursor:pointer;transition:all .2s;margin-top:.5rem;position:relative;}
+.img-upload-area:hover{border-color:var(--th-accent);background:rgba(200,149,42,0.03);}
+.img-upload-area.has-image{border-style:solid;border-color:var(--th-tag-border);}
+.img-upload-label{font-size:13px;color:var(--th-muted);display:flex;align-items:center;justify-content:center;gap:8px;}
+.img-upload-label span{font-size:18px;}
+.img-preview{max-width:100%;max-height:220px;border-radius:4px;margin-top:.65rem;display:none;}
+.img-preview.show{display:block;}
+.img-remove{position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.5);border:none;color:rgba(255,255,255,0.8);width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:13px;display:none;align-items:center;justify-content:center;transition:background .2s;}
+.img-remove.show{display:flex;}
+.img-remove:hover{background:rgba(196,82,42,0.7);}
+.img-hint{font-size:11px;color:rgba(245,240,232,0.2);margin-top:.4rem;}
+.post-image{width:100%;max-height:320px;object-fit:cover;border-radius:4px;margin:1rem 0;display:block;}
+
+/* SIDEBAR */
+.community-sidebar{}
+.sidebar-card{background:var(--th-card);border:1px solid var(--th-border);border-radius:8px;padding:1.5rem;margin-bottom:1.5rem;transition:background .4s,border-color .4s;}
+.sidebar-card h3{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--th-text);margin-bottom:1rem;transition:color .4s;}
+.sidebar-member{display:flex;align-items:center;gap:10px;padding:.65rem 0;border-bottom:1px solid var(--th-border);transition:border-color .4s;cursor:pointer;}
+.sidebar-member:last-child{border-bottom:none;}
+.sidebar-member:hover .sm-name{color:var(--th-accent);}
+.sm-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:13px;font-weight:500;flex-shrink:0;}
+.sm-name{font-size:13px;color:var(--th-text);flex:1;transition:color .4s;}
+.sm-rank{font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--th-accent);}
+.trending-herb{display:flex;align-items:center;gap:8px;padding:.65rem 0;border-bottom:1px solid var(--th-border);text-decoration:none;transition:border-color .4s;}
+.trending-herb:last-child{border-bottom:none;}
+.trending-herb:hover .th-name{color:var(--th-accent);}
+.th-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.th-name{font-size:13px;color:var(--th-text);flex:1;transition:color .4s;}
+.th-count{font-size:11px;color:var(--th-muted);transition:color .4s;}
+
+/* NAV SEARCH */
+.nav-search-wrap{position:relative;margin-left:.5rem;}
+.nav-search-toggle{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:6px;border:1px solid var(--card-border);background:transparent;color:rgba(245,240,232,.6);cursor:pointer;transition:all .2s;flex-shrink:0;}
+.nav-search-toggle:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
+.nav-search-box{position:absolute;top:calc(100% + 8px);right:0;width:300px;background:var(--forest);border:1px solid rgba(200,149,42,.3);border-radius:8px;padding:.5rem;z-index:200;display:none;box-shadow:0 8px 32px rgba(0,0,0,.4);}
+.nav-search-box.open{display:block;animation:fadeUp .2s ease forwards;}
+.nav-search-input{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:5px;padding:.6rem .85rem;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--parchment);outline:none;transition:border-color .2s;}
+.nav-search-input:focus{border-color:rgba(200,149,42,.4);}
+.nav-search-input::placeholder{color:rgba(245,240,232,.22);}
+.search-results{margin-top:.4rem;display:flex;flex-direction:column;gap:.25rem;max-height:260px;overflow-y:auto;}
+.search-result-item{display:flex;align-items:center;gap:.6rem;padding:.5rem .65rem;border-radius:5px;cursor:pointer;text-decoration:none;transition:background .15s;}
+.search-result-item:hover{background:rgba(200,149,42,.08);}
+.sri-icon{font-size:14px;flex-shrink:0;width:20px;text-align:center;}
+.sri-main{font-size:13px;color:var(--parchment);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sri-sub{font-size:11px;color:rgba(245,240,232,.35);flex-shrink:0;}
+.search-empty{font-size:13px;color:rgba(245,240,232,.3);text-align:center;padding:.75rem;font-style:italic;}
+.search-section-label{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,240,232,.25);padding:.4rem .65rem .2rem;}
+
+/* HERO SLIDESHOW */
+.hero-slide-img{position:absolute;top:0;right:0;bottom:0;width:55%;pointer-events:none;overflow:hidden;}
+.hero-slide-img img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.2s ease;}
+.hero-slide-img img.active{opacity:.75;}
+.hero-slide-img::before{content:'';position:absolute;top:0;left:0;bottom:0;width:60%;background:linear-gradient(to right,var(--th-header) 0%,transparent 100%);z-index:1;}
+.hero-slide-img::after{content:'';position:absolute;top:0;right:0;bottom:0;left:0;background:linear-gradient(to right,transparent 40%,rgba(26,58,42,.25) 100%);z-index:1;}
+.hero-slide-credit{position:absolute;bottom:.6rem;right:.85rem;z-index:2;font-size:10px;color:rgba(245,240,232,.3);letter-spacing:.06em;}
+
+/* GARDEN PROMO BANNER */
+.garden-promo{background:linear-gradient(135deg,rgba(74,140,101,.12),rgba(26,58,42,.4));border:1px solid rgba(74,140,101,.25);border-radius:10px;padding:1.5rem 1.75rem;margin-bottom:1.75rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap;}
+.garden-promo-left{flex:1;min-width:200px;}
+.garden-promo-eyebrow{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--th-tag-text);margin-bottom:.4rem;display:flex;align-items:center;gap:8px;}
+.garden-promo-eyebrow::before{content:'';width:14px;height:1px;background:var(--th-tag-text);opacity:.6;}
+.garden-promo-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--th-text);line-height:1.2;margin-bottom:.4rem;}
+.garden-promo-title em{font-style:italic;color:var(--th-tag-text);}
+.garden-promo-desc{font-size:13px;color:var(--th-muted);line-height:1.65;}
+.garden-promo-stats{display:flex;gap:1rem;margin-top:.75rem;flex-wrap:wrap;}
+.gps{font-size:12px;color:var(--th-muted);display:flex;align-items:center;gap:5px;}
+.gps strong{color:var(--th-tag-text);font-weight:500;}
+.garden-promo-btn{padding:.7rem 1.5rem;background:rgba(74,140,101,.2);border:1px solid rgba(74,140,101,.4);border-radius:6px;color:var(--th-tag-text);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;text-decoration:none;transition:all .2s;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:7px;}
+.garden-promo-btn:hover{background:rgba(74,140,101,.3);border-color:rgba(74,140,101,.6);}
+
+.groups-sidebar{background:var(--th-card);border:1px solid var(--th-border);border-radius:8px;padding:1.25rem;margin-bottom:1.5rem;transition:background .4s,border-color .4s;}
+.groups-sidebar h3{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--th-text);margin-bottom:.85rem;transition:color .4s;}
+.group-list{display:flex;flex-direction:column;gap:.3rem;}
+.group-item{display:flex;align-items:center;gap:.65rem;padding:.55rem .65rem;border-radius:6px;cursor:pointer;transition:all .15s;border:1px solid transparent;}
+.group-item:hover{background:var(--th-input);border-color:var(--th-border);}
+.group-item.active-group{background:var(--th-tag-bg);border-color:var(--th-tag-border);}
+.group-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.group-name{font-size:13px;color:var(--th-text);flex:1;transition:color .4s;}
+.group-item.active-group .group-name{color:var(--th-tag-text);}
+.group-count{font-size:10.5px;color:var(--th-muted);}
+.group-join-btn{font-size:10px;padding:2px 8px;border-radius:999px;border:1px solid var(--th-border);background:transparent;color:var(--th-muted);cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:.05em;transition:all .15s;flex-shrink:0;}
+.group-join-btn:hover{border-color:var(--th-accent);color:var(--th-accent);}
+.group-join-btn.joined{background:var(--th-tag-bg);border-color:var(--th-tag-border);color:var(--th-tag-text);}
+.group-banner{background:var(--th-tag-bg);border:1px solid var(--th-tag-border);border-radius:6px;padding:.6rem .9rem;margin-bottom:1.25rem;display:none;align-items:center;gap:.6rem;font-size:13px;color:var(--th-tag-text);}
+.group-banner.show{display:flex;}
+.group-banner strong{font-weight:500;}
+.group-banner button{margin-left:auto;font-size:11px;padding:2px 8px;border-radius:4px;border:1px solid rgba(74,140,101,.4);background:transparent;color:var(--th-tag-text);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.group-banner button:hover{background:rgba(74,140,101,.15);}
+.post-group-tag{display:inline-flex;align-items:center;gap:5px;font-size:10px;padding:2px 9px;border-radius:999px;background:rgba(74,140,101,.1);border:1px solid rgba(74,140,101,.25);color:var(--th-tag-text);margin-bottom:.5rem;letter-spacing:.04em;}
+.post-group-tag .pgdot{width:6px;height:6px;border-radius:50%;}
+
+/* TRIED IT PROMPT */
+.tried-prompt{display:none;margin:0 1.5rem .85rem;border-radius:7px;background:rgba(74,140,101,.07);border:1px solid rgba(74,140,101,.2);padding:.9rem 1rem;animation:fadeUp .25s ease forwards;}
+.tried-prompt.show{display:block;}
+.tried-q{font-size:13px;color:var(--th-text);margin-bottom:.6rem;line-height:1.55;}
+.tried-q strong{color:var(--th-tag-text);}
+.tried-input{width:100%;background:var(--th-input);border:1px solid var(--th-border);border-radius:5px;padding:.55rem .8rem;font-size:13px;color:var(--th-text);font-family:'DM Sans',sans-serif;outline:none;resize:none;min-height:60px;line-height:1.55;transition:border-color .2s;}
+.tried-input:focus{border-color:rgba(74,140,101,.5);}
+.tried-input::placeholder{color:rgba(245,240,232,.2);}
+.tried-actions{display:flex;gap:.5rem;margin-top:.6rem;align-items:center;}
+.tried-submit{font-size:12px;padding:.4rem 1rem;border-radius:5px;background:rgba(74,140,101,.2);border:1px solid rgba(74,140,101,.35);color:var(--th-tag-text);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.tried-submit:hover{background:rgba(74,140,101,.3);}
+.tried-skip{font-size:12px;padding:.4rem .75rem;border-radius:5px;background:transparent;border:1px solid transparent;color:var(--th-muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:color .15s;}
+.tried-skip:hover{color:var(--th-text);}
+.tried-note{font-size:11px;color:rgba(245,240,232,.25);margin-left:auto;}
+
+/* MEMBER EXPERIENCES */
+.member-exp{margin:0 1.5rem .85rem;display:flex;flex-direction:column;gap:.4rem;}
+.exp-item{background:rgba(74,140,101,.05);border-left:2px solid rgba(74,140,101,.3);border-radius:0 5px 5px 0;padding:.55rem .8rem;}
+.exp-author{font-size:10.5px;color:var(--th-tag-text);margin-bottom:2px;letter-spacing:.04em;}
+.exp-text{font-size:13px;color:rgba(245,240,232,.7);line-height:1.55;}
+
+
+/* LANGUAGE HINT */
+.lang-hint{display:none;margin-top:.5rem;padding:.6rem .85rem;background:rgba(200,149,42,.08);border:1px solid rgba(200,149,42,.25);border-left:3px solid rgba(200,149,42,.6);border-radius:0 5px 5px 0;font-size:12.5px;color:rgba(245,240,232,.75);line-height:1.6;}
+.lang-hint.show{display:block;}
+.lang-hint strong{color:var(--gold-light);}
+.lang-hint .lh-flag{color:rgba(220,100,100,.9);font-weight:500;}
+.lang-hint .lh-sug{color:#7acca0;font-weight:500;}
+.wm-group-row{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.4rem;}
+.wm-group-chip{font-size:12px;padding:.3rem .75rem;border-radius:5px;border:1px solid var(--th-border);background:transparent;color:var(--th-muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.wm-group-chip:hover{border-color:var(--th-accent);color:var(--th-text);}
+.wm-group-chip.selected{background:var(--th-tag-bg);border-color:var(--th-tag-border);color:var(--th-tag-text);}
+
+footer{background:var(--night);padding:2.5rem 0 1.5rem;border-top:1px solid rgba(200,149,42,.12);margin-top:4rem;}
+.fi{max-width:1100px;margin:0 auto;padding:0 2.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.fi-logo span{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;letter-spacing:.18em;color:var(--gold-light);}
+.fi-links{display:flex;gap:1.5rem;}
+.fi-links a{font-size:13px;color:rgba(245,240,232,.4);text-decoration:none;transition:color .2s;}
+.fi-links a:hover{color:var(--gold-light);}
+.fi-disc{width:100%;font-size:11px;color:rgba(245,240,232,.18);line-height:1.7;padding-top:1.25rem;border-top:1px solid rgba(255,255,255,.05);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fadeUp .45s ease both;}
+
+@media(max-width:900px){
+  nav{padding:0 1rem;}.nav-right a:not(.nav-join){display:none;}
+  .breadcrumb,.community-body,.page-hero{padding-left:1rem;padding-right:1rem;}
+  .community-body{grid-template-columns:1fr;}
+  .community-sidebar{display:none;}
+}
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:var(--forest);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:100;}
+.nav-logo{text-decoration:none;display:flex;flex-direction:column;}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-light);letter-spacing:.1em;}
+.nav-full{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.5);}
+.nav-right{display:flex;align-items:center;gap:1.5rem;}
+.nav-right a{color:rgba(245,240,232,.6);text-decoration:none;font-size:13px;transition:color .2s;}
+.nav-right a:hover,.nav-right a.active{color:var(--gold-light);}
+.nav-cta{background:var(--gold);color:var(--forest)!important;padding:.5rem 1rem;border-radius:4px;font-weight:500;}
+.nav-inbox{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:6px;border:1px solid rgba(255,255,255,0.08);color:rgba(245,240,232,.6);transition:all .2s;}
+.nav-inbox:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
+@media(max-width:760px){.nav-right a:not(.nav-cta):not(.nav-inbox){display:none;}}
+</style>
+</head>
+<body data-theme="forest">
+
+<nav>
+  <a href="home.html" class="nav-logo">
+    <span class="nav-chi">C.H.I</span>
+    <span class="nav-full">Collective Herbal Intelligence</span>
+  </a>
+  <div class="nav-right">
+    <div class="nav-dd" id="dd-tools" onclick="toggleDD('tools')">
+      <span>Tools</span>
+      <span class="nav-dd-arrow">▼</span>
+      <div class="nav-dd-menu">
+        <a href="herb-match.html"><span class="nav-dd-icon">🌿</span>Herb Match</a>
+        <a href="phytochemistry.html"><span class="nav-dd-icon">⬡</span>Plant Intelligence</a>
+        <a href="supreme.html"><span class="nav-dd-icon">📖</span>Herbadex</a>
+        <a href="herb-identifier.html"><span class="nav-dd-icon">🔍</span>Herb Identifier</a>
+      </div>
+    </div>
+    <div class="nav-dd" id="dd-community" onclick="toggleDD('community')">
+      <span  style="color:var(--gold-light)">Community</span>
+      <span class="nav-dd-arrow">▼</span>
+      <div class="nav-dd-menu">
+        <a href="community.html" class="active"><span class="nav-dd-icon">💬</span>Community Feed</a>
+        <a href="garden.html"><span class="nav-dd-icon">🌱</span>Herbal Garden</a>
+        <a href="glossary.html"><span class="nav-dd-icon">📚</span>Glossary</a>
+      </div>
+    </div>
+    <div class="nav-dd" id="dd-profile" onclick="toggleDD('profile')">
+      <span>Profile</span>
+      <span class="nav-dd-arrow">▼</span>
+      <div class="nav-dd-menu">
+        <a href="profile.html"><span class="nav-dd-icon">🌿</span>My Profile</a>
+        <a href="inbox.html"><span class="nav-dd-icon">✉️</span>Inbox</a>
+        <div class="nav-dd-divider"></div>
+        <a href="privacy-policy.html"><span class="nav-dd-icon">🔒</span>Privacy Policy</a>
+        <a href="terms.html"><span class="nav-dd-icon">📄</span>Terms</a>
+        <a href="disclaimer.html"><span class="nav-dd-icon">⚠️</span>Disclaimer</a>
+        <div class="nav-dd-divider"></div>
+        <a href="index.html" onclick="localStorage.clear()"><span class="nav-dd-icon">↩</span>Sign out</a>
+      </div>
+    </div>
+    <a href="inbox.html" class="nav-inbox" title="Inbox">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12v9H2V4z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M2 4l6 5 6-5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+    </a>
+    <a href="join.html" class="nav-cta">Join CHI</a>
+  </div>
+</nav>
+
+<div class="breadcrumb">
+  <a href="index.html">Home</a><span class="sep">›</span>
+  <span class="cur">Community</span>
+</div>
+<div class="guide-ticker">
+  <div class="guide-ticker-label">Community Guidelines</div>
+  <div style="overflow:hidden;flex:1;">
+    <div class="guide-ticker-track">
+      <span class="guide-rule">Share <span>experiences</span>, not diagnoses &nbsp;·&nbsp; </span>
+      <span class="guide-rule">Use <span>non-prescriptive language</span> — "may support" not "treats" &nbsp;·&nbsp; </span>
+      <span class="guide-rule"><span>No medical claims</span> of any kind &nbsp;·&nbsp; </span>
+      <span class="guide-rule">Respect all herb journeys — beginner or advanced &nbsp;·&nbsp; </span>
+      <span class="guide-rule"><span>No promotional content</span> or brand placement &nbsp;·&nbsp; </span>
+      <span class="guide-rule">Be honest about what worked and what didn't &nbsp;·&nbsp; </span>
+      <span class="guide-rule">Always recommend <span>consulting a practitioner</span> for serious concerns &nbsp;·&nbsp; </span>
+      <span class="guide-rule">Cite your sources when sharing research &nbsp;·&nbsp; </span>
+      <span class="guide-rule"><span>No profanity</span> or personal attacks &nbsp;·&nbsp; </span>
+      <span class="guide-rule">Foraging photos must include a <span>safety note</span> &nbsp;·&nbsp; </span>
+      <span class="guide-rule">Share <span>experiences</span>, not diagnoses &nbsp;·&nbsp; </span>
+      <span class="guide-rule">Use <span>non-prescriptive language</span> — "may support" not "treats" &nbsp;·&nbsp; </span>
+      <span class="guide-rule"><span>No medical claims</span> of any kind &nbsp;·&nbsp; </span>
+      <span class="guide-rule">Respect all herb journeys — beginner or advanced &nbsp;·&nbsp; </span>
+      <span class="guide-rule"><span>No promotional content</span> or brand placement &nbsp;·&nbsp; </span>
+      <span class="guide-rule">Be honest about what worked and what didn't &nbsp;·&nbsp; </span>
+      <span class="guide-rule">Always recommend <span>consulting a practitioner</span> for serious concerns &nbsp;·&nbsp; </span>
+      <span class="guide-rule">Cite your sources when sharing research &nbsp;·&nbsp; </span>
+      <span class="guide-rule"><span>No profanity</span> or personal attacks &nbsp;·&nbsp; </span>
+      <span class="guide-rule">Foraging photos must include a <span>safety note</span> &nbsp;·&nbsp; </span>
+    </div>
+  </div>
+</div>
+
+<section class="page-hero" style="position:relative;overflow:hidden;">
+  <div class="hero-slide-img" id="hero-slideshow">
+    <img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&q=80" alt="" class="active">
+    <img src="https://images.unsplash.com/photo-1466781783364-36c955e42a7f?w=800&q=80" alt="">
+    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80" alt="">
+    <img src="https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=800&q=80" alt="">
+    <div class="hero-slide-credit" id="slide-credit">CHI Herbal Garden</div>
+  </div>
+  <div class="page-hero-inner" style="position:relative;z-index:2;">
+    <div>
+      <div class="page-hero-tag">CHI Community</div>
+      <h1>Herbal knowledge<br><em>from real people.</em></h1>
+      <p>Blogs, discoveries, and experiences from CHI members. The community is a place to learn and share — the tools are still the main event.</p>
+    </div>
+    <button class="write-btn" onclick="openWrite()" style="position:relative;z-index:3;">Write a post</button>
+  </div>
+</section>
+
+<div class="community-body">
+
+  <!-- MAIN FEED -->
+  <div>
+    <!-- GARDEN PROMO -->
+  <div class="garden-promo">
+    <div class="garden-promo-left">
+      <div class="garden-promo-eyebrow">New · Herbal Garden</div>
+      <div class="garden-promo-title">Help us build the world's<br><em>first community herb gallery.</em></div>
+      <div class="garden-promo-desc">Share photos of your herbs, plants and collections. Every verified photo links directly to the Herbadex and builds CHI's visual herb database — one plant at a time.</div>
+      <div class="garden-promo-stats">
+        <div class="gps"><strong id="garden-photo-count">247</strong> photos contributed</div>
+        <div class="gps"><strong id="garden-herb-count">83</strong> herbs identified</div>
+        <div class="gps"><strong id="garden-founder-count">31</strong> Garden Founders so far</div>
+      </div>
+    </div>
+    <a href="garden.html" class="garden-promo-btn">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1C4 1 1 4 1 7s3 6 6 6 6-3 6-6-3-6-6-6z" stroke="currentColor" stroke-width="1.3"/><path d="M7 4v3l2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Visit the Garden
+    </a>
+  </div>
+
+  <!-- FILTERS -->
+    <div id="group-banner" class="group-banner">
+      <span id="group-banner-dot" style="width:9px;height:9px;border-radius:50%;flex-shrink:0"></span>
+      <span>Viewing <strong id="group-banner-name"></strong></span>
+      <button onclick="clearGroup()">View all posts</button>
+    </div>
+    <div class="feed-filters">
+      <button class="filter-btn active" onclick="filterFeed('all',this)">All posts</button>
+      <button class="filter-btn" onclick="filterFeed('health',this)">Health</button>
+      <button class="filter-btn" onclick="filterFeed('growing',this)">Growing</button>
+      <button class="filter-btn" onclick="filterFeed('recipes',this)">Recipes</button>
+      <button class="filter-btn" onclick="filterFeed('spiritual',this)">Spiritual</button>
+      <button class="filter-btn" onclick="filterFeed('research',this)">Research</button>
+    </div>
+
+    <!-- FEED VIEW -->
+    <div class="feed-view" id="feed-view">
+      <!-- populated by JS -->
+    </div>
+
+    <!-- FULL POST VIEW -->
+    <div class="full-post" id="full-post-view">
+      <!-- populated by JS -->
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="community-sidebar">
+
+    <!-- GROUPS -->
+    <div class="groups-sidebar">
+      <h3>Groups</h3>
+      <div class="group-list" id="group-list"></div>
+    </div>
+    <div class="sidebar-card">
+      <h3>Active members</h3>
+      <div class="sidebar-member"><div class="sm-av" style="background:rgba(74,140,101,0.2);color:#7acca0;">S</div><div style="flex:1;"><div class="sm-name">Sage_R</div><div class="sm-rank">🌳 The Root</div></div><button class="follow-btn" onclick="toggleFollow(this,'Sage_R')">Follow</button></div>
+      <div class="sidebar-member"><div class="sm-av" style="background:rgba(154,58,122,0.2);color:#c07ab0;">M</div><div style="flex:1;"><div class="sm-name">Mariam_H</div><div class="sm-rank">🌿 Sprout</div></div><button class="follow-btn" onclick="toggleFollow(this,'Mariam_H')">Follow</button></div>
+      <div class="sidebar-member"><div class="sm-av" style="background:rgba(92,98,184,0.2);color:#9fa3e8;">T</div><div style="flex:1;"><div class="sm-name">The_Root_Walker</div><div class="sm-rank">🌳 The Root</div></div><button class="follow-btn" onclick="toggleFollow(this,'The_Root_Walker')">Follow</button></div>
+      <div class="sidebar-member"><div class="sm-av" style="background:rgba(200,132,26,0.2);color:#e8b84b;">F</div><div style="flex:1;"><div class="sm-name">Fern_Keeper</div><div class="sm-rank">🌿 Sprout</div></div><button class="follow-btn" onclick="toggleFollow(this,'Fern_Keeper')">Follow</button></div>
+      <div class="sidebar-member"><div class="sm-av" style="background:rgba(196,82,42,0.2);color:#e8856a;">A</div><div style="flex:1;"><div class="sm-name">Amara_Roots</div><div class="sm-rank">🌱 Seed</div></div><button class="follow-btn" onclick="toggleFollow(this,'Amara_Roots')">Follow</button></div>
+    </div>
+
+    <div class="sidebar-card">
+      <h3>Members you follow</h3>
+      <div id="following-sidebar"><p style="font-size:13px;color:var(--th-muted);line-height:1.7;">Follow members whose herb knowledge you value. Their posts will appear here.</p></div>
+    </div>
+
+    <div class="sidebar-card">
+      <h3>Trending herbs</h3>
+      <a class="trending-herb" href="supreme.html?herb=neem"><div class="th-dot" style="background:#1a8c7c"></div><span class="th-name">Neem</span><span class="th-count">34 posts</span></a>
+      <a class="trending-herb" href="supreme.html?herb=ashwagandha"><div class="th-dot" style="background:#7a9a2a"></div><span class="th-name">Ashwagandha</span><span class="th-count">28 posts</span></a>
+      <a class="trending-herb" href="supreme.html?herb=lions-mane"><div class="th-dot" style="background:#5c62b8"></div><span class="th-name">Lion's Mane</span><span class="th-count">22 posts</span></a>
+      <a class="trending-herb" href="supreme.html?herb=shatavari"><div class="th-dot" style="background:#9a3a7a"></div><span class="th-name">Shatavari</span><span class="th-count">19 posts</span></a>
+      <a class="trending-herb" href="supreme.html?herb=damiana"><div class="th-dot" style="background:#9a3a7a"></div><span class="th-name">Damiana</span><span class="th-count">15 posts</span></a>
+    </div>
+
+    <div class="sidebar-card">
+      <h3>Community guidelines</h3>
+      <p style="font-size:13px;color:var(--th-muted);line-height:1.75;">Share knowledge and experiences. No medical claims. No profanity. No promotional content. Moderated for respect — not for opinion.</p>
+      <p style="font-size:13px;color:var(--th-muted);line-height:1.75;margin-top:.75rem;">The tools are CHI's main event. The community exists to support — not replace — your own research.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- WRITE MODAL -->
+<div class="modal-overlay" id="write-modal">
+  <div class="write-modal">
+    <h3>Write a post</h3>
+    <label class="wm-label">Title</label>
+    <input class="wm-input" type="text" id="wm-title" placeholder="What are you writing about?">
+    <label class="wm-label">Post to a group (optional)</label>
+    <div class="wm-group-row" id="wm-group-row"></div>
+    <label class="wm-label">Category</label>
+    <select class="wm-input" id="wm-category" style="cursor:pointer;appearance:none;font-family:'DM Sans',sans-serif;font-size:14px;">
+      <option value="health">Health</option>
+      <option value="growing">Growing</option>
+      <option value="recipes">Recipes</option>
+      <option value="spiritual">Spiritual</option>
+      <option value="research">Research</option>
+    </select>
+    <label class="wm-label">Tag herbs featured in this post</label>
+    <input class="wm-input" type="text" id="wm-herbs" placeholder="Ashwagandha, Neem, Passionflower..." style="font-family:'DM Sans',sans-serif;font-size:14px;">
+    <label class="wm-label">Your post</label>
+    <textarea class="wm-body" id="wm-body" placeholder="Share your knowledge, experience, or discovery. Be honest. Be specific. Include what worked and what didn't." oninput="checkLanguage(this.value)"></textarea>
+    <div class="lang-hint" id="lang-hint"></div>
+    <label class="wm-label">Add a photo to your post</label>
+    <input type="file" id="wm-image-input" accept="image/*" style="display:none" onchange="handleImageSelect(this)">
+    <div class="img-upload-area" id="img-upload-area" onclick="document.getElementById('wm-image-input').click()">
+      <button class="img-remove" id="img-remove" onclick="removeImage(event)">×</button>
+      <div class="img-upload-label"><span>📷</span> Click to add a photo — JPG, PNG, HEIC up to 8MB</div>
+      <img class="img-preview" id="img-preview" alt="Post image preview">
+      <div class="img-hint">One image per post. Your photo will appear at the top of your post.</div>
+    </div>
+
+    <div class="wm-bottom">
+      <p class="wm-note">Posts are reviewed before appearing publicly. No medical claims. No profanity.</p>
+      <div class="wm-actions">
+        <button class="wm-cancel" onclick="closeWrite()">Cancel</button>
+        <button class="wm-publish" onclick="publishPost()">Publish post</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="fi">
+    <div class="fi-logo"><span>C.H.I</span></div>
+    <div class="fi-links"><a href="herb-match.html">Herb Match</a><a href="supreme.html">Herbadex</a><a href="about.html">About</a></div>
+    <p class="fi-disc">CHI provides educational herbal information only. Nothing on this platform constitutes medical advice. Community posts represent personal experiences and opinions, not professional advice.</p>
+  </div>
+</footer>
+
+<script>
+const st = localStorage.getItem('chi_theme') || 'forest';
+document.body.setAttribute('data-theme', st);
+const ME_NAME = localStorage.getItem('chi_display_name') || 'Jerome';
+const ME_INIT = ME_NAME.charAt(0).toUpperCase();
+
+// ── GROUPS ────────────────────────────────────────────────────────
+const GROUPS = [
+  {id:'sleep',    name:'Sleep & Stress',         color:'#6aaddd', count:42},
+  {id:'immunity', name:'Immunity & Antivirals',   color:'#7acca0', count:38},
+  {id:'gut',      name:'Gut & Digestive Health',  color:'#e8a840', count:31},
+  {id:'hormones', name:'Hormones & Vitality',     color:'#cc6a9a', count:28},
+  {id:'skin',     name:'Skin & Topical',          color:'#cc7a5a', count:24},
+  {id:'brain',    name:'Brain & Cognitive',       color:'#9b8de0', count:35},
+  {id:'weight',   name:'Weight & Metabolism',     color:'#5cab7a', count:19},
+  {id:'womens',   name:'Women\'s Health',         color:'#dd6a9a', count:22},
+  {id:'mens',     name:'Men\'s Health',           color:'#6a9add', count:17},
+  {id:'beginner', name:'Beginner\'s Corner',      color:'#e8b84b', count:51},
+  {id:'stacks',   name:'Herb Stacks & Protocols', color:'#7abf6a', count:44},
+  {id:'research', name:'Research & Deep Dives',   color:'#aaaaaa', count:29},
+];
+
+let joinedGroups = new Set(JSON.parse(localStorage.getItem('chi_joined_groups') || '["sleep","brain","stacks"]'));
+let activeGroup = null;
+
+function saveGroups(){ localStorage.setItem('chi_joined_groups', JSON.stringify([...joinedGroups])); }
+
+function toggleGroupJoin(id, e){
+  e.stopPropagation();
+  if(joinedGroups.has(id)) joinedGroups.delete(id);
+  else joinedGroups.add(id);
+  saveGroups();
+  renderGroups();
+  renderFeed();
+}
+
+function setActiveGroup(id){
+  activeGroup = activeGroup === id ? null : id;
+  renderGroups();
+  renderGroupBanner();
+  renderFeed();
+}
+
+function clearGroup(){
+  activeGroup = null;
+  renderGroups();
+  renderGroupBanner();
+  renderFeed();
+}
+
+function renderGroups(){
+  const list = document.getElementById('group-list');
+  list.innerHTML = GROUPS.map(g=>{
+    const joined = joinedGroups.has(g.id);
+    const active = activeGroup === g.id;
+    return `<div class="group-item${active?' active-group':''}" onclick="setActiveGroup('${g.id}')">
+      <div class="group-dot" style="background:${g.color}"></div>
+      <span class="group-name">${g.name}</span>
+      <span class="group-count">${g.count}</span>
+      <button class="group-join-btn${joined?' joined':''}" onclick="toggleGroupJoin('${g.id}',event)">${joined?'✓ Joined':'Join'}</button>
+    </div>`;
+  }).join('');
+}
+
+function renderGroupBanner(){
+  const banner = document.getElementById('group-banner');
+  if(!activeGroup){ banner.classList.remove('show'); return; }
+  const g = GROUPS.find(x=>x.id===activeGroup);
+  banner.classList.add('show');
+  document.getElementById('group-banner-dot').style.background = g.color;
+  document.getElementById('group-banner-name').textContent = g.name;
+}
+
+// Populate write modal group chips
+function renderWriteGroups(){
+  const row = document.getElementById('wm-group-row');
+  row.innerHTML = GROUPS.map(g=>`
+    <button class="wm-group-chip" data-gid="${g.id}" onclick="selectWriteGroup(this,'${g.id}')">${g.name}</button>
+  `).join('');
+}
+let selectedWriteGroup = null;
+function selectWriteGroup(el, id){
+  document.querySelectorAll('.wm-group-chip').forEach(c=>c.classList.remove('selected'));
+  if(selectedWriteGroup === id){ selectedWriteGroup = null; }
+  else { el.classList.add('selected'); selectedWriteGroup = id; }
+}
+
+// ── POSTS DATA ────────────────────────────────────────────────────
+const POSTS = [
+  // EXISTING POSTS
+  {
+    id:1, author:'Sage_R', initial:'S', color:'#4a8c65', rank:'🌳 The Root',
+    time:'2 days ago', category:'health', group:'brain',
+    title:'Six months with lion\'s mane — an honest account',
+    excerpt:'I started taking lion\'s mane tincture in October last year with fairly low expectations. I had read the research on nerve growth factor but remained sceptical about whether any noticeable change would be felt at typical supplemental doses.',
+    herbs:['Lion\'s Mane'], herbColors:['#5c62b8'],
+    likes:47, comments:12,
+    body:`<p>I started taking lion's mane tincture in October last year with fairly low expectations. I had read the research on nerve growth factor but remained sceptical about whether any noticeable change would be felt at typical supplemental doses.</p>
+<h2>The first two months</h2>
+<p>Genuinely nothing noticeable. I kept a journal — which I recommend to anyone trying any herb seriously — and the entries for October and November are largely uneventful. Sleep was the same. Mental clarity was the same.</p>
+<blockquote><p>The most honest thing I can say about herbalism is that the most powerful herbs work slowly. Anything that works fast is either very strong medicine or not working the way you think it is.</p></blockquote>
+<h2>Month three</h2>
+<p>This is when I started to notice something. The best way I can describe it is that my thinking felt less foggy in the mornings. By December I was noticing that period was shorter — maybe 45 minutes. This could be placebo. I cannot rule that out. But it was consistent enough that I noted it several times.</p>`,
+    postComments:[
+      {author:'T_Root_Walker',initial:'T',color:'#5c62b8',rank:'🌳 The Root',text:'This mirrors my experience closely. The effect is subtle but real once you are past the first couple of months.'},
+      {author:'Mariam_H',initial:'M',color:'#9a3a7a',rank:'🌿 Sprout',text:'The honesty here is exactly what CHI should be about. I appreciate that you acknowledged the placebo possibility.'},
+    ]
+  },
+  // SLEEP & STRESS GROUP POSTS
+  {id:2,author:'Rhea_K',initial:'R',color:'#6aaddd',rank:'🌿 Sprout',time:'3 hours ago',category:'health',group:'sleep',
+   title:'Passionflower changed my relationship with sleep',
+   excerpt:'Three months in and I can honestly say this is the first time in four years I wake up not feeling like I am fighting the day before it starts. I want to share exactly what I did because I know how specific matters with herbs.',
+   herbs:['Passionflower','Ashwagandha'],herbColors:['#5c62b8','#4a8c65'],likes:34,comments:8,
+   body:`<p>Three months in and I can honestly say this is the first time in four years I wake up not feeling like I am fighting the day before it starts.</p><p>What I did: 2ml passionflower tincture in warm water 45 minutes before bed. Ashwagandha 300mg with dinner. That's it. No melatonin, no sleep hygiene overhaul, no app. Just those two herbs consistently.</p><p>Week one and two — nothing dramatic. Week three I noticed I was waking up less in the night. By week six sleep felt deeper. By month two the morning heaviness was largely gone.</p><p>I still have bad nights. But they're outliers now rather than the baseline.</p>`,
+   postComments:[
+     {author:'Dev_P',initial:'D',color:'#9b8de0',rank:'🌿 Sprout',text:'The 45-minute timing before bed is something I\'ve read elsewhere too. Did you notice a difference when you took it closer to sleep?'},
+   ]},
+  {id:3,author:'Tomas_B',initial:'T',color:'#e8a840',rank:'🌳 The Root',time:'1 day ago',category:'research',group:'sleep',
+   title:'Why ashwagandha works differently for sleep than valerian',
+   excerpt:'Both herbs help with sleep but through completely different mechanisms. Understanding this changed how I stack them — and why I no longer use them interchangeably.',
+   herbs:['Ashwagandha','Valerian'],herbColors:['#4a8c65','#9b8de0'],likes:28,comments:5,
+   body:`<p>Both herbs help with sleep but through completely different mechanisms. Understanding this changed how I stack them.</p><p>Valerian works on GABA directly — its valerenic acid modulates GABA-A receptors. It is a sedative mechanism. You feel it acutely. It works fast. It is the right herb if the problem is switching the brain off.</p><p>Ashwagandha works on cortisol. Its withanolides modulate the HPA axis, gradually reducing the elevated cortisol that prevents you from sleeping in the first place. It does not sedate — it removes the thing blocking sleep. It takes weeks. You don't feel it on day one.</p><p>I now use both together when the sleep problem is both — too wired to sleep AND can't stay asleep. Different herbs, different roles.</p>`,
+   postComments:[]},
+  // IMMUNITY GROUP POSTS
+  {id:4,author:'Amara_R',initial:'A',color:'#7acca0',rank:'🌱 Seed',time:'5 hours ago',category:'health',group:'immunity',
+   title:'Olive leaf — the one herb I never stop taking',
+   excerpt:'I started taking olive leaf extract two winters ago after getting a bad chest infection every single November for five years running. Last winter was the first time I did not get ill at all.',
+   herbs:['Olive Leaf'],herbColors:['#7acca0'],likes:41,comments:9,
+   body:`<p>I started taking olive leaf extract two winters ago after getting a bad chest infection every single November for five years running.</p><p>Last winter was the first time I did not get ill at all. Not even a cold. I am not willing to say it was purely the olive leaf — I also sleep better now and my diet improved — but olive leaf was the one consistent addition.</p><p>The mechanism that convinced me: oleuropein prevents viral entry by binding to the capsid proteins before they can attach to host cells. It doesn't just support immunity generally — it actively blocks the entry mechanism of many viruses. That specificity is what separates it from "general immune support" herbs.</p>`,
+   postComments:[
+     {author:'Fern_K',initial:'F',color:'#e8b84b',rank:'🌿 Sprout',text:'How much were you taking and at what standardisation? There\'s a big range of olive leaf products out there.'},
+   ]},
+  {id:5,author:'Mariam_H',initial:'M',color:'#9a3a7a',rank:'🌿 Sprout',time:'2 days ago',category:'research',group:'immunity',
+   title:'Understanding nigella — why it\'s more than just an immune herb',
+   excerpt:'Most people file nigella under "immune support" and leave it there. But thymoquinone\'s mechanism is so much broader than that — it\'s one of the most genuinely multi-functional compounds in herbal medicine.',
+   herbs:['Nigella'],herbColors:['#cc7a5a'],likes:33,comments:7,
+   body:`<p>Most people file nigella under "immune support" and leave it there. But thymoquinone's mechanism is so much broader than that.</p><p>Thymoquinone simultaneously inhibits COX-1/2, 5-LOX and NF-κB — three separate inflammatory pathways. NSAIDs typically block only COX. Steroids work higher upstream. TQ does both at once, plus directly disrupts microbial cell membranes.</p><p>It also modulates Th1/Th2 balance rather than simply stimulating immunity — which makes it relevant for people whose problem is an overactive immune system (allergies, autoimmune) not just an underactive one. This bidirectional immune modulation is rare in a single compound.</p>`,
+   postComments:[]},
+  // GUT GROUP POSTS
+  {id:6,author:'Saoirse_M',initial:'S',color:'#e8a840',rank:'🌿 Sprout',time:'4 hours ago',category:'health',group:'gut',
+   title:'Moringa fixed my iron levels — but not how I expected',
+   excerpt:'Three months of moringa powder in my smoothies and my iron came back normal for the first time in years. My GP asked what I had changed. I showed her the nutrient profile.',
+   herbs:['Moringa'],herbColors:['#7abf6a'],likes:52,comments:14,
+   body:`<p>Three months of moringa powder in my smoothies and my iron came back normal for the first time in years. My GP asked what I had changed.</p><p>What surprised me is that it wasn't just the iron. My energy improved, my concentration improved, and my digestion became noticeably more regular. I had been thinking of it as an iron supplement but it's far more than that — it's a complete nutritional intervention.</p><p>I showed my GP the nutrient profile: more iron than spinach gram for gram, more B vitamins than most supplements, and the glucosinolates that activate liver detoxification. She was genuinely interested. That rarely happens.</p>`,
+   postComments:[
+     {author:'Sage_R',initial:'S',color:'#4a8c65',rank:'🌳 The Root',text:'Did you use raw powder or capsules? I\'ve read that heating moringa significantly reduces the glucosinolate content.'},
+     {author:'Tomas_B',initial:'T',color:'#e8a840',rank:'🌳 The Root',text:'The myrosinase enzyme that converts glucosinolates to isothiocyanates is heat-sensitive — raw powder is definitely superior for that mechanism.'},
+   ]},
+  {id:7,author:'Dev_P',initial:'D',color:'#9b8de0',rank:'🌿 Sprout',time:'1 day ago',category:'health',group:'gut',
+   title:'Cold-steeped marshmallow root — the preparation method matters more than the herb',
+   excerpt:'I had used marshmallow root tea for months with mediocre results. Then I read about cold extraction preserving mucilage better than hot water and tried it. The difference was significant.',
+   herbs:['Marshmallow Root'],herbColors:['#6aaddd'],likes:29,comments:6,
+   body:`<p>I had used marshmallow root tea for months with mediocre results. Then I read about cold extraction preserving mucilage better than hot water and tried it. The difference was significant.</p><p>Cold steep method: 1 tablespoon of dried marshmallow root in 500ml cold water. Leave for 4-8 hours or overnight in the fridge. Strain and drink throughout the day.</p><p>The mucilage content in a proper cold steep is visibly higher — the water becomes noticeably thick and slightly viscous. This is the compound responsible for the gut-lining coating action. Hot water breaks down polysaccharides and significantly reduces this.</p><p>My IBS symptoms — particularly the burning and bloating after meals — reduced noticeably within two weeks of switching to this method.</p>`,
+   postComments:[]},
+  // BRAIN & COGNITIVE GROUP POSTS
+  {id:8,author:'The_Root_Walker',initial:'T',color:'#5c62b8',rank:'🌳 The Root',time:'6 hours ago',category:'research',group:'brain',
+   title:'The lemon balm-acetylcholine connection most people miss',
+   excerpt:'Lemon balm is usually discussed as a calming, sleep-supporting herb. But the rosmarinic acid mechanism is equally important for cognition — and the two actions work together in a way that makes lemon balm genuinely unusual.',
+   herbs:['Lemon Balm'],herbColors:['#e8b84b'],likes:44,comments:11,
+   body:`<p>Lemon balm is usually discussed as a calming herb. But the rosmarinic acid mechanism is equally important for cognition.</p><p>Rosmarinic acid inhibits acetylcholinesterase — the enzyme that breaks down acetylcholine. Acetylcholine is your primary focus and memory neurotransmitter. Pharmaceutical drugs used in early Alzheimer's treatment work through exactly this mechanism.</p><p>So lemon balm simultaneously increases GABA (via GABA-transaminase inhibition) and increases acetylcholine (via AChE inhibition). The result: calmer nervous system, sharper thinking. This combination is rare. Most calming herbs sedate — they don't also sharpen. Most cognitive herbs stimulate — they don't also calm.</p><p>This is why lemon balm is particularly useful for people whose poor concentration is anxiety-driven. It addresses both sides at once.</p>`,
+   postComments:[
+     {author:'Rhea_K',initial:'R',color:'#6aaddd',rank:'🌿 Sprout',text:'This explains why I feel more focused after my lemon balm tea without feeling wired. I thought it was just placebo.'},
+   ]},
+  {id:9,author:'Fern_K',initial:'F',color:'#e8b84b',rank:'🌿 Sprout',time:'3 days ago',category:'health',group:'brain',
+   title:'My 90-day lion\'s mane protocol — what I changed and why',
+   excerpt:'After reading the research on fruiting body vs mycelium and hericenones vs erinacines, I redesigned my lion\'s mane approach entirely. Here is what I changed and what I noticed.',
+   herbs:['Lion\'s Mane'],herbColors:['#5c62b8'],likes:38,comments:9,
+   body:`<p>After reading about the difference between hericenones (fruiting body) and erinacines (mycelium), I redesigned my approach.</p><p>Previous protocol: cheap mycelium-on-grain capsules, 500mg daily. Results: minimal.</p><p>New protocol: dual-extract fruiting body powder (standardised to beta-glucans), 1g morning, 1g midday. Results over 90 days: noticeably improved verbal recall, faster morning startup, and what I can only describe as more efficient thinking — fewer words needed, clearer structure.</p><p>The key differences: fruiting body over mycelium for hericenone content, dual extract over single extraction, and dose split rather than single daily dose.</p>`,
+   postComments:[]},
+  // HORMONES & VITALITY GROUP POSTS
+  {id:10,author:'Amara_R',initial:'A',color:'#7acca0',rank:'🌱 Seed',time:'8 hours ago',category:'health',group:'hormones',
+   title:'Shilajit and testosterone — what the trial actually showed',
+   excerpt:'I kept seeing "shilajit increases testosterone" claims without anyone linking to the actual study. I found it and read it. Here is what it actually said.',
+   herbs:['Shilajit'],herbColors:['#cc7a5a'],likes:47,comments:13,
+   body:`<p>I kept seeing "shilajit increases testosterone" claims without anyone linking to the actual study. I found it and read it.</p><p>The study: 96 healthy male volunteers, ages 45-55, double-blind placebo controlled, 90 days of 250mg shilajit twice daily. Result: total testosterone increased by 20.45% in the treatment group vs 8.01% in placebo. FSH increased significantly. The results were statistically significant.</p><p>What it doesn't say: it doesn't tell us the mechanism clearly. The hypothesis is that fulvic acid supports mitochondrial function in Leydig cells (the testosterone-producing cells in testes). That's plausible given fulvic acid's established mitochondrial effects but not proven in this study directly.</p><p>Takeaway: real data, meaningful effect size, but not a magic number. Lifestyle factors dwarfed by comparison.</p>`,
+   postComments:[
+     {author:'Tomas_B',initial:'T',color:'#e8a840',rank:'🌳 The Root',text:'This is exactly how CHI\'s research section should work. Specific study, honest interpretation, clear conclusion.'},
+   ]},
+  // SKIN & TOPICAL GROUP POSTS
+  {id:11,author:'Mariam_H',initial:'M',color:'#9a3a7a',rank:'🌿 Sprout',time:'1 day ago',category:'health',group:'skin',
+   title:'Calendula cream for eczema — what worked for my daughter',
+   excerpt:'After two years of steroid creams that worked temporarily and stopped working, we tried a calendula-based protocol. This is what we used and what happened.',
+   herbs:['Calendula','Chamomile'],herbColors:['#e8a840','#5cab7a'],likes:61,comments:18,
+   body:`<p>After two years of steroid creams for my daughter's eczema — which worked temporarily and stopped working — we tried a calendula-based protocol on the recommendation of a herbalist friend.</p><p>What we used: calendula-infused oil as a base, chamomile hydrosol as a spray for flare-ups, and chamomile tea internally (one cup daily, mild, with honey). We removed synthetic fragrances from laundry and skincare at the same time.</p><p>The results surprised me. Within three weeks the flare frequency reduced. Within six weeks the baseline skin condition was noticeably better. After three months she has not needed steroid cream once.</p><p>I am not claiming herbs cured eczema. The fragrance removal likely contributed significantly. But the combination worked where steroid cream alone had not.</p>`,
+   postComments:[
+     {author:'Rhea_K',initial:'R',color:'#6aaddd',rank:'🌿 Sprout',text:'The bisabolol in calendula and chamomile is specifically shown to enhance skin absorption of co-applied compounds — so using them together makes pharmacological sense.'},
+   ]},
+  // BEGINNER'S CORNER GROUP POSTS
+  {id:12,author:'Fern_K',initial:'F',color:'#e8b84b',rank:'🌿 Sprout',time:'12 hours ago',category:'health',group:'beginner',
+   title:'The three things I wish I knew before starting herbs',
+   excerpt:'I spent two years buying herbs randomly and noticing nothing. Then I understood these three principles and everything changed. For anyone just starting out.',
+   herbs:['Ashwagandha','Lemon Balm','Dandelion'],herbColors:['#4a8c65','#e8b84b','#e8a840'],likes:78,comments:22,
+   body:`<p>I spent two years buying herbs randomly and noticing nothing. Then I understood these three things.</p><h2>1. Consistency beats dose</h2><p>Most herbs don't work like painkillers. They don't hit a receptor and produce an immediate effect. They work by modulating systems — the HPA axis, the gut microbiome, the liver's detox enzymes — and those systems take weeks to shift. One capsule does nothing. Sixty capsules over sixty days might do something real.</p><h2>2. The delivery method changes the compound</h2><p>A dandelion capsule and a dandelion root tea are not the same thing. The bitter action of dandelion that stimulates digestion requires the compounds to be tasted — that triggers the TAS2R receptors on your tongue. Put it in a capsule and you bypass that mechanism entirely. Know which mechanism you want and choose the form accordingly.</p><h2>3. Start with one herb</h2><p>It's tempting to try a stack immediately. But if you take five herbs at once and feel better (or worse), you have no idea which one was responsible. Start with one, give it six weeks, note what you observe. Then add another.</p>`,
+   postComments:[
+     {author:'Amara_R',initial:'A',color:'#7acca0',rank:'🌱 Seed',text:'Point 2 completely changed how I use dandelion. I had been taking it in capsules for months wondering why I didn\'t notice anything.'},
+     {author:'Dev_P',initial:'D',color:'#9b8de0',rank:'🌿 Sprout',text:'The consistency point cannot be emphasised enough. I see people give up after two weeks and say the herb "didn\'t work."'},
+   ]},
+  // STACKS & PROTOCOLS GROUP POSTS
+  {id:13,author:'Sage_R',initial:'S',color:'#4a8c65',rank:'🌳 The Root',time:'2 days ago',category:'health',group:'stacks',
+   title:'My morning protocol — 18 months refined',
+   excerpt:'After a lot of trial, error, and reading, this is what I take every morning and why. Every element earns its place with a specific reason.',
+   herbs:['Ashwagandha','Moringa','Shilajit','Lion\'s Mane'],herbColors:['#4a8c65','#7abf6a','#cc7a5a','#5c62b8'],likes:93,comments:27,
+   body:`<p>After 18 months of refinement, this is my morning protocol and the reason for each element.</p><h2>Fasted (on waking)</h2><p>Shilajit resin — small pea-sized amount dissolved in warm water. Taken fasted because fulvic acid's mineral chelation and mitochondrial action works best without competing food compounds. Selenium also taken here (separate supplement).</p><h2>With breakfast</h2><p>Moringa powder — 1 teaspoon in smoothie. Raw, never heated. Provides the nutritive foundation everything else builds on. Ashwagandha 300mg capsule (KSM-66). The fat in breakfast improves withanolide absorption.</p><h2>Midday</h2><p>Lion's mane 1g — taken midday rather than morning because the cognitive sharpening effect seems to peak about 3-4 hours after dosing for me.</p><p>What I removed after testing: rhodiola (interacted badly with my sleep), green tea extract (caffeine sensitivity), and zinc (I was already getting enough from food).</p>`,
+   postComments:[
+     {author:'The_Root_Walker',initial:'T',color:'#5c62b8',rank:'🌳 The Root',text:'The lion\'s mane timing note is interesting — I had always taken it in the morning. Going to experiment with midday dosing.'},
+     {author:'Rhea_K',initial:'R',color:'#6aaddd',rank:'🌿 Sprout',text:'Really appreciate that you mentioned what you removed. Most protocol posts only mention what they kept.'},
+   ]},
+  // RESEARCH GROUP POSTS
+  {id:14,author:'The_Root_Walker',initial:'T',color:'#5c62b8',rank:'🌳 The Root',time:'4 days ago',category:'research',group:'research',
+   title:'Reading herb research critically — a guide for non-scientists',
+   excerpt:'Most herb research shared online is either overstated or misunderstood. Here is how to read a study and know what it actually shows.',
+   herbs:[],herbColors:[],likes:67,comments:15,
+   body:`<p>Most herb research shared online is either overstated or misunderstood. Here is a basic framework for evaluating what you read.</p><h2>In vitro vs in vivo vs human trials</h2><p>In vitro means the experiment happened in a petri dish or test tube. These results are often striking but completely irrelevant to what happens in a living body. In vivo means animal studies. More meaningful but still often doesn't translate to humans. Human clinical trials are what actually matter — and even then, size, duration, and controls are everything.</p><h2>What "statistically significant" actually means</h2><p>It means the result is unlikely to have occurred by chance. It does not mean the effect is large or clinically meaningful. A herb might significantly reduce cortisol by 3% in a 1000-person study. Statistically significant. Meaningless in practice.</p><h2>Dose and form</h2><p>The dose used in a study almost always matters. "Turmeric reduces inflammation" often means "curcumin extract at 500mg with piperine" — not turmeric powder sprinkled on food. Always check what was actually administered.</p>`,
+   postComments:[
+     {author:'Sage_R',initial:'S',color:'#4a8c65',rank:'🌳 The Root',text:'This should be pinned at the top of the community. The in vitro confusion is responsible for so much overhyped herb content.'},
+   ]},
+];
+
+// ── FEED STATE ─────────────────────────────────────────────────────
+let currentFilter = 'all';
+
+// ── RENDER FEED ────────────────────────────────────────────────────
+function renderFeed() {
+  let posts = [...POSTS];
+
+  // Filter by category
+  if(currentFilter !== 'all') posts = posts.filter(p => p.category === currentFilter);
+
+  // Filter by group
+  if(activeGroup) posts = posts.filter(p => p.group === activeGroup);
+
+  const container = document.getElementById('feed-view');
+  if(!posts.length){
+    container.innerHTML = `<div style="text-align:center;padding:3rem 1rem;color:var(--th-muted);font-size:14px;font-style:italic">No posts in this group yet. Be the first to share.</div>`;
+    renderFollowingSidebar();
+    return;
+  }
+
+  container.innerHTML = posts.map(post => {
+    const group = GROUPS.find(g => g.id === post.group);
+    const groupTag = group ? `<div class="post-group-tag"><span class="pgdot" style="background:${group.color}"></span>${group.name}</div>` : '';
+    return `<div class="blog-card fu" id="post-${post.id}">
+      <div class="blog-card-head">
+        ${groupTag}
+        <div class="blog-author">
+          <div class="author-av" style="background:${post.color}22;color:${post.color}">${post.initial}</div>
+          <div><div class="author-name">${post.author}</div><div class="author-rank">${post.rank}</div></div>
+          <span class="author-time">${post.time}</span>
+          <button class="follow-btn${followState[post.author]?' following':''}" onclick="toggleFollow(this,'${post.author}')">Follow</button>
+        </div>
+        <div class="blog-title" onclick="openFull(${post.id})">${post.title}</div>
+        <div class="blog-excerpt">${post.excerpt}</div>
+        <div class="blog-herbs">${post.herbs.map((h,i) => `<a class="blog-herb-tag" href="supreme.html?herb=${h.toLowerCase().replace(/[^a-z0-9]/g,'-')}"><span style="width:8px;height:8px;border-radius:50%;background:${post.herbColors[i]||'#4a8c65'};display:inline-block"></span>${h}<span class="herb-tag-add" onclick="addHerbToStack(event,'${h}',this)" title="Add to stack">+</span></a>`).join('')}</div>
+      </div>
+      <div class="blog-card-footer">
+        <div class="reactions">
+          <button class="reaction-btn${post.reactions?.tried?' active-tried':''}" onclick="react(${post.id},'tried')" id="tried-btn-${post.id}">🌿 Tried it <span class="reaction-count">${post.triedCount||0}</span></button>
+          <button class="reaction-btn${post.reactions?.learned?' active-learned':''}" onclick="react(${post.id},'learned')">💡 Learned <span class="reaction-count">${post.learnedCount||0}</span></button>
+          <button class="reaction-btn${post.reactions?.saving?' active-saving':''}" onclick="react(${post.id},'saving')">🔖 Saving <span class="reaction-count">${post.savingCount||0}</span></button>
+        </div>
+        <a class="blog-read-more" onclick="openFull(${post.id});return false;" href="#">Read →</a>
+      </div>
+      <div class="tried-prompt${post.showTriedPrompt?' show':''}" id="tried-prompt-${post.id}">
+        <div class="tried-q"><strong>Quick one —</strong> ${getTriedQuestion(post.group)}</div>
+        <textarea class="tried-input" id="tried-input-${post.id}" placeholder="Optional — share in a sentence or two…" rows="2"></textarea>
+        <div class="tried-actions">
+          <button class="tried-submit" onclick="submitTriedExp(${post.id})">Share experience</button>
+          <button class="tried-skip" onclick="skipTriedPrompt(${post.id})">Just mark as tried</button>
+          <span class="tried-note">Optional · won't be posted without your input</span>
+        </div>
+      </div>
+      ${post.experiences && post.experiences.length ? `<div class="member-exp">${post.experiences.map(e=>`<div class="exp-item"><div class="exp-author">🌿 ${e.author}</div><div class="exp-text">${e.text}</div></div>`).join('')}</div>` : ''}
+    </div>`;
+  }).join('');
+
+  renderFollowingSidebar();
+}
+
+function filterFeed(cat, btn) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderFeed();
+}
+
+function openFull(id) {
+  const post = POSTS.find(p => p.id === id);
+  if(!post) return;
+  const group = GROUPS.find(g => g.id === post.group);
+  const groupTag = group ? `<div class="post-group-tag" style="margin-bottom:.75rem"><span class="pgdot" style="background:${group.color}"></span>${group.name}</div>` : '';
+
+  document.getElementById('feed-view').classList.add('hidden');
+  const fp = document.getElementById('full-post-view');
+  fp.classList.add('open');
+  fp.innerHTML = `
+    <div class="post-nav">
+      <button class="back-btn" onclick="closeFull()">← Back to community</button>
+    </div>
+    ${groupTag}
+    <div class="blog-author" style="margin-bottom:1.25rem">
+      <div class="author-av" style="background:${post.color}22;color:${post.color};width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500">${post.initial}</div>
+      <div><div class="author-name">${post.author}</div><div class="author-rank">${post.rank}</div></div>
+      <span class="author-time" style="margin-left:auto">${post.time}</span>
+    </div>
+    <h1 class="full-post-title">${post.title}</h1>
+    <div class="full-post-meta">
+      ${post.herbs.map((h,i) => `<a class="blog-herb-tag" href="supreme.html?herb=${h.toLowerCase().replace(/[^a-z0-9]/g,'-')}"><span style="width:8px;height:8px;border-radius:50%;background:${post.herbColors[i]||'#4a8c65'};display:inline-block"></span>${h}<span class="herb-tag-add" onclick="addHerbToStack(event,'${h}',this)" title="Add to stack">+</span></a>`).join('')}
+    </div>
+    <div class="full-post-body">${post.body}</div>
+    <div class="comments-section">
+      <div class="comments-title">${post.postComments.length} comment${post.postComments.length !== 1 ? 's' : ''}</div>
+      <div id="full-comments">
+        ${post.postComments.map(c => `<div class="comment-card">
+          <div class="comment-av" style="background:${c.color}22;color:${c.color}">${c.initial}</div>
+          <div class="comment-body">
+            <div class="comment-author">${c.author} <span>${c.rank}</span></div>
+            <div class="comment-text">${c.text}</div>
+          </div>
+        </div>`).join('')}
+      </div>
+      <div class="add-comment">
+        <input class="comment-input" id="full-comment-input" placeholder="Add a comment..." onkeydown="if(event.key==='Enter')addFullComment(${post.id})">
+        <button class="comment-submit" onclick="addFullComment(${post.id})">Post</button>
+      </div>
+    </div>`;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function closeFull() {
+  document.getElementById('feed-view').classList.remove('hidden');
+  document.getElementById('full-post-view').classList.remove('open');
+  document.getElementById('full-post-view').innerHTML = '';
+}
+
+
+// ── ADD HERB TO STACK FROM POST TAG ──────────────────────────────
+let userStack = JSON.parse(localStorage.getItem('chi_phyto_stack') || '[]');
+let toastTimer;
+
+function addHerbToStack(e, herb, btn){
+  e.stopPropagation();
+  e.preventDefault();
+  if(!userStack.find(h=>h.toLowerCase()===herb.toLowerCase())){
+    userStack.push(herb);
+    localStorage.setItem('chi_phyto_stack', JSON.stringify(userStack));
+  }
+  btn.textContent = '✓';
+  btn.classList.add('added');
+  showStackToast(herb + ' added to your stack');
+}
+
+function showStackToast(msg){
+  const t = document.getElementById('stack-toast');
+  clearTimeout(toastTimer);
+  t.textContent = msg;
+  t.classList.add('show');
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+// ── TRIED IT QUESTIONS ────────────────────────────────────────────
+const GROUP_QUESTIONS = {
+  'sleep':    'How long before you noticed a difference with your sleep?',
+  'brain':    'Did you notice any change in focus or clarity, and roughly when?',
+  'immunity': 'Do you use this daily as a preventative or when you feel something coming on?',
+  'gut':      'Did you notice any digestive changes in the first week or two?',
+  'hormones': 'How long into your protocol before you felt any shift?',
+  'skin':     'Did you use this topically, internally, or both — and what did you notice?',
+  'stacks':   'Which herb in this stack do you think made the biggest difference for you?',
+  'research': 'Did this post change how you use or think about this herb?',
+  'weight':   'Did you combine this with any dietary or lifestyle changes?',
+  'womens':   'How long have you been using this and what made you try it?',
+  'mens':     'Did you notice any change in energy or vitality, and over what timeframe?',
+  'beginner': 'What was the first thing you noticed — and how long did you give it?',
+};
+
+function getTriedQuestion(group){
+  return GROUP_QUESTIONS[group] || 'What was your experience — and how long did you give it?';
+}
+
+function react(id, type) {
+  const post = POSTS.find(p => p.id === id);
+  if(!post.reactions) post.reactions = {};
+  const countKey = type + 'Count';
+  if(!post[countKey]) post[countKey] = 0;
+
+  // Toggle state
+  post.reactions[type] = !post.reactions[type];
+  post[countKey] += post.reactions[type] ? 1 : -1;
+
+  // If "tried it" just got activated — show the prompt
+  if(type === 'tried' && post.reactions.tried){
+    post.showTriedPrompt = true;
+  } else if(type === 'tried' && !post.reactions.tried){
+    post.showTriedPrompt = false;
+  }
+
+  renderFeed();
+
+  // Focus the textarea if prompt just appeared
+  if(type === 'tried' && post.reactions.tried){
+    setTimeout(()=>{
+      const input = document.getElementById(`tried-input-${id}`);
+      if(input){
+        input.focus();
+        const card = document.getElementById(`post-${id}`);
+        if(card) card.scrollIntoView({behavior:'smooth', block:'nearest'});
+      }
+    }, 80);
+  }
+}
+
+function submitTriedExp(id){
+  const post = POSTS.find(p => p.id === id);
+  const input = document.getElementById(`tried-input-${id}`);
+  const text = input ? input.value.trim() : '';
+  if(!post.experiences) post.experiences = [];
+  if(text) post.experiences.push({author: ME_NAME, text});
+  post.showTriedPrompt = false;
+  renderFeed();
+}
+
+function skipTriedPrompt(id){
+  const post = POSTS.find(p => p.id === id);
+  post.showTriedPrompt = false;
+  renderFeed();
+}
+
+const followState = {};
+const followedMembers = {};
+
+function toggleFollow(btn, username) {
+  followState[username] = !followState[username];
+  if(followState[username]) followedMembers[username] = {name:username,rank:'🌿 Sprout'};
+  else delete followedMembers[username];
+  renderFeed();
+}
+
+function unfollow(username) {
+  followState[username] = false;
+  delete followedMembers[username];
+  renderFeed();
+}
+
+function renderFollowingSidebar() {
+  const members = Object.values(followedMembers);
+  const container = document.getElementById('following-sidebar');
+  if(!container) return;
+  if(!members.length) {
+    container.innerHTML = '<p style="font-size:13px;color:var(--th-muted);line-height:1.7;">Follow members whose herb knowledge you value. Their posts will be easy to find here.</p>';
+  } else {
+    container.innerHTML = members.map(m => `<div class="following-member">
+      <div class="sm-av" style="background:rgba(74,140,101,0.2);color:#7acca0;">${m.name.charAt(0)}</div>
+      <div class="fm-name">${m.name}<div class="fm-rank">${m.rank}</div></div>
+      <button class="unfollow-btn" onclick="unfollow('${m.name}')">Unfollow</button>
+    </div>`).join('');
+  }
+}
+
+function addFullComment(id) {
+  const input = document.getElementById('full-comment-input');
+  const text = input.value.trim();
+  if(!text) return;
+  const div = document.createElement('div');
+  div.className = 'comment-card';
+  div.innerHTML = `<div class="comment-av" style="background:var(--th-accent);color:var(--night);">${ME_INIT}</div><div class="comment-body"><div class="comment-author">${ME_NAME} <span>🌱 Seed</span></div><div class="comment-text">${text}</div></div>`;
+  document.getElementById('full-comments').appendChild(div);
+  input.value = '';
+}
+
+function openWrite() {
+  document.getElementById('write-modal').classList.add('open');
+  renderWriteGroups();
+  // Pre-select active group if one is set
+  if(activeGroup){
+    setTimeout(()=>{
+      const chip = document.querySelector(`.wm-group-chip[data-gid="${activeGroup}"]`);
+      if(chip){ selectWriteGroup(chip, activeGroup); }
+    },50);
+  }
+}
+function closeWrite() { document.getElementById('write-modal').classList.remove('open'); }
+
+let currentPostImage = null;
+
+function handleImageSelect(input) {
+  const file = input.files[0];
+  if(!file) return;
+  if(file.size > 8 * 1024 * 1024) { alert('Image must be under 8MB.'); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    currentPostImage = e.target.result;
+    const preview = document.getElementById('img-preview');
+    preview.src = currentPostImage;
+    preview.classList.add('show');
+    document.getElementById('img-upload-area').classList.add('has-image');
+    document.getElementById('img-upload-area').querySelector('.img-upload-label').style.display = 'none';
+    document.getElementById('img-remove').classList.add('show');
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeImage(e) {
+  e.stopPropagation();
+  currentPostImage = null;
+  const preview = document.getElementById('img-preview');
+  preview.src = '';
+  preview.classList.remove('show');
+  document.getElementById('img-upload-area').classList.remove('has-image');
+  document.getElementById('img-upload-area').querySelector('.img-upload-label').style.display = 'flex';
+  document.getElementById('img-remove').classList.remove('show');
+  document.getElementById('wm-image-input').value = '';
+}
+
+function publishPost() {
+  const title = document.getElementById('wm-title').value.trim();
+  const body = document.getElementById('wm-body').value.trim();
+  const herbs = document.getElementById('wm-herbs').value.trim();
+  const cat = document.getElementById('wm-category').value;
+  if(!title || !body) return;
+  const imageHTML = currentPostImage ? `<img class="post-image" src="${currentPostImage}" alt="Post image">` : '';
+  const newPost = {
+    id: POSTS.length + 1,
+    author:ME_NAME, initial:ME_INIT, color:'#c8952a', rank:'🌱 Seed',
+    time:'Just now', category:cat, group:selectedWriteGroup,
+    title, excerpt:body.substring(0,200)+(body.length>200?'...':''),
+    herbs: herbs ? herbs.split(',').map(h=>h.trim()) : [],
+    herbColors:['#c8952a'],
+    likes:0, comments:0,
+    image:currentPostImage||null,
+    body:imageHTML+body.split('\n\n').map(p=>`<p>${p}</p>`).join(''),
+    postComments:[]
+  };
+  POSTS.unshift(newPost);
+  // Update group count
+  if(selectedWriteGroup){
+    const g = GROUPS.find(x=>x.id===selectedWriteGroup);
+    if(g) g.count++;
+  }
+  closeWrite();
+  renderGroups();
+  renderFeed();
+  document.getElementById('wm-title').value='';
+  document.getElementById('wm-body').value='';
+  document.getElementById('wm-herbs').value='';
+  selectedWriteGroup=null;
+  removeImage({stopPropagation:()=>{}});
+}
+
+document.getElementById('write-modal').addEventListener('click', function(e){ if(e.target===this) closeWrite(); });
+
+// ── LANGUAGE GUARDRAIL ────────────────────────────────────────────
+const LANG_FLAGS = [
+  { flag: /\btreats\b/i,         sug: 'may support' },
+  { flag: /\bcures\b/i,          sug: 'may help with' },
+  { flag: /\bheals\b/i,          sug: 'may support healing of' },
+  { flag: /\beliminates\b/i,     sug: 'may reduce' },
+  { flag: /\bprevents\b/i,       sug: 'may help reduce the risk of' },
+  { flag: /\bfights\b/i,         sug: 'may support the body against' },
+  { flag: /\bkills\b/i,          sug: 'has antimicrobial properties against' },
+  { flag: /\bproven to\b/i,      sug: 'research suggests' },
+  { flag: /\bclinically proven\b/i, sug: 'supported by clinical research' },
+  { flag: /\bguaranteed\b/i,     sug: 'may' },
+  { flag: /\bwill cure\b/i,      sug: 'may support recovery from' },
+  { flag: /\bwill treat\b/i,     sug: 'may help with' },
+  { flag: /\bwill heal\b/i,      sug: 'may support healing of' },
+  { flag: /\ba cure for\b/i,     sug: 'traditionally used for' },
+  { flag: /\bthe cure\b/i,       sug: 'a traditional remedy' },
+];
+
+let langHintTimer;
+function checkLanguage(text){
+  clearTimeout(langHintTimer);
+  langHintTimer = setTimeout(()=>{
+    const hint = document.getElementById('lang-hint');
+    if(!hint) return;
+    const match = LANG_FLAGS.find(r => r.flag.test(text));
+    if(!match){
+      hint.classList.remove('show');
+      return;
+    }
+    const flagWord = text.match(match.flag)[0];
+    hint.innerHTML = `<strong>Language note</strong> — "<span class="lh-flag">${flagWord}</span>" is a medical claim. CHI uses non-prescriptive language. Try: <span class="lh-sug">"${match.sug}"</span> instead.`;
+    hint.classList.add('show');
+  }, 600);
+}
+
+// ── SEARCH ────────────────────────────────────────────────────────
+let searchOpen = false;
+
+function toggleSearch(){
+  searchOpen = !searchOpen;
+  const box = document.getElementById('nav-search-box');
+  box.classList.toggle('open', searchOpen);
+  if(searchOpen) setTimeout(()=>document.getElementById('nav-search-input').focus(), 50);
+}
+
+function closeSearch(){
+  searchOpen = false;
+  document.getElementById('nav-search-box').classList.remove('open');
+  document.getElementById('nav-search-input').value = '';
+  document.getElementById('search-results').innerHTML = '<div class="search-empty">Start typing to search</div>';
+}
+
+document.addEventListener('click', e=>{
+  if(!e.target.closest('.nav-search-wrap')) closeSearch();
+});
+
+function runSearch(q){
+  const out = document.getElementById('search-results');
+  const val = q.trim().toLowerCase();
+  if(!val){ out.innerHTML='<div class="search-empty">Start typing to search</div>'; return; }
+
+  const results = [];
+
+  // Search posts
+  POSTS.filter(p=>
+    p.title.toLowerCase().includes(val) ||
+    p.excerpt.toLowerCase().includes(val) ||
+    p.herbs.some(h=>h.toLowerCase().includes(val))
+  ).slice(0,4).forEach(p=>{
+    results.push({type:'post', icon:'📝', main:p.title, sub:p.author, action:`openFull(${p.id});closeSearch()`});
+  });
+
+  // Search people
+  const people = ['Sage_R','Mariam_H','The_Root_Walker','Fern_Keeper','Amara_Roots','Rhea_K','Tomas_B','Dev_P','Saoirse_M'];
+  people.filter(n=>n.toLowerCase().includes(val)).slice(0,3).forEach(n=>{
+    results.push({type:'person', icon:'🌿', main:n, sub:'Member', action:`closeSearch()`});
+  });
+
+  // Search herbs (link to Herbadex)
+  const herbs = ['Ashwagandha','Lion\'s Mane','Nigella','Olive Leaf','Nettle','Dandelion','Milk Thistle','Moringa','Passionflower','Lemon Balm','Mugwort','Hibiscus','Calendula','Marshmallow','Shilajit'];
+  herbs.filter(h=>h.toLowerCase().includes(val)).slice(0,3).forEach(h=>{
+    results.push({type:'herb', icon:'🌱', main:h, sub:'Herbadex', action:`window.location='supreme.html?herb=${h.toLowerCase().replace(/[^a-z0-9]/g,'-')}';closeSearch()`});
+  });
+
+  if(!results.length){ out.innerHTML='<div class="search-empty">No results found</div>'; return; }
+
+  let html = '';
+  const types = [{key:'post',label:'Posts'},{key:'person',label:'People'},{key:'herb',label:'Herbs'}];
+  types.forEach(t=>{
+    const group = results.filter(r=>r.type===t.key);
+    if(!group.length) return;
+    html += `<div class="search-section-label">${t.label}</div>`;
+    group.forEach(r=>{
+      html += `<div class="search-result-item" onclick="${r.action}">
+        <span class="sri-icon">${r.icon}</span>
+        <span class="sri-main">${r.main}</span>
+        <span class="sri-sub">${r.sub}</span>
+      </div>`;
+    });
+  });
+  out.innerHTML = html;
+}
+
+// ── HERO SLIDESHOW ────────────────────────────────────────────────
+const SLIDE_CREDITS = ['Uploaded by Sage_R','Uploaded by Fern_Keeper','Uploaded by Mariam_H','CHI Herbal Garden'];
+let slideIdx = 0;
+function nextSlide(){
+  const imgs = document.querySelectorAll('.hero-slide-img img');
+  if(!imgs.length) return;
+  imgs[slideIdx].classList.remove('active');
+  slideIdx = (slideIdx + 1) % imgs.length;
+  imgs[slideIdx].classList.add('active');
+  const credit = document.getElementById('slide-credit');
+  if(credit) credit.textContent = SLIDE_CREDITS[slideIdx] || 'CHI Herbal Garden';
+}
+setInterval(nextSlide, 4000);
+
+// ── INIT ──────────────────────────────────────────────────────────
+renderGroups();
+renderFeed();
+</script>
+<script>
+function toggleDD(id){
+  document.querySelectorAll('.nav-dd').forEach(d=>{if(d.id!=='dd-'+id)d.classList.remove('open');});
+  const el=document.getElementById('dd-'+id);
+  if(el)el.classList.toggle('open');
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.nav-dd'))document.querySelectorAll('.nav-dd').forEach(d=>d.classList.remove('open'));
+});
+</script>
+<div class="stack-toast" id="stack-toast"></div>
+<style>
+/* ── HOVER TERM TOOLTIPS ── */
+.chi-term{border-bottom:1px dashed rgba(200,149,42,.45);cursor:help;transition:border-color .15s;}
+.chi-term:hover{border-bottom-color:rgba(200,149,42,.9);}
+.chi-tooltip{
+  position:fixed;z-index:2000;
+  background:var(--forest);
+  border:1px solid rgba(200,149,42,.35);
+  border-radius:8px;
+  padding:.85rem 1.1rem;
+  max-width:300px;min-width:200px;
+  box-shadow:0 8px 28px rgba(0,0,0,.55);
+  pointer-events:none;
+  opacity:0;
+  transform:translateY(4px);
+  transition:opacity .18s,transform .18s;
+}
+.chi-tooltip.show{opacity:1;transform:translateY(0);}
+.chi-tooltip-term{
+  font-family:'Cormorant Garamond',serif;
+  font-size:15px;font-weight:500;
+  color:var(--gold-light);
+  margin-bottom:.3rem;
+}
+.chi-tooltip-def{
+  font-size:12.5px;
+  color:rgba(245,240,232,.78);
+  line-height:1.62;
+}
+.chi-tooltip-footer{
+  font-size:10.5px;
+  color:rgba(245,240,232,.28);
+  margin-top:.45rem;
+  display:flex;align-items:center;gap:5px;
+}
+</style>
+<script>
+
+// ── HOVER TERM TOOLTIPS ──────────────────────────────────────────
+(function(){
+  const DEFS = {
+    'adaptogen': {l:'Adaptogen',d:'A herb that helps the body resist physical and mental stress without causing harm. Works by modulating the HPA axis — your central stress system. Examples: ashwagandha, rhodiola, shilajit.'},
+  'adaptogenic': {l:'Adaptogenic',d:'Having the properties of an adaptogen — helping the body resist stress and return to balance without overstimulating any one system.'},
+  'nervine': {l:'Nervine',d:'A herb that supports and nourishes the nervous system. Nervine tonics (oat straw) rebuild; nervine relaxants (passionflower, lemon balm) calm; nervine stimulants (rosemary) activate.'},
+  'nootropic': {l:'Nootropic',d:"A substance that enhances cognitive function — memory, focus, creativity — without significant side effects. Lion's mane and lemon balm are herbal nootropics."},
+  'carminative': {l:'Carminative',d:'A herb that relieves intestinal gas and gut spasm, typically through volatile oils that relax smooth muscle in the gut wall. Examples: fennel, peppermint, clove, ginger.'},
+  'demulcent': {l:'Demulcent',d:'A herb that soothes irritated or inflamed mucous membranes by forming a protective coating. Marshmallow root and slippery elm are classic demulcents.'},
+  'expectorant': {l:'Expectorant',d:"A herb that helps clear mucus from the lungs and airways. Stimulating expectorants (thyme) increase secretion; relaxing expectorants (mullein, marshmallow) thin mucus so it's easier to clear."},
+  'diuretic': {l:'Diuretic',d:'Increases urine production. Most herbal diuretics (dandelion, nettle) are aquaretics — they increase water output without depleting potassium, unlike pharmaceutical loop diuretics.'},
+  'aquaretic': {l:'Aquaretic',d:'A type of diuretic that increases water excretion without significant electrolyte loss. Safer for long-term use than pharmaceutical diuretics. Dandelion leaf is a well-known aquaretic.'},
+  'hepatoprotective': {l:'Hepatoprotective',d:'Protects liver cells from damage. Silymarin in milk thistle is the most clinically validated hepatoprotective compound — used in emergency medicine for toxic liver injury.'},
+  'cholagogue': {l:'Cholagogue',d:'A herb that stimulates the gallbladder to release stored bile — aiding fat digestion and liver detoxification. Dandelion root is a well-known cholagogue.'},
+  'choleretic': {l:'Choleretic',d:'Stimulates the liver to produce more bile. Distinct from a cholagogue (which releases stored bile). Dandelion root and milk thistle do both.'},
+  'vulnerary': {l:'Vulnerary',d:'A herb that promotes wound healing and tissue repair, typically by stimulating collagen synthesis. Calendula is the most evidenced vulnerary herb.'},
+  'emmenagogue': {l:'Emmenagogue',d:'Stimulates or regulates menstrual flow by acting on uterine smooth muscle. Mugwort is the most documented Western example. Contraindicated in pregnancy.'},
+  'diaphoretic': {l:'Diaphoretic',d:'Promotes sweating, traditionally used to break fevers. Hot diaphoretics (ginger, elderflower) increase circulation; cool diaphoretics (hibiscus, peppermint) lower temperature.'},
+  'styptic': {l:'Styptic',d:'Stops external bleeding when applied topically. Tannin-rich herbs (yarrow, raspberry leaf) precipitate proteins on wound surfaces and contract blood vessels.'},
+  'antispasmodic': {l:'Antispasmodic',d:'Relaxes muscle spasm — either in the digestive tract or skeletal muscle. Works mainly by blocking calcium channels in smooth muscle.'},
+  'anxiolytic': {l:'Anxiolytic',d:'Reduces anxiety without necessarily causing sedation. Ashwagandha, passionflower and lemon balm have anxiolytic action at lower doses before becoming sedative at higher doses.'},
+  'hypnotic': {l:'Hypnotic',d:'Promotes sleep — stronger in effect than a simple relaxant. Valerian, hops and high-dose passionflower are hypnotics.'},
+  'sedative': {l:'Sedative',d:'Calms the nervous system and reduces excitability. Milder than a hypnotic. Passionflower and lemon balm are sedatives at standard doses.'},
+  'immunomodulator': {l:'Immunomodulator',d:'Normalises immune function — can stimulate an underactive immune system or calm an overactive one. Different from a simple immune stimulant. Nigella and medicinal mushrooms are immunomodulators.'},
+  'antiviral': {l:'Antiviral',d:'Inhibits viral replication or entry. Oleuropein in olive leaf prevents viral entry by binding to viral envelope proteins before they can attach to host cells.'},
+  'antimicrobial': {l:'Antimicrobial',d:'Active against bacteria, fungi or viruses. Thymoquinone in nigella is broadly antimicrobial — it disrupts microbial cell membrane integrity.'},
+  'lymphagogue': {l:'Lymphagogue',d:'Stimulates lymphatic circulation and clears lymphatic congestion. Calendula and cleavers are lymphagogues — supporting immune cell movement and tissue drainage.'},
+  'trophorestorative': {l:'Trophorestorative',d:"Restores and rebuilds the function of a specific organ or system over time through regular use. Milk thistle is trophorestorative for the liver; lion's mane for the nervous system."},
+  'alterative': {l:'Alterative',d:'Gradually improves metabolism and nutrition, traditionally said to "alter" the body towards better health. Cleavers, nettle and burdock are classic alteratives.'},
+  'bitter tonic': {l:'Bitter tonic',d:'A herb that stimulates digestion through bitter taste receptors (TAS2R) on the tongue. Must be tasted to work — capsules bypass the mechanism. Dandelion, mugwort and gentian are bitter tonics.'},
+  'flavonoid': {l:'Flavonoid',d:'The largest class of plant polyphenols — over 6,000 known. Includes quercetin, apigenin, luteolin and kaempferol. Broadly anti-inflammatory, antioxidant and cardioprotective.'},
+  'flavonoids': {l:'Flavonoids',d:'The largest class of plant polyphenols — over 6,000 known. Broadly anti-inflammatory, antioxidant and cardioprotective. Found in almost every herb.'},
+  'alkaloid': {l:'Alkaloid',d:'Nitrogen-containing plant compounds — often bitter, pharmacologically potent, and the basis of many pharmaceuticals (morphine, caffeine, berberine). Work on specific receptors with clear dose-dependence.'},
+  'alkaloids': {l:'Alkaloids',d:'Nitrogen-containing plant compounds — often bitter and pharmacologically potent. Include berberine (barberry), caffeine (green tea) and many pharmaceutical drugs derived from plants.'},
+  'tannin': {l:'Tannin',d:'Polyphenols that bind and precipitate proteins — creating an astringent sensation. Protect wound surfaces, reduce inflammation and have antimicrobial properties. High in raspberry leaf, green tea and witch hazel.'},
+  'tannins': {l:'Tannins',d:'Polyphenolic compounds with an astringent action — they bind proteins and contract tissue. Found in raspberry leaf, oak bark, green tea. Useful for wound healing and diarrhoea.'},
+  'saponin': {l:'Saponin',d:'Soap-like plant compounds that foam in water. Improve cell membrane permeability (enhancing nutrient absorption), have immune-stimulating properties, and lower cholesterol.'},
+  'saponins': {l:'Saponins',d:'Soap-like compounds found in ashwagandha, liquorice and many herbs. Enhance bioavailability of other compounds, support immune function and have cholesterol-lowering effects.'},
+  'terpenoid': {l:'Terpenoid',d:'The largest class of plant compounds — built from five-carbon isoprene units. Includes essential oil components (monoterpenes), withanolides (diterpenes), silymarin (triterpenoid) and carotenoids.'},
+  'terpenoids': {l:'Terpenoids',d:"The most diverse class of plant compounds. Responsible for most herbal scents (monoterpenes) and many therapeutic actions. Includes everything from lemon balm's citral to ashwagandha's withanolides."},
+  'polysaccharide': {l:'Polysaccharide',d:"Long-chain sugars found in medicinal mushrooms and herbs. Beta-glucans in lion's mane activate immune surveillance; arabinogalactans in marshmallow coat and protect gut mucosa."},
+  'polysaccharides': {l:'Polysaccharides',d:'Complex carbohydrate chains with significant immune-modulating and protective effects. Beta-glucans (mushrooms), arabinogalactans (marshmallow) and inulin (dandelion) are key examples.'},
+  'phenolic acid': {l:'Phenolic acid',d:'Simple polyphenols including rosmarinic acid (lemon balm), chlorogenic acid (dandelion) and caffeic acid (nettle). Anti-inflammatory, antioxidant and often involved in enzyme inhibition.'},
+  'phenolic acids': {l:'Phenolic acids',d:'Simple polyphenolic compounds with antioxidant and anti-inflammatory properties. Rosmarinic acid in lemon balm inhibits both AChE and GABA-T — making it uniquely cognitive and calming.'},
+  'iridoid': {l:'Iridoid',d:'A type of terpenoid found in olives, valerian and plantain — often bitter and anti-inflammatory. Oleuropein (olive leaf) is an iridoid glycoside.'},
+  'iridoids': {l:'Iridoids',d:'Bitter terpenoid compounds found in olive leaf (oleuropein), valerian and plantain. Among the most studied natural anti-inflammatory and antimicrobial compound classes.'},
+  'withanolide': {l:'Withanolide',d:'Steroidal lactone compounds unique to ashwagandha (Withania somnifera). Structurally similar to human steroid hormones — modulate glucocorticoid receptors, reduce cortisol, and support testosterone.'},
+  'withanolides': {l:'Withanolides',d:'The primary bioactive compounds in ashwagandha. Reduce cortisol by up to 27% in double-blind trials by modulating the HPA axis. Also support testosterone and thyroid function.'},
+  'glycoside': {l:'Glycoside',d:'A compound consisting of a sugar molecule attached to an active compound (aglycone). The sugar improves solubility and stability; digestive enzymes split it, releasing the active aglycone.'},
+  'glycosides': {l:'Glycosides',d:"Compounds where a sugar is bonded to an active molecule. The sugar acts as a delivery vehicle — gut bacteria or digestive enzymes release the active aglycone where it's needed."},
+  'bioavailability': {l:'Bioavailability',d:'The proportion of a compound that actually reaches systemic circulation after ingestion. Fat-soluble compounds need dietary fat to absorb. Piperine in black pepper increases curcumin bioavailability by 2,000%.'},
+  'hpa axis': {l:'HPA Axis',d:"Hypothalamic-Pituitary-Adrenal axis — your body's central stress response system. Chronic activation keeps cortisol elevated, impairing sleep, immunity and cognition. Adaptogens specifically modulate this system."},
+  'nf-κb': {l:'NF-κB',d:'A key molecular switch controlling inflammation genes. When activated it triggers cytokine production. Ashwagandha withanolides, olive leaf oleuropein and nigella thymoquinone all inhibit NF-κB.'},
+  'nrf2': {l:'Nrf2',d:"A master regulator of cellular antioxidant defence. When activated by sulforaphane, quercetin or thymoquinone, it switches on genes producing SOD, catalase and glutathione — your body's own antioxidant enzymes."},
+  'gaba': {l:'GABA',d:"Gamma-aminobutyric acid — your brain's primary inhibitory neurotransmitter. Low GABA = anxiety and poor sleep. Passionflower's apigenin binds GABA-A receptors; lemon balm's rosmarinic acid slows GABA breakdown."},
+  'cox-2': {l:'COX-2',d:'Cyclooxygenase-2 — the enzyme that produces inflammatory prostaglandins. NSAIDs like ibuprofen block it. Many herbs (quercetin, oleuropein, thymoquinone) also inhibit COX-2 without the gut side effects.'},
+  'cox': {l:'COX (COX-1/COX-2)',d:'Cyclooxygenase enzymes that produce prostaglandins — chemical messengers of pain and inflammation. Many anti-inflammatory herbs inhibit COX. COX-2-specific inhibitors cause less gut damage than COX-1 inhibitors.'},
+  'apoptosis': {l:'Apoptosis',d:"Programmed cell death — the body's controlled process for removing damaged cells. Some plant compounds are studied because they trigger apoptosis in cancer cells while leaving healthy cells unaffected."},
+  'ngf': {l:'NGF (Nerve Growth Factor)',d:"A protein that supports the survival and growth of nerve cells. Hericenones and erinacines from lion's mane mushroom are the only known dietary compounds that directly stimulate NGF synthesis in the brain."},
+  'bdnf': {l:'BDNF',d:"Brain-Derived Neurotrophic Factor — a protein that supports brain cell growth, learning and memory. Lion's mane erinacines stimulate BDNF production in the hippocampus."},
+  'ampk': {l:'AMPK',d:'A master metabolic switch in every cell. When activated it increases glucose uptake, burns fat and reduces inflammation. Berberine and chlorogenic acid activate AMPK via the same pathway as metformin.'},
+  'silymarin': {l:'Silymarin',d:'The active complex in milk thistle — a mixture of flavonolignans. One of the most clinically validated hepatoprotective compounds; used in emergency medicine for death cap mushroom poisoning.'},
+  'oleuropein': {l:'Oleuropein',d:'The primary bioactive compound in olive leaf. Has antimicrobial, antiviral, antihypertensive and antioxidant actions. Prevents viral entry by binding to viral capsid proteins before they reach host cells.'},
+  'thymoquinone': {l:'Thymoquinone',d:'Primary bioactive in nigella (black seed). Simultaneously inhibits COX-1/2, 5-LOX and NF-κB — a rare triple anti-inflammatory mechanism. Also disrupts microbial membranes and modulates Th1/Th2 immune balance.'},
+  'rosmarinic acid': {l:'Rosmarinic acid',d:'A phenolic acid in lemon balm, rosemary and sage. Inhibits acetylcholinesterase (improving focus) and GABA transaminase (promoting calm) simultaneously — making it uniquely both cognitive and anxiolytic.'},
+  'beta-glucan': {l:'Beta-glucan',d:"A type of polysaccharide found in medicinal mushrooms. Binds to Dectin-1 receptors on immune cells, activating the body's innate immune response — the same alert system normally triggered by fungal pathogens."},
+  'beta-glucans': {l:'Beta-glucans',d:"Polysaccharides in medicinal mushrooms (lion's mane, reishi, turkey tail) that activate macrophage and NK cell immune surveillance via Dectin-1 receptor binding."},
+  'mitophagy': {l:'Mitophagy',d:'A cellular cleaning process where damaged mitochondria are broken down and recycled. Urolithin A — produced from ellagic acid in raspberry leaf — activates mitophagy and is one of the most studied anti-aging compounds.'},
+  'senolytic': {l:'Senolytic',d:'Clears senescent cells — old, damaged cells that have stopped dividing but release inflammatory signals that accelerate aging. Fisetin (strawberry) is one of the most studied natural senolytics.'},
+  'phytoestrogen': {l:'Phytoestrogen',d:'A plant compound that weakly mimics oestrogen. Isoflavones (red clover) and lignans (flaxseed) are phytoestrogens. Effects can be oestrogenic or anti-oestrogenic depending on hormonal context.'},
+  'nervous system': {l:'Nervous System',d:'Controls all body functions through electrical signals. Includes brain, spinal cord and peripheral nerves. Nervines calm it; adaptogens regulate its stress response; nootropics improve its efficiency.'},
+  'immune system': {l:'Immune System',d:"The body's defence network. Overactivation causes allergies and autoimmunity; underactivation causes frequent illness. Immunomodulators like nigella normalise rather than simply stimulate it."},
+  'digestive system': {l:'Digestive System',d:'Breaks down food across 9 metres of gut. Bitter herbs stimulate it via TAS2R receptors; demulcents soothe it; prebiotics feed its microbiome; bitters must be tasted to work.'},
+  'cardiovascular': {l:'Cardiovascular System',d:'Heart and blood vessels. Herbs support it via blood pressure regulation (olive leaf ACE inhibition), vessel wall integrity (proanthocyanidins) and anti-inflammatory action (quercetin).'},
+  'endocrine': {l:'Endocrine System',d:'Hormone-producing glands — adrenals, thyroid, pancreas, gonads. Controls metabolism, stress and reproduction. Adaptogens specifically target the HPA axis (stress hormones) within this system.'},
+  'respiratory': {l:'Respiratory System',d:'Lungs and airways. Expectorants clear mucus; antispasmodics relax bronchial spasm; demulcents soothe irritated mucosa; antimicrobials address infection.'},
+  'hepatic': {l:'Hepatic / Liver',d:'The liver has 500+ functions — detoxification, bile production, hormone processing. Hepatoprotective herbs protect liver cells; choleretics stimulate bile; cholagogues release stored bile.'},
+  'lymphatic': {l:'Lymphatic System',d:'Vessels and nodes draining fluid from tissues and hosting immune cells. Lymphagogue herbs (calendula, cleavers) stimulate lymph flow and clear congestion.'}
+  };
+
+  // Create tooltip element
+  const tip = document.createElement('div');
+  tip.className = 'chi-tooltip';
+  tip.innerHTML = '<div class="chi-tooltip-term"></div><div class="chi-tooltip-def"></div><div class="chi-tooltip-footer">📚 CHI Glossary</div>';
+  document.body.appendChild(tip);
+
+  let hideTimer;
+
+  function showTip(term, e){
+    const def = DEFS[term.toLowerCase()];
+    if(!def) return;
+    tip.querySelector('.chi-tooltip-term').textContent = def.l;
+    tip.querySelector('.chi-tooltip-def').textContent = def.d;
+    clearTimeout(hideTimer);
+    positionTip(e);
+    tip.classList.add('show');
+  }
+
+  function positionTip(e){
+    const pad = 14, tw = 300, th = 160;
+    let x = e.clientX + pad;
+    let y = e.clientY + pad;
+    if(x + tw > window.innerWidth) x = e.clientX - tw - pad;
+    if(y + th > window.innerHeight) y = e.clientY - th - pad;
+    tip.style.left = x + 'px';
+    tip.style.top = y + 'px';
+  }
+
+  document.addEventListener('mouseover', function(e){
+    const el = e.target.closest('.chi-term');
+    if(!el) return;
+    showTip(el.dataset.term || el.textContent.trim(), e);
+  });
+
+  document.addEventListener('mousemove', function(e){
+    if(tip.classList.contains('show') && e.target.closest('.chi-term'))
+      positionTip(e);
+  });
+
+  document.addEventListener('mouseout', function(e){
+    if(!e.target.closest('.chi-term')) return;
+    hideTimer = setTimeout(()=>tip.classList.remove('show'), 250);
+  });
+
+  // Auto-tag known terms in the page after render
+  // Uses a MutationObserver so it catches dynamically rendered content too
+  const tagged = new WeakSet();
+  const termKeys = Object.keys(DEFS).sort((a,b)=>b.length-a.length); // longest first
+
+  function tagNode(node){
+    if(node.nodeType !== Node.TEXT_NODE) return;
+    if(!node.textContent.trim()) return;
+    const parent = node.parentElement;
+    if(!parent) return;
+    // Skip: already tagged, inside script/style/input, inside a chi-term
+    if(parent.closest('.chi-term,.chi-tooltip,script,style,input,textarea,a,button')) return;
+    if(tagged.has(node)) return;
+    tagged.add(node);
+
+    let text = node.textContent;
+    let changed = false;
+    let html = text;
+
+    termKeys.forEach(term=>{
+      if(!html.toLowerCase().includes(term)) return;
+      const re = new RegExp('(?<![\w-])(' + term.replace(/[-[\]{}()*+?.,\\^$|#\s]/g,'\\$&') + ')(?![\w-])', 'gi');
+      if(re.test(html)){
+        html = html.replace(re, `<span class="chi-term" data-term="${term}">$1</span>`);
+        changed = true;
+      }
+    });
+
+    if(changed){
+      const span = document.createElement('span');
+      span.innerHTML = html;
+      parent.replaceChild(span, node);
+    }
+  }
+
+  function tagTree(root){
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+    const nodes = [];
+    let n;
+    while((n = walker.nextNode())) nodes.push(n);
+    nodes.forEach(tagNode);
+  }
+
+  // Tag existing content on load
+  document.addEventListener('DOMContentLoaded', ()=>{
+    tagTree(document.body);
+  });
+
+  // Watch for dynamic content (React renders, JS-injected HTML)
+  const observer = new MutationObserver(muts=>{
+    muts.forEach(m=>{
+      m.addedNodes.forEach(n=>{
+        if(n.nodeType === Node.ELEMENT_NODE) tagTree(n);
+        else if(n.nodeType === Node.TEXT_NODE) tagNode(n);
+      });
+    });
+  });
+  observer.observe(document.body, {childList:true, subtree:true});
+})();
+
+</script>
+</body>
+</html>

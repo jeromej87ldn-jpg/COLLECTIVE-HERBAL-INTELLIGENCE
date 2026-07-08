@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home — C.H.I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#1a3a2a;--forest-mid:#2d5c42;--forest-light:#4a8c65;
+  --gold:#c8952a;--gold-light:#e8b84b;--night:#0c1a10;
+  --parchment:#f5f0e8;--muted:rgba(245,240,232,0.5);
+  --card:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.08);
+  --text:#f5f0e8;--accent:#c8952a;
+  --tag-bg:rgba(74,140,101,0.15);--tag-border:rgba(74,140,101,0.3);--tag-text:#7acca0;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--night);color:var(--text);min-height:100vh;
+  background-image:radial-gradient(ellipse 80% 50% at 50% -5%,rgba(74,140,101,0.12),transparent 60%),radial-gradient(ellipse 40% 40% at 90% 90%,rgba(200,149,42,0.05),transparent 50%);}
+
+/* ── NAV ── */
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:var(--forest);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:100;}
+.nav-logo{text-decoration:none;display:flex;flex-direction:column;}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-light);letter-spacing:.1em;}
+.nav-full{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.5);}
+.nav-right{display:flex;align-items:center;gap:1.5rem;}
+.nav-right a{color:rgba(245,240,232,.6);text-decoration:none;font-size:13px;transition:color .2s;}
+.nav-right a:hover,.nav-right a.active{color:var(--gold-light);}
+.nav-cta{background:var(--gold);color:var(--forest)!important;padding:.5rem 1rem;border-radius:4px;font-weight:500;}
+.nav-inbox{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:6px;border:1px solid var(--card-border);color:rgba(245,240,232,.6);transition:all .2s;}
+.nav-inbox:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
+@media(max-width:760px){.nav-right a:not(.nav-cta):not(.nav-inbox){display:none;}}
+/* NAV DROPDOWNS */
+.nav-right>a,.nav-right>.nav-dd{color:rgba(245,240,232,.6);text-decoration:none;font-size:13px;transition:color .2s;}
+.nav-right>a:hover,.nav-right>a.active{color:var(--gold-light);}
+.nav-cta{background:var(--gold);color:var(--forest)!important;padding:.5rem 1rem;border-radius:4px;font-weight:500;}
+.nav-inbox{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:6px;border:1px solid rgba(255,255,255,0.08);color:rgba(245,240,232,.6);transition:all .2s;text-decoration:none;}
+.nav-inbox:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
+.nav-dd{position:relative;display:inline-flex;align-items:center;gap:4px;cursor:pointer;font-size:13px;color:rgba(245,240,232,.6);background:none;border:none;font-family:'DM Sans',sans-serif;padding:0;height:64px;}
+.nav-dd:hover,.nav-dd.open{color:var(--gold-light);}
+.nav-dd-arrow{font-size:8px;opacity:.5;transition:transform .2s;}
+.nav-dd.open .nav-dd-arrow{transform:rotate(180deg);}
+.nav-dd-menu{position:absolute;top:calc(100% - 1px);left:50%;transform:translateX(-50%);background:var(--forest);border:1px solid rgba(200,149,42,.22);border-radius:0 0 8px 8px;padding:.4rem 0;min-width:170px;display:none;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.nav-dd.open .nav-dd-menu{display:block;animation:ddFade .15s ease forwards;}
+@keyframes ddFade{from{opacity:0;transform:translateX(-50%) translateY(-4px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.nav-dd-menu a{display:flex;align-items:center;gap:.55rem;padding:.55rem 1.1rem;font-size:13px;color:rgba(245,240,232,.7);text-decoration:none;transition:all .15s;white-space:nowrap;}
+.nav-dd-menu a:hover{background:rgba(200,149,42,.08);color:var(--gold-light);}
+.nav-dd-menu a.active{color:var(--gold-light);}
+.nav-dd-divider{height:1px;background:rgba(255,255,255,.07);margin:.3rem 0;}
+.nav-dd-icon{font-size:14px;width:16px;text-align:center;flex-shrink:0;}
+@media(max-width:760px){.nav-right>a:not(.nav-cta):not(.nav-inbox){display:none;}.nav-dd{display:none;}}
+
+/* ── FACTS TICKER ── */
+.ticker-bar{background:var(--gold-light);border-bottom:1px solid rgba(26,58,42,.3);height:34px;overflow:hidden;position:relative;display:flex;align-items:center;}
+.ticker-label{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--forest);padding:0 1rem 0 1.5rem;flex-shrink:0;white-space:nowrap;border-right:1px solid rgba(26,58,42,.25);height:100%;display:flex;align-items:center;font-weight:600;}
+.ticker-track{display:flex;align-items:center;gap:0;white-space:nowrap;animation:ticker-scroll 15s linear infinite;}
+.ticker-track:hover{animation-play-state:paused;}
+.ticker-fact{font-size:12px;color:var(--forest);padding:0 3rem;flex-shrink:0;}
+.ticker-fact span{color:var(--forest-mid);font-style:italic;font-weight:500;}
+@keyframes ticker-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── PAGE SHELL ── */
+.page{max-width:1200px;margin:0 auto;padding:2rem 2rem 5rem;}
+
+/* ── GREETING ── */
+.greeting{margin-bottom:1.75rem;}
+.greeting-eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:10px;margin-bottom:.5rem;}
+.greeting-eyebrow::before{content:'';width:16px;height:1px;background:var(--gold);opacity:.6;}
+.greeting-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,42px);font-weight:300;line-height:1.1;color:var(--parchment);}
+.greeting-title em{font-style:italic;color:var(--gold-light);}
+.greeting-sub{font-size:13.5px;color:var(--muted);margin-top:.4rem;}
+
+/* ── THREE COLUMN LAYOUT ── */
+.three-col{display:grid;grid-template-columns:260px 1fr 260px;gap:1.25rem;align-items:start;}
+@media(max-width:1100px){.three-col{grid-template-columns:1fr 1fr;}}
+@media(max-width:680px){.three-col{grid-template-columns:1fr;}}
+
+/* ── SHARED PANEL STYLES ── */
+.panel{background:var(--card);border:1px solid var(--card-border);border-radius:12px;overflow:hidden;}
+.panel-head{padding:.9rem 1.1rem;border-bottom:1px solid var(--card-border);display:flex;align-items:center;justify-content:space-between;}
+.panel-title{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+.panel-action{font-size:11.5px;color:var(--tag-text);text-decoration:none;transition:opacity .15s;}
+.panel-action:hover{opacity:.75;}
+.panel-body{padding:1.1rem;}
+
+/* ── ACTIVE HERBS LIST ── */
+.herb-item{display:flex;gap:8px;align-items:center;font-size:14px;}
+.herb-item-dot{width:16px;height:16px;border-radius:4px;flex-shrink:0;}
+.herb-item-name{font-weight:500;color:var(--text);flex:1;}
+.herb-item-freq{font-size:12px;color:var(--muted);}
+
+/* ── ACTIVITY FEED ── */
+.activity-item{border-left:3px solid var(--gold);padding-left:12px;}
+.activity-item-title{font-size:14px;font-weight:500;color:var(--text);margin:0;}
+.activity-item-desc{font-size:12px;color:var(--muted);margin:2px 0 0;}
+.activity-item.type-formula{border-left-color:var(--gold)}
+.activity-item.type-journal{border-left-color:var(--forest-light)}
+.activity-item.type-identify{border-left-color:var(--forest-light)}
+.activity-item.type-complete{border-left-color:var(--gold)}
+
+/* ── GLOSSARY/HERB TERM STYLING ── */
+.glossary-term{color:var(--gold);cursor:pointer;transition:opacity .15s;border-bottom:1px dotted var(--gold);opacity:.9;}
+.glossary-term:hover{opacity:1;}
+.term-popup{position:fixed;background:var(--forest);border:1px solid rgba(200,149,42,.22);border-radius:8px;padding:12px;font-size:12px;max-width:280px;z-index:1000;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.term-popup-title{font-weight:600;color:var(--gold-light);margin-bottom:6px;font-size:13px;}
+.term-popup-content{color:var(--text);line-height:1.5;margin-bottom:8px;}
+.term-popup-action{font-size:11px;color:var(--gold);cursor:pointer;text-decoration:none;display:inline-block;padding:4px 0;}
+.term-popup-action:hover{opacity:.75;}
+
+/* ── HERB OF THE DAY ── */
+.hotd-banner{border-radius:8px;padding:1rem;margin-bottom:.85rem;background:linear-gradient(135deg,rgba(26,58,42,.8),rgba(45,92,66,.4));border:1px solid rgba(200,149,42,.2);position:relative;overflow:hidden;}
+.hotd-banner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 80% 20%,rgba(200,149,42,.08),transparent 60%);}
+.hotd-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.35rem;position:relative;}
+.hotd-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:var(--parchment);line-height:1.1;margin-bottom:2px;position:relative;}
+.hotd-latin{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12.5px;color:var(--muted);position:relative;}
+.hotd-fact{font-size:13px;color:rgba(245,240,232,.72);line-height:1.65;margin:.75rem 0;}
+.hotd-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.75rem;}
+.hotd-tag{font-size:10px;padding:2px 8px;border-radius:999px;background:var(--tag-bg);color:var(--tag-text);border:1px solid var(--tag-border);}
+.hotd-link{font-size:12px;color:var(--gold-light);text-decoration:none;display:flex;align-items:center;gap:5px;transition:opacity .15s;}
+.hotd-link:hover{opacity:.75;}
+.hotd-insight{background:rgba(200,149,42,.06);border:1px solid rgba(200,149,42,.14);border-radius:7px;padding:.75rem .9rem;}
+.hotd-insight-label{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;}
+.hotd-insight-text{font-size:12px;color:rgba(245,240,232,.6);line-height:1.6;}
+
+/* ── MY STACK ── */
+.stack-empty{font-size:13px;color:var(--muted);font-style:italic;text-align:center;padding:1.5rem 0;}
+.stack-pills{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem;}
+.stack-pill{font-size:12px;padding:.28rem .8rem;border-radius:999px;background:rgba(74,140,101,.12);color:var(--tag-text);border:1px solid rgba(74,140,101,.25);text-decoration:none;transition:all .15s;}
+.stack-pill:hover{background:rgba(74,140,101,.22);}
+.stack-coverage{margin-top:.85rem;}
+.cov-label{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem;}
+.cov-bars{display:flex;flex-direction:column;gap:.4rem;}
+.cov-row{display:flex;align-items:center;gap:.6rem;}
+.cov-sys{font-size:11.5px;color:var(--muted);width:80px;flex-shrink:0;}
+.cov-bar-wrap{flex:1;height:4px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;}
+.cov-bar{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--forest-light),var(--gold));transition:width .6s ease;}
+.cov-pct{font-size:10.5px;color:rgba(245,240,232,.3);width:28px;text-align:right;flex-shrink:0;}
+
+/* ── QUICK TOOLS ── */
+.tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin-bottom:1rem;}
+.tool-card{background:rgba(255,255,255,.03);border:1px solid var(--card-border);border-radius:10px;padding:1rem;text-decoration:none;transition:all .18s;display:flex;flex-direction:column;gap:.4rem;}
+.tool-card:hover{border-color:rgba(200,149,42,.3);background:rgba(200,149,42,.04);transform:translateY(-1px);}
+.tc-icon{font-size:20px;line-height:1;}
+.tc-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500;color:var(--parchment);}
+.tc-desc{font-size:11.5px;color:var(--muted);line-height:1.5;}
+
+/* ── COMMUNITY LATEST ── */
+.comm-post{padding:.85rem 0;border-bottom:1px solid var(--card-border);}
+.comm-post:last-child{border-bottom:none;padding-bottom:0;}
+.comm-post-top{display:flex;align-items:center;gap:.55rem;margin-bottom:.4rem;}
+.comm-av{width:26px;height:26px;border-radius:50%;background:var(--forest-mid);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:12px;font-weight:500;color:var(--gold-light);flex-shrink:0;}
+.comm-name{font-size:12.5px;color:rgba(245,240,232,.8);}
+.comm-time{font-size:11px;color:rgba(245,240,232,.25);margin-left:auto;}
+.comm-text{font-size:13px;color:rgba(245,240,232,.65);line-height:1.6;}
+.comm-tags{display:flex;gap:.35rem;margin-top:.5rem;flex-wrap:wrap;}
+.comm-tag{font-size:10px;padding:2px 7px;border-radius:999px;background:var(--card);color:var(--muted);border:1px solid var(--card-border);}
+
+/* ── TRENDING HERBS ── */
+.trend-list{display:flex;flex-direction:column;gap:.5rem;}
+.trend-item{display:flex;align-items:center;gap:.75rem;padding:.6rem .75rem;background:rgba(255,255,255,.02);border:1px solid var(--card-border);border-radius:7px;text-decoration:none;transition:border-color .15s;}
+.trend-item:hover{border-color:rgba(200,149,42,.3);}
+.trend-rank{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;color:rgba(200,149,42,.3);width:20px;flex-shrink:0;text-align:center;}
+.trend-info{flex:1;min-width:0;}
+.trend-name{font-size:13.5px;color:var(--text);font-weight:500;}
+.trend-reason{font-size:11.5px;color:var(--muted);}
+.trend-spark{display:flex;align-items:flex-end;gap:2px;height:20px;flex-shrink:0;}
+.spark-bar{width:4px;border-radius:2px;background:var(--forest-light);transition:height .3s;}
+
+/* ── SEASONAL ── */
+.season-card{border-radius:8px;padding:.9rem 1rem;margin-bottom:.75rem;border:1px solid var(--card-border);}
+.season-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem;}
+.season-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--parchment);margin-bottom:.4rem;}
+.season-why{font-size:12.5px;color:rgba(245,240,232,.6);line-height:1.6;}
+
+/* ── STATS ROW ── */
+.stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.5rem;}
+@media(max-width:680px){.stats-strip{grid-template-columns:repeat(2,1fr);}}
+.stat-card{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:.85rem 1rem;}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;color:var(--gold-light);line-height:1;}
+.stat-label{font-size:10.5px;color:var(--muted);margin-top:.25rem;}
+
+/* ── SECTION DIVIDER ── */
+.sec-divider{display:flex;align-items:center;gap:.75rem;margin:1.5rem 0 1rem;}
+.sec-divider-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);flex-shrink:0;}
+.sec-divider-line{flex:1;height:1px;background:var(--card-border);}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="home.html" class="nav-logo">
+    <span class="nav-chi">C.H.I</span>
+    <span class="nav-full">Collective Herbal Intelligence</span>
+  </a>
+  <div class="nav-right">
+
+    <!-- TOOLS DROPDOWN -->
+    <div class="nav-dd" id="dd-tools" onclick="toggleDD('tools')">
+      <span style="color:inherit">Tools</span>
+      <span class="nav-dd-arrow">▼</span>
+      <div class="nav-dd-menu">
+        <a href="herb-match.html"><span class="nav-dd-icon">🌿</span>Herb Match</a>
+        <a href="phytochemistry.html"><span class="nav-dd-icon">⬡</span>Plant Intelligence</a>
+        <a href="supreme.html"><span class="nav-dd-icon">📖</span>Herbadex</a>
+        <a href="herb-identifier.html"><span class="nav-dd-icon">🔍</span>Herb Identifier</a>
+      </div>
+    </div>
+
+    <a href="resources.html">Resources</a>
+
+    <!-- COMMUNITY DROPDOWN -->
+    <div class="nav-dd" id="dd-community" onclick="toggleDD('community')">
+      <span style="color:inherit">Community</span>
+      <span class="nav-dd-arrow">▼</span>
+      <div class="nav-dd-menu">
+        <a href="community.html"><span class="nav-dd-icon">💬</span>Community Feed</a>
+        <a href="garden.html"><span class="nav-dd-icon">🌱</span>Herbal Garden</a>
+        <a href="glossary.html"><span class="nav-dd-icon">📚</span>Glossary</a>
+      </div>
+    </div>
+
+    <!-- PROFILE DROPDOWN -->
+    <div class="nav-dd" id="dd-profile" onclick="toggleDD('profile')">
+      <span style="color:inherit">Profile</span>
+      <span class="nav-dd-arrow">▼</span>
+      <div class="nav-dd-menu">
+        <a href="profile.html"><span class="nav-dd-icon">🌿</span>My Profile</a>
+        <a href="inbox.html"><span class="nav-dd-icon">✉️</span>Inbox</a>
+        <div class="nav-dd-divider"></div>
+        <a href="privacy-policy.html"><span class="nav-dd-icon">🔒</span>Privacy Policy</a>
+        <a href="terms.html"><span class="nav-dd-icon">📄</span>Terms</a>
+        <a href="disclaimer.html"><span class="nav-dd-icon">⚠️</span>Disclaimer</a>
+        <div class="nav-dd-divider"></div>
+        <a href="index.html" onclick="localStorage.clear()"><span class="nav-dd-icon">↩</span>Sign out</a>
+      </div>
+    </div>
+
+    <a href="inbox.html" class="nav-inbox" title="Inbox">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12v9H2V4z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M2 4l6 5 6-5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+    </a>
+    <a href="join.html" class="nav-cta">Join CHI</a>
+  </div>
+</nav>
+
+<!-- FACTS TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-label">Herb Facts</div>
+  <div style="overflow:hidden;flex:1;position:relative;">
+    <div class="ticker-track" id="ticker"></div>
+  </div>
+</div>
+
+<!-- PAGE -->
+<div class="page">
+
+  <!-- GREETING -->
+  <div class="greeting">
+    <div class="greeting-eyebrow">Good <span id="time-of-day">morning</span></div>
+    <h1 class="greeting-title">Welcome back, <em id="user-name">herbalist.</em></h1>
+    <p class="greeting-sub" id="greeting-sub">Here's what's happening in your herbal world today.</p>
+  </div>
+
+  <!-- STATS STRIP -->
+  <div class="stats-strip">
+    <div class="stat-card">
+      <div class="stat-val" id="stat-stack">0</div>
+      <div class="stat-label">Herbs in your stack</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">2,500+</div>
+      <div class="stat-label">Herbs in the Herbadex</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="stat-community">1.2k</div>
+      <div class="stat-label">Community members</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="stat-date"></div>
+      <div class="stat-label">Today's date</div>
+    </div>
+  </div>
+
+  <!-- THREE COLUMN -->
+  <div class="three-col">
+
+    <!-- LEFT: PERSONAL STACK & ACTIVITY -->
+    <div>
+
+      <!-- MY STACK -->
+      <div class="panel" style="margin-bottom:1.25rem">
+        <div class="panel-head">
+          <span class="panel-title">My herb stack</span>
+          <a href="phytochemistry.html" class="panel-action">Explore →</a>
+        </div>
+        <div class="panel-body">
+          <div id="stack-display"></div>
+          <div id="stack-coverage"></div>
+        </div>
+      </div>
+
+      <!-- ACTIVE HERBS LIST -->
+      <div class="panel" style="margin-bottom:1.25rem">
+        <div class="panel-head">
+          <span class="panel-title">Your active herbs</span>
+          <a href="profile.html" class="panel-action">Manage →</a>
+        </div>
+        <div class="panel-body">
+          <div id="active-herbs-list" style="display:grid;gap:8px;"></div>
+        </div>
+      </div>
+
+      <!-- HERBAL ACTIVITY FEED -->
+      <div class="panel" style="margin-bottom:1.25rem">
+        <div class="panel-head">
+          <span class="panel-title">Your herbal journey</span>
+          <a href="profile.html" class="panel-action">View all →</a>
+        </div>
+        <div class="panel-body">
+          <div id="activity-feed" style="display:grid;gap:12px;"></div>
+        </div>
+      </div>
+
+      <!-- QUICK TOOLS -->
+      <div class="panel" style="margin-bottom:1.25rem">
+        <div class="panel-head">
+          <span class="panel-title">Tools</span>
+        </div>
+        <div class="panel-body">
+          <div class="tools-grid">
+            <a href="herb-match.html" class="tool-card">
+              <div class="tc-icon">🌿</div>
+              <div class="tc-name">Herb Match</div>
+              <div class="tc-desc">Find herbs matched to your goals</div>
+            </a>
+            <a href="phytochemistry.html" class="tool-card">
+              <div class="tc-icon">⬡</div>
+              <div class="tc-name">Plant Intelligence</div>
+              <div class="tc-desc">Compounds, actions & taxonomy</div>
+            </a>
+            <a href="supreme.html" class="tool-card">
+              <div class="tc-icon">📖</div>
+              <div class="tc-name">Herbadex</div>
+              <div class="tc-desc">Full A–Z herb library</div>
+            </a>
+            <a href="herb-identifier.html" class="tool-card">
+              <div class="tc-icon">🔍</div>
+              <div class="tc-name">Herb Identifier</div>
+              <div class="tc-desc">Identify from a photo</div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- MIDDLE: HERB OF DAY + COMMUNITY -->
+    <div>
+
+      <!-- HERB OF THE DAY -->
+      <div class="panel" style="margin-bottom:1.25rem">
+        <div class="panel-head">
+          <span class="panel-title">Herb of the day</span>
+          <a href="supreme.html" class="panel-action">View all →</a>
+        </div>
+        <div class="panel-body">
+          <div id="hotd-content"></div>
+        </div>
+      </div>
+
+      <!-- COMMUNITY LATEST -->
+      <div class="panel">
+        <div class="panel-head">
+          <span class="panel-title">Latest from community</span>
+          <a href="community.html" class="panel-action">See all →</a>
+        </div>
+        <div class="panel-body" id="community-feed"></div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: TRENDING + SEASONAL -->
+    <div>
+
+      <!-- TRENDING -->
+      <div class="panel" style="margin-bottom:1.25rem">
+        <div class="panel-head">
+          <span class="panel-title">Trending this week</span>
+          <a href="community.html" class="panel-action">Community →</a>
+        </div>
+        <div class="panel-body">
+          <div class="trend-list" id="trending-list"></div>
+        </div>
+      </div>
+
+      <!-- SEASONAL -->
+      <div class="panel">
+        <div class="panel-head">
+          <span class="panel-title">Seasonal suggestion</span>
+        </div>
+        <div class="panel-body" id="seasonal-panel"></div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── USER ──────────────────────────────────────────────────────────
+const userName = localStorage.getItem('chi_display_name') || 'herbalist';
+const userStack = JSON.parse(localStorage.getItem('chi_phyto_stack') || '[]');
+
+document.getElementById('user-name').textContent = userName + '.';
+document.getElementById('stat-stack').textContent = userStack.length;
+
+const h = new Date().getHours();
+document.getElementById('time-of-day').textContent = h < 12 ? 'morning' : h < 17 ? 'afternoon' : 'evening';
+
+const now = new Date();
+document.getElementById('stat-date').textContent = now.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+
+const subs = [
+  'Here\'s what\'s happening in your herbal world today.',
+  'Your stack is ready. The plants are waiting.',
+  'A good day to explore something new.',
+  'Knowledge compounds. So do herbs.',
+];
+document.getElementById('greeting-sub').textContent = subs[now.getDate() % subs.length];
+
+// ── HERB OF THE DAY ───────────────────────────────────────────────
+const HERBS_ROTA = [
+  {name:'Ashwagandha', latin:'Withania somnifera', tags:['Adaptogen','Nervine','Anti-inflammatory'],
+   fact:'One of Ayurveda\'s most important rasayana herbs — used for over 3,000 years to build resilience and strength. Its species name literally means "sleep-inducing" in Latin.',
+   insight:'KSM-66 extract has reduced cortisol by 27% in double-blind RCTs — one of the strongest stress-reduction results in herbal research.',
+   color:'rgba(74,140,101,.12)'},
+  {name:'Lion\'s Mane', latin:'Hericium erinaceus', tags:['Nootropic','Immunomodulator','NGF'],
+   fact:'The only known dietary source of hericenones and erinacines — compounds that cross the blood-brain barrier and directly stimulate nerve growth factor synthesis.',
+   insight:'Regular use over 8–12 weeks shows cumulative cognitive improvements in human trials. Effects build rather than peak early.',
+   color:'rgba(130,100,200,.1)'},
+  {name:'Nigella', latin:'Nigella sativa', tags:['Antimicrobial','Anti-inflammatory','Immunomodulator'],
+   fact:'Known as "habbatus sauda" in Arabic medicine — described as "a remedy for everything except death" in historical Islamic medical texts.',
+   insight:'Thymoquinone simultaneously inhibits COX-1/2, 5-LOX and NF-κB — a rare triple-pathway anti-inflammatory action found in very few natural compounds.',
+   color:'rgba(200,149,42,.08)'},
+  {name:'Olive Leaf', latin:'Olea europaea', tags:['Antiviral','Hypotensive','Antioxidant'],
+   fact:'Olive trees can live for thousands of years. The oldest known olive tree in the world — in Crete — is estimated to be over 3,000 years old and still produces fruit.',
+   insight:'Oleuropein, the primary active compound, prevents viral entry by binding to capsid proteins before they can attach to host cell receptors.',
+   color:'rgba(74,140,101,.1)'},
+  {name:'Moringa', latin:'Moringa oleifera', tags:['Nutritive','Antioxidant','Hypoglycaemic'],
+   fact:'Called the "miracle tree" across sub-Saharan Africa and South Asia. Gram for gram, moringa leaves contain more vitamin C than oranges, more calcium than milk, and more iron than spinach.',
+   insight:'Glucomoringin converts to isothiocyanates via myrosinase — the same Nrf2-activating mechanism as broccoli sulforaphane. Heat destroys myrosinase, so raw powder preserves this action.',
+   color:'rgba(74,180,101,.1)'},
+  {name:'Marshmallow', latin:'Althaea officinalis', tags:['Demulcent','Emollient','Mucosal'],
+   fact:'The original marshmallow sweet was made from the whipped sap of the marshmallow root. The modern confection is a descendant of a genuine herbal preparation.',
+   insight:'Cold-water extraction preserves far more mucilage than hot. For maximum gut-soothing action, steep marshmallow root in cold water for 4–8 hours rather than making a standard hot tea.',
+   color:'rgba(100,150,200,.08)'},
+  {name:'Dandelion', latin:'Taraxacum officinale', tags:['Hepatoprotective','Diuretic','Bitter tonic'],
+   fact:'Every part of the dandelion is edible and medicinal — root, leaf, flower, and stem all have distinct compound profiles and different therapeutic actions.',
+   insight:'Unlike pharmaceutical diuretics that deplete potassium, dandelion leaf contains potassium itself — one of the few diuretic herbs that replaces the electrolyte it causes you to lose.',
+   color:'rgba(200,180,42,.08)'},
+];
+
+const dayIndex = now.getDate() % HERBS_ROTA.length;
+const hotd = HERBS_ROTA[dayIndex];
+
+document.getElementById('hotd-content').innerHTML = `
+  <div class="hotd-banner" style="background:linear-gradient(135deg,${hotd.color},rgba(26,58,42,.3))">
+    <div class="hotd-label">Today · ${now.toLocaleDateString('en-GB',{weekday:'long'})}</div>
+    <div class="hotd-name">${hotd.name}</div>
+    <div class="hotd-latin">${hotd.latin}</div>
+  </div>
+  <p class="hotd-fact">${hotd.fact}</p>
+  <div class="hotd-tags">${hotd.tags.map(t=>`<span class="hotd-tag">${t}</span>`).join('')}</div>
+  <a class="hotd-link" href="supreme.html?herb=${hotd.name.toLowerCase()}">
+    Full herb profile
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
+  <div class="hotd-insight" style="margin-top:.85rem">
+    <div class="hotd-insight-label">Did you know</div>
+    <div class="hotd-insight-text">${hotd.insight}</div>
+  </div>
+`;
+
+// ── MY STACK ──────────────────────────────────────────────────────
+const stackEl = document.getElementById('stack-display');
+const covEl = document.getElementById('stack-coverage');
+
+if(!userStack.length){
+  stackEl.innerHTML = `<div class="stack-empty">No herbs added yet. <a href="phytochemistry.html" style="color:var(--tag-text);text-decoration:none">Visit Plant Intelligence →</a></div>`;
+} else {
+  const HERB_COLORS=['#5cab7a','#e8a840','#6aaddd','#9b8de0','#cc7a5a','#cc6a9a','#7abf6a','#dd6a6a'];
+  function hc(n){let h=0;for(let i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))&0xffff;return HERB_COLORS[h%HERB_COLORS.length];}
+  function hex2rgba(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return`rgba(${r},${g},${b},${a})`;}
+
+  stackEl.innerHTML = `<div class="stack-pills">
+    ${userStack.slice(0,12).map(h=>`<a href="phytochemistry.html" class="stack-pill" style="background:${hex2rgba(hc(h),.12)};color:${hc(h)};border-color:${hex2rgba(hc(h),.3)}">${h}</a>`).join('')}
+    ${userStack.length>12?`<span style="font-size:12px;color:var(--muted);padding:.28rem .5rem">+${userStack.length-12} more</span>`:''}
+  </div>`;
+
+  // Coverage bars based on stack
+  const SYSTEMS = ['Nervous','Immune','Digestive','Cardiovascular','Cognitive'];
+  const SYSTEM_HERBS = {
+    'Nervous':['ashwagandha','passionflower','lemon balm','damiana','st john','valerian','skullcap','mugwort'],
+    'Immune':['nigella','olive leaf','lion\'s mane','echinacea','elderberry','reishi'],
+    'Digestive':['dandelion','marshmallow','ginger','fennel','peppermint','milk thistle'],
+    'Cardiovascular':['hibiscus','hawthorn','olive leaf','garlic','nettle'],
+    'Cognitive':['lion\'s mane','lemon balm','ashwagandha','bacopa','ginkgo','moringa'],
+  };
+  const stackLower = userStack.map(h=>h.toLowerCase());
+  const bars = SYSTEMS.map(sys=>{
+    const known = SYSTEM_HERBS[sys];
+    const covered = known.filter(k=>stackLower.some(s=>s.includes(k)||k.includes(s))).length;
+    const pct = Math.round((covered/known.length)*100);
+    return {sys, pct};
+  });
+
+  covEl.innerHTML = `<div class="stack-coverage">
+    <div class="cov-label">System coverage</div>
+    <div class="cov-bars">
+      ${bars.map(b=>`<div class="cov-row">
+        <div class="cov-sys">${b.sys}</div>
+        <div class="cov-bar-wrap"><div class="cov-bar" style="width:${b.pct}%"></div></div>
+        <div class="cov-pct">${b.pct}%</div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+// ── COMMUNITY FEED ────────────────────────────────────────────────
+const POSTS = [
+  {av:'R',name:'Rhea K.',time:'2h ago',text:'Two weeks on the passionflower and ashwagandha stack and I genuinely cannot believe the difference in my sleep. I\'m waking up feeling like I actually rested.',tags:['Sleep','Ashwagandha','Passionflower']},
+  {av:'T',name:'Tomas B.',time:'5h ago',text:'Finally understood why my lemon balm tea hits differently than the capsules after reading the Plant Intelligence page. The volatile oils — they evaporate when you heat it too much. Cold steep from now on.',tags:['Lemon balm','Extraction']},
+  {av:'S',name:'Saoirse M.',time:'Yesterday',text:'Does anyone else use moringa in their smoothies? Been doing it for 3 months now and my iron levels came back normal for the first time in years at my last blood test.',tags:['Moringa','Nutrition']},
+  {av:'D',name:'Dev P.',time:'2 days ago',text:'The non-obvious box in Herb Match showing why nettle appeared for skin inflammation completely changed how I think about that herb. That\'s the kind of context I\'ve been looking for.',tags:['Herb Match','Nettle']},
+];
+
+document.getElementById('community-feed').innerHTML = POSTS.map(p=>`
+  <div class="comm-post">
+    <div class="comm-post-top">
+      <div class="comm-av">${p.av}</div>
+      <span class="comm-name">${p.name}</span>
+      <span class="comm-time">${p.time}</span>
+    </div>
+    <div class="comm-text">${p.text}</div>
+    <div class="comm-tags">${p.tags.map(t=>`<span class="comm-tag">${t}</span>`).join('')}</div>
+  </div>`).join('');
+
+// ── TRENDING HERBS ────────────────────────────────────────────────
+const TRENDING = [
+  {name:'Ashwagandha', reason:'Most added to stacks this week', sparks:[2,3,4,5,5]},
+  {name:'Lion\'s Mane', reason:'Trending in community', sparks:[1,2,3,4,5]},
+  {name:'Nigella', reason:'Most Herb Match results', sparks:[3,3,4,3,5]},
+  {name:'Lemon Balm', reason:'Rising searches', sparks:[2,2,3,4,4]},
+  {name:'Moringa', reason:'Popular new addition', sparks:[1,2,2,3,4]},
+];
+
+function sparkBars(vals){
+  const max = Math.max(...vals);
+  return vals.map(v=>`<div class="spark-bar" style="height:${Math.round((v/max)*18)+2}px"></div>`).join('');
+}
+
+document.getElementById('trending-list').innerHTML = TRENDING.map((t,i)=>`
+  <a href="supreme.html?herb=${t.name.toLowerCase().replace("'",'')}" class="trend-item">
+    <div class="trend-rank">${i+1}</div>
+    <div class="trend-info">
+      <div class="trend-name">${t.name}</div>
+      <div class="trend-reason">${t.reason}</div>
+    </div>
+    <div class="trend-spark">${sparkBars(t.sparks)}</div>
+  </a>`).join('');
+
+// ── SEASONAL SUGGESTION ───────────────────────────────────────────
+const month = now.getMonth(); // 0-11
+const SEASONAL = [
+  // Winter (Dec-Feb)
+  {months:[11,0,1], season:'Winter',
+   herbs:[
+     {name:'Elderberry',latin:'Sambucus nigra',why:'Antiviral flavonoids — particularly effective during cold and flu season.',color:'rgba(130,100,200,.12)'},
+     {name:'Ginger',latin:'Zingiber officinale',why:'Warming circulatory herb that combats winter stiffness and supports immune response.',color:'rgba(200,149,42,.1)'},
+   ],
+   note:'Winter herbs focus on immune resilience and warmth. Short days reduce vitamin D — consider adding nettle as a nutritive alongside your immune stack.'},
+  // Spring (Mar-May)
+  {months:[2,3,4], season:'Spring',
+   herbs:[
+     {name:'Dandelion',latin:'Taraxacum officinale',why:'Spring bitter tonic — stimulates liver detoxification after winter. Best harvested now.',color:'rgba(200,180,42,.1)'},
+     {name:'Nettle',latin:'Urtica dioica',why:'Peak nutritional value in early spring before flowering. Rich in iron, magnesium and quercetin.',color:'rgba(74,140,101,.12)'},
+   ],
+   note:'Spring is the traditional time for alterative herbs — those that support the liver and lymphatics after winter. Bitter greens and early herbs are at their most potent now.'},
+  // Summer (Jun-Aug)
+  {months:[5,6,7], season:'Summer',
+   herbs:[
+     {name:'Lemon Balm',latin:'Melissa officinalis',why:'Cooling nervine — balances summer heat and stress. Peak volatile oil content when harvested in summer.',color:'rgba(200,220,42,.08)'},
+     {name:'Hibiscus',latin:'Hibiscus sabdariffa',why:'Cooling diaphoretic and cardioprotective. Reduces blood pressure and counters summer heat.',color:'rgba(200,42,100,.1)'},
+   ],
+   note:'Summer herbs tend toward cooling and calming. Harvest lavender, lemon balm and calendula this season — they dry beautifully and retain potency.'},
+  // Autumn (Sep-Nov)
+  {months:[8,9,10], season:'Autumn',
+   herbs:[
+     {name:'Ashwagandha',latin:'Withania somnifera',why:'Roots harvested in autumn are at peak withanolide content. Begin your autumn adaptogen protocol now.',color:'rgba(74,140,101,.12)'},
+     {name:'Reishi',latin:'Ganoderma lucidum',why:'Autumn mushroom season. Fresh or freshly dried reishi has superior polysaccharide content.',color:'rgba(150,80,40,.1)'},
+   ],
+   note:'Autumn is preparation season. Build your immune stack before winter. Roots and berries reach their peak — elderberry, hawthorn, and ashwagandha root are all at their best.'},
+];
+
+const seasonData = SEASONAL.find(s=>s.months.includes(month)) || SEASONAL[0];
+
+document.getElementById('seasonal-panel').innerHTML = `
+  <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem">${seasonData.season} suggestions</div>
+  ${seasonData.herbs.map(h=>`
+    <div class="season-card" style="background:${h.color};margin-bottom:.65rem">
+      <div class="season-label">Seasonal pick</div>
+      <div class="season-name">${h.name}</div>
+      <div class="season-why">${h.why}</div>
+    </div>`).join('')}
+  <div style="font-size:12px;color:rgba(245,240,232,.45);line-height:1.65;border-top:1px solid var(--card-border);padding-top:.75rem;margin-top:.25rem">${seasonData.note}</div>
+`;
+
+// ── FACTS TICKER ──────────────────────────────────────────────────
+const ALL_FACTS = [
+  {text:'Turmeric has been used in Indian medicine for over', highlight:'4,000 years'},
+  {text:'The active compound in black pepper — piperine — increases curcumin absorption by', highlight:'2,000%'},
+  {text:'Clove has the highest antioxidant ORAC score of any commonly used herb or spice —', highlight:'over 290,000 ORAC units per 100g'},
+  {text:'Ashwagandha\'s species name "somnifera" literally translates to', highlight:'"sleep-inducing" in Latin'},
+  {text:'Lion\'s mane is the only known food that stimulates production of', highlight:'nerve growth factor (NGF)'},
+  {text:'The dandelion is technically a complete nutritional plant —', highlight:'every part including root, leaf and flower is edible and medicinal'},
+  {text:'Olive trees can live for thousands of years — the oldest known specimen is estimated at', highlight:'over 3,000 years old and still produces olives'},
+  {text:'Marshmallow root was the original ingredient in marshmallow sweets before it was replaced with', highlight:'gelatin and sugar'},
+  {text:'Moringa leaves contain more vitamin C than oranges, more calcium than milk, and more iron than spinach —', highlight:'gram for gram'},
+  {text:'Passionflower was first documented by Spanish explorers in Peru in', highlight:'1569'},
+  {text:'The nigella seed has been found in Egyptian tombs including', highlight:'that of Tutankhamun'},
+  {text:'A single elderberry bush can produce enough berries to make', highlight:'over 20 litres of elderberry syrup per year'},
+  {text:'Valerian root was used as a perfume in the 16th century before its sedative properties became', highlight:'more widely known'},
+  {text:'The word "pharmacy" derives from the Greek "pharmakeia" — which originally referred to the use of', highlight:'medicinal herbs and plants'},
+  {text:'There are estimated to be over', highlight:'250,000 known plant species on Earth, of which roughly 50,000 have documented medicinal use'},
+  {text:'Feverfew was prescribed for migraines in European herbal medicine as early as the', highlight:'17th century — centuries before migraine physiology was understood'},
+  {text:'The common nettle produces histamine, serotonin and acetylcholine in its sting — yet dried nettle', highlight:'inhibits histamine release in the body'},
+  {text:'Traditional Chinese Medicine has been systematically documenting herb interactions and contraindications for over', highlight:'2,000 years'},
+  {text:'Saffron — one of the world\'s most expensive herbs by weight — requires', highlight:'150,000 crocus flowers to produce one kilogram'},
+  {text:'The Ayurvedic concept of "rasayana" — rejuvenating herbs — predates modern adaptogen research by', highlight:'over 2,000 years'},
+  {text:'Ginkgo biloba is considered a "living fossil" — the species has existed virtually unchanged for', highlight:'over 200 million years'},
+  {text:'Rosemary\'s aroma alone — without consumption — has been shown to improve memory performance in', highlight:'controlled trials'},
+  {text:'Hibiscus tea has been shown to reduce systolic blood pressure by an average of', highlight:'7mmHg in meta-analysis'},
+  {text:'The Amazon rainforest contains an estimated', highlight:'80,000 plant species, tens of thousands of which have never been studied for medicinal properties'},
+  {text:'Silymarin from milk thistle is used in emergency medicine as the primary antidote for', highlight:'amanita (death cap mushroom) poisoning'},
+  {text:'Shilajit forms over thousands of years from the decomposition of plant matter in the Himalayas — it is essentially', highlight:'a geological concentration of ancient herbal compounds'},
+  {text:'Beta-caryophyllene in clove and black pepper is the only known dietary compound that directly activates', highlight:'CB2 cannabinoid receptors without psychoactivity'},
+  {text:'The World Health Organisation estimates that', highlight:'80% of the world\'s population still relies on herbal medicine as their primary form of healthcare'},
+  {text:'Chamomile contains over', highlight:'120 identified chemical compounds, of which bisabolol and chamazulene are the most studied'},
+  {text:'St John\'s Wort is one of the most prescribed antidepressants in Germany — it outsells Prozac in', highlight:'German pharmacies'},
+  {text:'Echinacea was the most widely used medicinal herb in North America among indigenous peoples', highlight:'long before European contact'},
+  {text:'The opium poppy gave us morphine, codeine and heroin — all isolated from the same plant in', highlight:'the early 19th century'},
+  {text:'Aspirin was originally derived from salicin — a compound extracted from', highlight:'white willow bark'},
+  {text:'Penicillin was discovered from a mould — technically making it a product of', highlight:'the plant and fungal kingdom'},
+  {text:'Taxol — one of the most important cancer chemotherapy drugs — was originally isolated from the bark of', highlight:'the Pacific yew tree'},
+  {text:'Artemisinin, the most effective treatment for malaria, was discovered in wormwood — a discovery that earned its finder', highlight:'the 2015 Nobel Prize in Physiology or Medicine'},
+  {text:'Over', highlight:'25% of modern pharmaceutical drugs were originally derived from or inspired by plant compounds'},
+  {text:'The rosmarinic acid in lemon balm inhibits acetylcholinesterase — the same mechanism as', highlight:'pharmaceutical drugs used in early Alzheimer\'s treatment'},
+  {text:'Thymoquinone in nigella black seed outperforms fluconazole — a standard antifungal medication — against Candida in', highlight:'some in vitro laboratory studies'},
+  {text:'Urolithin A — produced when gut bacteria metabolise ellagic acid from raspberry leaf — activates mitophagy, a cellular cleaning process', highlight:'now studied as a core mechanism of anti-aging'},
+  {text:'The human gut microbiome metabolises plant compounds into entirely new molecules not found in the original herb —', highlight:'meaning your microbiome partly determines which herbs work for you'},
+  {text:'Sulforaphane from broccoli sprouts and moringa is the strongest known natural activator of', highlight:'the Nrf2 cellular antioxidant defence pathway'},
+  {text:'Lemon balm has been used continuously in European medicine since at least', highlight:'the 7th century AD'},
+  {text:'The digestive bitter action of herbs like dandelion and mugwort only works if they are', highlight:'tasted — encapsulating bitter herbs bypasses the tongue receptors that trigger the mechanism'},
+  {text:'Fisetin — found in strawberries — is one of the most studied natural compounds for', highlight:'clearing senescent cells, a key mechanism in anti-aging research'},
+  {text:'Lion\'s mane mycelium contains erinacines — compounds that cross the blood-brain barrier more efficiently than', highlight:'the hericenones found in the fruiting body'},
+  {text:'Inulin in dandelion root acts as a prebiotic — it cannot be digested by humans but selectively feeds', highlight:'Bifidobacterium and Lactobacillus, the two most beneficial gut bacteria families'},
+  {text:'The Unani medical system — still practiced across South Asia and the Middle East — has documented herb-drug interactions for', highlight:'over 1,000 years'},
+  {text:'Cannabis sativa has been used medicinally in China for at least', highlight:'4,700 years — one of the earliest documented medicinal plants in human history'},
+];
+
+// Pick 10 facts for this hour, rotate every hour
+function getHourlyFacts(){
+  const hourSeed = Math.floor(Date.now() / 3600000);
+  const shuffled = [...ALL_FACTS];
+  for(let i=shuffled.length-1;i>0;i--){
+    const j = (hourSeed * 1234567 + i * 7654321) % (i+1);
+    [shuffled[i],shuffled[j]]=[shuffled[j],shuffled[i]];
+  }
+  return shuffled.slice(0,10);
+}
+
+const hourlyFacts = getHourlyFacts();
+
+// Build ticker — duplicate for seamless loop
+function buildTicker(){
+  const track = document.getElementById('ticker');
+  const allFacts = [...hourlyFacts, ...hourlyFacts]; // duplicate for seamless scroll
+  track.innerHTML = allFacts.map(f=>
+    `<span class="ticker-fact">${f.text} <span>${f.highlight}</span></span>`
+  ).join('<span class="ticker-fact" style="color:rgba(26,58,42,.35)">·</span>');
+
+  // Adjust animation duration based on content width
+  requestAnimationFrame(()=>{
+    const halfWidth = track.scrollWidth / 2;
+    const duration = halfWidth / 240; // 4x speed ~240px per second
+    track.style.animationDuration = duration + 's';
+  });
+}
+
+buildTicker();
+
+// Refresh facts on the hour
+const msUntilNextHour = 3600000 - (Date.now() % 3600000);
+setTimeout(()=>{ buildTicker(); setInterval(buildTicker, 3600000); }, msUntilNextHour);
+</script>
+<script>
+function toggleDD(id){
+  const all=document.querySelectorAll(".nav-dd");
+  all.forEach(d=>{if(d.id!=="dd-"+id)d.classList.remove("open");});
+  const el=document.getElementById("dd-"+id);
+  if(el)el.classList.toggle("open");
+}
+document.addEventListener("click",e=>{
+  if(!e.target.closest(".nav-dd"))document.querySelectorAll(".nav-dd").forEach(d=>d.classList.remove("open"));
+});
+</script>
+<script>
+// ── ACTIVE HERBS & ACTIVITY FEED ──
+
+const HERB_COLORS = {
+  'Ashwagandha': '#4a8c65',
+  'Nettle': '#7acca0',
+  'Lion\'s Mane': '#4a8c65',
+  'Ginger': '#c8952a',
+  'Lemon Balm': '#7acca0',
+  'Milk Thistle': '#4a8c65',
+  'Echinacea': '#c8952a'
+};
+
+const ACTIVE_HERBS = [
+  {name:'Ashwagandha',freq:'Daily'},
+  {name:'Nettle',freq:'3x week'},
+  {name:'Lion\'s Mane',freq:'As needed'},
+  {name:'Ginger',freq:'With meals'}
+];
+
+const ACTIVITY = [
+  {type:'formula',title:'Built sleep formula',desc:'Ashwagandha, Lemon Balm, Shatavari — 2h ago'},
+  {type:'journal',title:'Logged journal entry',desc:'Day 7 of nettle protocol — 5h ago'},
+  {type:'identify',title:'Identified herb',desc:'Found lemon balm in garden — 1d ago'},
+  {type:'complete',title:'Completed protocol',desc:'Lion\'s Mane 30-day cycle finished — 3d ago'}
+];
+
+function buildActiveHerbsList(){
+  const container = document.getElementById('active-herbs-list');
+  if(!container)return;
+  if(ACTIVE_HERBS.length===0){
+    container.innerHTML='<p style="font-size:13px;color:var(--muted);">No active herbs yet. Start exploring or add your first herb to your journey.</p>';
+    return;
+  }
+  container.innerHTML = ACTIVE_HERBS.map(h=>`
+    <div class="herb-item">
+      <div class="herb-item-dot" style="background:${HERB_COLORS[h.name]||'#4a8c65'}"></div>
+      <span class="herb-item-name">${h.name}</span>
+      <span class="herb-item-freq">${h.freq}</span>
+    </div>
+  `).join('');
+}
+
+function buildActivityFeed(){
+  const container = document.getElementById('activity-feed');
+  if(!container)return;
+  if(ACTIVITY.length===0){
+    container.innerHTML='<p style="font-size:13px;color:var(--muted);">Your journey starts here. Build a formula, log an entry, or identify an herb.</p>';
+    return;
+  }
+  container.innerHTML = ACTIVITY.map(a=>`
+    <div class="activity-item type-${a.type}">
+      <p class="activity-item-title">${a.title}</p>
+      <p class="activity-item-desc">${a.desc}</p>
+    </div>
+  `).join('');
+}
+
+// ── GLOSSARY TERM INTERACTION ──
+const GLOSSARY_TERMS = {
+  'adaptogen':'A substance that helps the body adapt to stress and maintain homeostasis.',
+  'nervine':'An herb that supports the nervous system and promotes calm.',
+  'hepatoprotective':'Protective of the liver; supporting liver function.',
+  'antispasmodic':'Reduces muscle spasms and tension.',
+  'nervousness':'See nervine.',
+  'ashwagandha':'A root herb from Ayurveda traditionally used for stress and vitality.',
+  'nettle':'A mineral-rich leaf herb with a long history in European herbal medicine.',
+  'lion\'s mane':'A medicinal mushroom traditionally used in Asia, studied for cognitive support.',
+  'lemon balm':'A fragrant leaf herb from the mint family, traditionally used for calm.'
+};
+
+function makeTermsClickable(text){
+  let result = text;
+  Object.keys(GLOSSARY_TERMS).forEach(term=>{
+    const regex = new RegExp(`\\b${term}\\b`,'gi');
+    result = result.replace(regex,`<span class="glossary-term" data-term="${term}">$&</span>`);
+  });
+  return result;
+}
+
+function showTermPopup(e){
+  if(!e.target.classList.contains('glossary-term'))return;
+  const term = e.target.dataset.term.toLowerCase();
+  const def = GLOSSARY_TERMS[term];
+  if(!def)return;
+  
+  document.querySelectorAll('.term-popup').forEach(p=>p.remove());
+  
+  const popup = document.createElement('div');
+  popup.className = 'term-popup';
+  popup.innerHTML = `
+    <div class="term-popup-title">${term}</div>
+    <div class="term-popup-content">${def}</div>
+    <a href="supreme.html?herb=${encodeURIComponent(term)}" class="term-popup-action">View in Herbadex →</a>
+    <br><a onclick="searchRelatedPosts('${term}')" class="term-popup-action" style="margin-top:4px;">Find posts about this →</a>
+  `;
+  
+  const rect = e.target.getBoundingClientRect();
+  popup.style.left = rect.left + 'px';
+  popup.style.top = (rect.bottom + 8) + 'px';
+  document.body.appendChild(popup);
+  
+  setTimeout(()=>{
+    document.addEventListener('click',closePopupIfOutside,{once:true});
+  },0);
+}
+
+function closePopupIfOutside(e){
+  if(!e.target.closest('.term-popup'))document.querySelectorAll('.term-popup').forEach(p=>p.remove());
+}
+
+function searchRelatedPosts(term){
+  console.log('Searching community posts for:',term);
+  // TODO: Filter community feed for posts with this term
+  alert('Search for posts with "'+term+'" — feature coming soon.');
+}
+
+// Populate on load
+document.addEventListener('DOMContentLoaded',()=>{
+  buildActiveHerbsList();
+  buildActivityFeed();
+  
+  // Make terms in activity feed clickable
+  document.getElementById('activity-feed')?.addEventListener('click',showTermPopup);
+});
+
+// Also listen for dynamically added content (e.g., community posts)
+document.addEventListener('click',e=>{
+  if(e.target.classList.contains('glossary-term'))showTermPopup(e);
+});
+</script>
+</body>
+</html>

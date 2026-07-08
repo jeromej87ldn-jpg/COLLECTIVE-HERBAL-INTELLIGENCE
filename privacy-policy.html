@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — C.H.I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root{--forest:#1a3a2a;--forest-mid:#2d5c42;--gold:#c8952a;--gold-light:#e8b84b;--night:#0c1a10;--parchment:#f5f0e8;--muted:rgba(245,240,232,0.45);--border:rgba(255,255,255,0.08);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--night);color:var(--parchment);min-height:100vh;}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:66px;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;background:rgba(10,20,12,0.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(200,149,42,0.12);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;letter-spacing:.16em;color:var(--gold-light);}
+.nav-full{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:rgba(245,240,232,0.35);}
+.nav-right{display:flex;gap:1.5rem;align-items:center;}
+.nav-right a{color:var(--muted);text-decoration:none;font-size:13px;transition:color .2s;}
+.nav-right a:hover{color:var(--gold-light);}
+.layout{display:grid;grid-template-columns:220px 1fr;max-width:1000px;margin:0 auto;padding:calc(66px + 3rem) 2rem 5rem;gap:4rem;}
+.sidebar{position:sticky;top:calc(66px + 2rem);align-self:start;height:fit-content;}
+.sidebar-title{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:rgba(245,240,232,0.25);margin-bottom:.85rem;}
+.sidebar nav{display:flex;flex-direction:column;gap:3px;}
+.sidebar nav a{font-size:12px;color:rgba(245,240,232,0.35);text-decoration:none;padding:5px 0;border-left:2px solid transparent;padding-left:10px;transition:all .2s;}
+.sidebar nav a:hover,.sidebar nav a.active{color:var(--gold);border-left-color:var(--gold);}
+.content{}
+.draft-banner{background:rgba(196,82,42,0.08);border:1px solid rgba(196,82,42,0.2);border-radius:6px;padding:.85rem 1.25rem;margin-bottom:2.5rem;font-size:12px;color:rgba(232,133,106,0.8);}
+.draft-banner strong{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px;}
+.eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;display:flex;align-items:center;gap:10px;}
+.eyebrow::before{content:'';width:20px;height:1px;background:var(--gold);opacity:.6;}
+h1{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;color:var(--parchment);margin-bottom:.5rem;line-height:1.05;}
+.meta{font-size:12px;color:rgba(245,240,232,0.25);margin-bottom:1.5rem;}
+.intro-box{background:rgba(26,58,42,0.35);border:1px solid rgba(200,149,42,0.12);border-radius:6px;padding:1.25rem 1.5rem;margin-bottom:3rem;}
+.intro-box p{font-size:14px;color:rgba(245,240,232,0.6);line-height:1.8;}
+.section-anchor{display:block;height:80px;margin-top:-80px;visibility:hidden;}
+h2{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:var(--parchment);margin:2.5rem 0 .85rem;padding-bottom:.6rem;border-bottom:1px solid var(--border);}
+h3{font-size:16px;font-weight:500;color:var(--parchment);margin:1.5rem 0 .5rem;}
+p{font-size:15px;color:var(--muted);line-height:1.85;margin-bottom:.9rem;}
+p strong{color:var(--parchment);font-weight:500;}
+p em{color:var(--gold-light);font-style:italic;}
+ul{margin:.5rem 0 .9rem 0;padding-left:0;list-style:none;}
+ul li{font-size:15px;color:var(--muted);line-height:1.75;padding:.3rem 0 .3rem 1.25rem;position:relative;}
+ul li::before{content:'—';position:absolute;left:0;color:rgba(200,149,42,0.4);}
+.callout{border-radius:6px;padding:1.1rem 1.5rem;margin:1.25rem 0;}
+.callout-green{background:rgba(26,58,42,0.4);border:1px solid rgba(74,140,101,0.2);}
+.callout-amber{background:rgba(184,115,51,0.07);border:1px solid rgba(200,149,42,0.2);}
+.callout p{margin:0;font-size:14px;}
+.callout strong{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;}
+.callout-green strong{color:#7acca0;}
+.callout-amber strong{color:var(--gold);}
+.placeholder{color:rgba(200,149,42,0.6);font-style:italic;}
+footer{background:var(--night);border-top:1px solid rgba(255,255,255,0.05);padding:2rem 2.5rem;text-align:center;}
+footer p{font-size:12px;color:rgba(245,240,232,0.15);}
+footer a{color:var(--gold);text-decoration:none;}
+@media(max-width:768px){.layout{grid-template-columns:1fr;}.sidebar{display:none;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div><div class="nav-chi">C.H.I</div><div class="nav-full">Collective Herbal Intelligence</div></div>
+  </a>
+  <div class="nav-right">
+    <a href="about.html">About</a>
+    <a href="terms.html">Terms</a>
+    <a href="disclaimer.html">Disclaimer</a>
+  </div>
+</nav>
+
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-title">Contents</div>
+    <nav>
+      <a href="#who">1. Who we are</a>
+      <a href="#what">2. What we collect</a>
+      <a href="#why">3. Why we collect it</a>
+      <a href="#ai">4. AI transparency</a>
+      <a href="#protect">5. How we protect it</a>
+      <a href="#share">6. Who we share with</a>
+      <a href="#retention">7. How long we keep it</a>
+      <a href="#rights">8. Your rights</a>
+      <a href="#cookies">9. Cookies</a>
+      <a href="#children">10. Children</a>
+      <a href="#changes">11. Changes</a>
+      <a href="#contact">12. Contact</a>
+    </nav>
+  </aside>
+
+  <div class="content">
+    <div class="draft-banner"><strong>Draft — for solicitor review</strong>Three items to complete before publication: full legal name, privacy contact email, ICO registration number.</div>
+    <div class="eyebrow">Legal</div>
+    <h1>Privacy Policy</h1>
+    <p class="meta">Last updated: 2025 · C.H.I — Collective Herbal Intelligence</p>
+
+    <div class="intro-box">
+      <p>We have written this policy in plain English because you deserve to understand exactly what happens with your data — not just that a legal requirement has been met. CHI handles sensitive health information. We take that seriously.</p>
+    </div>
+
+    <div class="callout callout-green">
+      <p><strong>The short version</strong>We collect only what we need. We never sell your data. We never share it with advertisers. We never use it for any purpose other than giving you the best herbal knowledge platform possible. Your health information is yours.</p>
+    </div>
+
+    <span class="section-anchor" id="who"></span>
+    <h2>1. Who we are</h2>
+    <p>C.H.I (Collective Herbal Intelligence) is an educational herbal wellness platform operated as a sole trader business.</p>
+    <p><strong>Business name:</strong> C.H.I — Collective Herbal Intelligence<br>
+    <strong>Founder:</strong> <span class="placeholder">[Full legal name — to be added before publication]</span><br>
+    <strong>Contact email:</strong> <span class="placeholder">[privacy@chi.com — to be confirmed]</span><br>
+    <strong>ICO Registration:</strong> <span class="placeholder">[To be added after ICO registration]</span></p>
+
+    <span class="section-anchor" id="what"></span>
+    <h2>2. What data we collect</h2>
+    <h3>Account information</h3>
+    <p>When you create a CHI account, we collect your email address, an encrypted password, and any display name or username you choose to add.</p>
+    <h3>Health information — special category data</h3>
+    <div class="callout callout-amber"><p><strong>Important</strong>Health data is classified as special category data under UK GDPR and receives the highest level of legal protection. We process this data only with your explicit consent and only to provide personalised herb recommendations.</p></div>
+    <p>When you use the Herb Match, you may choose to share your gender, age, life stage, medications, health conditions, and symptoms. Every piece of this information is voluntary.</p>
+    <h3>Platform usage data</h3>
+    <ul>
+      <li>Herbs searched, saved, or added to your Herb Passport</li>
+      <li>Journal entries you write</li>
+      <li>Herb Match query history</li>
+      <li>Community posts, comments, and messages</li>
+      <li>Your Herb Passport status for each herb</li>
+    </ul>
+    <h3>What we store in your browser</h3>
+    <p>CHI stores your colour theme preference, knowledge level, and — if you add one — your Anthropic API key in your browser's localStorage. This data is stored on your device only and is never transmitted to CHI servers.</p>
+
+    <span class="section-anchor" id="why"></span>
+    <h2>3. Why we collect your data</h2>
+    <p>The primary reason is to run the platform and give you access to the tools you have paid for. For health data specifically, we rely on your <strong>explicit consent</strong> — the strongest legal basis available under UK GDPR.</p>
+
+    <span class="section-anchor" id="ai"></span>
+    <h2>4. How your data interacts with AI</h2>
+    <div class="callout callout-green"><p><strong>Plain English</strong>Herb profiles and Herb Match results are generated using Claude, an AI by Anthropic. When you make a query, relevant information from your profile is sent to Anthropic's API servers to generate your response.</p></div>
+    <p>You could ask any AI assistant a question about herbs. What CHI gives you is different — your health profile, your herb history, your journal, and your preferences all informing every answer. <em>The AI is the engine. CHI is the platform built specifically for your herbal journey.</em></p>
+    <p>Anthropic does not use your query data to train their AI models when accessed via the API. Your uploaded photographs for the Herb Identifier are used solely to identify the plant shown and are not stored beyond your session.</p>
+
+    <span class="section-anchor" id="protect"></span>
+    <h2>5. How we protect your data</h2>
+    <h3>No social login — by design</h3>
+    <p>CHI does not offer Google, Facebook, or Apple login. Your health information has no business being linked to third-party platform accounts. This is a principle, not a technical limitation.</p>
+    <h3>No advertising. Ever.</h3>
+    <p>CHI does not display advertising and does not work with advertising networks. Your data is never used to build advertising profiles.</p>
+    <h3>No data selling. Ever.</h3>
+    <p>CHI has never sold personal data and will never sell personal data. Not to data brokers. Not to supplement companies. Not to anyone.</p>
+
+    <span class="section-anchor" id="share"></span>
+    <h2>6. Who we share your data with</h2>
+    <p>We share data with as few parties as possible. The complete list: <strong>Anthropic</strong> (AI query processing), <strong>Supabase</strong> (data storage), <strong>Stripe</strong> (payment processing), <strong>Netlify</strong> (platform hosting), and <strong>affiliate partners</strong> (only when you click a purchase link). We share data with nobody else.</p>
+
+    <span class="section-anchor" id="retention"></span>
+    <h2>7. How long we keep your data</h2>
+    <p>We keep your data for as long as you have an active account. If you delete your account, all personal data is permanently deleted within 30 days. Financial transaction records are retained for 7 years as required by HMRC.</p>
+
+    <span class="section-anchor" id="rights"></span>
+    <h2>8. Your rights under UK GDPR</h2>
+    <ul>
+      <li><strong>Access</strong> — request a copy of all data we hold about you</li>
+      <li><strong>Correction</strong> — have inaccurate data corrected</li>
+      <li><strong>Deletion</strong> — request permanent deletion of all your data</li>
+      <li><strong>Portability</strong> — export your data in a portable format</li>
+      <li><strong>Withdraw consent</strong> — stop us processing your health data at any time</li>
+      <li><strong>Complain</strong> — raise a complaint with the ICO at ico.org.uk</li>
+    </ul>
+
+    <span class="section-anchor" id="cookies"></span>
+    <h2>9. Cookies and localStorage</h2>
+    <p>CHI uses session cookies to keep you logged in. We do not use advertising cookies or third-party tracking cookies. We use your browser's localStorage for preferences — this data stays on your device and is never transmitted to us.</p>
+
+    <span class="section-anchor" id="children"></span>
+    <h2>10. Children</h2>
+    <p>CHI is for users aged 18 and over. We do not knowingly collect data from anyone under 18. If you believe your child has created an account, contact us immediately at <span class="placeholder">[privacy@chi.com]</span>.</p>
+
+    <span class="section-anchor" id="changes"></span>
+    <h2>11. Changes to this policy</h2>
+    <p>When we make significant changes, we will update the date above, send you an email notification, and display a notice when you next log in.</p>
+
+    <span class="section-anchor" id="contact"></span>
+    <h2>12. Contact us</h2>
+    <p>For any privacy questions or to exercise your rights:<br>
+    <strong>Email:</strong> <span class="placeholder">[privacy@chi.com — to be confirmed]</span><br>
+    <strong>Subject line:</strong> Privacy Request — [your request type]<br>
+    <strong>Response time:</strong> Within 72 hours. Fulfilled within 30 days.</p>
+    <p>You will receive a human response — not an automated acknowledgement.</p>
+  </div>
+</div>
+
+<footer>
+  <p>C.H.I — Collective Herbal Intelligence · <a href="terms.html">Terms and Conditions</a> · <a href="disclaimer.html">Medical Disclaimer</a> · © 2025</p>
+</footer>
+
+<script>
+const anchors = document.querySelectorAll('.section-anchor');
+const links = document.querySelectorAll('.sidebar nav a');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  anchors.forEach(a => { if (window.scrollY >= a.offsetTop - 100) cur = a.id; });
+  links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + cur));
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Page Not Found — C.H.I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root{--forest:#1a3a2a;--forest-mid:#2d5c42;--gold:#c8952a;--gold-light:#e8b84b;--night:#0c1a10;--parchment:#f5f0e8;--muted:rgba(245,240,232,0.45);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--night);color:var(--parchment);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;position:relative;overflow:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(26,58,42,0.3) 0%,transparent 65%);pointer-events:none;}
+.wrap{position:relative;z-index:1;max-width:520px;}
+.big-num{font-family:'Cormorant Garamond',serif;font-size:clamp(100px,20vw,160px);font-weight:300;color:rgba(200,149,42,0.15);line-height:1;display:block;margin-bottom:-.5rem;}
+.plant-icon{font-size:48px;margin-bottom:1.5rem;display:block;animation:sway 4s ease-in-out infinite;}
+@keyframes sway{0%,100%{transform:rotate(-3deg);}50%{transform:rotate(3deg);}}
+h1{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,6vw,48px);font-weight:300;color:var(--parchment);margin-bottom:.75rem;line-height:1.1;}
+h1 em{font-style:italic;color:var(--gold-light);}
+p{font-size:15px;font-weight:300;color:var(--muted);line-height:1.8;margin-bottom:2.5rem;max-width:420px;margin-left:auto;margin-right:auto;}
+.links{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:2.5rem;}
+.btn-home{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:var(--night);padding:12px 28px;border-radius:4px;font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;transition:all .2s;}
+.btn-home:hover{background:var(--gold-light);transform:translateY(-2px);}
+.btn-sec{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--muted);padding:12px 20px;border-radius:4px;border:1px solid rgba(255,255,255,0.08);font-size:12px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;transition:all .2s;}
+.btn-sec:hover{border-color:rgba(200,149,42,0.3);color:var(--gold);}
+.quick-links{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;}
+.quick-links a{font-size:13px;color:rgba(245,240,232,0.3);text-decoration:none;transition:color .2s;}
+.quick-links a:hover{color:var(--gold);}
+.nav-logo{position:fixed;top:1.5rem;left:2rem;display:flex;align-items:center;gap:8px;text-decoration:none;}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;letter-spacing:.16em;color:var(--gold-light);}
+</style>
+</head>
+<body>
+<a href="index.html" class="nav-logo"><div class="nav-chi">C.H.I</div></a>
+<div class="wrap">
+  <span class="big-num">404</span>
+  <span class="plant-icon">🌿</span>
+  <h1>This path leads<br><em>nowhere.</em></h1>
+  <p>The page you are looking for does not exist or has moved. Let us get you back to the herb knowledge that does.</p>
+  <div class="links">
+    <a href="index.html" class="btn-home">Back to CHI <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+    <a href="supreme.html" class="btn-sec">Explore the Herbadex</a>
+  </div>
+  <div class="quick-links">
+    <a href="herb-match.html">Herb Match</a>
+    <a href="community.html">Community</a>
+    <a href="resources.html">Resources</a>
+    <a href="join.html">Join</a>
+  </div>
+</div>
+</body>
+</html>

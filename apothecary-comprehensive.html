@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apothecary — C.H.I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root{--forest:#1a3a2a;--forest-mid:#2d5c42;--forest-light:#4a8c65;--parchment:#f5f0e8;--gold:#c8952a;--gold-light:#e8b84b;--night:#0c1a10;--muted:rgba(245,240,232,0.45);--border:rgba(255,255,255,0.08);--card:rgba(255,255,255,0.03);--green:#7acca0;--purple:#c07ab0;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--night);color:var(--parchment);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 70% 60% at 15% 85%,rgba(45,92,66,0.15) 0%,transparent 55%),radial-gradient(ellipse 50% 40% at 85% 15%,rgba(200,149,42,0.06) 0%,transparent 50%);pointer-events:none;z-index:0;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:400;height:66px;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;background:rgba(10,20,12,0.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(200,149,42,0.12);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;letter-spacing:.16em;color:var(--gold-light);}
+.nav-full{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:rgba(245,240,232,0.35);}
+.nav-right{display:flex;align-items:center;gap:1.5rem;}
+.nav-right a{color:var(--muted);text-decoration:none;font-size:13px;transition:color .2s;}
+.nav-right a:hover,.nav-right a.active{color:var(--gold-light);}
+.seeds-pill{display:flex;align-items:center;gap:6px;background:rgba(200,149,42,0.1);border:1px solid rgba(200,149,42,0.25);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--gold-light);}
+.seeds-pill b{font-family:'Cormorant Garamond',serif;font-size:16px;}
+
+.page{position:relative;z-index:1;padding-top:66px;}
+
+.hero-strip{background:var(--forest);border-bottom:1px solid rgba(200,149,42,0.12);padding:2rem 3rem;display:flex;align-items:flex-start;justify-content:space-between;gap:2rem;flex-wrap:wrap;}
+.hero-left{}
+.hero-eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;display:flex;align-items:center;gap:8px;}
+.hero-eyebrow::before{content:'';width:16px;height:1px;background:var(--gold);opacity:.6;}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(26px,3.5vw,40px);font-weight:300;color:var(--parchment);line-height:1.05;}
+.hero-title em{font-style:italic;color:var(--gold-light);}
+.hero-sub{font-size:13px;font-weight:300;color:var(--muted);margin-top:.35rem;max-width:420px;line-height:1.65;}
+.goals-wrap{}
+.goals-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(245,240,232,0.3);margin-bottom:.5rem;}
+.goal-chips{display:flex;gap:.35rem;flex-wrap:wrap;max-width:600px;}
+.gc{padding:5px 13px;border-radius:20px;border:1px solid var(--border);background:transparent;color:rgba(245,240,232,0.35);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;white-space:nowrap;}
+.gc:hover{border-color:rgba(200,149,42,0.3);color:var(--parchment);}
+.gc.active{border-color:var(--gold);background:rgba(200,149,42,0.12);color:var(--gold-light);}
+
+.formula-bar{background:rgba(10,20,12,0.6);border-bottom:1px solid var(--border);padding:.75rem 3rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;}
+.formula-bar-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(245,240,232,0.25);white-space:nowrap;}
+.method-row{display:flex;gap:.35rem;}
+.mc{padding:5px 12px;border-radius:3px;border:1px solid var(--border);background:transparent;color:rgba(245,240,232,0.3);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.mc:hover{border-color:rgba(200,149,42,0.3);}
+.mc.active{border-color:var(--gold);background:rgba(200,149,42,0.1);color:var(--gold-light);}
+.blend-bar{height:8px;width:140px;border-radius:4px;overflow:hidden;display:flex;background:rgba(255,255,255,0.05);flex-shrink:0;}
+.bseg-b{background:linear-gradient(90deg,#2d5c42,#7acca0);transition:width .4s;}
+.bseg-s{background:linear-gradient(90deg,#b87333,#e8b84b);transition:width .4s;}
+.bseg-a{background:linear-gradient(90deg,#7a3a7a,#c07ab0);transition:width .4s;}
+.blend-empty-txt{font-size:10px;color:rgba(245,240,232,0.2);font-style:italic;}
+.formula-bar-right{margin-left:auto;display:flex;align-items:center;gap:.85rem;}
+.cost-note{font-size:11px;color:var(--muted);}
+.cost-note b{color:var(--gold);}
+.btn-build{display:inline-flex;align-items:center;gap:7px;background:var(--gold);color:var(--night);border:none;padding:9px 22px;border-radius:3px;font-size:12px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.btn-build:hover{background:var(--gold-light);transform:translateY(-1px);}
+.btn-build:disabled{opacity:.3;cursor:not-allowed;transform:none;}
+.ld-wrap{display:none;align-items:center;gap:5px;}
+.ld-wrap.show{display:flex;}
+.ld{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:ld .8s ease-in-out infinite;}
+.ld:nth-child(2){animation-delay:.15s;}
+.ld:nth-child(3){animation-delay:.3s;}
+@keyframes ld{0%,100%{opacity:.25;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
+
+.builder-layout{display:grid;grid-template-columns:1fr 340px;min-height:calc(100vh - 66px - 200px);}
+
+.canvas-panel{padding:2rem 3rem;border-right:1px solid var(--border);}
+.panel-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:1.25rem;display:flex;align-items:center;gap:8px;}
+.panel-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.tiers{display:flex;flex-direction:column;gap:.85rem;margin-bottom:2rem;}
+.tier-card{background:rgba(26,58,42,0.15);border:1px solid var(--border);border-radius:8px;overflow:hidden;transition:border-color .3s;}
+.tier-card.filled-base{border-color:rgba(122,204,160,0.2);}
+.tier-card.filled-support{border-color:rgba(200,149,42,0.2);}
+.tier-card.filled-aroma{border-color:rgba(192,122,176,0.2);}
+
+.tier-card-head{display:flex;align-items:center;gap:10px;padding:.85rem 1.25rem;border-bottom:1px solid var(--border);}
+.tier-card.filled-base .tier-card-head{background:rgba(122,204,160,0.04);}
+.tier-card.filled-support .tier-card-head{background:rgba(200,149,42,0.04);}
+.tier-card.filled-aroma .tier-card-head{background:rgba(192,122,176,0.04);}
+.tier-icon{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.tc-base .tier-icon{background:rgba(122,204,160,0.12);border:1px solid rgba(122,204,160,0.2);}
+.tc-support .tier-icon{background:rgba(200,149,42,0.1);border:1px solid rgba(200,149,42,0.2);}
+.tc-aroma .tier-icon{background:rgba(192,122,176,0.1);border:1px solid rgba(192,122,176,0.2);}
+.tier-name{font-size:14px;font-weight:500;color:var(--parchment);flex:1;}
+.tier-desc-inline{font-size:11px;color:var(--muted);}
+.tier-pct{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:rgba(245,240,232,0.15);transition:color .3s;margin-left:auto;}
+.tier-card.filled-base .tier-pct{color:var(--green);}
+.tier-card.filled-support .tier-pct{color:var(--gold-light);}
+.tier-card.filled-aroma .tier-pct{color:var(--purple);}
+
+.tier-card-body{padding:.85rem 1.25rem;display:flex;align-items:center;gap:1rem;}
+
+.herb-btn{flex:1;border:1px dashed rgba(255,255,255,0.1);border-radius:5px;padding:.65rem .85rem;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;background:transparent;text-align:left;display:flex;align-items:center;gap:8px;}
+.herb-btn:hover{border-color:rgba(200,149,42,0.35);background:rgba(200,149,42,0.04);}
+.tc-base .herb-btn:hover{border-color:rgba(122,204,160,0.4);}
+.tc-support .herb-btn:hover{border-color:rgba(200,149,42,0.4);}
+.tc-aroma .herb-btn:hover{border-color:rgba(192,122,176,0.4);}
+.tier-card.filled-base .herb-btn,.tier-card.filled-support .herb-btn,.tier-card.filled-aroma .herb-btn{border-style:solid;cursor:pointer;}
+.tier-card.filled-base .herb-btn{border-color:rgba(122,204,160,0.3);}
+.tier-card.filled-support .herb-btn{border-color:rgba(200,149,42,0.25);}
+.tier-card.filled-aroma .herb-btn{border-color:rgba(192,122,176,0.25);}
+.slot-plus{width:22px;height:22px;border-radius:50%;border:1px dashed rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-size:13px;color:rgba(255,255,255,0.18);flex-shrink:0;transition:all .2s;}
+.herb-btn:hover .slot-plus{border-color:rgba(200,149,42,0.4);color:var(--gold);}
+.slot-empty-txt{font-size:12px;color:rgba(245,240,232,0.2);font-style:italic;}
+.slot-herb-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:400;color:var(--parchment);display:none;line-height:1.1;}
+.slot-herb-sub{font-size:10px;color:var(--muted);font-style:italic;display:none;margin-top:1px;}
+.tier-card.filled-base .slot-empty-txt,.tier-card.filled-support .slot-empty-txt,.tier-card.filled-aroma .slot-empty-txt{display:none;}
+.tier-card.filled-base .slot-herb-name,.tier-card.filled-support .slot-herb-name,.tier-card.filled-aroma .slot-herb-name{display:block;}
+.tier-card.filled-base .slot-herb-sub,.tier-card.filled-support .slot-herb-sub,.tier-card.filled-aroma .slot-herb-sub{display:block;}
+.slot-x{background:none;border:none;color:rgba(245,240,232,0.15);cursor:pointer;font-size:17px;line-height:1;padding:0 3px;flex-shrink:0;transition:color .2s;display:none;}
+.slot-x:hover{color:rgba(196,82,42,0.7);}
+.tier-card.filled-base .slot-x,.tier-card.filled-support .slot-x,.tier-card.filled-aroma .slot-x{display:block;}
+
+.ratio-inline{display:none;align-items:center;gap:8px;min-width:160px;}
+.tier-card.filled-base .ratio-inline,.tier-card.filled-support .ratio-inline,.tier-card.filled-aroma .ratio-inline{display:flex;}
+.ratio-val{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--gold-light);min-width:36px;text-align:right;}
+.ratio-track{flex:1;position:relative;height:20px;}
+.rtrack-bg{position:absolute;bottom:4px;left:0;right:0;height:4px;background:rgba(255,255,255,0.07);border-radius:2px;}
+.rtrack-fill{position:absolute;bottom:4px;left:0;height:4px;border-radius:2px;transition:width .1s;}
+.tc-base .rtrack-fill{background:linear-gradient(90deg,#2d5c42,#7acca0);}
+.tc-support .rtrack-fill{background:linear-gradient(90deg,#b87333,#e8b84b);}
+.tc-aroma .rtrack-fill{background:linear-gradient(90deg,#7a3a7a,#c07ab0);}
+.rslider{position:absolute;bottom:0;left:0;width:100%;height:14px;-webkit-appearance:none;appearance:none;background:transparent;cursor:pointer;outline:none;}
+.rslider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;border:2px solid var(--night);transition:transform .15s;}
+.tc-base .rslider::-webkit-slider-thumb{background:var(--green);}
+.tc-support .rslider::-webkit-slider-thumb{background:var(--gold-light);}
+.tc-aroma .rslider::-webkit-slider-thumb{background:var(--purple);}
+.rslider:active::-webkit-slider-thumb{transform:scale(1.3);}
+
+.blend-visual{display:none;margin-top:.25rem;}
+.blend-visual.show{display:block;}
+.blend-vis-bar{height:6px;border-radius:3px;overflow:hidden;display:flex;background:rgba(255,255,255,0.05);margin-bottom:.5rem;}
+.bvb-b{background:linear-gradient(90deg,#2d5c42,#7acca0);transition:width .4s;}
+.bvb-s{background:linear-gradient(90deg,#b87333,#e8b84b);transition:width .4s;}
+.bvb-a{background:linear-gradient(90deg,#7a3a7a,#c07ab0);transition:width .4s;}
+.blend-vis-labels{display:flex;gap:1rem;flex-wrap:wrap;}
+.bvl{font-size:11px;color:var(--muted);}
+.bvl b{color:var(--parchment);font-weight:500;}
+
+.browser-panel{background:rgba(26,58,42,0.08);border-left:1px solid var(--border);display:flex;flex-direction:column;position:sticky;top:calc(66px + 130px);max-height:calc(100vh - 66px - 130px);}
+.browser-head{padding:1rem 1.25rem .75rem;border-bottom:1px solid var(--border);flex-shrink:0;}
+.browser-head-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem;}
+.search-wrap{position:relative;display:flex;gap:.4rem;margin-bottom:.6rem;}
+.search-input{flex:1;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:4px;padding:8px 10px;font-size:12px;color:var(--parchment);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;}
+.search-input:focus{border-color:rgba(200,149,42,0.4);}
+.search-input::placeholder{color:rgba(245,240,232,0.18);}
+.search-results{display:none;position:absolute;top:100%;left:0;right:0;background:var(--forest);border:1px solid rgba(200,149,42,0.2);border-top:none;border-radius:0 0 4px 4px;max-height:300px;overflow-y:auto;z-index:200;}
+.search-results.show{display:flex;flex-direction:column;}
+.search-result-item{padding:.65rem 10px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;}
+.search-result-item:hover{background:rgba(200,149,42,0.1);}
+.search-result-name{font-size:12px;color:var(--parchment);font-weight:500;}
+.search-result-latin{font-size:10px;color:var(--muted);font-style:italic;margin-top:1px;}
+.btn-ai-search{background:var(--forest-mid);border:1px solid rgba(200,149,42,0.2);border-radius:4px;color:var(--gold-light);padding:8px 10px;font-size:10px;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;white-space:nowrap;}
+.btn-ai-search:hover{background:rgba(200,149,42,0.1);}
+.btn-ai-search:disabled{opacity:.4;cursor:wait;}
+.browser-filters{display:flex;gap:.3rem;flex-wrap:wrap;}
+.bf{padding:3px 8px;border-radius:20px;border:1px solid var(--border);background:transparent;color:rgba(245,240,232,0.28);font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.bf.active{border-color:var(--gold);background:rgba(200,149,42,0.08);color:var(--gold-light);}
+.browser-body{overflow-y:auto;flex:1;}
+.browser-body::-webkit-scrollbar{width:3px;}
+.browser-body::-webkit-scrollbar-thumb{background:rgba(200,149,42,0.15);border-radius:2px;}
+.herb-group{padding:.5rem 1.25rem .2rem;}
+.herb-group-label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,240,232,0.18);margin-bottom:.3rem;}
+.herb-row{display:flex;align-items:center;gap:8px;padding:.5rem .5rem;border-radius:4px;cursor:pointer;transition:background .15s;margin-bottom:1px;}
+.herb-row:hover{background:rgba(255,255,255,0.04);}
+.herb-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.herb-info{flex:1;}
+.herb-name{font-size:12px;color:var(--parchment);display:block;}
+.herb-latin{font-size:10px;color:var(--muted);font-style:italic;}
+.herb-note{font-size:10px;color:rgba(245,240,232,0.22);margin-top:1px;}
+.tier-tags{display:flex;gap:3px;flex-shrink:0;}
+.tt{font-size:9px;letter-spacing:.05em;text-transform:uppercase;padding:2px 5px;border-radius:20px;}
+.tt-base{background:rgba(122,204,160,0.1);border:1px solid rgba(122,204,160,0.2);color:var(--green);}
+.tt-support{background:rgba(200,149,42,0.08);border:1px solid rgba(200,149,42,0.18);color:var(--gold);}
+.tt-aroma{background:rgba(192,122,176,0.08);border:1px solid rgba(192,122,176,0.18);color:var(--purple);}
+.add-btn{background:var(--gold);border:none;color:var(--night);padding:4px 9px;border-radius:3px;font-size:10px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s;white-space:nowrap;flex-shrink:0;}
+.add-btn:hover{background:var(--gold-light);}
+.ai-loading{display:none;padding:1rem;text-align:center;font-size:11px;color:var(--muted);font-style:italic;}
+.ai-loading.show{display:block;}
+.browser-footer{padding:.5rem 1.25rem;border-top:1px solid var(--border);font-size:10px;color:rgba(245,240,232,0.18);flex-shrink:0;}
+
+.result-section{padding:2rem 3rem;display:none;}
+.result-section.show{display:block;}
+.result-name{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--gold-light);margin-bottom:.2rem;}
+.result-meta{font-size:11px;color:var(--muted);margin-bottom:1.25rem;}
+.result-body{font-size:14px;color:rgba(245,240,232,0.7);line-height:1.85;max-width:720px;}
+.result-body p{margin-bottom:.85rem;}
+.result-actions{display:flex;gap:.5rem;margin-top:1.25rem;}
+.ra{padding:8px 16px;border-radius:3px;font-size:11px;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.ra-save{border:1px solid rgba(200,149,42,0.3);background:transparent;color:var(--gold);}
+.ra-share{border:1px solid var(--border);background:transparent;color:var(--muted);}
+.ra:hover{opacity:.8;}
+
+.disc{font-size:10px;color:rgba(245,240,232,0.15);padding:.65rem 3rem;border-top:1px solid var(--border);line-height:1.6;}
+
+.tier-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:500;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.tier-modal.show{display:flex;}
+.tier-modal-box{background:var(--forest);border:1px solid rgba(200,149,42,0.2);border-radius:8px;padding:2rem;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,0.5);}
+.tier-modal-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:300;color:var(--parchment);margin-bottom:.5rem;}
+.tier-modal-herb{font-size:12px;color:var(--muted);margin-bottom:1.5rem;}
+.tier-modal-options{display:flex;flex-direction:column;gap:.75rem;}
+.tier-opt{padding:1rem;border:1px solid var(--border);border-radius:6px;background:rgba(255,255,255,0.02);cursor:pointer;transition:all .2s;}
+.tier-opt:hover{background:rgba(255,255,255,0.06);border-color:rgba(200,149,42,0.3);}
+.tier-opt-title{font-size:13px;font-weight:500;color:var(--parchment);}
+.tier-opt-desc{font-size:11px;color:var(--muted);margin-top:2px;}
+
+.saved-formulas-section{padding:2rem 3rem;border-top:1px solid var(--border);background:rgba(26,58,42,0.08);display:none;}
+.saved-formulas-section.show{display:block;}
+.saved-label{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:1.25rem;display:flex;align-items:center;gap:8px;}
+.saved-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.saved-list{display:flex;flex-direction:column;gap:1rem;}
+.saved-item{padding:1rem;background:rgba(26,58,42,0.15);border:1px solid var(--border);border-radius:8px;transition:all .2s;}
+.saved-item:hover{border-color:rgba(200,149,42,0.2);background:rgba(26,58,42,0.25);}
+.saved-item-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:400;color:var(--parchment);margin-bottom:.5rem;cursor:pointer;}
+.saved-item-meta{font-size:11px;color:var(--muted);margin-bottom:.75rem;}
+.saved-item-herbs{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.75rem;}
+.herb-badge{font-size:10px;padding:3px 8px;border-radius:3px;background:rgba(200,149,42,0.15);color:var(--gold-light);}
+.saved-item-actions{display:flex;gap:.5rem;}
+.btn-add-to-apo{background:transparent;border:1px solid rgba(200,149,42,0.3);color:var(--gold);padding:6px 12px;border-radius:3px;font-size:10px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.btn-add-to-apo:hover{border-color:rgba(200,149,42,0.6);background:rgba(200,149,42,0.1);color:var(--gold-light);}
+
+@media(max-width:960px){.builder-layout{grid-template-columns:1fr;}.browser-panel{position:static;max-height:360px;border-left:none;border-top:1px solid var(--border);}.hero-strip,.canvas-panel,.disc{padding-left:1.5rem;padding-right:1.5rem;}.formula-bar{padding-left:1.5rem;padding-right:1.5rem;}}
+@media(max-width:600px){nav{padding:0 1.25rem;}.nav-right a:not(:last-child){display:none;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div><div class="nav-chi">C.H.I</div><div class="nav-full">Collective Herbal Intelligence</div></div>
+  </a>
+  <div class="nav-right">
+    <a href="symptom-finder.html">Symptom Finder</a>
+    <a href="supreme.html">Herbadex</a>
+    <a href="community.html">Community</a>
+    <a href="apothecary.html" class="active">Apothecary</a>
+    <div class="seeds-pill">🌱 <b id="seed-count">85</b></div>
+  </div>
+</nav>
+
+<div class="page">
+
+  <div class="hero-strip">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Tool 04</div>
+      <h1 class="hero-title">The <em>Apothecary</em></h1>
+      <p class="hero-sub">Craft bespoke formulas from 500+ herbs. All tier-matched for optimal blending.</p>
+    </div>
+    <div class="goals-wrap">
+      <div class="goals-label">What is your goal?</div>
+      <div class="goal-chips">
+        <div class="gc active" onclick="setGoal(this,'Sleep & Calm')">Sleep & Calm</div>
+        <div class="gc" onclick="setGoal(this,'Anxiety & Stress')">Anxiety & Stress</div>
+        <div class="gc" onclick="setGoal(this,'Focus & Clarity')">Focus & Clarity</div>
+        <div class="gc" onclick="setGoal(this,'Energy')">Energy</div>
+        <div class="gc" onclick="setGoal(this,'Immune Support')">Immune Support</div>
+        <div class="gc" onclick="setGoal(this,'Respiratory')">Respiratory</div>
+        <div class="gc" onclick="setGoal(this,'Digestive Health')">Digestive Health</div>
+        <div class="gc" onclick="setGoal(this,'Pain & Inflammation')">Pain & Inflammation</div>
+        <div class="gc" onclick="setGoal(this,'Hormonal Balance')">Hormonal Balance</div>
+        <div class="gc" onclick="setGoal(this,'Reproductive Health')">Reproductive Health</div>
+        <div class="gc" onclick="setGoal(this,'Heart & Circulation')">Heart & Circulation</div>
+        <div class="gc" onclick="setGoal(this,'Detox & Liver')">Detox & Liver</div>
+        <div class="gc" onclick="setGoal(this,'Skin & Beauty')">Skin & Beauty</div>
+        <div class="gc" onclick="setGoal(this,'Bone & Joint')">Bone & Joint</div>
+        <div class="gc" onclick="setGoal(this,'Spiritual & Ceremonial')">Spiritual & Ceremonial</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="formula-bar">
+    <span class="formula-bar-label">Preparation</span>
+    <div class="method-row">
+      <div class="mc active" onclick="setMethod(this,'tea',8)">🍵 Tea</div>
+      <div class="mc" onclick="setMethod(this,'tincture',12)">🧪 Tincture</div>
+      <div class="mc" onclick="setMethod(this,'steam',6)">💨 Steam</div>
+      <div class="mc" onclick="setMethod(this,'decoction',8)">🫖 Decoction</div>
+      <div class="mc" onclick="setMethod(this,'bath',6)">🌿 Bath</div>
+    </div>
+    <div class="blend-bar">
+      <div class="bseg-b" id="bseg-b" style="width:0%"></div>
+      <div class="bseg-s" id="bseg-s" style="width:0%"></div>
+      <div class="bseg-a" id="bseg-a" style="width:0%"></div>
+    </div>
+    <span class="blend-empty-txt" id="blend-empty">Add herbs to see blend</span>
+    <div class="formula-bar-right">
+      <div class="ld-wrap" id="ld-wrap"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div>
+      <div class="cost-note">Uses <b id="cost-val">8</b> seeds</div>
+      <button class="btn-build" id="build-btn" onclick="buildFormula()" disabled>✦ Build formula</button>
+    </div>
+  </div>
+
+  <div class="builder-layout">
+
+    <div class="canvas-panel">
+      <div class="panel-label">Build your formula</div>
+      <div class="tiers">
+        <div class="tier-card tc-base" id="card-base">
+          <div class="tier-card-head">
+            <div class="tier-icon">🌿</div>
+            <div>
+              <div class="tier-name">Base Herb</div>
+              <div class="tier-desc-inline">Primary action · 50–60%</div>
+            </div>
+            <div class="tier-pct" id="base-pct">—</div>
+          </div>
+          <div class="tier-card-body">
+            <button class="herb-btn" id="base-btn" onclick="openForTier('base')">
+              <div class="slot-plus"><span>+</span></div>
+              <div>
+                <span class="slot-empty-txt">Select herb</span>
+                <span class="slot-herb-name" id="base-name"></span>
+                <span class="slot-herb-sub" id="base-sub"></span>
+              </div>
+              <button class="slot-x" onclick="event.stopPropagation();clearTier('base')">×</button>
+            </button>
+            <div class="ratio-inline">
+              <div class="ratio-val" id="base-val">50%</div>
+              <div class="ratio-track">
+                <div class="rtrack-bg"></div>
+                <div class="rtrack-fill" id="base-fill" style="width:66%"></div>
+                <input type="range" class="rslider" id="base-slider" min="25" max="75" value="50" oninput="onSlide('base',this.value)">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tier-card tc-support" id="card-support">
+          <div class="tier-card-head">
+            <div class="tier-icon">✦</div>
+            <div>
+              <div class="tier-name">Supporting Herb</div>
+              <div class="tier-desc-inline">Enhances the base · 25–40%</div>
+            </div>
+            <div class="tier-pct" id="support-pct">—</div>
+          </div>
+          <div class="tier-card-body">
+            <button class="herb-btn" id="support-btn" onclick="openForTier('support')">
+              <div class="slot-plus"><span>+</span></div>
+              <div>
+                <span class="slot-empty-txt">Select herb</span>
+                <span class="slot-herb-name" id="support-name"></span>
+                <span class="slot-herb-sub" id="support-sub"></span>
+              </div>
+              <button class="slot-x" onclick="event.stopPropagation();clearTier('support')">×</button>
+            </button>
+            <div class="ratio-inline">
+              <div class="ratio-val" id="support-val">30%</div>
+              <div class="ratio-track">
+                <div class="rtrack-bg"></div>
+                <div class="rtrack-fill" id="support-fill" style="width:40%"></div>
+                <input type="range" class="rslider" id="support-slider" min="15" max="55" value="30" oninput="onSlide('support',this.value)">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tier-card tc-aroma" id="card-aroma">
+          <div class="tier-card-head">
+            <div class="tier-icon">✨</div>
+            <div>
+              <div class="tier-name">Aromatiser Herb</div>
+              <div class="tier-desc-inline">Flavour & finish · 10–20%</div>
+            </div>
+            <div class="tier-pct" id="aroma-pct">—</div>
+          </div>
+          <div class="tier-card-body">
+            <button class="herb-btn" id="aroma-btn" onclick="openForTier('aroma')">
+              <div class="slot-plus"><span>+</span></div>
+              <div>
+                <span class="slot-empty-txt">Select herb</span>
+                <span class="slot-herb-name" id="aroma-name"></span>
+                <span class="slot-herb-sub" id="aroma-sub"></span>
+              </div>
+              <button class="slot-x" onclick="event.stopPropagation();clearTier('aroma')">×</button>
+            </button>
+            <div class="ratio-inline">
+              <div class="ratio-val" id="aroma-val">20%</div>
+              <div class="ratio-track">
+                <div class="rtrack-bg"></div>
+                <div class="rtrack-fill" id="aroma-fill" style="width:66%"></div>
+                <input type="range" class="rslider" id="aroma-slider" min="5" max="30" value="20" oninput="onSlide('aroma',this.value)">
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="blend-visual" id="blend-visual">
+        <div class="blend-vis-bar">
+          <div class="bvb-b" id="bvb-b" style="width:0%"></div>
+          <div class="bvb-s" id="bvb-s" style="width:0%"></div>
+          <div class="bvb-a" id="bvb-a" style="width:0%"></div>
+        </div>
+        <div class="blend-vis-labels" id="blend-vis-labels"></div>
+      </div>
+
+    </div>
+
+    <div class="browser-panel">
+      <div class="browser-head">
+        <div class="browser-head-label" id="browser-label">Herbs for Sleep & Calm</div>
+        <div class="search-wrap">
+          <input class="search-input" id="search-input" type="text" placeholder="Search all herbs…" oninput="onSearch()">
+          <div class="search-results" id="search-results"></div>
+        </div>
+        <div class="browser-filters">
+          <button class="bf active" onclick="setBF(this,'all')">All</button>
+          <button class="bf" onclick="setBF(this,'base')">Base</button>
+          <button class="bf" onclick="setBF(this,'support')">Support</button>
+          <button class="bf" onclick="setBF(this,'aroma')">Aroma</button>
+        </div>
+      </div>
+      <div class="browser-body" id="browser-body">
+        <div class="herb-group" id="recommended-group" style="display:none;">
+          <div class="herb-group-label">✨ Recommended for your goal</div>
+          <div id="recommended-herbs"></div>
+        </div>
+        <div class="ai-loading" id="ai-loading">Loading herbs…</div>
+      </div>
+      <div class="browser-footer" id="browser-footer">Tap any herb to add it</div>
+    </div>
+
+  </div>
+
+  <div class="result-section" id="result-section">
+    <div class="result-name" id="result-name"></div>
+    <div class="result-meta" id="result-meta"></div>
+    <div class="result-body" id="result-body"></div>
+    <div class="result-actions">
+      <button class="ra ra-save" onclick="saveIt()">🔖 Save to profile</button>
+      <button class="ra ra-share" onclick="shareIt()">✦ Share</button>
+    </div>
+  </div>
+
+  <div class="disc">Apothecary provides traditional ratio guidance for educational purposes only — not medical advice. Consult a qualified healthcare professional before beginning any herbal protocol.</div>
+
+  <div class="tier-modal" id="tier-modal">
+    <div class="tier-modal-box">
+      <div class="tier-modal-title">Select Tier</div>
+      <div class="tier-modal-herb" id="modal-herb-name"></div>
+      <div class="tier-modal-options" id="tier-options"></div>
+    </div>
+  </div>
+
+  <div class="saved-formulas-section" id="saved-formulas-section">
+    <div class="saved-label">My Saved Formulas</div>
+    <div class="saved-list" id="saved-list"></div>
+  </div>
+
+</div>
+
+<script>
+// QUICK HERB DATABASE (loads immediately)
+const QUICK = {
+  'Sleep & Calm':[{n:'Valerian Root',l:'Valeriana officinalis',t:'Western',tier:'base',note:'Deep earthy root'},{n:'Passionflower',l:'Passiflora incarnata',t:'Western',tier:'base',note:'Gentle floral'},{n:'Lemon Balm',l:'Melissa officinalis',t:'Western',tier:'support',note:'Lemony and bright'},{n:'Chamomile',l:'Matricaria chamomilla',t:'Western',tier:'support',note:'Soft apple-like'},{n:'Lavender',l:'Lavandula angustifolia',t:'Western',tier:'aroma',note:'Floral and clean'},{n:'Hops Strobiles',l:'Humulus lupulus',t:'Western',tier:'support',note:'Bitter and resinous'},{n:'Skullcap',l:'Scutellaria lateriflora',t:'Western',tier:'base',note:'Mild and earthy'},{n:'Linden Flower',l:'Tilia cordata',t:'Western',tier:'support',note:'Honey-like floral'},{n:'Ashwagandha',l:'Withania somnifera',t:'Ayurveda',tier:'base',note:'Earthy and warming'},{n:'Reishi Mushroom',l:'Ganoderma lucidum',t:'TCM',tier:'base',note:'Bitter and woody'},{n:'Jujube Date',l:'Ziziphus jujuba',t:'TCM',tier:'support',note:'Sweet and warming'},{n:'Rooibos',l:'Aspalathus linearis',t:'African',tier:'base',note:'Naturally sweet'},{n:'Rose Petal',l:'Rosa damascena',t:'Western',tier:'aroma',note:'Floral and romantic'},{n:'Saffron',l:'Crocus sativus',t:'Ayurveda',tier:'aroma',note:'Delicate and precious'},{n:'Soursop Leaf',l:'Annona muricata',t:'Caribbean',tier:'base',note:'Mild and earthy'}],
+  'Anxiety & Stress':[{n:'Ashwagandha',l:'Withania somnifera',t:'Ayurveda',tier:'base',note:'Earthy and warming'},{n:'Passionflower',l:'Passiflora incarnata',t:'Western',tier:'base',note:'Gentle floral'},{n:'Skullcap',l:'Scutellaria lateriflora',t:'Western',tier:'base',note:'Mild and earthy'},{n:'Lemon Balm',l:'Melissa officinalis',t:'Western',tier:'support',note:'Lemony and bright'},{n:'Rhodiola',l:'Rhodiola rosea',t:'Western',tier:'base',note:'Slightly bitter and rose-like'},{n:'Lavender',l:'Lavandula angustifolia',t:'Western',tier:'aroma',note:'Floral and clean'},{n:'Tulsi',l:'Ocimum tenuiflorum',t:'Ayurveda',tier:'base',note:'Clove-like and sacred'},{n:'Brahmi',l:'Bacopa monnieri',t:'Ayurveda',tier:'base',note:'Slightly bitter'},{n:'Rose Petal',l:'Rosa damascena',t:'Western',tier:'aroma',note:'Floral and romantic'},{n:'Oat Straw',l:'Avena sativa',t:'Western',tier:'support',note:'Sweet and milky'},{n:'Rooibos',l:'Aspalathus linearis',t:'African',tier:'base',note:'Naturally sweet'},{n:'Chrysanthemum',l:'Chrysanthemum morifolium',t:'TCM',tier:'aroma',note:'Delicate floral'}],
+  'Focus & Clarity':[{n:'Ginkgo',l:'Ginkgo biloba',t:'Western',tier:'base',note:'Mild and resinous'},{n:'Rosemary',l:'Salvia rosmarinus',t:'Western',tier:'support',note:'Sharp and resinous'},{n:'Lion\'s Mane',l:'Hericium erinaceus',t:'TCM',tier:'base',note:'Mild and seafood-like'},{n:'Brahmi',l:'Bacopa monnieri',t:'Ayurveda',tier:'base',note:'Slightly bitter'},{n:'Rhodiola',l:'Rhodiola rosea',t:'Western',tier:'base',note:'Slightly bitter and rose-like'},{n:'Schisandra',l:'Schisandra chinensis',t:'TCM',tier:'support',note:'Five flavours combined'},{n:'Peppermint',l:'Mentha piperita',t:'Western',tier:'aroma',note:'Cool and refreshing'},{n:'Yerba Mate',l:'Ilex paraguariensis',t:'Americas',tier:'base',note:'Grassy and stimulating'},{n:'Tulsi',l:'Ocimum tenuiflorum',t:'Ayurveda',tier:'base',note:'Clove-like and sacred'}],
+  'Energy':[{n:'Eleuthero',l:'Eleutherococcus senticosus',t:'Western',tier:'base',note:'Earthy and slightly bitter'},{n:'Rhodiola',l:'Rhodiola rosea',t:'Western',tier:'base',note:'Slightly bitter and rose-like'},{n:'Ashwagandha',l:'Withania somnifera',t:'Ayurveda',tier:'base',note:'Earthy and warming'},{n:'Yerba Mate',l:'Ilex paraguariensis',t:'Americas',tier:'base',note:'Grassy and stimulating'},{n:'Cordyceps',l:'Cordyceps militaris',t:'TCM',tier:'base',note:'Earthy and mild'},{n:'Maca Root',l:'Lepidium meyenii',t:'Americas',tier:'base',note:'Malty and earthy'},{n:'Ginger Root',l:'Zingiber officinale',t:'Western',tier:'aroma',note:'Spicy and warming'},{n:'Cardamom',l:'Elettaria cardamomum',t:'Ayurveda',tier:'aroma',note:'Sweet and aromatic'},{n:'Nettle Leaf',l:'Urtica dioica',t:'Western',tier:'base',note:'Green and mineral'},{n:'Moringa',l:'Moringa oleifera',t:'African',tier:'base',note:'Grassy and earthy'}],
+  'Immune Support':[{n:'Echinacea',l:'Echinacea purpurea',t:'Western',tier:'base',note:'Tingling and earthy'},{n:'Elderberry',l:'Sambucus nigra',t:'Western',tier:'base',note:'Deep berry'},{n:'Astragalus',l:'Astragalus membranaceus',t:'TCM',tier:'base',note:'Sweet and mild'},{n:'Reishi Mushroom',l:'Ganoderma lucidum',t:'TCM',tier:'base',note:'Bitter and woody'},{n:'Chaga',l:'Inonotus obliquus',t:'TCM',tier:'base',note:'Earthy and vanilla-like'},{n:'Turkey Tail',l:'Trametes versicolor',t:'TCM',tier:'support',note:'Slightly bitter'},{n:'Ginger Root',l:'Zingiber officinale',t:'Western',tier:'aroma',note:'Spicy and warming'},{n:'Elderflower',l:'Sambucus nigra (flower)',t:'Western',tier:'support',note:'Delicate floral'},{n:'Guduchi',l:'Tinospora cordifolia',t:'Ayurveda',tier:'base',note:'Bitter and cooling'},{n:'Pelargonium',l:'Pelargonium sidoides',t:'African',tier:'base',note:'Slightly bitter'},{n:'Tulsi',l:'Ocimum tenuiflorum',t:'Ayurveda',tier:'base',note:'Clove-like and sacred'}],
+  'Respiratory':[{n:'Thyme',l:'Thymus vulgaris',t:'Western',tier:'base',note:'Warm aromatic'},{n:'Mullein',l:'Verbascum thapsus',t:'Western',tier:'base',note:'Mild and demulcent'},{n:'Elderberry',l:'Sambucus nigra',t:'Western',tier:'base',note:'Deep berry'},{n:'Marshmallow Root',l:'Althaea officinalis',t:'Western',tier:'support',note:'Sweet and soothing'},{n:'Liquorice Root',l:'Glycyrrhiza glabra',t:'Western',tier:'aroma',note:'Sweet and rich'},{n:'Cordyceps',l:'Cordyceps militaris',t:'TCM',tier:'base',note:'Earthy and mild'},{n:'Pippali',l:'Piper longum',t:'Ayurveda',tier:'aroma',note:'Warming and penetrating'},{n:'African Wormwood',l:'Artemisia afra',t:'African',tier:'base',note:'Pungent and bitter'},{n:'Ginger Root',l:'Zingiber officinale',t:'Western',tier:'aroma',note:'Spicy and warming'}],
+  'Digestive Health':[{n:'Chamomile',l:'Matricaria chamomilla',t:'Western',tier:'support',note:'Soft apple-like'},{n:'Marshmallow Root',l:'Althaea officinalis',t:'Western',tier:'support',note:'Sweet and soothing'},{n:'Peppermint',l:'Mentha piperita',t:'Western',tier:'aroma',note:'Cool and refreshing'},{n:'Dandelion Root',l:'Taraxacum officinale',t:'Western',tier:'base',note:'Bitter and earthy'},{n:'Ginger Root',l:'Zingiber officinale',t:'Western',tier:'aroma',note:'Spicy and warming'},{n:'Liquorice Root',l:'Glycyrrhiza glabra',t:'Western',tier:'aroma',note:'Sweet and rich'},{n:'Fennel Seed',l:'Foeniculum vulgare',t:'Western',tier:'aroma',note:'Sweet anise-like'},{n:'Triphala',l:'Three-fruit blend',t:'Ayurveda',tier:'base',note:'Astringent and complex'},{n:'Meadowsweet',l:'Filipendula ulmaria',t:'Western',tier:'support',note:'Sweet almond-like'},{n:'Rooibos',l:'Aspalathus linearis',t:'African',tier:'base',note:'Naturally sweet'}],
+  'Pain & Inflammation':[{n:'Devil\'s Claw',l:'Harpagophytum procumbens',t:'African',tier:'base',note:'Very bitter'},{n:'White Willow Bark',l:'Salix alba',t:'Western',tier:'base',note:'Astringent and bitter'},{n:'Turmeric',l:'Curcuma longa',t:'TCM',tier:'support',note:'Earthy and warming'},{n:'Boswellia',l:'Boswellia serrata',t:'Ayurveda',tier:'support',note:'Resinous and sacred'},{n:'Meadowsweet',l:'Filipendula ulmaria',t:'Western',tier:'support',note:'Sweet almond-like'},{n:'Ginger Root',l:'Zingiber officinale',t:'Western',tier:'aroma',note:'Spicy and warming'},{n:'Clove',l:'Syzygium aromaticum',t:'Western',tier:'aroma',note:'Intense and numbing'},{n:'Feverfew',l:'Tanacetum parthenium',t:'Western',tier:'support',note:'Very bitter'},{n:'Cat\'s Claw',l:'Uncaria tomentosa',t:'Americas',tier:'base',note:'Bitter and earthy'}],
+  'Hormonal Balance':[{n:'Vitex',l:'Vitex agnus-castus',t:'Western',tier:'base',note:'Slightly peppery'},{n:'Black Cohosh',l:'Actaea racemosa',t:'Western',tier:'base',note:'Earthy and bitter'},{n:'Red Clover',l:'Trifolium pratense',t:'Western',tier:'base',note:'Sweet and grassy'},{n:'Shatavari',l:'Asparagus racemosus',t:'Ayurveda',tier:'base',note:'Sweet and nourishing'},{n:'Dong Quai',l:'Angelica sinensis',t:'TCM',tier:'base',note:'Sweet and earthy'},{n:'Maca Root',l:'Lepidium meyenii',t:'Americas',tier:'base',note:'Malty and earthy'},{n:'Liquorice Root',l:'Glycyrrhiza glabra',t:'Western',tier:'aroma',note:'Sweet and rich'},{n:'Rose Petal',l:'Rosa damascena',t:'Western',tier:'aroma',note:'Floral and romantic'},{n:'Saffron',l:'Crocus sativus',t:'Ayurveda',tier:'aroma',note:'Delicate and precious'}],
+  'Reproductive Health':[{n:'Raspberry Leaf',l:'Rubus idaeus',t:'Western',tier:'base',note:'Mild and slightly astringent'},{n:'Vitex',l:'Vitex agnus-castus',t:'Western',tier:'base',note:'Slightly peppery'},{n:'Shatavari',l:'Asparagus racemosus',t:'Ayurveda',tier:'base',note:'Sweet and nourishing'},{n:'Dong Quai',l:'Angelica sinensis',t:'TCM',tier:'base',note:'Sweet and earthy'},{n:'Maca Root',l:'Lepidium meyenii',t:'Americas',tier:'base',note:'Malty and earthy'},{n:'Motherwort',l:'Leonurus cardiaca',t:'Western',tier:'base',note:'Very bitter'},{n:'Mugwort',l:'Artemisia vulgaris',t:'Western',tier:'base',note:'Sage-like and aromatic'},{n:'Rose Petal',l:'Rosa damascena',t:'Western',tier:'aroma',note:'Floral and romantic'}],
+  'Heart & Circulation':[{n:'Hawthorn Berry',l:'Crataegus monogyna',t:'Western',tier:'base',note:'Mildly tart'},{n:'Motherwort',l:'Leonurus cardiaca',t:'Western',tier:'base',note:'Very bitter'},{n:'Linden Flower',l:'Tilia cordata',t:'Western',tier:'support',note:'Honey-like floral'},{n:'Rosemary',l:'Salvia rosmarinus',t:'Western',tier:'support',note:'Sharp and resinous'},{n:'Arjuna Bark',l:'Terminalia arjuna',t:'Ayurveda',tier:'base',note:'Astringent and mild'},{n:'Hibiscus',l:'Hibiscus sabdariffa',t:'African',tier:'base',note:'Tart and fruity'},{n:'Cinnamon Bark',l:'Cinnamomum verum',t:'Western',tier:'aroma',note:'Sweet and warming'},{n:'Ginkgo',l:'Ginkgo biloba',t:'Western',tier:'base',note:'Mild and resinous'}],
+  'Detox & Liver':[{n:'Milk Thistle',l:'Silybum marianum',t:'Western',tier:'base',note:'Slightly bitter'},{n:'Dandelion Root',l:'Taraxacum officinale',t:'Western',tier:'base',note:'Bitter and earthy'},{n:'Artichoke Leaf',l:'Cynara scolymus',t:'Western',tier:'support',note:'Very bitter'},{n:'Burdock Root',l:'Arctium lappa',t:'Western',tier:'base',note:'Earthy and slightly sweet'},{n:'Triphala',l:'Three-fruit blend',t:'Ayurveda',tier:'base',note:'Astringent and complex'},{n:'Guduchi',l:'Tinospora cordifolia',t:'Ayurveda',tier:'base',note:'Bitter and cooling'},{n:'Pau d\'Arco',l:'Tabebuia avellanedae',t:'Americas',tier:'base',note:'Woody and earthy'},{n:'Cerasee',l:'Momordica charantia',t:'Caribbean',tier:'base',note:'Very bitter'},{n:'Ginger Root',l:'Zingiber officinale',t:'Western',tier:'aroma',note:'Spicy and warming'}],
+  'Skin & Beauty':[{n:'Calendula',l:'Calendula officinalis',t:'Western',tier:'base',note:'Resinous and golden'},{n:'Burdock Root',l:'Arctium lappa',t:'Western',tier:'base',note:'Earthy and slightly sweet'},{n:'Red Clover',l:'Trifolium pratense',t:'Western',tier:'base',note:'Sweet and grassy'},{n:'Chamomile',l:'Matricaria chamomilla',t:'Western',tier:'support',note:'Soft apple-like'},{n:'Rose Petal',l:'Rosa damascena',t:'Western',tier:'aroma',note:'Floral and romantic'},{n:'Rooibos',l:'Aspalathus linearis',t:'African',tier:'base',note:'Naturally sweet'},{n:'Goji Berry',l:'Lycium barbarum',t:'TCM',tier:'support',note:'Sweet and fruity'}],
+  'Bone & Joint':[{n:'Devil\'s Claw',l:'Harpagophytum procumbens',t:'African',tier:'base',note:'Very bitter'},{n:'White Willow Bark',l:'Salix alba',t:'Western',tier:'base',note:'Astringent and bitter'},{n:'Boswellia',l:'Boswellia serrata',t:'Ayurveda',tier:'support',note:'Resinous and sacred'},{n:'Horsetail',l:'Equisetum arvense',t:'Western',tier:'support',note:'Slightly mineral'},{n:'Turmeric',l:'Curcuma longa',t:'TCM',tier:'support',note:'Earthy and warming'},{n:'Ashwagandha',l:'Withania somnifera',t:'Ayurveda',tier:'base',note:'Earthy and warming'},{n:'Nettle Leaf',l:'Urtica dioica',t:'Western',tier:'base',note:'Green and mineral'},{n:'Ginger Root',l:'Zingiber officinale',t:'Western',tier:'aroma',note:'Spicy and warming'}],
+  'Spiritual & Ceremonial':[{n:'Mugwort',l:'Artemisia vulgaris',t:'Western',tier:'base',note:'Sage-like and aromatic'},{n:'Reishi Mushroom',l:'Ganoderma lucidum',t:'TCM',tier:'base',note:'Bitter and woody'},{n:'Tulsi',l:'Ocimum tenuiflorum',t:'Ayurveda',tier:'base',note:'Clove-like and sacred'},{n:'Rose Petal',l:'Rosa damascena',t:'Western',tier:'aroma',note:'Floral and romantic'},{n:'Frankincense',l:'Boswellia sacra',t:'African',tier:'aroma',note:'Resinous and sacred'},{n:'Lavender',l:'Lavandula angustifolia',t:'Western',tier:'aroma',note:'Floral and clean'},{n:'Saffron',l:'Crocus sativus',t:'Ayurveda',tier:'aroma',note:'Delicate and precious'},{n:'Cardamom',l:'Elettaria cardamomum',t:'Ayurveda',tier:'aroma',note:'Sweet and aromatic'},{n:'Guinea Hen Weed',l:'Petiveria alliacea',t:'Caribbean',tier:'base',note:'Pungent and garlicky'}]
+};
+
+// COMPREHENSIVE HERB DATABASE (will be populated by AI in background)
+let COMPREHENSIVE_HERBS = QUICK;
+let herbs = QUICK['Sleep & Calm'] || [];
+let goal='Sleep & Calm', method='tea', methodCost=8, seeds=85;
+let formula={base:null,support:null,aroma:null};
+let ratios={base:50,support:30,aroma:20};
+let activeTierFilter='all';
+let pendingHerb=null;
+
+const TCOLS = {Western:'#7acca0',Ayurveda:'#e8b84b',TCM:'#c07ab0',African:'#e8856a',Americas:'#7ab8cc',Caribbean:'#e8c07a',Default:'#aaa'};
+
+const GOALS = [
+  'Sleep & Calm','Anxiety & Stress','Focus & Clarity','Energy','Immune Support',
+  'Respiratory','Digestive Health','Pain & Inflammation','Hormonal Balance','Reproductive Health',
+  'Heart & Circulation','Detox & Liver','Skin & Beauty','Bone & Joint','Spiritual & Ceremonial'
+];
+
+// Modal close on outside click
+document.addEventListener('click',function(e){
+  const modal=document.getElementById('tier-modal');
+  if(e.target===modal){
+    modal.classList.remove('show');
+  }
+});
+
+// Initialize: generate comprehensive herb database via AI
+async function initializeHerbDatabase(){
+  const prompt=`Generate a comprehensive herbal database in strict JSON format. For each of these 15 goals, provide 35-45 herbs with proper tier assignments.
+
+Goals: ${GOALS.join(', ')}
+
+RESPONSE FORMAT - ONLY valid JSON, no markdown or preamble:
+{
+  "Sleep & Calm": [
+    {"n":"Valerian Root", "l":"Valeriana officinalis", "t":"Western", "tier":"base", "note":"earthy"},
+    ...
+  ],
+  ...
+}
+
+RULES:
+1. Fields: n(name), l(latin), t(tradition: Western/TCM/Ayurveda/African/Americas/Caribbean), tier(base/support/aroma), note(flavor/effect)
+2. TIER CONSTRAINTS:
+   - BASE: Strong primary herbs - roots, bark, berries, mushrooms, adaptogenic plants (50-60%)
+   - SUPPORT: Enhancing herbs - leaves, flowers, lighter versions (25-40%)
+   - AROMA: Aromatic ONLY - flowers, seeds, resins, citrus peels (10-20%)
+3. 35-45 herbs per goal minimum
+4. Diverse traditions for each goal
+5. Realistic tier assignments (e.g., rose only aroma, never base)
+6. Accurate flavor notes
+
+Generate comprehensive database NOW.`;
+
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:12000,messages:[{role:'user',content:prompt}]})});
+    const data=await resp.json();
+    const text=data.content[0].text;
+    const jsonMatch=text.match(/\{[\s\S]*\}/);
+    if(jsonMatch){
+      COMPREHENSIVE_HERBS=JSON.parse(jsonMatch[0]);
+      herbs=COMPREHENSIVE_HERBS[goal]||[];
+      renderBrowser();
+      loadSavedFormulas();
+    }
+  }catch(e){
+    console.error('Error loading herbs',e);
+    document.getElementById('ai-loading').textContent='Error loading herb database. Please try again.';
+  }
+}
+
+function setGoal(el,g){
+  document.querySelectorAll('.gc').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  goal=g;
+  document.getElementById('browser-label').textContent='Herbs for '+g;
+  herbs=COMPREHENSIVE_HERBS[g]||[];
+  renderBrowser();
+}
+
+function setMethod(el,m,c){
+  document.querySelectorAll('.mc').forEach(x=>x.classList.remove('active'));
+  el.classList.add('active');
+  method=m;
+  methodCost=c;
+  document.getElementById('cost-val').textContent=c;
+}
+
+function openForTier(tier){
+  activeTierFilter=tier;
+  document.querySelectorAll('.bf').forEach(b=>b.classList.remove('active'));
+  const map={base:1,support:2,aroma:3};
+  document.querySelectorAll('.bf')[map[tier]].classList.add('active');
+  renderBrowser();
+  document.getElementById('browser-body').scrollTop=0;
+}
+
+function setBF(el,tier){
+  document.querySelectorAll('.bf').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  activeTierFilter=tier;
+  renderBrowser();
+}
+
+function onSearch(){
+  const query=document.getElementById('search-input').value.toLowerCase().trim();
+  const results=document.getElementById('search-results');
+  
+  if(!query){
+    results.classList.remove('show');
+    return;
+  }
+  
+  let matches=[];
+  Object.values(COMPREHENSIVE_HERBS).forEach(goalHerbs=>{
+    goalHerbs.forEach(h=>{
+      if((h.n.toLowerCase().includes(query)||h.l.toLowerCase().includes(query))&&!matches.find(m=>m.n===h.n)){
+        matches.push(h);
+      }
+    });
+  });
+  
+  if(matches.length){
+    results.innerHTML=matches.slice(0,8).map(h=>`
+      <div class="search-result-item" onclick="selectHerbFromSearch(${JSON.stringify(h).replace(/"/g,'&quot;')})">
+        <div class="search-result-name">${h.n}</div>
+        <div class="search-result-latin">${h.l}</div>
+      </div>
+    `).join('');
+    results.classList.add('show');
+  }else{
+    results.classList.remove('show');
+  }
+}
+
+function selectHerbFromSearch(h){
+  const h_obj=JSON.parse(JSON.stringify(h));
+  document.getElementById('search-input').value='';
+  document.getElementById('search-results').classList.remove('show');
+  pendingHerb=h_obj;
+  document.getElementById('modal-herb-name').textContent=h_obj.n;
+  const tierOptions=[
+    {tier:'base',title:'🌿 Base Herb',desc:'Primary herb — main action · 50–60%'},
+    {tier:'support',title:'✦ Supporting Herb',desc:'Enhances the base · 25–40%'},
+    {tier:'aroma',title:'✨ Aromatiser Herb',desc:'Flavour & finish · 10–20%'}
+  ];
+  document.getElementById('tier-options').innerHTML=tierOptions.map(o=>`
+    <div class="tier-opt" onclick="confirmTierSelection('${o.tier}')">
+      <div class="tier-opt-title">${o.title}</div>
+      <div class="tier-opt-desc">${o.desc}</div>
+    </div>
+  `).join('');
+  document.getElementById('tier-modal').classList.add('show');
+}
+
+function renderBrowser(){
+  const filtered=activeTierFilter==='all'?herbs:herbs.filter(h=>h.tier===activeTierFilter);
+  const byTier={base:[],support:[],aroma:[]};
+  filtered.forEach(h=>byTier[h.tier].push(h));
+  
+  // Show recommended section
+  const recGroup=document.getElementById('recommended-group');
+  const recHerbs=document.getElementById('recommended-herbs');
+  if(herbs.length>0){
+    recGroup.style.display='block';
+    const recommended=herbs.slice(0,5);
+    recHerbs.innerHTML=recommended.map(h=>`
+      <div class="herb-row" onclick="selectHerbFromSearch(${JSON.stringify(h).replace(/"/g,'&quot;')})">
+        <div class="herb-dot" style="background:${TCOLS[h.t]||TCOLS.Default}"></div>
+        <div class="herb-info">
+          <div class="herb-name">${h.n}</div>
+          <div class="herb-latin">${h.l}</div>
+          <div class="herb-note">${h.note}</div>
+        </div>
+        <div class="tier-tags">
+          <div class="tt tt-${h.tier}">${h.tier.toUpperCase()}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+  
+  // Then show all herbs grouped by tier
+  const herbsHTML=Object.entries(byTier).filter(([_,items])=>items.length).map(([tier,items])=>`
+    <div class="herb-group">
+      <div class="herb-group-label">${{base:'Base',support:'Support',aroma:'Aroma'}[tier]}</div>
+      ${items.map(h=>`
+        <div class="herb-row" onclick="selectHerbFromSearch(${JSON.stringify(h).replace(/"/g,'&quot;')})">
+          <div class="herb-dot" style="background:${TCOLS[h.t]||TCOLS.Default}"></div>
+          <div class="herb-info">
+            <div class="herb-name">${h.n}</div>
+            <div class="herb-latin">${h.l}</div>
+            <div class="herb-note">${h.note}</div>
+          </div>
+          <div class="tier-tags">
+            <div class="tt tt-${tier}">${tier.toUpperCase()}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+  
+  document.getElementById('browser-body').innerHTML=recGroup.outerHTML+herbsHTML;
+  document.getElementById('browser-footer').textContent=filtered.length+' herb'+(filtered.length!==1?'s':'')+' · Tap to add';
+}
+
+function confirmTierSelection(tier){
+  const h=pendingHerb;
+  document.getElementById('tier-modal').classList.remove('show');
+  let target=tier;
+  if(formula[target]){
+    const empty=['base','support','aroma'].find(t=>!formula[t]);
+    if(empty)target=empty;
+  }
+  formula[target]=h;
+  document.getElementById(`${target}-name`).textContent=h.n;
+  document.getElementById(`${target}-sub`).textContent=h.l+(h.t?' · '+h.t:'');
+  const fillClass={base:'filled-base',support:'filled-support',aroma:'filled-aroma'}[target];
+  const card=document.getElementById('card-'+target);
+  card.className=card.className.replace(/filled-\w+/g,'').trim()+' '+fillClass;
+  updateBlend();
+  checkBtn();
+}
+
+function clearTier(tier){
+  formula[tier]=null;
+  const card=document.getElementById('card-'+tier);
+  card.className=card.className.replace(/filled-\w+/g,'').trim();
+  document.getElementById(`${tier}-pct`).textContent='—';
+  updateBlend();
+  checkBtn();
+  document.getElementById('result-section').classList.remove('show');
+}
+
+function onSlide(tier,val){
+  ratios[tier]=parseInt(val);
+  document.getElementById(`${tier}-val`).textContent=val+'%';
+  const maxes={base:75,support:55,aroma:30};
+  document.getElementById(`${tier}-fill`).style.width=(parseInt(val)/maxes[tier]*100)+'%';
+  updateBlend();
+}
+
+function updateBlend(){
+  const filled=['base','support','aroma'].filter(t=>formula[t]);
+  const map={base:'b',support:'s',aroma:'a'};
+  if(!filled.length){
+    ['b','s','a'].forEach(s=>{document.getElementById('bseg-'+s).style.width='0%';document.getElementById('bvb-'+s).style.width='0%';});
+    document.getElementById('blend-empty').style.display='inline';
+    document.getElementById('blend-visual').classList.remove('show');
+    ['base','support','aroma'].forEach(t=>document.getElementById(t+'-pct').textContent='—');
+    return;
+  }
+  document.getElementById('blend-empty').style.display='none';
+  document.getElementById('blend-visual').classList.add('show');
+  const total=filled.reduce((s,t)=>s+ratios[t],0);
+  ['base','support','aroma'].forEach(t=>{
+    const pct=formula[t]?Math.round(ratios[t]/total*100):0;
+    document.getElementById('bseg-'+map[t]).style.width=pct+'%';
+    document.getElementById('bvb-'+map[t]).style.width=pct+'%';
+    document.getElementById(t+'-pct').textContent=formula[t]?pct+'%':'—';
+  });
+  document.getElementById('blend-vis-labels').innerHTML=filled.map(t=>`<span class="bvl"><b>${formula[t].n}</b> — ${Math.round(ratios[t]/total*100)}%</span>`).join('');
+}
+
+function checkBtn(){
+  const ok=Object.values(formula).filter(Boolean).length>=2;
+  document.getElementById('build-btn').disabled=!ok;
+}
+
+async function buildFormula(){
+  const filled=['base','support','aroma'].filter(t=>formula[t]);
+  if(filled.length<2||seeds<methodCost)return;
+  document.getElementById('build-btn').disabled=true;
+  document.getElementById('ld-wrap').classList.add('show');
+  document.getElementById('result-section').classList.remove('show');
+  const total=filled.reduce((s,t)=>s+ratios[t],0);
+  const herbList=filled.map(t=>`${formula[t].n} (${Math.round(ratios[t]/total*100)}% — ${t})`).join(', ');
+  const methods={tea:'tea infusion',tincture:'alcohol tincture',steam:'herbal steam',decoction:'decoction',bath:'herbal bath'};
+  const prompt=`You are a knowledgeable herbalist for C.H.I — an educational herbal wellness platform. Use MHRA-compliant language: "traditionally used for" not "treats", "may support" not "will heal".
+
+User goal: ${goal}
+Formula: ${herbList}
+Method: ${methods[method]}
+
+Write a formula guide in 4 paragraphs:
+1. A poetic 3-5 word formula name. Traditional wisdom behind this combination.
+2. How the herbs complement each other at this ratio.
+3. Specific ${method} preparation — quantities, timing, temperature.
+4. Safety notes, who should avoid it, one adjustment suggestion.
+
+Warm, knowledgeable tone. No medical claims.`;
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:900,messages:[{role:'user',content:prompt}]})});
+    const data=await resp.json();
+    if(!data.content)throw new Error();
+    const text=data.content[0].text;
+    const lines=text.split('\n').filter(l=>l.trim());
+    const fname=lines[0].replace(/^[*"'#\s]+|[*"'#\s]+$/g,'').trim();
+    seeds-=methodCost;
+    document.getElementById('seed-count').textContent=seeds;
+    document.getElementById('result-name').textContent=fname;
+    document.getElementById('result-meta').textContent=filled.map(t=>formula[t].n).join(' · ')+' · '+method+' · '+goal;
+    document.getElementById('result-body').innerHTML=lines.slice(1).filter(p=>p.trim()).map(p=>`<p>${p}</p>`).join('');
+    document.getElementById('result-section').classList.add('show');
+  }catch(e){
+    document.getElementById('result-name').textContent='Add your API key in Settings';
+    document.getElementById('result-meta').textContent='';
+    document.getElementById('result-body').innerHTML='<p>Add your Anthropic API key in Settings to generate personalised formula guides.</p>';
+    document.getElementById('result-section').classList.add('show');
+  }
+  document.getElementById('ld-wrap').classList.remove('show');
+  document.getElementById('build-btn').disabled=false;
+}
+
+function saveIt(){
+  const formulaName=document.getElementById('result-name').textContent;
+  const herbs={
+    base:formula.base,
+    support:formula.support,
+    aroma:formula.aroma
+  };
+  const formulaData={
+    name:formulaName,
+    herbs:herbs,
+    method:method,
+    goal:goal,
+    timestamp:new Date().getTime()
+  };
+  let saved=JSON.parse(localStorage.getItem('chi-saved-formulas')||'[]');
+  saved.push(formulaData);
+  localStorage.setItem('chi-saved-formulas',JSON.stringify(saved));
+  alert('"'+formulaName+'" saved to your profile.');
+  loadSavedFormulas();
+}
+
+function shareIt(){alert('Shared to the community.');}
+
+function loadSavedFormulas(){
+  const saved=JSON.parse(localStorage.getItem('chi-saved-formulas')||'[]');
+  const savedList=document.getElementById('saved-list');
+  const savedSection=document.getElementById('saved-formulas-section');
+  
+  if(saved.length){
+    savedSection.classList.add('show');
+    savedList.innerHTML=saved.map((f,idx)=>{
+      const herbs=[f.herbs.base,f.herbs.support,f.herbs.aroma].filter(Boolean);
+      return `
+        <div class="saved-item">
+          <div class="saved-item-name">${f.name}</div>
+          <div class="saved-item-meta">Goal: ${f.goal} · Method: ${f.method}</div>
+          <div class="saved-item-herbs">
+            ${herbs.map(h=>`<span class="herb-badge">${h.n}</span>`).join('')}
+          </div>
+          <div class="saved-item-actions">
+            <button class="btn-add-to-apo" onclick="loadFormulaToApo(${idx})">+ Add to apothecary</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }else{
+    savedSection.classList.remove('show');
+  }
+}
+
+function loadFormulaToApo(idx){
+  const saved=JSON.parse(localStorage.getItem('chi-saved-formulas')||'[]');
+  const f=saved[idx];
+  formula.base=f.herbs.base;
+  formula.support=f.herbs.support;
+  formula.aroma=f.herbs.aroma;
+  ['base','support','aroma'].forEach(tier=>{
+    const card=document.getElementById('card-'+tier);
+    if(formula[tier]){
+      const h=formula[tier];
+      document.getElementById(`${tier}-name`).textContent=h.n;
+      document.getElementById(`${tier}-sub`).textContent=h.l+(h.t?' · '+h.t:'');
+      const fillClass={base:'filled-base',support:'filled-support',aroma:'filled-aroma'}[tier];
+      card.className=card.className.replace(/filled-\w+/g,'').trim()+' '+fillClass;
+    }else{
+      card.className=card.className.replace(/filled-\w+/g,'').trim();
+    }
+  });
+  updateBlend();
+  checkBtn();
+  document.getElementById('result-section').classList.remove('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Initialize on load
+initializeHerbDatabase();
+</script>
+</body>
+</html>

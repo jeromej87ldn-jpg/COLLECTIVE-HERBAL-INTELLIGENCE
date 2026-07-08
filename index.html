@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In — C.H.I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root{--forest:#1a3a2a;--forest-mid:#2d5c42;--gold:#c8952a;--gold-light:#e8b84b;--night:#0c1a10;--parchment:#f5f0e8;--muted:rgba(245,240,232,0.45);--border:rgba(255,255,255,0.08);--input:rgba(255,255,255,0.05);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--night);color:var(--parchment);min-height:100vh;display:grid;grid-template-columns:1fr 1fr;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 80% at 0% 100%,rgba(45,92,66,0.2) 0%,transparent 55%),radial-gradient(ellipse 60% 60% at 100% 0%,rgba(200,149,42,0.06) 0%,transparent 50%);pointer-events:none;z-index:0;}
+.left{position:relative;z-index:1;background:var(--forest);display:flex;flex-direction:column;justify-content:center;padding:4rem 4rem;min-height:100vh;border-right:1px solid rgba(255,255,255,0.05);}
+.left-logo{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;color:var(--gold-light);letter-spacing:.08em;margin-bottom:.25rem;}
+.left-name{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,0.35);margin-bottom:3rem;}
+.left-h{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,4vw,48px);font-weight:300;line-height:1.08;color:var(--parchment);margin-bottom:1rem;}
+.left-h em{font-style:italic;color:var(--gold-light);}
+.left-p{font-size:14px;font-weight:300;color:var(--muted);line-height:1.8;max-width:380px;margin-bottom:2.5rem;}
+.value-list{display:flex;flex-direction:column;gap:.6rem;}
+.value-item{display:flex;align-items:center;gap:10px;font-size:13px;color:rgba(245,240,232,0.5);}
+.value-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:.6;flex-shrink:0;}
+.right{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;padding:3rem 4rem;min-height:100vh;}
+.form-wrap{width:100%;max-width:400px;}
+.form-eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;display:flex;align-items:center;gap:10px;}
+.form-eyebrow::before{content:'';width:20px;height:1px;background:var(--gold);opacity:.6;}
+.form-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--parchment);margin-bottom:.5rem;}
+.form-sub{font-size:13px;color:var(--muted);margin-bottom:2rem;line-height:1.6;}
+.field{margin-bottom:1rem;}
+.field-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:.4rem;}
+.field-input{width:100%;background:var(--input);border:1px solid var(--border);border-radius:4px;padding:12px 14px;font-size:14px;color:var(--parchment);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;}
+.field-input::placeholder{color:rgba(245,240,232,0.18);}
+.field-input:focus{border-color:rgba(200,149,42,0.4);}
+.forgot{display:block;text-align:right;font-size:12px;color:var(--muted);text-decoration:none;margin-top:.35rem;transition:color .2s;}
+.forgot:hover{color:var(--gold);}
+.btn-signin{width:100%;padding:14px;background:var(--gold);color:var(--night);border:none;border-radius:4px;font-size:13px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:1.5rem;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-signin:hover{background:var(--gold-light);transform:translateY(-1px);}
+.divider{display:flex;align-items:center;gap:1rem;margin:1.5rem 0;font-size:12px;color:rgba(245,240,232,0.2);}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.btn-create{width:100%;padding:12px;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:4px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;text-decoration:none;display:flex;align-items:center;justify-content:center;}
+.btn-create:hover{border-color:rgba(200,149,42,0.3);color:var(--gold);}
+.privacy-note{margin-top:1.5rem;font-size:11px;color:rgba(245,240,232,0.2);line-height:1.7;text-align:center;}
+.error-msg{display:none;background:rgba(196,82,42,0.1);border:1px solid rgba(196,82,42,0.25);border-radius:4px;padding:.75rem 1rem;font-size:13px;color:rgba(232,133,106,0.9);margin-bottom:1rem;}
+.error-msg.show{display:block;}
+@media(max-width:768px){body{grid-template-columns:1fr;}.left{display:none;}.right{padding:2rem 1.5rem;}}
+</style>
+</head>
+<body>
+<div class="left">
+  <div class="left-logo">C.H.I</div>
+  <div class="left-name">Collective Herbal Intelligence</div>
+  <h1 class="left-h">Welcome<br>back to your<br><em>herb journey.</em></h1>
+  <p class="left-p">Your Herb Passport, journal, and health profile are waiting. Pick up exactly where you left off.</p>
+  <div class="value-list">
+    <div class="value-item"><span class="value-dot"></span>Your data is yours — always</div>
+    <div class="value-item"><span class="value-dot"></span>No social login. Ever.</div>
+    <div class="value-item"><span class="value-dot"></span>Plant intelligence built around you</div>
+  </div>
+</div>
+<div class="right">
+  <div class="form-wrap">
+    <div class="form-eyebrow">Sign in</div>
+    <h2 class="form-title">Sign in to C.H.I</h2>
+    <p class="form-sub">Enter your email and password to continue your herbal journey.</p>
+    <div class="error-msg" id="error-msg">That email and password combination does not match our records. Please try again.</div>
+    <div class="field">
+      <label class="field-label">Email address</label>
+      <input class="field-input" type="email" id="email" placeholder="your@email.com" autocomplete="email">
+    </div>
+    <div class="field">
+      <label class="field-label">Password</label>
+      <input class="field-input" type="password" id="password" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')signIn()">
+      <a class="forgot" href="forgot.html">Forgot your password?</a>
+    </div>
+    <button class="btn-signin" onclick="signIn()">
+      Sign in
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </button>
+    <div class="divider">or</div>
+    <a class="btn-create" href="join.html">Create a free account</a>
+    <p class="privacy-note">CHI uses email and password only. We do not offer Google or Facebook login — your health information stays on CHI.</p>
+  </div>
+</div>
+<script>
+function signIn() {
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  if (!email || !password) { document.getElementById('error-msg').classList.add('show'); return; }
+  // In production — Supabase auth here
+  localStorage.setItem('chi_logged_in','true');
+  localStorage.setItem('chi_display_name', email.split('@')[0]);
+  window.location.href = 'profile.html';
+}
+// If already logged in, redirect
+if (localStorage.getItem('chi_logged_in') === 'true') window.location.href = 'profile.html';
+</script>
+</body>
+</html>

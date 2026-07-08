@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herbadex — C.H.I — Collective Herbal Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#1a3a2a;--forest-mid:#2d5c42;--forest-light:#4a8c65;
+  --parchment:#f5f0e8;--parchment-dark:#ede5d0;--parchment-deep:#e0d5b8;
+  --charcoal:#2a2a25;--charcoal-mid:#4a4a42;
+  --gold:#c8952a;--gold-light:#e8b84b;
+  --night:#0c1a10;--card:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--charcoal);overflow-x:hidden;}
+
+/* ─── NAV ─── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:66px;display:flex;align-items:center;justify-content:space-between;padding:0 3rem;background:rgba(12,26,16,.97);backdrop-filter:blur(10px);border-bottom:1px solid rgba(200,149,42,.18);}
+.nav-logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;letter-spacing:.16em;color:var(--gold-light);}
+.nav-full{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:rgba(245,240,232,.4);}
+.nav-links{display:flex;align-items:center;gap:1.5rem;}
+.nav-links a{color:rgba(245,240,232,.6);text-decoration:none;font-size:13px;transition:color .2s;}
+.nav-links a:hover,.nav-links a.active{color:var(--gold-light);}
+.nav-join{background:var(--gold)!important;color:var(--forest)!important;padding:8px 20px!important;border-radius:3px;font-weight:500!important;font-size:12px!important;letter-spacing:.07em!important;text-transform:uppercase;}
+
+/* ─── BREADCRUMB ─── */
+.breadcrumb{background:var(--night);border-bottom:1px solid rgba(200,149,42,.12);padding:10px 3rem;display:flex;align-items:center;gap:8px;font-size:12px;padding-top:calc(66px + 10px);}
+.breadcrumb a{color:rgba(245,240,232,.45);text-decoration:none;transition:color .2s;}
+.breadcrumb a:hover{color:var(--gold);}
+.breadcrumb .sep{color:rgba(255,255,255,.2);}
+.breadcrumb .cur{color:rgba(245,240,232,.6);}
+
+/* ─── TREE HERO ─── */
+.tree-hero{
+  background:var(--night);
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;padding:4rem 2rem;
+}
+
+/* Stars */
+.stars{position:absolute;inset:0;pointer-events:none;}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--dur,3s) ease-in-out infinite var(--delay,0s);}
+@keyframes twinkle{0%,100%{opacity:.15;transform:scale(1)}50%{opacity:.8;transform:scale(1.2)}}
+
+/* Ground mist */
+.mist{position:absolute;bottom:0;left:0;right:0;height:220px;background:linear-gradient(to top,rgba(26,58,42,.4) 0%,transparent 100%);pointer-events:none;}
+
+/* Ancient tree SVG */
+.tree-wrap{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:min(600px,90vw);pointer-events:none;opacity:.85;}
+.tree-wrap svg{width:100%;height:auto;}
+
+.tree-hero-content{position:relative;z-index:10;text-align:center;max-width:700px;}
+.supreme-label{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:1.25rem;display:flex;align-items:center;justify-content:center;gap:10px;}
+.supreme-label::before,.supreme-label::after{content:'';width:40px;height:1px;background:rgba(200,149,42,.4);}
+.tree-hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4.5vw,54px);font-weight:300;line-height:1.15;color:var(--parchment);margin-bottom:.5rem;}
+.tree-hero h1 strong{font-weight:600;display:block;letter-spacing:.06em;color:var(--gold-light);}
+.tree-hero h1 em{font-style:italic;}
+.tree-tagline{font-size:15px;font-weight:300;color:rgba(245,240,232,.5);margin-bottom:2.5rem;font-style:italic;font-family:'Cormorant Garamond',serif;}
+
+/* Search bar */
+.supreme-search{display:flex;max-width:580px;margin:0 auto;position:relative;}
+.supreme-input{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(200,149,42,.35);border-radius:4px 0 0 4px;padding:16px 22px;font-size:16px;color:var(--parchment);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s,background .2s;}
+.supreme-input::placeholder{color:rgba(245,240,232,.28);font-style:italic;}
+.supreme-input:focus{border-color:rgba(200,149,42,.6);background:rgba(255,255,255,.08);}
+.supreme-btn{background:var(--gold);border:none;border-radius:0 4px 4px 0;padding:16px 24px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--forest);font-family:'DM Sans',sans-serif;transition:background .2s;}
+.supreme-btn:hover{background:var(--gold-light);}
+
+.search-hint{font-size:12px;color:rgba(245,240,232,.3);margin-top:.85rem;font-style:italic;}
+
+/* Scroll hint */
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:rgba(245,240,232,.25);font-size:11px;letter-spacing:.1em;text-transform:uppercase;animation:bobble 2.5s ease-in-out infinite;}
+@keyframes bobble{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+.scroll-hint svg{width:16px;height:16px;}
+
+/* ─── RANKINGS ─── */
+.rankings-section{background:var(--night);padding:0 3rem 5rem;}
+.rankings-heading{text-align:center;padding-top:1rem;margin-bottom:3rem;}
+.rankings-heading h2{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,3.5vw,44px);font-weight:300;color:var(--parchment);margin-bottom:.5rem;}
+.rankings-heading h2 em{font-style:italic;color:var(--gold-light);}
+.rankings-heading p{font-size:14px;color:rgba(245,240,232,.45);max-width:500px;margin:0 auto;}
+
+.rankings-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.06);border-radius:6px;overflow:hidden;max-width:1100px;margin:0 auto;}
+.rank-card{background:var(--night);padding:1.5rem;cursor:pointer;transition:background .2s;position:relative;text-decoration:none;display:block;}
+.rank-card:hover{background:rgba(255,255,255,.04);}
+.rank-number{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;color:rgba(200,149,42,.25);line-height:1;margin-bottom:.5rem;display:block;}
+.rank-card.top3 .rank-number{color:rgba(200,149,42,.55);}
+.rank-herb{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--parchment);margin-bottom:2px;}
+.rank-latin{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:rgba(245,240,232,.38);margin-bottom:.5rem;}
+.rank-cat{display:flex;align-items:center;gap:5px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:rgba(245,240,232,.35);}
+.rank-dot{width:6px;height:6px;border-radius:50%;}
+.rank-stars{display:flex;gap:2px;margin-top:.65rem;}
+.star-icon{font-size:10px;color:var(--gold);}
+.star-icon.empty{color:rgba(255,255,255,.15);}
+.rank-votes{font-size:10px;color:rgba(245,240,232,.3);margin-top:3px;}
+
+/* ─── HERB PROFILE (shown after search) ─── */
+#herb-profile{display:none;background:var(--parchment);min-height:80vh;}
+.profile-nav{background:var(--forest);padding:1.25rem 3rem;display:flex;align-items:center;gap:1.5rem;border-bottom:1px solid rgba(255,255,255,.07);}
+.profile-nav button{background:none;border:none;color:rgba(245,240,232,.6);font-size:13px;cursor:pointer;display:flex;align-items:center;gap:7px;font-family:'DM Sans',sans-serif;padding:0;transition:color .2s;}
+.profile-nav button:hover{color:var(--parchment);}
+.profile-nav .sep2{color:rgba(255,255,255,.2);}
+.profile-nav .cur{color:var(--gold-light);font-size:13px;}
+
+.profile-hero{background:var(--forest);padding:3.5rem 3rem;position:relative;overflow:hidden;}
+.profile-hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 80% at 85% 50%,rgba(74,140,101,.1) 0%,transparent 65%);pointer-events:none;}
+.ph-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1;display:grid;grid-template-columns:1fr auto;gap:3rem;align-items:start;}
+.ph-cat{display:inline-flex;align-items:center;gap:7px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:5px 14px;border-radius:2px;margin-bottom:1rem;border:1px solid;}
+.ph-name{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,5vw,62px);font-weight:300;line-height:1.06;color:var(--parchment);margin-bottom:.4rem;}
+.ph-latin{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:rgba(245,240,232,.42);margin-bottom:1rem;}
+.ph-origin{font-size:13px;color:rgba(245,240,232,.5);display:flex;align-items:center;gap:7px;}
+.ph-origin::before{content:'◦';color:var(--gold);}
+.ph-aside{min-width:200px;}
+.ph-aside-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:5px;padding:1.25rem;}
+.ph-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:13px;}
+.ph-row:last-child{border-bottom:none;}
+.ph-key{color:rgba(245,240,232,.4);font-size:11px;letter-spacing:.06em;}
+.ph-val{color:rgba(245,240,232,.75);font-weight:500;text-align:right;}
+
+/* Profile body layout */
+.profile-body{max-width:1100px;margin:0 auto;padding:3rem;display:grid;grid-template-columns:1fr 320px;gap:2.5rem;}
+.profile-main{}
+.profile-sidebar{}
+
+/* Content sections */
+.content-section{margin-bottom:3rem;}
+.content-section h2{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:var(--charcoal);margin-bottom:1.1rem;padding-bottom:.6rem;border-bottom:1px solid var(--parchment-dark);display:flex;align-items:center;gap:10px;}
+.content-section h2 .cs-icon{font-size:18px;}
+.content-section p{font-size:14px;color:var(--charcoal-mid);line-height:1.8;margin-bottom:1rem;}
+
+/* Spiritual highlight block */
+.spirit-block{background:linear-gradient(135deg,rgba(26,58,42,.07) 0%,rgba(200,149,42,.06) 100%);border:1px solid rgba(200,149,42,.2);border-radius:6px;padding:1.75rem;margin:1.5rem 0;}
+.spirit-block .sb-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+.spirit-block .sb-label::before{content:'✦';}
+.spirit-block p{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;font-style:italic;color:var(--charcoal);line-height:1.65;}
+
+/* Timeline */
+.timeline{position:relative;padding-left:2rem;}
+.timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;background:var(--parchment-deep);}
+.tl-item{position:relative;padding-bottom:1.5rem;}
+.tl-item::before{content:'';position:absolute;left:-2rem;top:5px;width:8px;height:8px;border-radius:50%;background:var(--gold);border:2px solid var(--parchment);}
+.tl-year{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}
+.tl-text{font-size:14px;color:var(--charcoal-mid);line-height:1.7;}
+
+/* Ranking + forum sidebar */
+.rank-display{background:var(--forest);border-radius:6px;padding:1.5rem;margin-bottom:1.25rem;text-align:center;}
+.rd-number{font-family:'Cormorant Garamond',serif;font-size:56px;font-weight:300;color:var(--gold-light);line-height:1;}
+.rd-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(245,240,232,.4);margin-top:4px;}
+.rd-stars{display:flex;justify-content:center;gap:4px;margin:.75rem 0;}
+.rd-star{font-size:18px;color:var(--gold);}
+.rd-star.empty{color:rgba(255,255,255,.15);}
+.rd-votes{font-size:12px;color:rgba(245,240,232,.35);}
+.star-rate-row{display:flex;gap:6px;justify-content:center;margin-top:1rem;}
+.rate-star{font-size:22px;color:rgba(255,255,255,.2);cursor:pointer;transition:color .15s;}
+.rate-star:hover,.rate-star.hovered{color:var(--gold);}
+
+/* Forum */
+.forum-section{background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-radius:6px;overflow:hidden;}
+.forum-header{padding:1rem 1.25rem;border-bottom:1px solid var(--parchment-deep);display:flex;align-items:center;justify-content:space-between;}
+.forum-header h4{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--charcoal);}
+.forum-count{font-size:11px;color:var(--charcoal-mid);}
+.forum-entry{padding:1rem 1.25rem;border-bottom:1px solid var(--parchment-deep);}
+.forum-entry:last-of-type{border-bottom:none;}
+.fe-meta{display:flex;align-items:center;gap:8px;margin-bottom:.5rem;}
+.fe-avatar{width:26px;height:26px;border-radius:50%;background:var(--forest);color:var(--gold-light);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0;}
+.fe-name{font-size:13px;font-weight:500;color:var(--charcoal);}
+.fe-date{font-size:11px;color:var(--charcoal-mid);}
+.fe-text{font-size:13px;color:var(--charcoal-mid);line-height:1.65;}
+.fe-stars{display:flex;gap:2px;margin-bottom:.4rem;}
+.fe-star{font-size:11px;color:var(--gold);}
+.forum-add{padding:1.25rem;}
+.forum-textarea{width:100%;background:var(--parchment);border:1px solid var(--parchment-deep);border-radius:3px;padding:10px 12px;font-size:13px;color:var(--charcoal);font-family:'DM Sans',sans-serif;outline:none;resize:vertical;min-height:70px;}
+.forum-submit{margin-top:8px;background:var(--forest);color:var(--parchment);border:none;padding:9px 20px;border-radius:3px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s;}
+.forum-submit:hover{background:var(--forest-mid);}
+
+/* Loading */
+#profile-loading{text-align:center;padding:5rem 0;}
+.pl-ring{width:44px;height:44px;border:2px solid var(--parchment-deep);border-top-color:var(--gold);border-radius:50%;animation:spin .9s linear infinite;margin:0 auto 1rem;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Footer */
+footer{background:var(--night);padding:3rem 0 2rem;border-top:1px solid rgba(200,149,42,.15);margin-top:5rem;}
+.footer-inner{max-width:1100px;margin:0 auto;padding:0 3rem;display:flex;justify-content:space-between;align-items:flex-start;gap:2rem;flex-wrap:wrap;}
+.footer-logo span{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;letter-spacing:.18em;color:var(--gold-light);display:block;margin-bottom:4px;}
+.footer-logo small{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:rgba(245,240,232,.28);}
+.footer-links{display:flex;flex-wrap:wrap;gap:1.5rem;}
+.footer-links a{font-size:13px;color:rgba(245,240,232,.4);text-decoration:none;transition:color .2s;}
+.footer-links a:hover{color:var(--gold-light);}
+.footer-disclaimer{width:100%;font-size:11px;color:rgba(245,240,232,.18);line-height:1.7;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.05);}
+
+@media(max-width:900px){
+  nav{padding:0 1rem;}.nav-links a:not(.nav-join){display:none;}
+  .rankings-section{padding:0 1rem 3rem;}
+  .rankings-grid{grid-template-columns:repeat(2,1fr);}
+  .profile-hero{padding:2.5rem 1rem;}
+  .ph-inner{grid-template-columns:1fr;}.ph-aside{display:none;}
+  .profile-body{grid-template-columns:1fr;padding:1.5rem 1rem;}
+  .footer-inner{flex-direction:column;padding:0 1rem;}
+  .breadcrumb{padding-left:1rem;padding-right:1rem;}
+}
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:var(--forest);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:100;}
+.nav-logo{text-decoration:none;display:flex;flex-direction:column;}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-light);letter-spacing:.1em;}
+.nav-full{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.5);}
+.nav-right{display:flex;align-items:center;gap:1.5rem;}
+.nav-right a{color:rgba(245,240,232,.6);text-decoration:none;font-size:13px;transition:color .2s;}
+.nav-right a:hover,.nav-right a.active{color:var(--gold-light);}
+.nav-cta{background:var(--gold);color:var(--forest)!important;padding:.5rem 1rem;border-radius:4px;font-weight:500;}
+.nav-inbox{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:6px;border:1px solid rgba(255,255,255,0.08);color:rgba(245,240,232,.6);transition:all .2s;}
+.nav-inbox:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
+@media(max-width:760px){.nav-right a:not(.nav-cta):not(.nav-inbox){display:none;}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="nav-chi">C.H.I</span>
+    <span class="nav-full">Collective Herbal Intelligence</span>
+  </a>
+  <div class="nav-right">
+    <a href="herb-match.html">Herb Match</a>
+    <a href="phytochemistry.html">Plant Intelligence</a>
+    <a href="supreme.html" class="active">Herbadex</a>
+    <a href="resources.html">Resources</a>
+    <a href="community.html">Community</a>
+    <a href="profile.html">Profile</a>
+    <a href="inbox.html" class="nav-inbox" title="Inbox">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12v9H2V4z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M2 4l6 5 6-5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+    </a>
+    <a href="join.html" class="nav-cta">Join CHI</a>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="index.html">Home</a>
+  <span class="sep">›</span>
+  <span class="cur" id="bc-current">Herbadex</span>
+</div>
+
+<!-- TREE HERO -->
+<section class="tree-hero" id="tree-hero">
+  <div class="stars" id="stars-canvas"></div>
+  <div class="mist"></div>
+
+  <!-- Ancient Tree SVG -->
+  <div class="tree-wrap">
+    <svg viewBox="0 0 600 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Roots -->
+      <path d="M280 490 C260 470 220 460 180 480" stroke="rgba(74,140,101,0.35)" stroke-width="6" stroke-linecap="round"/>
+      <path d="M300 490 C300 475 295 460 285 450" stroke="rgba(74,140,101,0.3)" stroke-width="5" stroke-linecap="round"/>
+      <path d="M320 490 C340 470 380 462 410 478" stroke="rgba(74,140,101,0.35)" stroke-width="6" stroke-linecap="round"/>
+      <path d="M265 480 C245 472 210 475 190 490" stroke="rgba(74,140,101,0.22)" stroke-width="4" stroke-linecap="round"/>
+      <path d="M335 480 C355 472 390 474 410 488" stroke="rgba(74,140,101,0.22)" stroke-width="4" stroke-linecap="round"/>
+      <!-- Trunk -->
+      <path d="M270 490 C265 440 255 380 260 300 C262 260 268 220 280 180" stroke="rgba(74,140,101,0.5)" stroke-width="18" stroke-linecap="round"/>
+      <path d="M330 490 C335 440 345 380 340 300 C338 260 332 220 320 180" stroke="rgba(74,140,101,0.4)" stroke-width="16" stroke-linecap="round"/>
+      <path d="M275 490 C278 420 280 350 300 280" stroke="rgba(74,140,101,0.6)" stroke-width="22" stroke-linecap="round"/>
+      <!-- Major branches -->
+      <path d="M280 280 C250 240 200 220 160 230" stroke="rgba(74,140,101,0.45)" stroke-width="10" stroke-linecap="round"/>
+      <path d="M300 250 C310 200 350 170 400 165" stroke="rgba(74,140,101,0.4)" stroke-width="9" stroke-linecap="round"/>
+      <path d="M285 310 C240 300 190 280 150 285" stroke="rgba(74,140,101,0.35)" stroke-width="8" stroke-linecap="round"/>
+      <path d="M315 310 C360 295 420 275 455 270" stroke="rgba(74,140,101,0.35)" stroke-width="8" stroke-linecap="round"/>
+      <path d="M295 230 C280 180 270 140 285 100" stroke="rgba(74,140,101,0.4)" stroke-width="8" stroke-linecap="round"/>
+      <!-- Smaller branches -->
+      <path d="M160 230 C140 210 120 200 90 205" stroke="rgba(74,140,101,0.3)" stroke-width="5" stroke-linecap="round"/>
+      <path d="M160 230 C150 255 140 270 120 275" stroke="rgba(74,140,101,0.28)" stroke-width="4" stroke-linecap="round"/>
+      <path d="M400 165 C430 150 460 140 490 145" stroke="rgba(74,140,101,0.3)" stroke-width="5" stroke-linecap="round"/>
+      <path d="M400 165 C415 190 420 210 440 225" stroke="rgba(74,140,101,0.28)" stroke-width="4" stroke-linecap="round"/>
+      <path d="M285 100 C265 70 255 50 265 25" stroke="rgba(74,140,101,0.35)" stroke-width="6" stroke-linecap="round"/>
+      <path d="M285 100 C310 80 335 75 355 60" stroke="rgba(74,140,101,0.3)" stroke-width="5" stroke-linecap="round"/>
+      <path d="M285 100 C258 82 235 80 215 65" stroke="rgba(74,140,101,0.28)" stroke-width="4" stroke-linecap="round"/>
+      <!-- Leaf clusters (circles suggesting canopy) -->
+      <circle cx="150" cy="215" r="50" fill="rgba(26,58,42,0.3)"/>
+      <circle cx="130" cy="200" r="35" fill="rgba(45,92,66,0.25)"/>
+      <circle cx="170" cy="225" r="30" fill="rgba(26,58,42,0.2)"/>
+      <circle cx="420" cy="155" r="55" fill="rgba(26,58,42,0.3)"/>
+      <circle cx="455" cy="140" r="38" fill="rgba(45,92,66,0.25)"/>
+      <circle cx="400" cy="170" r="32" fill="rgba(26,58,42,0.2)"/>
+      <circle cx="270" cy="80" r="55" fill="rgba(26,58,42,0.35)"/>
+      <circle cx="295" cy="60" r="40" fill="rgba(45,92,66,0.3)"/>
+      <circle cx="250" cy="55" r="30" fill="rgba(26,58,42,0.25)"/>
+      <circle cx="350" cy="55" r="35" fill="rgba(26,58,42,0.25)"/>
+      <circle cx="460" cy="220" r="30" fill="rgba(26,58,42,0.2)"/>
+      <circle cx="120" cy="270" r="28" fill="rgba(26,58,42,0.2)"/>
+      <!-- Glowing tips -->
+      <circle cx="265" cy="22" r="4" fill="rgba(200,149,42,0.5)"/>
+      <circle cx="356" cy="58" r="3" fill="rgba(200,149,42,0.4)"/>
+      <circle cx="215" cy="63" r="3" fill="rgba(200,149,42,0.35)"/>
+      <circle cx="490" cy="143" r="3" fill="rgba(200,149,42,0.35)"/>
+      <circle cx="88" cy="203" r="3" fill="rgba(200,149,42,0.35)"/>
+    </svg>
+  </div>
+
+  <!-- Content -->
+  <div class="tree-hero-content">
+    <div class="supreme-label">HERBADEX</div>
+    <h1>
+      <em>Ancient wisdom.</em><br>
+      <strong>Search any herb.</strong>
+    </h1>
+    <p class="tree-tagline">Every plant. Every tradition. Every secret the earth has kept.</p>
+
+    <div class="supreme-search">
+      <input class="supreme-input" type="text" id="supreme-search-input" placeholder="Enter any herb name... neem, mugwort, cat's claw...">
+      <button class="supreme-btn" onclick="searchHerb()">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" stroke-width="1.5"/><path d="M10 10l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Search
+      </button>
+    </div>
+    <p class="search-hint">Try: neem · ashwagandha · mugwort · cat's claw · fo-ti · jiaogulan</p>
+  </div>
+
+  <div class="scroll-hint">
+    <svg viewBox="0 0 16 16" fill="none"><path d="M3 6l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    Top 20 herbs
+  </div>
+</section>
+
+<!-- RANKINGS -->
+<section class="rankings-section" id="rankings-section">
+  <div class="rankings-heading">
+    <h2>The CHI Top 20 — <em>ranked by the community</em></h2>
+    <p>Updated as members rate and review. Subject to change.</p>
+  </div>
+  <div class="rankings-grid" id="rankings-grid">
+    <!-- populated by JS -->
+  </div>
+</section>
+
+<!-- HERB PROFILE (hidden until search) -->
+<section id="herb-profile">
+  <div class="profile-nav">
+    <button onclick="closeProfile()">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M7 4l-4 4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Back to Herbadex
+    </button>
+    <span class="sep2">›</span>
+    <span class="cur" id="profile-bc-name">Loading...</span>
+  </div>
+  <div id="profile-loading">
+    <div class="pl-ring"></div>
+    <p style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--charcoal-mid);font-style:italic;">Consulting the ancient knowledge...</p>
+  </div>
+  <div id="profile-content" style="display:none;">
+    <div class="profile-hero">
+      <div class="ph-inner">
+        <div>
+          <div class="ph-cat" id="ph-cat">—</div>
+          <div class="ph-name" id="ph-name">—</div>
+          <div class="ph-latin" id="ph-latin">—</div>
+          <div class="ph-origin" id="ph-origin">—</div>
+        </div>
+        <div class="ph-aside">
+          <div class="ph-aside-card">
+            <div class="ph-row"><span class="ph-key">Category</span><span class="ph-val" id="ph-category">—</span></div>
+            <div class="ph-row"><span class="ph-key">Tradition</span><span class="ph-val" id="ph-tradition">—</span></div>
+            <div class="ph-row"><span class="ph-key">Preparations</span><span class="ph-val" id="ph-preps">—</span></div>
+            <div class="ph-row"><span class="ph-key">Safety</span><span class="ph-val" id="ph-safety">—</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="profile-body">
+      <div class="profile-main" id="profile-main-content"></div>
+      <div class="profile-sidebar" id="profile-sidebar-content"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo"><span>C.H.I</span><small>Collective Herbal Intelligence</small></div>
+    <div class="footer-links">
+      <a href="herb-match.html">Herb Match</a>
+      <a href="supreme.html">Herbadex</a>
+      <a href="about.html">About</a>
+      <a href="join.html">Join CHI</a>
+    </div>
+    <p class="footer-disclaimer">CHI provides educational information only. Not medical advice. Always consult a healthcare professional before using herbs, especially if on medication. CHI does not diagnose or treat conditions.</p>
+  </div>
+</footer>
+
+<script>
+// ── STARS ──
+(function(){
+  const canvas = document.getElementById('stars-canvas');
+  for(let i=0;i<120;i++){
+    const s = document.createElement('div');
+    const size = Math.random()*2+0.5;
+    s.className='star';
+    s.style.cssText=`width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*80}%;--dur:${2+Math.random()*4}s;--delay:${Math.random()*5}s;`;
+    canvas.appendChild(s);
+  }
+})();
+
+// ── TOP 20 SEED DATA ──
+const TOP20 = [
+  {rank:1,name:'Ashwagandha',latin:'Withania somnifera',cat:'Adaptogen',color:'#7a9a2a',stars:4.9,votes:2847},
+  {rank:2,name:'Turmeric',latin:'Curcuma longa',cat:'Anti-inflammatory',color:'#c8841a',stars:4.8,votes:3102},
+  {rank:3,name:'Lion\'s Mane',latin:'Hericium erinaceus',cat:'Cognitive',color:'#5c62b8',stars:4.8,votes:2201},
+  {rank:4,name:'Ginkgo',latin:'Ginkgo biloba',cat:'Cognitive',color:'#5c62b8',stars:4.7,votes:1988},
+  {rank:5,name:'Reishi',latin:'Ganoderma lucidum',cat:'Immune',color:'#b87333',stars:4.7,votes:1754},
+  {rank:6,name:'Passionflower',latin:'Passiflora incarnata',cat:'Nervous system',color:'#3a3a8a',stars:4.6,votes:1432},
+  {rank:7,name:'Milk Thistle',latin:'Silybum marianum',cat:'Liver / Detox',color:'#4a7a5a',stars:4.6,votes:1388},
+  {rank:8,name:'Neem',latin:'Azadirachta indica',cat:'Antimicrobial',color:'#1a8c7c',stars:4.5,votes:1205},
+  {rank:9,name:'Shatavari',latin:'Asparagus racemosus',cat:'Hormonal',color:'#9a3a7a',stars:4.5,votes:1087},
+  {rank:10,name:'Damiana',latin:'Turnera diffusa',cat:'Hormonal',color:'#9a3a7a',stars:4.4,votes:982},
+  {rank:11,name:'Nettle',latin:'Urtica dioica',cat:'Anti-inflammatory',color:'#c4522a',stars:4.4,votes:941},
+  {rank:12,name:'Rhodiola',latin:'Rhodiola rosea',cat:'Adaptogen',color:'#7a9a2a',stars:4.4,votes:875},
+  {rank:13,name:'Lemon Balm',latin:'Melissa officinalis',cat:'Nervous system',color:'#3a3a8a',stars:4.3,votes:812},
+  {rank:14,name:'Moringa',latin:'Moringa oleifera',cat:'Immune',color:'#b87333',stars:4.3,votes:790},
+  {rank:15,name:'Mugwort',latin:'Artemisia vulgaris',cat:'Digestive',color:'#c8841a',stars:4.2,votes:654},
+  {rank:16,name:'Fo-Ti',latin:'Polygonum multiflorum',cat:'Adaptogen',color:'#7a9a2a',stars:4.2,votes:621},
+  {rank:17,name:'Calendula',latin:'Calendula officinalis',cat:'Skin / Topical',color:'#a06040',stars:4.2,votes:598},
+  {rank:18,name:'Holy Basil',latin:'Ocimum tenuiflorum',cat:'Adaptogen',color:'#7a9a2a',stars:4.1,votes:556},
+  {rank:19,name:'Cat\'s Claw',latin:'Uncaria tomentosa',cat:'Immune',color:'#b87333',stars:4.1,votes:510},
+  {rank:20,name:'St John\'s Wort',latin:'Hypericum perforatum',cat:'Nervous system',color:'#3a3a8a',stars:4.0,votes:487},
+];
+
+function renderStars(n, max=5) {
+  let html = '';
+  for(let i=1;i<=max;i++) html += `<span class="${i <= Math.round(n) ? 'star-icon' : 'star-icon empty'}">★</span>`;
+  return html;
+}
+
+// Render rankings
+const grid = document.getElementById('rankings-grid');
+grid.innerHTML = TOP20.map(h => `
+  <a class="rank-card ${h.rank<=3?'top3':''}" onclick="searchHerbByName('${h.name}');return false;" href="#">
+    <span class="rank-number">${String(h.rank).padStart(2,'0')}</span>
+    <div class="rank-herb">${h.name}</div>
+    <div class="rank-latin">${h.latin}</div>
+    <div class="rank-cat"><span class="rank-dot" style="background:${h.color}"></span>${h.cat}</div>
+    <div class="rank-stars">${renderStars(h.stars)}</div>
+    <div class="rank-votes">${h.votes.toLocaleString()} ratings</div>
+  </a>`).join('');
+
+// ── SEARCH ──
+let apiKey = localStorage.getItem('chi_api_key') || '';
+
+document.getElementById('supreme-search-input').addEventListener('keydown', e => {
+  if(e.key==='Enter') searchHerb();
+});
+
+function searchHerb() {
+  const val = document.getElementById('supreme-search-input').value.trim();
+  if(!val) return;
+  loadHerbProfile(val);
+}
+
+function searchHerbByName(name) {
+  document.getElementById('supreme-search-input').value = name;
+  loadHerbProfile(name);
+}
+
+async function loadHerbProfile(herbName) {
+  if(!apiKey) {
+    apiKey = prompt('Enter your Anthropic API key to use the Herbadex:') || '';
+    if(!apiKey) return;
+    localStorage.setItem('chi_api_key', apiKey);
+  }
+
+  // Show profile section, hide hero
+  document.getElementById('tree-hero').style.display = 'none';
+  document.getElementById('rankings-section').style.display = 'none';
+  document.getElementById('herb-profile').style.display = 'block';
+  document.getElementById('profile-loading').style.display = 'block';
+  document.getElementById('profile-content').style.display = 'none';
+  document.getElementById('profile-bc-name').textContent = herbName;
+  document.getElementById('bc-current').textContent = herbName;
+
+  // Update breadcrumb
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  const systemPrompt = `You are the Herbadex — CHI's deep herb knowledge engine.
+You provide the FULLEST possible profile of any herb requested.
+The SPIRITUAL and ENERGETIC history is THE MAIN FEATURE — prioritise it.
+Go deep into ancient use, shamanic and religious traditions, folklore, mythology.
+Also cover: full modern research, active compounds, preparation methods, body system effects.
+
+Return ONLY valid JSON:
+{
+  "name": "common name",
+  "latin": "latin binomial",
+  "category": "primary action category",
+  "categoryColor": "#hex",
+  "origin": "native region",
+  "tradition": "primary healing tradition(s)",
+  "preparations": ["tea","tincture","capsule","etc"],
+  "safetyLevel": "Generally safe | Use with caution | Consult professional",
+  "summary": "2 sentence overview",
+  "spiritualHistory": {
+    "overview": "3-4 paragraph deep exploration of the herb's spiritual, shamanic, religious and cultural significance across all traditions that used it",
+    "timeline": [
+      {"era":"time period or culture","text":"what they knew/used it for"}
+    ]
+  },
+  "modernUse": "2-3 paragraphs on current research and applications",
+  "compounds": [{"name":"compound","role":"what it does","strength":0-100}],
+  "bodyEffects": [{"system":"body system","effect":"what it does there"}],
+  "preparation": {
+    "tea": "method and dose or null",
+    "tincture": "method and dose or null", 
+    "capsule": "dose or null",
+    "topical": "method or null",
+    "smoke": "method or null",
+    "traditional": "any traditional preparation method"
+  },
+  "rareFact": "one genuinely surprising fact",
+  "interactions": ["list of known drug/herb interactions"],
+  "forumSeed": [
+    {"user":"Name","initials":"XX","rating":5,"comment":"realistic user experience comment"},
+    {"user":"Name","initials":"XX","rating":4,"comment":"realistic user experience comment"},
+    {"user":"Name","initials":"XX","rating":5,"comment":"realistic comment including something funny or surprising"}
+  ]
+}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2500,
+        system: systemPrompt,
+        messages: [{role:'user',content:`Provide the full deep profile for: ${herbName}`}]
+      })
+    });
+    const raw = await res.json();
+    const text = raw.content[0].text.trim().replace(/^```json\s*/,'').replace(/\s*```$/,'');
+    const herb = JSON.parse(text);
+    renderProfile(herb);
+  } catch(err) {
+    console.error(err);
+    document.getElementById('profile-loading').innerHTML = '<p style="color:#c4522a;padding:2rem;text-align:center;">Unable to load herb data. Please check your API key.</p>';
+  }
+}
+
+function renderProfile(h) {
+  // Hero
+  document.getElementById('ph-name').textContent = h.name;
+  document.getElementById('ph-latin').textContent = h.latin;
+  document.getElementById('ph-origin').textContent = h.origin;
+  document.getElementById('ph-cat').textContent = h.category;
+  document.getElementById('ph-cat').style.background = h.categoryColor + '22';
+  document.getElementById('ph-cat').style.color = h.categoryColor;
+  document.getElementById('ph-cat').style.borderColor = h.categoryColor + '55';
+  document.getElementById('ph-category').textContent = h.category;
+  document.getElementById('ph-tradition').textContent = h.tradition;
+  document.getElementById('ph-preps').textContent = (h.preparations || []).join(', ');
+  document.getElementById('ph-safety').textContent = h.safetyLevel;
+  document.getElementById('profile-bc-name').textContent = h.name;
+  document.getElementById('bc-current').textContent = h.name;
+
+  // Timeline HTML
+  const timelineHTML = (h.spiritualHistory.timeline || []).map(t =>
+    `<div class="tl-item"><div class="tl-year">${t.era}</div><div class="tl-text">${t.text}</div></div>`
+  ).join('');
+
+  // Compounds
+  const compoundsHTML = (h.compounds || []).map(c =>
+    `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--parchment-dark);">
+      <span style="font-size:13px;font-weight:500;color:var(--charcoal);min-width:130px;">${c.name}</span>
+      <div style="flex:1;height:3px;background:var(--parchment-deep);border-radius:2px;overflow:hidden;"><div style="width:${c.strength}%;height:100%;background:var(--gold);border-radius:2px;"></div></div>
+      <span style="font-size:12px;color:var(--charcoal-mid);min-width:150px;text-align:right;">${c.role}</span>
+    </div>`
+  ).join('');
+
+  // Body effects
+  const bodyHTML = (h.bodyEffects || []).map(b =>
+    `<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--parchment-dark);">
+      <strong style="font-size:13px;color:var(--forest);min-width:130px;">${b.system}</strong>
+      <span style="font-size:13px;color:var(--charcoal-mid);flex:1;">${b.effect}</span>
+    </div>`
+  ).join('');
+
+  // Preparation
+  const prepHTML = Object.entries(h.preparation || {}).filter(([k,v])=>v).map(([k,v])=>
+    `<div style="padding:1rem 1.25rem;background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-radius:4px;">
+      <div style="font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:5px;">${k}</div>
+      <div style="font-size:13px;color:var(--charcoal-mid);line-height:1.65;">${v}</div>
+    </div>`
+  ).join('');
+
+  document.getElementById('profile-main-content').innerHTML = `
+    <div class="content-section">
+      <h2><span class="cs-icon">✦</span>Spiritual &amp; cultural history</h2>
+      ${h.spiritualHistory.overview.split('\n\n').map(p=>`<p>${p}</p>`).join('')}
+      <div class="spirit-block">
+        <div class="sb-label">Ancient knowledge</div>
+        <p>${h.rareFact}</p>
+      </div>
+      ${timelineHTML ? `<div class="timeline" style="margin-top:1.5rem;">${timelineHTML}</div>` : ''}
+    </div>
+
+    <div class="content-section">
+      <h2><span class="cs-icon">🔬</span>Modern research &amp; use</h2>
+      ${(h.modernUse||'').split('\n\n').map(p=>`<p>${p}</p>`).join('')}
+    </div>
+
+    <div class="content-section">
+      <h2><span class="cs-icon">⚗</span>Active compounds</h2>
+      ${compoundsHTML}
+    </div>
+
+    <div class="content-section">
+      <h2><span class="cs-icon">🫀</span>Effects on body systems</h2>
+      ${bodyHTML}
+    </div>
+
+    <div class="content-section">
+      <h2><span class="cs-icon">🌿</span>How to prepare &amp; use</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.85rem;">${prepHTML}</div>
+    </div>
+
+    ${h.interactions && h.interactions.length ? `
+    <div class="content-section">
+      <h2><span class="cs-icon">⚠</span>Interactions &amp; cautions</h2>
+      <div style="background:rgba(196,82,42,.06);border:1px solid rgba(196,82,42,.18);border-left:3px solid #c4522a;border-radius:0 4px 4px 0;padding:1.25rem 1.5rem;">
+        ${h.interactions.map(i=>`<div style="font-size:14px;color:var(--charcoal-mid);padding:6px 0;border-bottom:1px solid rgba(196,82,42,.08);display:flex;gap:8px;"><span style="color:#c4522a;font-weight:700;font-size:12px;margin-top:2px;">!</span>${i}</div>`).join('')}
+      </div>
+    </div>` : ''}`;
+
+  // Sidebar: ranking + forum
+  const rankData = TOP20.find(r => r.name.toLowerCase() === h.name.toLowerCase()) || {rank:'—',stars:4.5,votes:0};
+  const forumEntries = (h.forumSeed || []).map(f => `
+    <div class="forum-entry">
+      <div class="fe-meta">
+        <div class="fe-avatar">${f.initials}</div>
+        <span class="fe-name">${f.user}</span>
+        <span class="fe-date">Recently</span>
+      </div>
+      <div class="fe-stars">${Array(f.rating).fill('<span class="fe-star">★</span>').join('')}</div>
+      <div class="fe-text">${f.comment}</div>
+    </div>`).join('');
+
+  document.getElementById('profile-sidebar-content').innerHTML = `
+    <div class="rank-display">
+      <div class="rd-number">#${rankData.rank}</div>
+      <div class="rd-label">CHI Community Ranking</div>
+      <div class="rd-stars">${Array(5).fill('').map((_,i)=>`<span class="rd-star ${i<Math.round(rankData.stars)?'':'empty'}">★</span>`).join('')}</div>
+      <div class="rd-votes">${rankData.votes ? rankData.votes.toLocaleString() + ' community ratings' : 'Be the first to rate'}</div>
+      <div class="rd-label" style="margin-top:1rem;">Rate this herb</div>
+      <div class="star-rate-row" id="rate-row">
+        ${[1,2,3,4,5].map(n=>`<span class="rate-star" data-val="${n}" onmouseover="hoverStars(${n})" onmouseout="clearHover()" onclick="rateHerb(${n})">★</span>`).join('')}
+      </div>
+    </div>
+
+    <div class="forum-section">
+      <div class="forum-header">
+        <h4>Community experiences</h4>
+        <span class="forum-count">${(h.forumSeed||[]).length} entries</span>
+      </div>
+      ${forumEntries}
+      <div class="forum-add">
+        <textarea class="forum-textarea" id="forum-input" placeholder="Share your experience with ${h.name}..."></textarea>
+        <button class="forum-submit" onclick="addForumEntry('${h.name}')">Share experience</button>
+      </div>
+    </div>`;
+
+  document.getElementById('profile-loading').style.display = 'none';
+  document.getElementById('profile-content').style.display = 'block';
+}
+
+function hoverStars(n) {
+  document.querySelectorAll('.rate-star').forEach(s => {
+    s.classList.toggle('hovered', parseInt(s.dataset.val) <= n);
+  });
+}
+function clearHover() {
+  document.querySelectorAll('.rate-star').forEach(s => s.classList.remove('hovered'));
+}
+function rateHerb(n) {
+  alert(`Thank you! Your ${n}-star rating has been recorded. Ratings update the CHI Top 20 ranking.`);
+}
+
+function addForumEntry(herbName) {
+  const text = document.getElementById('forum-input').value.trim();
+  if(!text) return;
+  const entries = document.querySelector('.forum-section .forum-header');
+  const newEntry = document.createElement('div');
+  newEntry.className = 'forum-entry';
+  newEntry.innerHTML = `<div class="fe-meta"><div class="fe-avatar">U</div><span class="fe-name">You</span><span class="fe-date">Just now</span></div><div class="fe-stars"><span class="fe-star">★★★★★</span></div><div class="fe-text">${text}</div>`;
+  entries.insertAdjacentElement('afterend', newEntry);
+  document.getElementById('forum-input').value = '';
+}
+
+function closeProfile() {
+  document.getElementById('herb-profile').style.display = 'none';
+  document.getElementById('tree-hero').style.display = 'flex';
+  document.getElementById('rankings-section').style.display = 'block';
+  document.getElementById('bc-current').textContent = 'Herbadex';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Deep link — open a specific herb directly from supreme.html?herb=name
+(function openHerbFromURL(){
+  const herb = new URLSearchParams(window.location.search).get('herb');
+  if (!herb) return;
+  const name = decodeURIComponent(herb).replace(/-/g, ' ').trim();
+  const go = () => { try { searchHerbByName(name); } catch(e) { console.error(e); } };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go);
+  else go();
+})();
+</script>
+</body>
+</html>

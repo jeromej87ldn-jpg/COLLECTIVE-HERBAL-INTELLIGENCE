@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reset Password — C.H.I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root{--forest:#1a3a2a;--gold:#c8952a;--gold-light:#e8b84b;--night:#0c1a10;--parchment:#f5f0e8;--muted:rgba(245,240,232,0.45);--border:rgba(255,255,255,0.08);--input:rgba(255,255,255,0.05);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--night);color:var(--parchment);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;position:relative;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(26,58,42,0.2) 0%,transparent 65%);pointer-events:none;}
+.wrap{position:relative;z-index:1;width:100%;max-width:420px;}
+.logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;letter-spacing:.16em;color:var(--gold-light);text-align:center;margin-bottom:.25rem;}
+.logo-sub{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,0.3);text-align:center;margin-bottom:3rem;}
+.card{background:rgba(26,58,42,0.3);border:1px solid var(--border);border-radius:8px;padding:2.5rem 2rem;}
+.eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;}
+h1{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--parchment);margin-bottom:.5rem;}
+p{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:1.5rem;}
+.field-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:.4rem;}
+.field-input{width:100%;background:var(--input);border:1px solid var(--border);border-radius:4px;padding:12px 14px;font-size:14px;color:var(--parchment);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;margin-bottom:1.25rem;}
+.field-input:focus{border-color:rgba(200,149,42,0.4);}
+.field-input::placeholder{color:rgba(245,240,232,0.18);}
+.btn{width:100%;padding:13px;background:var(--gold);color:var(--night);border:none;border-radius:4px;font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;margin-bottom:1rem;}
+.btn:hover{background:var(--gold-light);}
+.back{display:block;text-align:center;font-size:13px;color:var(--muted);text-decoration:none;transition:color .2s;}
+.back:hover{color:var(--gold);}
+.success{display:none;background:rgba(74,140,101,0.1);border:1px solid rgba(74,140,101,0.25);border-radius:6px;padding:1rem 1.25rem;margin-bottom:1.25rem;font-size:14px;color:#7acca0;line-height:1.65;}
+.success.show{display:block;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="logo">C.H.I</div>
+  <div class="logo-sub">Collective Herbal Intelligence</div>
+  <div class="card">
+    <div class="eyebrow">Account</div>
+    <h1>Reset your password</h1>
+    <p>Enter your email address and we will send you a link to reset your password. The link expires after 1 hour.</p>
+    <div class="success" id="success">Check your inbox. If an account exists for that email, a reset link is on its way. Check your spam folder if it does not arrive within a few minutes.</div>
+    <label class="field-label">Email address</label>
+    <input class="field-input" type="email" id="reset-email" placeholder="your@email.com">
+    <button class="btn" onclick="sendReset()">Send reset link</button>
+    <a class="back" href="signin.html">← Back to sign in</a>
+  </div>
+</div>
+<script>
+function sendReset() {
+  const email = document.getElementById('reset-email').value.trim();
+  if (!email) return;
+  // In production — Supabase password reset here
+  document.getElementById('success').classList.add('show');
+  document.getElementById('reset-email').value = '';
+}
+</script>
+</body>
+</html>
