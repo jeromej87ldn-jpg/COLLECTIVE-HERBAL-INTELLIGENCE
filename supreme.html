@@ -446,8 +446,6 @@ grid.innerHTML = TOP20.map(h => `
   </a>`).join('');
 
 // ── SEARCH ──
-let apiKey = localStorage.getItem('chi_api_key') || '';
-
 document.getElementById('supreme-search-input').addEventListener('keydown', e => {
   if(e.key==='Enter') searchHerb();
 });
@@ -464,12 +462,6 @@ function searchHerbByName(name) {
 }
 
 async function loadHerbProfile(herbName) {
-  if(!apiKey) {
-    apiKey = prompt('Enter your Anthropic API key to use the Herbadex:') || '';
-    if(!apiKey) return;
-    localStorage.setItem('chi_api_key', apiKey);
-  }
-
   // Show profile section, hide hero
   document.getElementById('tree-hero').style.display = 'none';
   document.getElementById('rankings-section').style.display = 'none';
@@ -482,67 +474,21 @@ async function loadHerbProfile(herbName) {
   // Update breadcrumb
   window.scrollTo({top:0,behavior:'smooth'});
 
-  const systemPrompt = `You are the Herbadex — CHI's deep herb knowledge engine.
-You provide the FULLEST possible profile of any herb requested.
-The SPIRITUAL and ENERGETIC history is THE MAIN FEATURE — prioritise it.
-Go deep into ancient use, shamanic and religious traditions, folklore, mythology.
-Also cover: full modern research, active compounds, preparation methods, body system effects.
-
-Return ONLY valid JSON:
-{
-  "name": "common name",
-  "latin": "latin binomial",
-  "category": "primary action category",
-  "categoryColor": "#hex",
-  "origin": "native region",
-  "tradition": "primary healing tradition(s)",
-  "preparations": ["tea","tincture","capsule","etc"],
-  "safetyLevel": "Generally safe | Use with caution | Consult professional",
-  "summary": "2 sentence overview",
-  "spiritualHistory": {
-    "overview": "3-4 paragraph deep exploration of the herb's spiritual, shamanic, religious and cultural significance across all traditions that used it",
-    "timeline": [
-      {"era":"time period or culture","text":"what they knew/used it for"}
-    ]
-  },
-  "modernUse": "2-3 paragraphs on current research and applications",
-  "compounds": [{"name":"compound","role":"what it does","strength":0-100}],
-  "bodyEffects": [{"system":"body system","effect":"what it does there"}],
-  "preparation": {
-    "tea": "method and dose or null",
-    "tincture": "method and dose or null", 
-    "capsule": "dose or null",
-    "topical": "method or null",
-    "smoke": "method or null",
-    "traditional": "any traditional preparation method"
-  },
-  "rareFact": "one genuinely surprising fact",
-  "interactions": ["list of known drug/herb interactions"],
-  "forumSeed": [
-    {"user":"Name","initials":"XX","rating":5,"comment":"realistic user experience comment"},
-    {"user":"Name","initials":"XX","rating":4,"comment":"realistic user experience comment"},
-    {"user":"Name","initials":"XX","rating":5,"comment":"realistic comment including something funny or surprising"}
-  ]
-}`;
-
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('/.netlify/functions/herb-profile', {
       method: 'POST',
-      headers: {'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 2500,
-        system: systemPrompt,
-        messages: [{role:'user',content:`Provide the full deep profile for: ${herbName}`}]
-      })
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ herbName })
     });
-    const raw = await res.json();
-    const text = raw.content[0].text.trim().replace(/^```json\s*/,'').replace(/\s*```$/,'');
-    const herb = JSON.parse(text);
+    if(!res.ok) {
+      const errBody = await res.json().catch(()=>({}));
+      throw new Error(errBody.error || `Request failed (${res.status})`);
+    }
+    const herb = await res.json();
     renderProfile(herb);
   } catch(err) {
     console.error(err);
-    document.getElementById('profile-loading').innerHTML = '<p style="color:#c4522a;padding:2rem;text-align:center;">Unable to load herb data. Please check your API key.</p>';
+    document.getElementById('profile-loading').innerHTML = '<p style="color:#c4522a;padding:2rem;text-align:center;">Unable to load herb data. Please try again in a moment.</p>';
   }
 }
 
