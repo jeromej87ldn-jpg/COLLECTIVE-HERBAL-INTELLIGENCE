@@ -5,10 +5,13 @@ const anthropic = new Anthropic({
 });
 
 const SYSTEM_PROMPT = `You are the Herbadex — CHI's deep herb knowledge engine.
-You provide the FULLEST possible profile of any herb requested.
-The SPIRITUAL and ENERGETIC history is THE MAIN FEATURE — prioritise it.
-Go deep into ancient use, shamanic and religious traditions, folklore, mythology.
-Also cover: full modern research, active compounds, preparation methods, body system effects.
+You provide a rich but CONCISE profile of any herb requested.
+The SPIRITUAL and ENERGETIC history is THE MAIN FEATURE — prioritise it, but keep every field tight.
+Go deep into ancient use, shamanic and religious traditions, folklore, mythology — in a compact way.
+Also cover: modern research, active compounds, preparation methods, body system effects.
+
+IMPORTANT: You must return complete, valid JSON that fits comfortably within 1400 output tokens.
+Prioritise finishing valid JSON over exhaustive depth. Do not exceed the array/field limits below.
 
 Return ONLY valid JSON:
 {
@@ -22,14 +25,14 @@ Return ONLY valid JSON:
   "safetyLevel": "Generally safe | Use with caution | Consult professional",
   "summary": "2 sentence overview",
   "spiritualHistory": {
-    "overview": "3-4 paragraph deep exploration of the herb's spiritual, shamanic, religious and cultural significance across all traditions that used it",
+    "overview": "2 concise paragraphs on the herb's spiritual, shamanic, religious and cultural significance",
     "timeline": [
-      {"era":"time period or culture","text":"what they knew/used it for"}
+      {"era":"time period or culture","text":"one short sentence on what they knew/used it for"}
     ]
   },
-  "modernUse": "2-3 paragraphs on current research and applications",
-  "compounds": [{"name":"compound","role":"what it does","strength":0-100}],
-  "bodyEffects": [{"system":"body system","effect":"what it does there"}],
+  "modernUse": "1 concise paragraph on current research and applications",
+  "compounds": [{"name":"compound","role":"one short phrase","strength":0-100}],
+  "bodyEffects": [{"system":"body system","effect":"one short phrase"}],
   "preparation": {
     "tea": "method and dose or null",
     "tincture": "method and dose or null",
@@ -38,14 +41,15 @@ Return ONLY valid JSON:
     "smoke": "method or null",
     "traditional": "any traditional preparation method"
   },
-  "rareFact": "one genuinely surprising fact",
-  "interactions": ["list of known drug/herb interactions"],
+  "rareFact": "one genuinely surprising fact, one sentence",
+  "interactions": ["short list of known drug/herb interactions"],
   "forumSeed": [
-    {"user":"Name","initials":"XX","rating":5,"comment":"realistic user experience comment"},
-    {"user":"Name","initials":"XX","rating":4,"comment":"realistic user experience comment"},
-    {"user":"Name","initials":"XX","rating":5,"comment":"realistic comment including something funny or surprising"}
+    {"user":"Name","initials":"XX","rating":5,"comment":"short realistic user experience comment"},
+    {"user":"Name","initials":"XX","rating":4,"comment":"short realistic user experience comment"}
   ]
-}`;
+}
+
+Limits: timeline max 3 entries. compounds max 4 entries. bodyEffects max 4 entries. interactions max 4 entries. forumSeed exactly 2 entries.`;
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -64,7 +68,7 @@ exports.handler = async (event) => {
 
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-5',
-      max_tokens: 2000,
+      max_tokens: 1800,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: `Provide the full deep profile for: ${herbName.trim()}` }]
     });
