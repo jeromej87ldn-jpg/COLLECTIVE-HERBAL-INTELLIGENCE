@@ -82,3 +82,24 @@ exports.handler = async (event) => {
       .replace(/\s*```$/, '');
 
     let herb;
+    try {
+      herb = JSON.parse(raw);
+    } catch (parseErr) {
+      return {
+        statusCode: 502,
+        body: JSON.stringify({ error: 'Model response was not valid JSON', stopReason: message.stop_reason, raw: raw.slice(0, 500) })
+      };
+    }
+
+    return {
+      statusCode: 200,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(herb)
+    };
+  } catch (error) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message })
+    };
+  }
+};
