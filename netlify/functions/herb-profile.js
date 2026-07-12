@@ -64,7 +64,7 @@ exports.handler = async (event) => {
 
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-5',
-      max_tokens: 2500,
+      max_tokens: 1500,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: `Provide the full deep profile for: ${herbName.trim()}` }]
     });
