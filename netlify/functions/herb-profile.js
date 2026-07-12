@@ -1,8 +1,21 @@
 const Anthropic = require('@anthropic-ai/sdk');
+const { createClient } = require('@supabase/supabase-js');
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY
 });
+
+// SUPABASE_URL is sometimes stored with a trailing /rest/v1/ path (a REST
+// endpoint URL) rather than the bare project URL the JS client expects.
+// Normalise it so createClient always gets the bare project URL.
+function supabaseProjectUrl() {
+  return (process.env.SUPABASE_URL || '').replace(/\/rest\/v1\/?$/, '');
+}
+
+let supabase = null;
+if (process.env.SUPABASE_URL && process.env.SUPABASE_KEY) {
+  supabase = createClient(supabaseProjectUrl(), process.env.SUPABASE_KEY);
+}
 
 const SYSTEM_PROMPT = `You are the Herbadex — CHI's deep herb knowledge engine.
 You provide a rich but CONCISE profile of any herb requested.
@@ -61,6 +74,30 @@ exports.handler = async (event) => {
     if (!herbName || !herbName.trim()) {
       return { statusCode: 400, body: JSON.stringify({ error: 'herbName is required' }) };
     }
+    const name = herbName.trim().toLowerCase();
+
+    // Check Supabase cache first (best-effort — if this fails for any
+    // reason we just fall through to generating fresh data).
+    if (supabase) {
+      try {
+        const { data: existing } = await supabase
+          .from('herbs')
+          .select('data, status')
+          .eq('name', name)
+          .eq('status', 'complete')
+          .maybeSingle();
+
+        if (existing && existing.data) {
+          return {
+            statusCode: 200,
+            headers: { 'Content-Type': 'application/json', 'X-Cache': 'hit' },
+            body: JSON.stringify(existing.data)
+          };
+        }
+      } catch (cacheErr) {
+        console.error('Supabase read failed, continuing without cache:', cacheErr.message);
+      }
+    }
 
     if (!process.env.ANTHROPIC_API_KEY) {
       return { statusCode: 500, body: JSON.stringify({ error: 'Server is missing ANTHROPIC_API_KEY' }) };
@@ -70,7 +107,7 @@ exports.handler = async (event) => {
       model: 'claude-sonnet-5',
       max_tokens: 1800,
       system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: `Provide the full deep profile for: ${herbName.trim()}` }]
+      messages: [{ role: 'user', content: `Provide the full deep profile for: ${name}` }]
     });
 
     const textBlock = message.content.find(block => block.type === 'text');
@@ -95,9 +132,23 @@ exports.handler = async (event) => {
       };
     }
 
+    // Save to Supabase (best-effort — a caching failure shouldn't fail
+    // the user's request, since they already have their herb data).
+    if (supabase) {
+      try {
+        await supabase.from('herbs').upsert({
+          name,
+          data: herb,
+          status: 'complete'
+        });
+      } catch (saveErr) {
+        console.error('Supabase write failed:', saveErr.message);
+      }
+    }
+
     return {
       statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-Cache': 'miss' },
       body: JSON.stringify(herb)
     };
   } catch (error) {
