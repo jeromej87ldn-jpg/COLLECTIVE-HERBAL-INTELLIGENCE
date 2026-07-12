@@ -64,25 +64,21 @@ exports.handler = async (event) => {
 
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-5',
-      max_tokens: 1500,
+      max_tokens: 2000,
       system: SYSTEM_PROMPT,
       messages: [{ role: 'user', content: `Provide the full deep profile for: ${herbName.trim()}` }]
     });
 
-    const raw = message.content[0].text.trim()
+    const textBlock = message.content.find(block => block.type === 'text');
+    if (!textBlock || !textBlock.text) {
+      return {
+        statusCode: 502,
+        body: JSON.stringify({ error: 'No text content in model response', stopReason: message.stop_reason })
+      };
+    }
+
+    const raw = textBlock.text.trim()
       .replace(/^```json\s*/, '')
       .replace(/\s*```$/, '');
-    const herb = JSON.parse(raw);
 
-    return {
-      statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(herb)
-    };
-  } catch (error) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: error.message })
-    };
-  }
-};
+    let herb;
