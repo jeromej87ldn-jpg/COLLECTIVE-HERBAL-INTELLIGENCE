@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Herbadex — C.H.I — Collective Herbal Intelligence</title>
+<title>Herbadex — the Collective Herbal Intelligence</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
@@ -243,6 +243,11 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .pi-cta-text strong{color:var(--charcoal);}
 .pi-cta-link{font-size:12px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--forest);background:var(--gold);padding:.55rem 1rem;border-radius:4px;text-decoration:none;white-space:nowrap;transition:background .2s;}
 .pi-cta-link:hover{background:var(--gold-light);}
+
+/* Back to Plant Intelligence edge panel */
+.herbadex-pi-tab{position:fixed;right:0;top:45%;transform:translateY(-50%);writing-mode:vertical-lr;background:var(--gold);color:var(--forest);border:none;border-radius:8px 0 0 8px;padding:1rem .5rem;font-family:'DM Sans',sans-serif;font-size:11.5px;font-weight:700;letter-spacing:.04em;cursor:pointer;z-index:150;box-shadow:-3px 0 12px rgba(0,0,0,.25);display:none;}
+.herbadex-pi-tab.show{display:block;}
+.herbadex-pi-tab:hover{background:var(--gold-light);}
 </style>
 </head>
 <body>
@@ -250,7 +255,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 <!-- NAV -->
 <nav>
   <a href="index.html" class="nav-logo">
-    <span class="nav-chi">C.H.I</span>
+    <span class="nav-chi">Herbadex</span>
     <span class="nav-full">Collective Herbal Intelligence</span>
   </a>
   <div class="nav-right">
@@ -364,6 +369,9 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   </div>
 </section>
 
+<!-- Back to Plant Intelligence edge panel -->
+<button class="herbadex-pi-tab" id="herbadex-pi-tab" onclick="window.location.href='phytochemistry.html'">Back to Plant Intelligence ↶</button>
+
 <!-- HERB PROFILE (hidden until search) -->
 <section id="herb-profile">
   <div class="profile-nav">
@@ -407,7 +415,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
-    <div class="footer-logo"><span>C.H.I</span><small>Collective Herbal Intelligence</small></div>
+    <div class="footer-logo"><span>Herbadex</span><small>Collective Herbal Intelligence</small></div>
     <div class="footer-links">
       <a href="herb-match.html">Herb Match</a>
       <a href="supreme.html">Herbadex</a>
@@ -494,6 +502,7 @@ async function loadHerbProfile(herbName) {
   document.getElementById('tree-hero').style.display = 'none';
   document.getElementById('rankings-section').style.display = 'none';
   document.getElementById('herb-profile').style.display = 'block';
+  document.getElementById('herbadex-pi-tab').classList.add('show');
   document.getElementById('profile-loading').style.display = 'block';
   document.getElementById('profile-content').style.display = 'none';
   document.getElementById('profile-bc-name').textContent = herbName;
@@ -568,15 +577,10 @@ function renderProfile(h) {
   ).join('');
 
   document.getElementById('profile-main-content').innerHTML = `
-    <div class="content-section">
-      <h2><span class="cs-icon">✦</span>Spiritual &amp; cultural history</h2>
-      ${h.spiritualHistory.overview.split('\n\n').map(p=>`<p>${p}</p>`).join('')}
-      <div class="spirit-block">
-        <div class="sb-label">Ancient knowledge</div>
-        <p>${h.rareFact}</p>
-      </div>
-      ${timelineHTML ? `<div class="timeline" style="margin-top:1.5rem;">${timelineHTML}</div>` : ''}
-    </div>
+    ${h.functionalOverview ? `<div style="background:rgba(200,149,42,.07);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
+      <div style="font-size:14.5px;line-height:1.8;color:var(--charcoal);margin-bottom:${h.source ? '1rem' : '0'};">${h.functionalOverview}</div>
+      ${h.source ? `<div style="font-size:11.5px;color:var(--charcoal-mid);border-top:1px solid rgba(200,149,42,.2);padding-top:.75rem;"><span style="text-transform:uppercase;letter-spacing:.08em;color:var(--gold);font-weight:600;">Source</span><span style="margin-left:.5rem;">${h.source}</span></div>` : ''}
+    </div>` : ''}
 
     <div class="content-section">
       <h2><span class="cs-icon">🔬</span>Modern research &amp; use</h2>
@@ -585,6 +589,16 @@ function renderProfile(h) {
         <div class="pi-cta-text">Want the deep compound science — bioavailability, mechanisms, dosing evidence? <strong>Plant Intelligence</strong> covers it in full clinical detail.</div>
         <a class="pi-cta-link" href="phytochemistry.html" target="_blank">Explore Plant Intelligence →</a>
       </div>
+    </div>
+
+    <div class="content-section">
+      <h2><span class="cs-icon">✦</span>Spiritual &amp; cultural history</h2>
+      ${h.spiritualHistory.overview.split('\n\n').map(p=>`<p>${p}</p>`).join('')}
+      <div class="spirit-block">
+        <div class="sb-label">Ancient knowledge</div>
+        <p>${h.rareFact}</p>
+      </div>
+      ${timelineHTML ? `<div class="timeline" style="margin-top:1.5rem;">${timelineHTML}</div>` : ''}
     </div>
 
     <div class="content-section">
@@ -676,6 +690,7 @@ function addForumEntry(herbName) {
 
 function closeProfile() {
   document.getElementById('herb-profile').style.display = 'none';
+  document.getElementById('herbadex-pi-tab').classList.remove('show');
   document.getElementById('tree-hero').style.display = 'flex';
   document.getElementById('rankings-section').style.display = 'block';
   document.getElementById('bc-current').textContent = 'Herbadex';

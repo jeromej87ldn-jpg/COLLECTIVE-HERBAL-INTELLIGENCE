@@ -1,10 +1,6 @@
 const Anthropic = require('@anthropic-ai/sdk');
 const { createClient } = require('@supabase/supabase-js');
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY
-});
-
 // SUPABASE_URL is sometimes stored with a trailing /rest/v1/ path (a REST
 // endpoint URL) rather than the bare project URL the JS client expects.
 // Normalise it so createClient always gets the bare project URL.
@@ -37,6 +33,8 @@ Return ONLY valid JSON:
   "preparations": ["tea","tincture","capsule","etc"],
   "safetyLevel": "Generally safe | Use with caution | Consult professional",
   "summary": "2 sentence overview",
+  "functionalOverview": "3-5 sentence in-depth paragraph, plain and grounded (not mystical), on what the herb actually does, what it's commonly used for, and how it helps people",
+  "source": "a real, verifiable citation for functionalOverview — a specific study, textbook, monograph or pharmacopoeia (e.g. 'Commission E Monograph' or a named clinical trial/journal). Use null if you are not genuinely confident a real citation exists — never invent one",
   "spiritualHistory": {
     "overview": "2 concise paragraphs on the herb's spiritual, shamanic, religious and cultural significance",
     "timeline": [
@@ -70,11 +68,15 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { herbName } = JSON.parse(event.body || '{}');
+    // TEMP — PREVIEW TESTING ONLY. Remove `previewApiKey` handling below
+    // (and the matching text box in phytochemistry.html) before launch.
+    const { herbName, previewApiKey } = JSON.parse(event.body || '{}');
     if (!herbName || !herbName.trim()) {
       return { statusCode: 400, body: JSON.stringify({ error: 'herbName is required' }) };
     }
     const name = herbName.trim().toLowerCase();
+    const apiKey = process.env.ANTHROPIC_API_KEY || previewApiKey;
+    // END TEMP
 
     // Check Supabase cache first (best-effort — if this fails for any
     // reason we just fall through to generating fresh data).
@@ -99,9 +101,10 @@ exports.handler = async (event) => {
       }
     }
 
-    if (!process.env.ANTHROPIC_API_KEY) {
+    if (!apiKey) {
       return { statusCode: 500, body: JSON.stringify({ error: 'Server is missing ANTHROPIC_API_KEY' }) };
     }
+    const anthropic = new Anthropic({ apiKey });
 
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-5',

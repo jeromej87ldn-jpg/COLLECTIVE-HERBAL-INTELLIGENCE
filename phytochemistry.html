@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Plant Intelligence — C.H.I</title>
+<title>Plant Intelligence — Herbadex</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
@@ -228,6 +228,18 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .msi-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500;}
 .msi-add{font-size:12px;padding:.3rem .7rem;border-radius:5px;background:var(--gold);color:var(--forest);border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
 
+/* Compound Glossary Tooltip */
+.compound-glossary-tooltip{position:fixed;background:var(--forest);border:1px solid rgba(200,149,42,.4);border-radius:8px;padding:0.75rem 1rem;font-size:11.5px;color:var(--parchment);z-index:250;max-width:280px;box-shadow:0 4px 16px rgba(0,0,0,.5);pointer-events:none;display:none;}
+.compound-glossary-tooltip.show{display:block;}
+.compound-glossary-tooltip-title{font-weight:600;color:var(--gold-light);margin-bottom:0.4rem;}
+.compound-glossary-tooltip-action{font-size:11px;color:var(--gold);margin-bottom:0.35rem;font-weight:500;}
+.compound-glossary-tooltip-mech{font-size:11px;color:var(--muted);line-height:1.5;}
+
+/* Back to Herbadex edge panel */
+.pi-herbadex-tab{position:fixed;left:0;top:45%;transform:translateY(-50%);writing-mode:vertical-rl;background:var(--gold);color:var(--forest);border:none;border-radius:0 8px 8px 0;padding:1rem .5rem;font-family:'DM Sans',sans-serif;font-size:11.5px;font-weight:700;letter-spacing:.04em;cursor:pointer;z-index:150;box-shadow:3px 0 12px rgba(0,0,0,.25);display:none;}
+.pi-herbadex-tab.show{display:block;}
+.pi-herbadex-tab:hover{background:var(--gold-light);}
+
 @media(max-width:600px){
   .hero{padding:2rem 1.25rem 1.75rem;}
   .tool-tabs,.tool-wrap{padding-left:1.25rem;padding-right:1.25rem;}
@@ -240,7 +252,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 
 <nav>
   <a href="home.html" class="nav-logo">
-    <span class="nav-chi">C.H.I</span>
+    <span class="nav-chi">Herbadex</span>
     <span class="nav-full">Collective Herbal Intelligence</span>
   </a>
   <div class="nav-right">
@@ -286,10 +298,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 
 <!-- QUICK ACCESS BAR -->
 <div class="qbar" id="qbar">
-  <span class="qbar-label">My Stack</span>
+  <span class="qbar-label">Selected herb</span>
   <div class="qbar-divider"></div>
   <div class="qbar-scroll" id="qbar-herbs">
-    <span class="qbar-empty">No herbs added yet — use the tool below</span>
+    <span class="qbar-empty">No herb selected — use the input below</span>
   </div>
   <div class="qbar-actions">
     <button class="qbar-btn" onclick="clearStack()" id="qbar-clear" style="display:none">Clear all</button>
@@ -310,6 +322,9 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   </div>
 </div>
 
+<!-- Back to Herbadex edge panel -->
+<button class="pi-herbadex-tab" id="pi-herbadex-tab" onclick="window.location.href='supreme.html'">Back to Herbadex Profile ↶</button>
+
 <!-- TOOL TABS -->
 <div class="tool-tabs">
   <div class="tab-bar">
@@ -324,8 +339,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   <!-- MY HERB STACK INPUT (shown on all tabs) -->
   <div class="herb-input-section" id="herb-input-section-wrap">
     <div class="his-title">
-      My Herb Stack
-      <span id="stack-count-label">0 herbs</span>
+      Selected Herb
+      <span id="stack-count-label" style="font-weight:400;text-transform:none;letter-spacing:0;color:rgba(245,240,232,.4);font-size:12px;margin-left:.5rem;font-family:'DM Sans',sans-serif"></span>
     </div>
     <div class="herb-input-row">
       <div class="herb-input-wrap">
@@ -653,11 +668,8 @@ function saveStack(){ localStorage.setItem('chi_phyto_stack', JSON.stringify(use
 function addHerbToStack(name){
   const clean = name.trim();
   if(!clean) return;
-  if(userStack.some(h=>h.toLowerCase()===clean.toLowerCase())){
-    viewStackHerb(clean);
-    return;
-  }
-  userStack.push(clean);
+  // Single herb mode: replace the previous herb
+  userStack = [clean];
   saveStack();
   activeStackHerb = clean;
   renderQBar();
@@ -665,7 +677,7 @@ function addHerbToStack(name){
   showHerbProfile(clean);
   renderCurrentTab();
   const col = herbColor(clean);
-  showToast(clean + ' added to stack', col);
+  showToast(clean + ' selected', col);
   setTimeout(()=>{
     document.getElementById('herb-profile').scrollIntoView({behavior:'smooth',block:'nearest'});
     document.getElementById('herb-profile').classList.add('pulse');
@@ -687,7 +699,6 @@ function removeFromStack(name){
 }
 
 function clearStack(){
-  if(!confirm('Clear all herbs from your stack?')) return;
   userStack=[];
   activeStackHerb='';
   saveStack();
@@ -706,22 +717,20 @@ function renderQBar(){
   const c = document.getElementById('qbar-herbs');
   const clr = document.getElementById('qbar-clear');
   if(!userStack.length){
-    c.innerHTML='<span class="qbar-empty">No herbs added yet — use the input below</span>';
+    c.innerHTML='<span class="qbar-empty">No herb selected</span>';
     clr.style.display='none';
     return;
   }
+  const h = userStack[0];
+  const col = herbColor(h);
   clr.style.display='inline-block';
-  c.innerHTML = userStack.map(h=>{
-    const col=herbColor(h);
-    return `<button class="qpill" onclick="qpillClick('${h.replace(/'/g,"\\'")}')">
-      <span class="qdot" style="background:${col}"></span>${h}
-    </button>`;
-  }).join('');
+  c.innerHTML = `<button class="qpill active">
+    <span class="qdot" style="background:${col}"></span>${h}
+  </button>`;
 }
 
 function qpillClick(name){
-  document.querySelectorAll('.qpill').forEach(p=>p.classList.remove('active'));
-  event.target.closest('.qpill').classList.add('active');
+  // Single herb mode - just scroll to profile
   viewStackHerb(name);
 }
 
@@ -746,17 +755,8 @@ function renderSavedList(){
 }
 
 function addAllSaved(){
-  let added=0;
-  savedHerbs.forEach(h=>{
-    if(!userStack.some(s=>s.toLowerCase()===h.toLowerCase())){ userStack.push(h); added++; }
-  });
-  if(added){
-    saveStack(); renderQBar(); renderStackInput(); renderSavedList(); renderCurrentTab();
-    showToast(added + ' herbs added to stack', '#7acca0');
-    setTimeout(()=>document.getElementById('my-stack').scrollIntoView({behavior:'smooth',block:'nearest'}),150);
-  } else {
-    showToast('All saved herbs already in stack', '#e8a840');
-  }
+  // Single herb mode: show a message that user should select one herb at a time
+  showToast('Select one herb from saved to explore it', '#e8a840');
 }
 
 // ─── HERB INPUT & AUTOCOMPLETE ───────────────────────────────────
@@ -764,17 +764,19 @@ let activeStackHerb = '';
 
 function renderStackInput(){
   const c=document.getElementById('stack-count-label');
-  c.textContent=userStack.length+' herb'+(userStack.length!==1?'s':'');
   const s=document.getElementById('my-stack');
-  if(!userStack.length){ s.innerHTML='<span class="stack-empty">Your herb stack is empty. Start typing a herb name above.</span>'; return; }
-  s.innerHTML=userStack.map(h=>{
-    const col=herbColor(h);
-    const isActive = h.toLowerCase()===activeStackHerb.toLowerCase();
-    return `<span class="stack-pill${isActive?' active-pill':''}" style="background:${hexToRgba(col,0.18)};border-color:${hexToRgba(col,isActive?0.7:0.4)}">
-      <span class="sp-name" onclick="viewStackHerb('${h.replace(/'/g,"\\'")}')">${h}</span>
-      <span class="sp-x" title="Remove" onclick="removeFromStack('${h.replace(/'/g,"\\'")}')">×</span>
-    </span>`;
-  }).join('');
+  if(!userStack.length){
+    c.textContent='';
+    s.innerHTML='<span class="stack-empty">No herb selected. Start typing a herb name above.</span>';
+    return;
+  }
+  const h = userStack[0];
+  const col = herbColor(h);
+  c.textContent = h;
+  s.innerHTML = `<span class="stack-pill active-pill" style="background:${hexToRgba(col,0.18)};border-color:${hexToRgba(col,0.7)}">
+    <span class="sp-name" onclick="viewStackHerb('${h.replace(/'/g,"\\'")}')">${h}</span>
+    <span class="sp-x" title="Remove" onclick="clearStack()">×</span>
+  </span>`;
 }
 
 function viewStackHerb(name){
@@ -893,6 +895,8 @@ function showHerbProfile(name){
   const compClasses = [...new Set(matchedCompounds.map(c=>c.cls))];
   const inStack = userStack.some(h=>h.toLowerCase()===name.toLowerCase());
   panel.className = 'herb-profile show';
+  const herbTab = document.getElementById('pi-herbadex-tab');
+  if(herbTab) herbTab.classList.add('show');
 
   // compound class pills (clickable)
   const classPills = compClasses.map(c=>`<span class="pill clickable" style="background:${hexToRgba(CLASS_COLORS[c]||'#aaa',0.18)};color:${CLASS_COLORS[c]||'#aaa'};border:1px solid ${hexToRgba(CLASS_COLORS[c]||'#aaa',0.3)}" onclick="jumpToCompoundClass('${c}')">${c}</span>`).join('');
@@ -1020,79 +1024,172 @@ function renderCurrentTab(){
 
 // ─── BUILD FILTERS ────────────────────────────────────────────────
 function buildFilters(){
-  const pf=document.getElementById('compound-filters');
-  ['All',...PCLS].forEach(c=>{
-    const b=document.createElement('button');
-    b.className='fp'+(c==='All'?' on':'');
-    b.textContent=c;
-    b.onclick=()=>{compoundFilter=c;document.querySelectorAll('#compound-filters .fp').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderCompounds();};
-    pf.appendChild(b);
-  });
+  // Filters not needed in summary view - kept for compatibility
 }
 
 function setCompoundFilter(scope){
-  compoundScope=scope;
-  document.getElementById('rt-all-c').classList.toggle('on',scope==='all');
-  document.getElementById('rt-yours-c').classList.toggle('on',scope==='yours');
-  renderCompounds();
+  // No-op in summary view - kept for compatibility
 }
 function setActionFilter(scope){
-  actionScope=scope;
-  document.getElementById('rt-all-a').classList.toggle('on',scope==='all');
-  document.getElementById('rt-yours-a').classList.toggle('on',scope==='yours');
-  renderActions();
+  // No-op in summary view - kept for compatibility
 }
 
 // ─── RENDER COMPOUNDS ────────────────────────────────────────────
-let openP=new Set();
+let expandedCompoundClass = null; // Track which class is expanded
+
 function renderCompounds(){
-  const q=document.getElementById('srch-compounds').value.toLowerCase().trim();
-  let filtered=COMPOUNDS.filter(c=>{
-    if(compoundFilter!=='All'&&c.cls!==compoundFilter) return false;
-    if(compoundScope==='yours'&&!c.herbs.some(h=>isy(h))) return false;
-    if(!q) return true;
-    return c.name.toLowerCase().includes(q)||c.action.toLowerCase().includes(q)||c.mech.toLowerCase().includes(q)||c.sub.toLowerCase().includes(q)||c.herbs.some(h=>h.toLowerCase().includes(q));
+  // Hide search controls, filters, stats, and legend in summary view
+  const controls = document.querySelector('#view-compounds .controls');
+  const filterRow = document.querySelector('#view-compounds .filter-row');
+  const statsRow = document.querySelector('#view-compounds .stats-row');
+  const legend = document.querySelector('#view-compounds .legend');
+  if(controls) controls.style.display = 'none';
+  if(filterRow) filterRow.style.display = 'none';
+  if(statsRow) statsRow.style.display = 'none';
+  if(legend) legend.style.display = 'none';
+
+  const COMPOUND_CLASSES = ['Flavonoids','Terpenoids','Alkaloids','Phenolic acids','Saponins','Glycosides','Tannins','Polysaccharides','Other classes'];
+  let html = '<div class="grid wide">';
+
+  COMPOUND_CLASSES.forEach(cls => {
+    const col = CLASS_COLORS[cls] || '#aaa';
+    let herbsInClass = [];
+    let countInHerb = 0;
+
+    if(userStack.length > 0){
+      const herb = userStack[0];
+      const herbLower = herb.toLowerCase();
+      herbsInClass = COMPOUNDS.filter(c => c.cls === cls && c.herbs.some(h => h.toLowerCase().includes(herbLower) || herbLower.includes(h.toLowerCase().replace(' root','').replace(' leaf',''))));
+      countInHerb = herbsInClass.length;
+    }
+
+    const isHighlighted = userStack.length > 0 && countInHerb > 0;
+    const bgColor = isHighlighted ? hexToRgba('#e8b84b', 0.2) : 'var(--card)';
+    const borderColor = isHighlighted ? 'rgba(232, 184, 75, 0.6)' : 'var(--card-border)';
+    const opacity = userStack.length === 0 ? 0.6 : 1;
+    const isExpanded = expandedCompoundClass === cls;
+
+    html += `<div class="crd compound-card" data-class="${cls}" style="background:${bgColor};border-color:${borderColor};opacity:${opacity};cursor:pointer;padding:1.25rem 1.1rem;transition:all 0.2s ease" onclick="toggleCompoundClass('${cls}')">
+      <div class="cn" style="font-size:18px;margin-bottom:.5rem">${cls}</div>
+      <div class="cs" style="font-size:13px;color:${col};font-weight:500">${countInHerb} compound${countInHerb !== 1 ? 's' : ''}</div>
+      ${isExpanded ? `<div style="margin-top:1rem;padding-top:1rem;border-top:1px solid ${hexToRgba(col,0.2)}">
+        ${herbsInClass.length > 0 ? herbsInClass.map(c => {
+          const escapedName = c.name.replace(/'/g, "\\'");
+          return `<div style="font-size:12px;margin-bottom:0.5rem;cursor:help;position:relative">
+            <span style="color:var(--text-muted);border-bottom:1px dotted rgba(232,184,75,0.4)" onmouseover="showCompoundGlossary(event, '${escapedName}', '${c.action.replace(/'/g, "\\'")}', '${c.mech.replace(/'/g, "\\'")}')" onmouseout="hideCompoundGlossary()">${c.name}</span>
+          </div>`;
+        }).join('') : '<div style="font-size:12px;color:var(--muted)">No compounds in selected herb</div>'}
+      </div>` : ''}
+    </div>`;
   });
-  // Sort: stack matches first
-  filtered.sort((a,b)=>{
-    const ay=a.herbs.some(h=>isy(h)), by=b.herbs.some(h=>isy(h));
-    if(ay&&!by) return -1; if(!ay&&by) return 1; return 0;
-  });
-  document.getElementById('c-total').textContent=COMPOUNDS.length;
-  document.getElementById('c-shown').textContent=filtered.length;
-  document.getElementById('c-stack').textContent=COMPOUNDS.filter(c=>c.herbs.some(h=>isy(h))).length;
-  const groups={};
-  filtered.forEach(c=>{const k=c.cls+'||'+c.sub;if(!groups[k])groups[k]={cls:c.cls,sub:c.sub,items:[]};groups[k].items.push(c);});
-  const ORDER=['Flavonoids','Terpenoids','Alkaloids','Phenolic acids','Saponins','Glycosides','Tannins','Polysaccharides','Other classes'];
-  const sorted=Object.values(groups).sort((a,b)=>ORDER.indexOf(a.cls)-ORDER.indexOf(b.cls)||a.sub.localeCompare(b.sub));
-  let html='';
-  if(!filtered.length) html='<div class="empty">No compounds found. Try a different filter or search.</div>';
-  else sorted.forEach(g=>{
-    const col=CLASS_COLORS[g.cls]||'#aaa';
-    html+=`<div class="sec-head"><span class="sec-title" style="color:${col}">${g.sub}</span><span class="sec-count">${g.items.length} · ${g.cls}</span></div><div class="grid">`;
-    g.items.forEach(c=>{
-      const inY=c.herbs.some(h=>isy(h)), isO=openP.has(c.name);
-      const tagLbl=c.tag==='notable'?'★ high value':c.tag==='studied'?'well studied':'general';
-      const tagCls=c.tag==='notable'?'pill-gold':c.tag==='studied'?'pill-purple':'pill-gray';
-      html+=`<button class="crd${isO?' open':''}${inY?' yours-match':''}" onclick="togP('${c.name.replace(/'/g,"\\'")}')">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:4px;margin-bottom:4px">
-          <span class="cn">${c.name}${inY?'<span style="color:#7acca0;font-size:10px;margin-left:3px">✓</span>':''}</span>
-          <span class="pill ${tagCls}" style="flex-shrink:0;font-size:10px;white-space:nowrap">${tagLbl}</span>
-        </div>
-        <div class="ct">${c.sub}</div>
-        <div class="cs">${c.action}</div>
-        <div class="detail">
-          <div class="dl">Mechanism</div><div class="mbox">${linkMech(c.mech)}</div>
-          <div class="dl">Herb sources</div>
-          <div class="pill-row">${c.herbs.map(h=>`<span class="pill ${isy(h)?'pill-green':'pill-gray'}">${h}${isy(h)?' ✓':''}</span>`).join('')}</div>
-        </div>
-      </button>`;
-    });
-    html+='</div>';
-  });
-  document.getElementById('compounds-out').innerHTML=html;
+
+  html += '</div>';
+  document.getElementById('compounds-out').innerHTML = html;
 }
-function togP(n){if(openP.has(n))openP.delete(n);else openP.add(n);renderCompounds();}
+
+function toggleCompoundClass(cls){
+  expandedCompoundClass = expandedCompoundClass === cls ? null : cls;
+  renderCompounds();
+}
+
+// ─── COMPOUND GLOSSARY TOOLTIP ───────────────────────────────────
+function showCompoundGlossary(event, name, action, mech){
+  let tooltip = document.getElementById('compound-glossary-tooltip');
+  if(!tooltip){
+    tooltip = document.createElement('div');
+    tooltip.id = 'compound-glossary-tooltip';
+    tooltip.className = 'compound-glossary-tooltip';
+    document.body.appendChild(tooltip);
+  }
+
+  tooltip.innerHTML = `
+    <div class="compound-glossary-tooltip-title">${name}</div>
+    <div class="compound-glossary-tooltip-action">${action}</div>
+    <div class="compound-glossary-tooltip-mech">${mech}</div>
+  `;
+
+  tooltip.classList.add('show');
+
+  const rect = event.target.getBoundingClientRect();
+  tooltip.style.left = (rect.left + rect.width / 2 - tooltip.offsetWidth / 2) + 'px';
+  tooltip.style.top = (rect.top - tooltip.offsetHeight - 8) + 'px';
+
+  // Adjust if tooltip goes off-screen
+  if(tooltip.offsetLeft < 0) tooltip.style.left = '8px';
+  if(tooltip.offsetLeft + tooltip.offsetWidth > window.innerWidth) tooltip.style.left = (window.innerWidth - tooltip.offsetWidth - 8) + 'px';
+  if(tooltip.offsetTop < 0) tooltip.style.top = (rect.bottom + 8) + 'px';
+}
+
+function hideCompoundGlossary(){
+  const tooltip = document.getElementById('compound-glossary-tooltip');
+  if(tooltip) tooltip.classList.remove('show');
+}
+
+// ─── LAZY LOAD FROM API ──────────────────────────────────────────
+async function fetchHerbProfileFromAPI(herbName, targetId){
+  try {
+    const response = await fetch('/.netlify/functions/herb-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ herbName })
+    });
+
+    if(!response.ok) throw new Error(`API error: ${response.status}`);
+    const profile = await response.json();
+
+    // Display API result
+    let html = `<div style="margin-bottom:1.5rem">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:500;color:var(--gold-light);margin-bottom:.25rem">${profile.name}</div>
+      <div style="font-size:12px;color:var(--muted);font-style:italic">${profile.latin}</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:.5rem">${profile.summary}</div>
+    </div>`;
+
+    if(profile.compounds && profile.compounds.length){
+      html += `<div class="sec-head"><span class="sec-title">Key compounds</span><span class="sec-count">${profile.compounds.length}</span></div><div class="grid">`;
+      profile.compounds.forEach(c => {
+        html += `<div class="crd" style="cursor:default">
+          <div class="cn">${c.name}</div>
+          <div class="ct">${c.role}</div>
+          <div class="cs" style="margin-top:0.5rem">Strength: <strong>${c.strength}/100</strong></div>
+        </div>`;
+      });
+      html += '</div>';
+    }
+
+    if(profile.bodyEffects && profile.bodyEffects.length){
+      html += `<div class="sec-head"><span class="sec-title">Body system effects</span><span class="sec-count">${profile.bodyEffects.length}</span></div><div class="grid">`;
+      profile.bodyEffects.forEach(be => {
+        html += `<div class="crd" style="cursor:default">
+          <div class="cn" style="color:var(--gold-light)">${be.system}</div>
+          <div class="cs">${be.effect}</div>
+        </div>`;
+      });
+      html += '</div>';
+    }
+
+    if(profile.preparation){
+      html += `<div class="sec-head"><span class="sec-title">Preparation</span></div><div style="font-size:12px;color:var(--muted);line-height:1.6">`;
+      Object.entries(profile.preparation).forEach(([method, dose]) => {
+        if(dose) html += `<div style="margin-bottom:0.75rem"><strong>${method}:</strong> ${dose}</div>`;
+      });
+      html += '</div>';
+    }
+
+    if(profile.interactions && profile.interactions.length){
+      html += `<div class="sec-head"><span class="sec-title">Known interactions</span></div><div class="pill-row">`;
+      profile.interactions.forEach(i => {
+        html += `<span class="pill pill-gold">${i}</span>`;
+      });
+      html += '</div>';
+    }
+
+    document.getElementById(targetId).innerHTML = html;
+  } catch(err){
+    document.getElementById(targetId).innerHTML = `<div class="empty" style="color:#dd6a6a">Could not generate profile: ${err.message}. Check that the API key is configured.</div>`;
+  }
+}
+
+// Removed - not needed in summary view
 
 // ─── RENDER HERB LOOKUP ──────────────────────────────────────────
 function renderHerbLookup(){
@@ -1104,8 +1201,11 @@ function renderHerbLookup(){
 function showHerbProfileInline(name, targetId){
   const matchedCompounds = COMPOUNDS.filter(c=>c.herbs.some(h=>h.toLowerCase().includes(name.toLowerCase())||name.toLowerCase().includes(h.toLowerCase().replace(' root','').replace(' leaf',''))));
   const matchedActions = ACTIONS.filter(a=>a.herbs.some(h=>h.toLowerCase().includes(name.toLowerCase())||name.toLowerCase().includes(h.toLowerCase())));
+
   if(!matchedCompounds.length && !matchedActions.length){
-    document.getElementById(targetId).innerHTML=`<div class="empty">No data found for "<strong>${name}</strong>" — try a different spelling, or upload the herb database to expand coverage.</div>`;
+    // No local data — try API
+    document.getElementById(targetId).innerHTML=`<div class="empty" style="color:var(--gold-light)">Generating AI profile for <strong>${name}</strong>…</div>`;
+    fetchHerbProfileFromAPI(name, targetId);
     return;
   }
   const systems=[...new Set(matchedActions.map(a=>a.sys))];
@@ -1193,65 +1293,97 @@ function renderActions(){
   });
   document.getElementById('actions-out').innerHTML=html;
 }
-function togT(n){if(openT.has(n))openT.delete(n);else openT.add(n);renderActions();}
+// Removed - not needed in summary view
 
 // ─── RENDER SYSTEMS ──────────────────────────────────────────────
+let expandedSystem = null; // Track which system is expanded
+
 function renderSystems(){
-  const systems={};
-  ACTIONS.forEach(a=>{if(!systems[a.sys])systems[a.sys]={actions:[],herbs:new Set()};systems[a.sys].actions.push(a);a.herbs.forEach(h=>systems[a.sys].herbs.add(h));});
-  let html='';
-  Object.entries(systems).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([sys,data])=>{
-    const col=SYS_COLORS[sys]||'#aaa';
-    const yourHerbs=userStack.filter(h=>data.herbs.has(h)||[...data.herbs].some(dh=>dh.toLowerCase().includes(h.toLowerCase())));
-    html+=`<div class="sec-head"><span class="sec-title" style="color:${col}" data-def="${sys}" data-herbs="${[...data.herbs].join('|')}">${sys}</span><span class="sec-count">${data.actions.length} actions · ${data.herbs.size} herb sources${yourHerbs.length?` · <span style="color:#7acca0">${yourHerbs.length} in your stack</span>`:''}</span></div>
-    <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem">
-      ${data.actions.map(a=>`<span class="pill pill-gold">${a.name}</span>`).join('')}
-    </div>
-    ${yourHerbs.length?`<div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.5rem">${yourHerbs.map(h=>`<span class="pill pill-green">${h} ✓</span>`).join('')}</div>`:''}
-    <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1.25rem">${[...data.herbs].filter(h=>!yourHerbs.includes(h)).map(h=>`<span class="pill pill-gray">${h}</span>`).join('')}</div>`;  });
-  document.getElementById('systems-out').innerHTML=html||'<div class="empty">No data.</div>';
+  // Collect unique body systems from ACTIONS
+  const uniqueSystems = [...new Set(ACTIONS.map(a => a.sys))].sort();
+  let html = '<div class="grid wide">';
+
+  uniqueSystems.forEach(sys => {
+    const col = SYS_COLORS[sys] || '#aaa';
+    const actionsInSys = ACTIONS.filter(a => a.sys === sys);
+    let actionsForHerb = [];
+    let countForHerb = 0;
+
+    if(userStack.length > 0){
+      const herb = userStack[0];
+      const herbLower = herb.toLowerCase();
+      // Get actions in this system that affect the selected herb
+      actionsForHerb = actionsInSys.filter(a => a.herbs.some(h => h.toLowerCase().includes(herbLower) || herbLower.includes(h.toLowerCase())));
+      countForHerb = actionsForHerb.length;
+    }
+
+    const isHighlighted = userStack.length > 0 && countForHerb > 0;
+    const bgColor = isHighlighted ? hexToRgba('#e8b84b', 0.2) : 'var(--card)';
+    const borderColor = isHighlighted ? 'rgba(232, 184, 75, 0.6)' : 'var(--card-border)';
+    const opacity = userStack.length === 0 ? 0.6 : 1;
+    const isExpanded = expandedSystem === sys;
+
+    html += `<div class="crd system-card" data-system="${sys}" style="background:${bgColor};border-color:${borderColor};opacity:${opacity};cursor:pointer;padding:1.25rem 1.1rem;transition:all 0.2s ease" onclick="toggleSystem('${sys}')">
+      <div class="cn" style="font-size:18px;margin-bottom:.5rem;color:${col}">${sys}</div>
+      <div class="cs" style="font-size:13px;color:rgba(245,240,232,.65);font-weight:500">${countForHerb} action${countForHerb !== 1 ? 's' : ''}</div>
+      ${isExpanded ? `<div style="margin-top:1rem;padding-top:1rem;border-top:1px solid ${hexToRgba(col,0.2)}">
+        ${actionsForHerb.length > 0 ? actionsForHerb.map(a => `<div style="font-size:12px;margin-bottom:0.5rem;color:var(--text-muted)"><strong>${a.name}</strong></div>`).join('') : '<div style="font-size:12px;color:var(--muted)">No actions for selected herb</div>'}
+      </div>` : ''}
+    </div>`;
+  });
+
+  html += '</div>';
+  document.getElementById('systems-out').innerHTML = html;
+}
+
+function toggleSystem(sys){
+  expandedSystem = expandedSystem === sys ? null : sys;
+  renderSystems();
 }
 
 // ─── RENDER TRADITIONAL SYSTEMS ──────────────────────────────────
+let expandedTradition = null; // Track which tradition is expanded
+
 function renderTrad(){
   const TRAD=[
-    {sys:'Ayurveda',color:'#e8a840',items:[
-      {term:'Rasayana',meaning:'Rejuvenating class. Rebuilds ojas (vital essence). Maps to: adaptogens + tonics + polysaccharide-rich herbs.',herbs:['Ashwagandha','Shilajit','Moringa','Lion\'s mane']},
-      {term:'Medhya',meaning:'Cognitive / mind-strengthening herbs. Maps to: NGF-stimulating polysaccharides + AChE-inhibiting phenolics.',herbs:['Lion\'s mane','Bacopa','Lemon balm']},
-      {term:'Balya',meaning:'Strength-building. Maps to: anabolic saponins + mineral-dense tonics.',herbs:['Ashwagandha','Nettle','Moringa']},
-      {term:'Deepana / Pachana',meaning:'Digestive fire stimulants. Maps to: bitter iridoid glycosides + carminative monoterpenes.',herbs:['Dandelion','Mugwort','Ginger','Clove']},
-      {term:'Rasa (taste)',meaning:'Six tastes: bitter (alkaloids/iridoids), astringent (tannins), pungent (volatile terpenes), sweet (polysaccharides/saponins), sour, salty.',herbs:[]},
-    ]},
-    {sys:'TCM',color:'#6aaddd',items:[
-      {term:'Qi tonic',meaning:'Builds energy and organ function. Maps to: polysaccharide-rich adaptogens.',herbs:['Lion\'s mane','Astragalus','Ginseng']},
-      {term:'Blood tonic',meaning:'Nourishes blood and circulation. Maps to: iron-rich nutritives + vascular flavonoids.',herbs:['Nettle','Dandelion','Moringa']},
-      {term:'Yin tonic',meaning:'Cooling, moistening, restorative. Maps to: demulcent polysaccharides + cooling flavonoids.',herbs:['Marshmallow','Lemon balm','Hibiscus']},
-      {term:'Yang tonic',meaning:'Warming, stimulating, androgenic. Maps to: steroidal saponins + withanolides.',herbs:['Ashwagandha','Shilajit','Damiana']},
-      {term:'Five organ systems',meaning:'Liver, kidney, heart, spleen, lung. Each herb classified by its primary organ affinity — determines which conditions it addresses.',herbs:[]},
-    ]},
-    {sys:'Galenic / Unani',color:'#7abf6a',items:[
-      {term:'Hot + dry',meaning:'Stimulating, drying. Maps to: pungent volatile terpenes + alkaloids.',herbs:['Mugwort','Black pepper','Ginger']},
-      {term:'Cold + moist',meaning:'Soothing, hydrating. Maps to: mucilaginous polysaccharides + cooling flavonoids.',herbs:['Marshmallow','Lemon balm','Hibiscus']},
-      {term:'Hot + moist',meaning:'Nourishing + warming. Maps to: nutrient-dense tonics with warming saponins.',herbs:['Moringa','Ashwagandha']},
-      {term:'Cold + dry',meaning:'Astringent, anti-inflammatory. Maps to: tannins + cooling phenolics.',herbs:['Raspberry leaf','Nettle','Oak bark']},
-      {term:'Four degrees',meaning:'Each quality (hot/cold/wet/dry) rated 1-4 in intensity. Degree 1 = gentle food-level herb. Degree 4 = toxic/heroic dose range.',herbs:[]},
-    ]},
+    {sys:'Ayurveda',color:'#e8a840',herbs:['Ashwagandha','Shilajit','Moringa','Lion\'s mane','Bacopa','Lemon balm','Nettle','Dandelion','Mugwort','Ginger','Clove']},
+    {sys:'TCM',color:'#6aaddd',herbs:['Lion\'s mane','Astragalus','Ginseng','Nettle','Dandelion','Moringa','Marshmallow','Lemon balm','Hibiscus','Ashwagandha','Shilajit','Damiana']},
+    {sys:'Galenic / Unani',color:'#7abf6a',herbs:['Mugwort','Black pepper','Ginger','Marshmallow','Lemon balm','Hibiscus','Moringa','Ashwagandha','Raspberry leaf','Nettle','Oak bark']},
   ];
-  let html='';
-  TRAD.forEach(t=>{
-    html+=`<div class="sec-head"><span class="sec-title" style="color:${t.color}">${t.sys}</span></div>
-    <div class="grid wide" style="margin-bottom:1.5rem">`;
-    t.items.forEach(item=>{
-      const yourHerbs=userStack.filter(h=>item.herbs.some(ih=>ih.toLowerCase().includes(h.toLowerCase())||h.toLowerCase().includes(ih.toLowerCase())));
-      html+=`<div class="crd" style="cursor:default">
-        <div class="cn">${item.term}</div>
-        <div class="cs" style="margin-top:5px">${item.meaning}</div>
-        ${item.herbs.length?`<div class="pill-row" style="margin-top:8px">${item.herbs.map(h=>{const inY=yourHerbs.some(y=>y.toLowerCase().includes(h.toLowerCase()));return`<span class="pill ${inY?'pill-green':'pill-gray'}">${h}${inY?' ✓':''}</span>`;}).join('')}</div>`:''}
-      </div>`;
-    });
-    html+='</div>';
+
+  let html = '<div class="grid wide">';
+
+  TRAD.forEach(t => {
+    let herbsInTrad = [];
+
+    if(userStack.length > 0){
+      const herb = userStack[0];
+      const herbLower = herb.toLowerCase();
+      herbsInTrad = t.herbs.filter(h => h.toLowerCase().includes(herbLower) || herbLower.includes(h.toLowerCase()));
+    }
+
+    const isHighlighted = userStack.length > 0 && herbsInTrad.length > 0;
+    const bgColor = isHighlighted ? hexToRgba('#e8b84b', 0.2) : 'var(--card)';
+    const borderColor = isHighlighted ? 'rgba(232, 184, 75, 0.6)' : 'var(--card-border)';
+    const opacity = userStack.length === 0 ? 0.6 : 1;
+    const isExpanded = expandedTradition === t.sys;
+
+    html += `<div class="crd trad-card" data-tradition="${t.sys}" style="background:${bgColor};border-color:${borderColor};opacity:${opacity};cursor:pointer;padding:1.25rem 1.1rem;transition:all 0.2s ease" onclick="toggleTradition('${t.sys}')">
+      <div class="cn" style="font-size:18px;margin-bottom:.5rem;color:${t.color}">${t.sys}</div>
+      <div class="cs" style="font-size:13px;color:rgba(245,240,232,.65);font-weight:500">Tradition used</div>
+      ${isExpanded ? `<div style="margin-top:1rem;padding-top:1rem;border-top:1px solid ${hexToRgba(t.color,0.2)}">
+        ${herbsInTrad.length > 0 ? herbsInTrad.map(h => `<div style="font-size:12px;margin-bottom:0.5rem;color:var(--text-muted)">${h}</div>`).join('') : '<div style="font-size:12px;color:var(--muted)">Herb not used in this tradition</div>'}
+      </div>` : ''}
+    </div>`;
   });
-  document.getElementById('trad-out').innerHTML=html;
+
+  html += '</div>';
+  document.getElementById('trad-out').innerHTML = html;
+}
+
+function toggleTradition(sys){
+  expandedTradition = expandedTradition === sys ? null : sys;
+  renderTrad();
 }
 
 // ─── REVERSE: HERB → PROPERTIES ──────────────────────────────────
@@ -1418,6 +1550,7 @@ document.addEventListener('click',e=>{
   'trophorestorative': {l:'Trophorestorative',d:"Restores and rebuilds the function of a specific organ or system over time through regular use. Milk thistle is trophorestorative for the liver; lion's mane for the nervous system."},
   'alterative': {l:'Alterative',d:'Gradually improves metabolism and nutrition, traditionally said to "alter" the body towards better health. Cleavers, nettle and burdock are classic alteratives.'},
   'bitter tonic': {l:'Bitter tonic',d:'A herb that stimulates digestion through bitter taste receptors (TAS2R) on the tongue. Must be tasted to work — capsules bypass the mechanism. Dandelion, mugwort and gentian are bitter tonics.'},
+  // TODO: DUPLICATE - 'flavonoid' (singular with examples) vs 'flavonoids' (plural generic). Consolidate to one definition.
   'flavonoid': {l:'Flavonoid',d:'The largest class of plant polyphenols — over 6,000 known. Includes quercetin, apigenin, luteolin and kaempferol. Broadly anti-inflammatory, antioxidant and cardioprotective.'},
   'flavonoids': {l:'Flavonoids',d:'The largest class of plant polyphenols — over 6,000 known. Broadly anti-inflammatory, antioxidant and cardioprotective. Found in almost every herb.'},
   'alkaloid': {l:'Alkaloid',d:'Nitrogen-containing plant compounds — often bitter, pharmacologically potent, and the basis of many pharmaceuticals (morphine, caffeine, berberine). Work on specific receptors with clear dose-dependence.'},
@@ -1465,7 +1598,30 @@ document.addEventListener('click',e=>{
   'endocrine': {l:'Endocrine System',d:'Hormone-producing glands — adrenals, thyroid, pancreas, gonads. Controls metabolism, stress and reproduction. Adaptogens specifically target the HPA axis (stress hormones) within this system.'},
   'respiratory': {l:'Respiratory System',d:'Lungs and airways. Expectorants clear mucus; antispasmodics relax bronchial spasm; demulcents soothe irritated mucosa; antimicrobials address infection.'},
   'hepatic': {l:'Hepatic / Liver',d:'The liver has 500+ functions — detoxification, bile production, hormone processing. Hepatoprotective herbs protect liver cells; choleretics stimulate bile; cholagogues release stored bile.'},
-  'lymphatic': {l:'Lymphatic System',d:'Vessels and nodes draining fluid from tissues and hosting immune cells. Lymphagogue herbs (calendula, cleavers) stimulate lymph flow and clear congestion.'}
+  'lymphatic': {l:'Lymphatic System',d:'Vessels and nodes draining fluid from tissues and hosting immune cells. Lymphagogue herbs (calendula, cleavers) stimulate lymph flow and clear congestion.'},
+  'antioxidant': {l:'Antioxidant',d:'Neutralises free radicals — reactive molecules that damage cells and accelerate ageing. Quercetin, vitamin C and rosmarinic acid are potent antioxidants. Your body also makes its own via Nrf2 activation.'},
+  'bioactive': {l:'Bioactive',d:'A compound that has a measurable biological effect in the body — it works. Not all compounds in an herb are bioactive; many are just bulk. Quercetin and oleuropein are bioactive; cellulose is not.'},
+  'polyphenol': {l:'Polyphenol',d:'A plant compound with multiple phenolic rings — potent antioxidants and anti-inflammatories. Includes flavonoids, tannins and phenolic acids. Responsible for most herbal benefits.'},
+  'anti-inflammatory': {l:'Anti-inflammatory',d:'Reduces inflammation by inhibiting cytokines or inflammatory enzymes (COX, 5-LOX, NF-κB). Quercetin, thymoquinone and oleuropein are multi-pathway anti-inflammatories.'},
+  'adaptogen': {l:'Adaptogen',d:'An herb that helps the body adapt to stress and restore balance. Works specifically on the HPA axis (cortisol). Ashwagandha and reishi are classic adaptogens — non-toxic, non-habit-forming.'},
+  'mechanism': {l:'Mechanism of Action',d:"How a compound produces its effect. Rather than 'lowers inflammation,' it might be 'inhibits NF-κB pathway' or 'blocks COX-2 enzyme.' Understanding mechanism explains why a herb works and when it might fail."},
+  'receptor': {l:'Receptor',d:'A protein on a cell that catches and responds to chemical messengers. GABA receptors bind calming neurotransmitters; benzodiazepine site on GABA-A is where anxiety drugs (and passionflower) bind.'},
+  'enzyme': {l:'Enzyme',d:'A protein that speeds up chemical reactions. Cholinesterase breaks down acetylcholine; COX-2 produces prostaglandins (pain); AChE breakdown slows cognition. Many herbs work by inhibiting enzymes.'},
+  'synergistic': {l:'Synergistic',d:'When two compounds work better together than separately. Piperine enhances curcumin absorption 2,000x. Herbal synergy is often why whole-plant extracts work better than isolated compounds.'},
+  'constituent': {l:'Constituent',d:'A component or ingredient in an herb. Milk thistle has 200+ constituents, but silymarin is the key therapeutic one. Not all constituents are active — bulk includes fibre and minerals.'},
+  'tincture': {l:'Tincture',d:'An alcohol (usually 1:5 ratio) or glycerin extract of an herb. Preserves volatile oils and alkaloids better than water. Faster-acting than dried herb infusions; more concentrated.'},
+  'decoction': {l:'Decoction',d:'A water extraction made by simmering roots, bark or seeds for 15-30 minutes. Extracts harder plant material and minerals. Use for woody herbs (hawthorn, liquorice root). Not for delicate leaves.'},
+  'infusion': {l:'Infusion',d:'A water extraction made by steeping dried leaves in hot water for 5-10 minutes — like tea. Gentler than decoction. Best for leaves and flowers. Does not preserve volatile oils well.'},
+  'bioavailability': {l:'Bioavailability (improved)',d:'How much of an ingested compound actually reaches your bloodstream. Fat-soluble vitamins need dietary fat; piperine (black pepper) increases curcumin absorption 2,000-fold. Preparation method matters enormously.'},
+  'rct': {l:'RCT (Randomized Controlled Trial)',d:'A double-blind study comparing an herb to placebo on randomly assigned groups. The gold standard for evidence. Many herbs have RCT data — ashwagandha, passionflower and olive leaf are well-studied.'},
+  'in vitro': {l:'In Vitro',d:'Latin "in glass" — research done in test tubes or petri dishes, not in living organisms. Shows mechanism but does not prove it works in real bodies. Many herbs kill cancer cells in vitro but not in humans.'},
+  'in vivo': {l:'In Vivo',d:'Latin "in living" — research done in living animals or humans. Shows whether something actually works in a real body, not just theoretically. More trustworthy than in vitro, but harder to do.'},
+  'inhibitor': {l:'Inhibitor',d:'A compound that blocks or slows an enzyme or process. COX-2 inhibitors reduce inflammation; AChE inhibitors improve memory by slowing neurotransmitter breakdown.'},
+  'acute': {l:'Acute (vs Chronic)',d:'Short-term, intense condition. Acute diarrhoea vs chronic IBS. Some herbs work acutely (ginger for nausea); others require weeks of use to restore (nettle for nutrition).'},
+  'potentiation': {l:'Potentiation',d:'When one compound enhances the effect of another beyond what either does alone. Piperine potentiates curcumin absorption. Synergy and potentiation make herbal combinations powerful.'},
+  'metabolism': {l:'Metabolism',d:'Chemical processes that break down, store and use food for energy and tissue repair. Herbs affect metabolism through AMPK activation (fat burning), mitochondrial function (energy), or CYP enzyme modulation (detox).'},
+  'half-life': {l:'Half-life',d:'Time for half a dose of a compound to leave your body. Caffeine: 5 hours; curcumin: 6 hours; berberine: 4-6 hours. Matters for dosing frequency and whether it builds up or washes out.'},
+  'synergy': {l:'Synergy',d:'Herbal synergy means combinations work better than single herbs. This is why traditional formulas with 5+ herbs often outperform isolated single compounds. Whole-plant medicine is more than the sum of its parts.'}
   };
 
   // Create tooltip element
