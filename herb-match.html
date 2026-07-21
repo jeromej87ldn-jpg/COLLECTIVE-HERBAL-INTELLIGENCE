@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Herb Match — C.H.I</title>
+<title>Herb Match — Discovery Engine — Herbadex</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
@@ -13,12 +13,11 @@
   --parchment:#f5f0e8;--muted:rgba(245,240,232,0.5);
   --card:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.08);
   --text:#f5f0e8;--accent:#c8952a;
-  --tag-bg:rgba(74,140,101,0.15);--tag-border:rgba(74,140,101,0.3);--tag-text:#7acca0;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;}
-body{font-family:'DM Sans',sans-serif;background:var(--night);color:var(--text);
-  background-image:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(74,140,101,0.15),transparent 60%),radial-gradient(ellipse 40% 40% at 90% 90%,rgba(200,149,42,0.06),transparent 50%);}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--night);color:var(--text);min-height:100vh;
+  background-image:radial-gradient(ellipse 70% 50% at 50% -5%,rgba(74,140,101,0.1),transparent 60%),radial-gradient(ellipse 50% 40% at 90% 100%,rgba(200,149,42,0.05),transparent 55%);}
 
 /* NAV */
 nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:var(--forest);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:100;}
@@ -26,176 +25,102 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .nav-chi{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-light);letter-spacing:.1em;}
 .nav-full{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.5);}
 .nav-right{display:flex;align-items:center;gap:1.25rem;}
-.nav-right>a,.nav-right>.nav-dd{color:rgba(245,240,232,.6);text-decoration:none;font-size:13px;transition:color .2s;}
+.nav-right>a{color:rgba(245,240,232,.6);text-decoration:none;font-size:13px;transition:color .2s;}
 .nav-right>a:hover,.nav-right>a.active{color:var(--gold-light);}
-.nav-cta{background:var(--gold);color:var(--forest)!important;padding:.5rem 1rem;border-radius:4px;font-weight:500;}
-.nav-inbox{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:6px;border:1px solid rgba(255,255,255,0.08);color:rgba(245,240,232,.6);transition:all .2s;text-decoration:none;}
-.nav-inbox:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
-.nav-dd{position:relative;display:inline-flex;align-items:center;gap:4px;cursor:pointer;font-size:13px;color:rgba(245,240,232,.6);background:none;border:none;font-family:'DM Sans',sans-serif;padding:0;height:64px;}
-.nav-dd:hover,.nav-dd.open{color:var(--gold-light);}
-.nav-dd-arrow{font-size:8px;opacity:.5;transition:transform .2s;}
-.nav-dd.open .nav-dd-arrow{transform:rotate(180deg);}
-.nav-dd-menu{position:absolute;top:calc(100% - 1px);left:50%;transform:translateX(-50%);background:var(--forest);border:1px solid rgba(200,149,42,.22);border-radius:0 0 8px 8px;padding:.4rem 0;min-width:180px;display:none;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.4);}
-.nav-dd.open .nav-dd-menu{display:block;animation:ddFade .15s ease forwards;}
-@keyframes ddFade{from{opacity:0;transform:translateX(-50%) translateY(-4px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-.nav-dd-menu a{display:flex;align-items:center;gap:.55rem;padding:.55rem 1.1rem;font-size:13px;color:rgba(245,240,232,.7);text-decoration:none;transition:all .15s;white-space:nowrap;}
-.nav-dd-menu a:hover{background:rgba(200,149,42,.08);color:var(--gold-light);}
-.nav-dd-menu a.active{color:var(--gold-light);}
-.nav-dd-divider{height:1px;background:rgba(255,255,255,.07);margin:.3rem 0;}
-.nav-dd-icon{font-size:14px;width:16px;text-align:center;flex-shrink:0;}
-@media(max-width:760px){.nav-right>a:not(.nav-cta):not(.nav-inbox){display:none;}.nav-dd{display:none;}}
 
+/* MAIN CONTAINER */
+.container{max-width:1000px;margin:0 auto;padding:3rem 2.5rem;}
 
-/* PROGRESS BAR */
-.progress-bar{position:fixed;top:64px;left:0;right:0;height:2px;background:rgba(255,255,255,.06);z-index:99;}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--forest-light),var(--gold));transition:width .5s cubic-bezier(.4,0,.2,1);}
+/* HERO SECTION */
+.hero{text-align:center;margin-bottom:3rem;}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;color:var(--parchment);margin-bottom:.5rem;}
+.hero p{font-size:15px;color:var(--muted);line-height:1.8;max-width:600px;margin:0 auto 1.5rem;}
 
-/* FLOW SHELL */
-.flow{min-height:100vh;padding-top:64px;display:flex;flex-direction:column;}
+/* PYRAMID/TREE ISSUES */
+.pyramid-section{background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:2rem;margin-bottom:2.5rem;}
+.pyramid-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;color:var(--gold-light);margin-bottom:1.5rem;}
+.pyramid-intro{font-size:13px;color:var(--muted);margin-bottom:2rem;line-height:1.7;}
 
-/* SCREENS */
-.screen{display:none;flex:1;align-items:center;justify-content:center;padding:3rem 1.5rem;min-height:calc(100vh - 64px);}
-.screen.active{display:flex;animation:screenIn .45s cubic-bezier(.4,0,.2,1) forwards;}
-.screen.exit{animation:screenOut .3s cubic-bezier(.4,0,.2,1) forwards;}
-@keyframes screenIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
-@keyframes screenOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-16px)}}
+.issue-category{margin-bottom:2rem;}
+.category-name{font-size:14px;font-weight:600;color:var(--gold-light);letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
+.category-name::before{content:'▸';font-size:16px;}
 
-.screen-inner{width:100%;max-width:620px;}
+.issues-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-left:1.5rem;}
+.issue-checkbox{display:flex;align-items:center;gap:8px;padding:.6rem;background:rgba(0,0,0,.2);border:1px solid var(--card-border);border-radius:6px;cursor:pointer;transition:all .2s;}
+.issue-checkbox:hover{border-color:rgba(200,149,42,.4);background:rgba(200,149,42,.1);}
+.issue-checkbox input{cursor:pointer;width:16px;height:16px;}
+.issue-checkbox label{cursor:pointer;font-size:13px;flex:1;}
 
-/* STEP LABEL */
-.step-label{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:10px;margin-bottom:1.25rem;}
-.step-label::before{content:'';width:20px;height:1px;background:var(--gold);opacity:.6;}
+.selection-status{text-align:center;padding:1.5rem;background:rgba(200,149,42,.08);border:1px solid rgba(200,149,42,.15);border-radius:8px;margin-top:1.5rem;}
+.selection-status p{font-size:13px;color:var(--muted);}
+.selection-status .count{font-size:18px;font-weight:600;color:var(--gold-light);margin:0.5rem 0;}
 
-/* QUESTION */
-.q-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,5vw,44px);font-weight:300;line-height:1.12;color:var(--parchment);margin-bottom:.6rem;}
-.q-title em{font-style:italic;color:var(--gold-light);}
-.q-sub{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:2rem;max-width:50ch;}
+/* SUBMIT BUTTON */
+.submit-btn{display:block;margin:2rem auto 0;padding:1rem 2.5rem;background:var(--gold);color:var(--forest);border:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s;}
+.submit-btn:hover:not(:disabled){background:var(--gold-light);}
+.submit-btn:disabled{opacity:0.5;cursor:not-allowed;}
 
-/* TEXT INPUT */
-.q-textarea{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:1.1rem 1.25rem;font-size:15px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;resize:none;min-height:130px;line-height:1.65;transition:border-color .2s;}
-.q-textarea::placeholder{color:rgba(245,240,232,.22);}
-.q-textarea:focus{border-color:rgba(200,149,42,.45);}
-.q-input{width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:1rem 1.25rem;font-size:15px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;}
-.q-input::placeholder{color:rgba(245,240,232,.22);}
-.q-input:focus{border-color:rgba(200,149,42,.45);}
+/* RESULTS SECTION */
+.results-section{display:none;}
+.results-section.show{display:block;}
 
-/* OPTION CHIPS */
-.chips{display:flex;flex-wrap:wrap;gap:.55rem;margin-bottom:.5rem;}
-.chip{font-size:13px;padding:.6rem 1.1rem;border-radius:6px;border:1px solid var(--card-border);background:var(--card);color:rgba(245,240,232,.7);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .18s;user-select:none;}
-.chip:hover{border-color:rgba(200,149,42,.35);color:var(--parchment);}
-.chip.selected{background:rgba(200,149,42,.16);border-color:rgba(200,149,42,.5);color:var(--gold-light);}
-.chip.selected::before{content:'✓  ';}
+.results-header{margin-bottom:2rem;text-align:center;}
+.results-header h2{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:500;color:var(--parchment);margin-bottom:.5rem;}
+.results-header p{font-size:13px;color:var(--muted);}
 
-/* SLIDER */
-.slider-wrap{margin-bottom:1.5rem;}
-.slider-labels{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);margin-bottom:.5rem;}
-input[type=range]{width:100%;accent-color:var(--gold);}
-.slider-val{text-align:center;font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;color:var(--gold-light);margin-top:.5rem;}
+.results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem;margin-bottom:3rem;}
 
-/* NAV BUTTONS */
-.btn-row{display:flex;align-items:center;justify-content:space-between;margin-top:2rem;gap:1rem;}
-.btn-back{font-size:13px;color:var(--muted);background:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:6px;transition:color .2s;padding:.5rem 0;}
-.btn-back:hover{color:var(--parchment);}
-.btn-next{padding:.75rem 2rem;background:var(--gold);color:var(--forest);border:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13.5px;font-weight:500;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px;}
-.btn-next:hover{background:var(--gold-light);transform:translateY(-1px);}
-.btn-next:disabled{opacity:.4;cursor:not-allowed;transform:none;}
-.btn-next svg,.btn-back svg{flex-shrink:0;}
+.herb-card{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:1.5rem;cursor:pointer;transition:all .2s;text-align:center;}
+.herb-card:hover{border-color:rgba(200,149,42,.4);background:rgba(200,149,42,.08);}
 
-/* CHAR COUNT */
-.char-hint{font-size:11.5px;color:rgba(245,240,232,.2);text-align:right;margin-top:.4rem;}
+.herb-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--gold-light);margin-bottom:.5rem;}
+.herb-latin{font-style:italic;font-size:12px;color:var(--muted);margin-bottom:1rem;}
 
-/* MULTI SELECT NOTE */
-.multi-note{font-size:11.5px;color:var(--muted);margin-top:.6rem;}
+.herb-actions{display:flex;flex-direction:column;gap:.6rem;margin-top:1rem;}
+.herb-btn{padding:.6rem;border:1px solid var(--card-border);border-radius:5px;background:transparent;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;}
+.herb-btn:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
+.herb-btn.primary{background:var(--gold);color:var(--forest);border-color:var(--gold);}
 
-/* LOADING SCREEN */
-#screen-loading{background:var(--night);}
-.loading-inner{text-align:center;max-width:480px;}
-.loading-glyph{font-family:'Cormorant Garamond',serif;font-size:64px;font-weight:300;color:var(--gold-light);line-height:1;margin-bottom:1.5rem;animation:pulse 2s ease infinite;}
-@keyframes pulse{0%,100%{opacity:.6}50%{opacity:1}}
-.loading-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--parchment);margin-bottom:.75rem;}
-.loading-title em{font-style:italic;color:var(--gold-light);}
-.loading-sub{font-size:13.5px;color:var(--muted);line-height:1.8;margin-bottom:2rem;}
-.loading-steps{display:flex;flex-direction:column;gap:.6rem;text-align:left;background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:1.25rem 1.5rem;}
-.loading-step{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:.75rem;transition:color .4s;}
-.loading-step.done{color:var(--tag-text);}
-.loading-step.active{color:var(--parchment);}
-.step-dot{width:8px;height:8px;border-radius:50%;background:var(--card-border);flex-shrink:0;transition:background .4s;}
-.loading-step.done .step-dot{background:var(--tag-text);}
-.loading-step.active .step-dot{background:var(--gold-light);box-shadow:0 0 6px rgba(232,184,75,.5);}
+/* PROFILE VIEWER */
+.profile-section{display:none;}
+.profile-section.show{display:block;margin-top:2rem;}
 
-/* RESULTS SCREEN */
-#screen-results{align-items:flex-start;padding-top:2rem;}
-.results-wrap{width:100%;max-width:760px;margin:0 auto;padding:0 1.5rem 5rem;}
-.results-header{margin-bottom:2.5rem;}
-.results-greeting{font-family:'Cormorant Garamond',serif;font-size:clamp(26px,4vw,40px);font-weight:300;line-height:1.15;color:var(--parchment);margin-bottom:.75rem;}
-.results-greeting em{font-style:italic;color:var(--gold-light);}
-.results-context{font-size:14.5px;color:rgba(245,240,232,.75);line-height:1.85;margin-bottom:1.5rem;max-width:62ch;}
-.disclaimer-small{background:rgba(200,149,42,.06);border:1px solid rgba(200,149,42,.15);border-radius:6px;padding:.65rem .9rem;font-size:11.5px;color:rgba(245,240,232,.45);line-height:1.6;margin-bottom:2rem;}
-.disclaimer-small strong{color:rgba(200,149,42,.8);}
+.profile-header{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:2rem;margin-bottom:2rem;text-align:center;}
+.profile-name{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:500;color:var(--gold-light);margin-bottom:.5rem;}
+.profile-latin{font-style:italic;font-size:13px;color:var(--muted);margin-bottom:1.5rem;}
+.profile-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+.profile-btn{padding:.7rem 1.2rem;border:1px solid var(--card-border);border-radius:5px;background:transparent;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;}
+.profile-btn:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
+.profile-btn.primary{background:var(--gold);color:var(--forest);border-color:var(--gold);}
 
-/* RESULT CARDS */
-.result-card{background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:1.5rem 1.75rem;margin-bottom:1rem;transition:border-color .2s;}
-.result-card:hover{border-color:rgba(200,149,42,.3);}
-.result-card.high{border-left:2px solid var(--forest-light);}
-.result-card.mod{border-left:2px solid rgba(200,149,42,.4);}
-.rc-top{display:flex;align-items:flex-start;gap:1.1rem;margin-bottom:1rem;}
-.rc-conf{display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;padding-top:2px;}
-.conf-ring{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;border:2px solid;}
-.conf-high{color:#7acca0;border-color:rgba(74,140,101,.4);background:rgba(74,140,101,.1);}
-.conf-mid{color:var(--gold-light);border-color:rgba(200,149,42,.4);background:rgba(200,149,42,.1);}
-.conf-label{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
-.rc-head{flex:1;}
-.rc-name{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;color:var(--parchment);margin-bottom:2px;}
-.rc-latin{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--muted);margin-bottom:.5rem;}
-.rc-tags{display:flex;flex-wrap:wrap;gap:4px;}
-.rtag{font-size:10px;letter-spacing:.07em;text-transform:uppercase;padding:2px 8px;border-radius:4px;background:var(--card);color:var(--muted);border:1px solid var(--card-border);}
-.rtag.cat{background:var(--tag-bg);color:var(--tag-text);border-color:var(--tag-border);}
+/* EDGE TABS (cross-navigation) */
+.herb-match-pi-tab{position:fixed;right:0;top:45%;transform:translateY(-50%);writing-mode:vertical-lr;background:var(--gold);color:var(--forest);border:none;border-radius:8px 0 0 8px;padding:1rem .5rem;font-family:'DM Sans',sans-serif;font-size:11.5px;font-weight:700;letter-spacing:.04em;cursor:pointer;z-index:150;box-shadow:-3px 0 12px rgba(0,0,0,.25);display:none;}
+.herb-match-pi-tab.show{display:block;}
+.herb-match-pi-tab:hover{background:var(--gold-light);}
 
-.rc-body{font-size:13.5px;color:rgba(245,240,232,.72);line-height:1.75;margin-bottom:.85rem;}
+.back-to-match-tab{position:fixed;left:0;top:45%;transform:translateY(-50%);writing-mode:vertical-rl;background:var(--gold);color:var(--forest);border:none;border-radius:0 8px 8px 0;padding:1rem .5rem;font-family:'DM Sans',sans-serif;font-size:11.5px;font-weight:700;letter-spacing:.04em;cursor:pointer;z-index:150;box-shadow:3px 0 12px rgba(0,0,0,.25);display:none;}
+.back-to-match-tab.show{display:block;}
+.back-to-match-tab:hover{background:var(--gold-light);}
 
-.organ-box{background:rgba(74,140,101,.06);border:1px solid rgba(74,140,101,.18);border-left:3px solid var(--forest-light);border-radius:0 6px 6px 0;padding:.85rem 1.1rem;margin-bottom:.85rem;}
-.organ-title{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--tag-text);margin-bottom:.4rem;}
-.organ-body{font-size:13px;color:rgba(245,240,232,.65);line-height:1.65;}
+/* MODAL (Alternatives) */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:1.5rem;}
+.modal-overlay.show{display:flex;}
+.modal{background:var(--forest);border:1px solid rgba(200,149,42,.3);border-radius:12px;padding:2rem;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;}
+.modal h3{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;margin-bottom:1rem;color:var(--gold-light);}
+.modal p{font-size:13px;color:var(--muted);margin-bottom:1.5rem;line-height:1.6;}
 
-.non-obvious{background:rgba(200,149,42,.06);border:1px solid rgba(200,149,42,.15);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:.85rem 1.1rem;margin-bottom:.85rem;}
-.nob-title{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem;}
-.non-obvious p{font-size:13px;color:rgba(245,240,232,.65);line-height:1.65;}
+.modal-actions{display:flex;justify-content:flex-end;gap:.6rem;margin-top:1.5rem;}
+.modal-btn{padding:.6rem 1.2rem;border-radius:5px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;border:1px solid var(--card-border);background:transparent;color:var(--muted);}
+.modal-btn.primary{background:var(--gold);color:var(--forest);border-color:var(--gold);}
 
-.lifestyle-box{background:rgba(130,100,200,.06);border:1px solid rgba(130,100,200,.15);border-radius:6px;padding:.85rem 1.1rem;margin-bottom:.85rem;}
-.lifestyle-title{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:#b8a0e8;margin-bottom:.4rem;}
-.lifestyle-body{font-size:13px;color:rgba(245,240,232,.65);line-height:1.65;}
-
-.rc-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;padding-top:.85rem;border-top:1px solid var(--card-border);}
-.rc-forms{display:flex;flex-wrap:wrap;gap:4px;}
-.buy-link{font-size:12px;color:var(--tag-text);text-decoration:none;display:flex;align-items:center;gap:5px;border:1px solid rgba(74,140,101,.3);padding:.3rem .8rem;border-radius:5px;transition:all .18s;}
-.buy-link:hover{background:rgba(74,140,101,.12);border-color:rgba(74,140,101,.5);}
-.buy-link svg{flex-shrink:0;}
-
-/* RESTART */
-.restart-row{display:flex;justify-content:center;margin-top:2.5rem;}
-.btn-restart{padding:.7rem 1.75rem;background:transparent;color:var(--muted);border:1px solid var(--card-border);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .2s;}
-.btn-restart:hover{border-color:var(--gold);color:var(--gold-light);}
-
-/* HERO (landing state) */
-#screen-0{background:none;}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;}
-.hero-badge::before{content:'';width:20px;height:1px;background:var(--gold);opacity:.6;}
-.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(36px,6vw,60px);font-weight:300;line-height:1.06;color:var(--parchment);margin-bottom:.85rem;}
-.hero-title em{font-style:italic;color:var(--gold-light);}
-.hero-desc{font-size:15px;color:var(--muted);line-height:1.85;max-width:50ch;margin-bottom:2.5rem;}
-.hero-start{padding:.85rem 2.5rem;background:var(--gold);color:var(--forest);border:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:10px;}
-.hero-start:hover{background:var(--gold-light);transform:translateY(-2px);}
-.hero-note{font-size:12px;color:rgba(245,240,232,.25);margin-top:1rem;}
-
-/* TOAST */
-.toast{position:fixed;bottom:1.75rem;left:50%;transform:translateX(-50%) translateY(20px);background:var(--forest);border:1px solid rgba(200,149,42,.4);border-radius:999px;padding:.55rem 1.2rem;font-size:13px;color:var(--parchment);z-index:300;opacity:0;pointer-events:none;transition:all .25s;white-space:nowrap;}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+/* LOADING */
+.loading{text-align:center;padding:2rem;}
+.spinner{display:inline-block;width:24px;height:24px;border:2px solid rgba(200,149,42,.2);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 @media(max-width:600px){
-  .btn-row{flex-direction:column-reverse;gap:.75rem;}
-  .btn-next{width:100%;justify-content:center;}
-  .btn-back{align-self:center;}
-  .results-wrap{padding:0 1rem 4rem;}
+  .container{padding:2rem 1.25rem;}
+  .results-grid{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -203,608 +128,313 @@ input[type=range]{width:100%;accent-color:var(--gold);}
 
 <nav>
   <a href="home.html" class="nav-logo">
-    <span class="nav-chi">C.H.I</span>
+    <span class="nav-chi">Herbadex</span>
     <span class="nav-full">Collective Herbal Intelligence</span>
   </a>
   <div class="nav-right">
-    <div class="nav-dd" id="dd-tools" onclick="toggleDD('tools')">
-      <span  style="color:var(--gold-light)">Tools</span>
-      <span class="nav-dd-arrow">▼</span>
-      <div class="nav-dd-menu">
-        <a href="herb-match.html" class="active"><span class="nav-dd-icon">🌿</span>Herb Match</a>
-        <a href="phytochemistry.html"><span class="nav-dd-icon">⬡</span>Plant Intelligence</a>
-        <a href="supreme.html"><span class="nav-dd-icon">📖</span>Herbadex</a>
-        <a href="herb-identifier.html"><span class="nav-dd-icon">🔍</span>Herb Identifier</a>
-      </div>
-    </div>
-    <div class="nav-dd" id="dd-community" onclick="toggleDD('community')">
-      <span>Community</span>
-      <span class="nav-dd-arrow">▼</span>
-      <div class="nav-dd-menu">
-        <a href="community.html"><span class="nav-dd-icon">💬</span>Community Feed</a>
-        <a href="garden.html"><span class="nav-dd-icon">🌱</span>Herbal Garden</a>
-        <a href="glossary.html"><span class="nav-dd-icon">📚</span>Glossary</a>
-      </div>
-    </div>
-    <div class="nav-dd" id="dd-profile" onclick="toggleDD('profile')">
-      <span>Profile</span>
-      <span class="nav-dd-arrow">▼</span>
-      <div class="nav-dd-menu">
-        <a href="profile.html"><span class="nav-dd-icon">🌿</span>My Profile</a>
-        <a href="inbox.html"><span class="nav-dd-icon">✉️</span>Inbox</a>
-        <div class="nav-dd-divider"></div>
-        <a href="privacy-policy.html"><span class="nav-dd-icon">🔒</span>Privacy Policy</a>
-        <a href="terms.html"><span class="nav-dd-icon">📄</span>Terms</a>
-        <a href="disclaimer.html"><span class="nav-dd-icon">⚠️</span>Disclaimer</a>
-        <div class="nav-dd-divider"></div>
-        <a href="index.html" onclick="localStorage.clear()"><span class="nav-dd-icon">↩</span>Sign out</a>
-      </div>
-    </div>
-    <a href="inbox.html" class="nav-inbox" title="Inbox">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12v9H2V4z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M2 4l6 5 6-5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-    </a>
-    <a href="join.html" class="nav-cta">Join CHI</a>
+    <a href="supreme.html">Herbadex</a>
+    <a href="phytochemistry.html">Plant Intelligence</a>
+    <a href="herb-match.html" class="active">Herb Match</a>
   </div>
 </nav>
 
-<div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
-
-<div class="flow">
-
-  <!-- SCREEN 0: LANDING -->
-  <div class="screen active" id="screen-0">
-    <div class="screen-inner">
-      <div class="hero-badge">C.H.I · Herb Match</div>
-      <h1 class="hero-title">Your body is<br>telling you <em>something.</em><br>Let's listen.</h1>
-      <p class="hero-desc">Answer a few honest questions and we'll match you with herbs that support what your body actually needs — with real explanations, not just a list.</p>
-      <button class="hero-start" onclick="startFlow()">
-        Begin your consultation
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <p class="hero-note">Takes about 2 minutes · Not medical advice · Your answers stay on your device</p>
-    </div>
+<div class="container">
+  <!-- HERO -->
+  <div class="hero">
+    <h1>Find Your Herbs</h1>
+    <p>Tell us what you're working on, and we'll discover herbs that match your needs. Don't like our suggestion? Explore alternatives and help us learn.</p>
   </div>
 
-  <!-- SCREEN 1: MAIN CONCERN -->
-  <div class="screen" id="screen-1">
-    <div class="screen-inner">
-      <div class="step-label">Step 1 of 6</div>
-      <h2 class="q-title">What's been going on<br>for you <em>lately?</em></h2>
-      <p class="q-sub">Don't overthink it — just describe how you've been feeling in your own words. There are no wrong answers here.</p>
-      <textarea class="q-textarea" id="q1" placeholder="e.g. I've been exhausted no matter how much I sleep, my skin keeps breaking out, and I can't seem to focus at work. I think stress is playing a big part but I'm not sure..." oninput="updateQ1()"></textarea>
-      <div class="char-hint" id="q1-hint">0 / 500</div>
-      <div class="btn-row">
-        <button class="btn-back" onclick="goBack()">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M10 7H4M6 4l-3 3 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Back
-        </button>
-        <button class="btn-next" id="btn1" onclick="goNext()" disabled>
-          Continue
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 7h6M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-      </div>
+  <!-- PYRAMID/TREE ISSUES -->
+  <div class="pyramid-section" id="pyramid-section">
+    <div class="pyramid-title">What common issues are you tackling?</div>
+    <div class="pyramid-intro">Select up to 3 areas you'd like support with. The more specific, the better matches we'll find.</div>
+
+    <div id="issues-container"></div>
+
+    <div class="selection-status">
+      <p>Selected issues:</p>
+      <div class="count" id="selection-count">0/3</div>
     </div>
+
+    <button class="submit-btn" id="submit-btn" disabled>Find Matching Herbs</button>
   </div>
 
-  <!-- SCREEN 2: HOW LONG -->
-  <div class="screen" id="screen-2">
-    <div class="screen-inner">
-      <div class="step-label">Step 2 of 6</div>
-      <h2 class="q-title">How long have you been<br><em>feeling this way?</em></h2>
-      <p class="q-sub">Duration helps us understand whether this is acute, building or chronic — which changes which herbs are most relevant.</p>
-      <div class="chips" id="chips-2">
-        <div class="chip" onclick="selectChip(this,'q2','A few days')">A few days</div>
-        <div class="chip" onclick="selectChip(this,'q2','A few weeks')">A few weeks</div>
-        <div class="chip" onclick="selectChip(this,'q2','1–3 months')">1–3 months</div>
-        <div class="chip" onclick="selectChip(this,'q2','3–6 months')">3–6 months</div>
-        <div class="chip" onclick="selectChip(this,'q2','Over 6 months')">Over 6 months</div>
-        <div class="chip" onclick="selectChip(this,'q2','On and off for years')">On and off for years</div>
-      </div>
-      <div class="btn-row">
-        <button class="btn-back" onclick="goBack()">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M10 7H4M6 4l-3 3 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Back
-        </button>
-        <button class="btn-next" id="btn2" onclick="goNext()" disabled>
-          Continue
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 7h6M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
+  <!-- RESULTS -->
+  <div class="results-section" id="results-section">
+    <div class="results-header">
+      <h2>Herbs for your needs</h2>
+      <p id="results-description"></p>
+    </div>
+    <div class="results-grid" id="results-grid"></div>
+    <button class="submit-btn" onclick="backToPyramid()">← Search again</button>
+  </div>
+
+  <!-- PROFILE VIEWER -->
+  <div class="profile-section" id="profile-section">
+    <div class="profile-header">
+      <div class="profile-name" id="profile-name"></div>
+      <div class="profile-latin" id="profile-latin"></div>
+      <div class="profile-actions">
+        <button class="profile-btn primary" onclick="addToStack()">+ Add to stack</button>
+        <button class="profile-btn" onclick="backToResults()">← Back to results</button>
       </div>
     </div>
+    <div id="profile-content"></div>
   </div>
-
-  <!-- SCREEN 3: LIFESTYLE -->
-  <div class="screen" id="screen-3">
-    <div class="screen-inner">
-      <div class="step-label">Step 3 of 6</div>
-      <h2 class="q-title">Tell us about your<br><em>day to day.</em></h2>
-      <p class="q-sub">Lifestyle shapes everything. Select all that apply — honesty here gives you better results.</p>
-      <div class="chips" id="chips-3">
-        <div class="chip multi" onclick="toggleChip(this,'q3','Poor sleep')">Poor sleep</div>
-        <div class="chip multi" onclick="toggleChip(this,'q3','High stress')">High stress</div>
-        <div class="chip multi" onclick="toggleChip(this,'q3','Sedentary work')">Sedentary / desk work</div>
-        <div class="chip multi" onclick="toggleChip(this,'q3','Physically active')">Physically active</div>
-        <div class="chip multi" onclick="toggleChip(this,'q3','Poor diet')">Diet could be better</div>
-        <div class="chip multi" onclick="toggleChip(this,'q3','Mostly whole foods')">Mostly whole foods</div>
-        <div class="chip multi" onclick="toggleChip(this,'q3','Heavy alcohol')">Drink alcohol regularly</div>
-        <div class="chip multi" onclick="toggleChip(this,'q3','Smoking')">Smoke or vape</div>
-        <div class="chip multi" onclick="toggleChip(this,'q3','Shift work')">Shift work or irregular hours</div>
-        <div class="chip multi" onclick="toggleChip(this,'q3','Screen heavy')">Heavy screen use</div>
-        <div class="chip multi" onclick="toggleChip(this,'q3','Little sunlight')">Little time outdoors</div>
-        <div class="chip multi" onclick="toggleChip(this,'q3','Intermittent fasting')">Intermittent fasting</div>
-      </div>
-      <div class="multi-note">Select all that apply</div>
-      <div class="btn-row">
-        <button class="btn-back" onclick="goBack()">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M10 7H4M6 4l-3 3 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Back
-        </button>
-        <button class="btn-next" id="btn3" onclick="goNext()">
-          Continue
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 7h6M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- SCREEN 4: HEALTH GOALS -->
-  <div class="screen" id="screen-4">
-    <div class="screen-inner">
-      <div class="step-label">Step 4 of 6</div>
-      <h2 class="q-title">What matters most<br>to you <em>right now?</em></h2>
-      <p class="q-sub">Pick your top priorities — not what you think you should want, what you actually want. Pick up to three.</p>
-      <div class="chips" id="chips-4">
-        <div class="chip multi" onclick="toggleChipMax(this,'q4',3)">More energy</div>
-        <div class="chip multi" onclick="toggleChipMax(this,'q4',3)">Better sleep</div>
-        <div class="chip multi" onclick="toggleChipMax(this,'q4',3)">Sharper focus</div>
-        <div class="chip multi" onclick="toggleChipMax(this,'q4',3)">Less stress / anxiety</div>
-        <div class="chip multi" onclick="toggleChipMax(this,'q4',3)">Weight management</div>
-        <div class="chip multi" onclick="toggleChipMax(this,'q4',3)">Stronger immunity</div>
-        <div class="chip multi" onclick="toggleChipMax(this,'q4',3)">Hormone balance</div>
-        <div class="chip multi" onclick="toggleChipMax(this,'q4',3)">Gut health</div>
-        <div class="chip multi" onclick="toggleChipMax(this,'q4',3)">Skin health</div>
-        <div class="chip multi" onclick="toggleChipMax(this,'q4',3)">Libido / vitality</div>
-        <div class="chip multi" onclick="toggleChipMax(this,'q4',3)">Joint / muscle support</div>
-        <div class="chip multi" onclick="toggleChipMax(this,'q4',3)">Heart health</div>
-        <div class="chip multi" onclick="toggleChipMax(this,'q4',3)">Liver detox</div>
-        <div class="chip multi" onclick="toggleChipMax(this,'q4',3)">Anti-aging / longevity</div>
-        <div class="chip multi" onclick="toggleChipMax(this,'q4',3)">Mood support</div>
-        <div class="chip multi" onclick="toggleChipMax(this,'q4',3)">Respiratory health</div>
-      </div>
-      <div class="multi-note" id="q4-note">Select up to 3</div>
-      <div class="btn-row">
-        <button class="btn-back" onclick="goBack()">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M10 7H4M6 4l-3 3 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Back
-        </button>
-        <button class="btn-next" id="btn4" onclick="goNext()" disabled>
-          Continue
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 7h6M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- SCREEN 5: CURRENT INTAKE -->
-  <div class="screen" id="screen-5">
-    <div class="screen-inner">
-      <div class="step-label">Step 5 of 6</div>
-      <h2 class="q-title">Are you currently taking<br><em>anything?</em></h2>
-      <p class="q-sub">Medications, supplements, herbs — anything at all. This helps us flag any interactions and avoid recommending what you already have. If nothing, just leave it blank.</p>
-      <textarea class="q-textarea" id="q5" placeholder="e.g. Vitamin D 2000IU daily, occasional ibuprofen, ashwagandha 300mg…&#10;&#10;Or type 'nothing' if you're not taking anything." style="min-height:100px"></textarea>
-      <p class="q-sub" style="margin-top:1rem;margin-bottom:0;font-size:12.5px">Also — a couple of quick things:</p>
-      <div style="display:flex;flex-direction:column;gap:.6rem;margin-top:.85rem">
-        <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
-          <span style="font-size:13.5px;color:var(--muted);min-width:140px">Age range</span>
-          <div class="chips" style="margin-bottom:0" id="chips-age">
-            <div class="chip" style="font-size:12px" onclick="selectChip(this,'q-age','Under 18')">Under 18</div>
-            <div class="chip" style="font-size:12px" onclick="selectChip(this,'q-age','18–29')">18–29</div>
-            <div class="chip" style="font-size:12px" onclick="selectChip(this,'q-age','30–44')">30–44</div>
-            <div class="chip" style="font-size:12px" onclick="selectChip(this,'q-age','45–59')">45–59</div>
-            <div class="chip" style="font-size:12px" onclick="selectChip(this,'q-age','60+')">60+</div>
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
-          <span style="font-size:13.5px;color:var(--muted);min-width:140px">Biological sex</span>
-          <div class="chips" style="margin-bottom:0" id="chips-sex">
-            <div class="chip" style="font-size:12px" onclick="selectChip(this,'q-sex','Male')">Male</div>
-            <div class="chip" style="font-size:12px" onclick="selectChip(this,'q-sex','Female')">Female</div>
-            <div class="chip" style="font-size:12px" onclick="selectChip(this,'q-sex','Prefer not to say')">Prefer not to say</div>
-          </div>
-        </div>
-        <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
-          <span style="font-size:13.5px;color:var(--muted);min-width:140px">Pregnant or trying?</span>
-          <div class="chips" style="margin-bottom:0" id="chips-preg">
-            <div class="chip" style="font-size:12px" onclick="selectChip(this,'q-preg','No')">No</div>
-            <div class="chip" style="font-size:12px" onclick="selectChip(this,'q-preg','Yes')">Yes</div>
-            <div class="chip" style="font-size:12px" onclick="selectChip(this,'q-preg','Not applicable')">Not applicable</div>
-          </div>
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn-back" onclick="goBack()">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M10 7H4M6 4l-3 3 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Back
-        </button>
-        <button class="btn-next" id="btn5" onclick="goNext()">
-          Continue
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 7h6M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- SCREEN 6: COMMITMENT -->
-  <div class="screen" id="screen-6">
-    <div class="screen-inner">
-      <div class="step-label">Step 6 of 6</div>
-      <h2 class="q-title">One last thing —<br>how <em>committed</em> are you?</h2>
-      <p class="q-sub">Herbs work with consistency, not miracles. Knowing your commitment level helps us recommend what's actually realistic for your life right now.</p>
-      <div class="chips" id="chips-6">
-        <div class="chip" onclick="selectChip(this,'q6','Just exploring — not ready to commit to anything yet')">Just exploring for now</div>
-        <div class="chip" onclick="selectChip(this,'q6','Ready to try one or two herbs consistently')">Ready to try 1–2 herbs consistently</div>
-        <div class="chip" onclick="selectChip(this,'q6','Willing to build a daily protocol and stick to it')">Willing to build a daily protocol</div>
-        <div class="chip" onclick="selectChip(this,'q6','Fully committed — ready to overhaul my routine')">Fully committed — ready to overhaul</div>
-      </div>
-      <div style="margin-top:1.5rem">
-        <p class="q-sub" style="margin-bottom:.75rem">Anything else you want us to know? <span style="opacity:.5">(optional)</span></p>
-        <textarea class="q-textarea" id="q6-extra" placeholder="Any health conditions, preferences, things you've already tried that didn't work, or anything else that feels relevant…" style="min-height:90px"></textarea>
-      </div>
-      <div class="btn-row">
-        <button class="btn-back" onclick="goBack()">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M10 7H4M6 4l-3 3 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Back
-        </button>
-        <button class="btn-next" id="btn6" onclick="submitConsultation()" disabled>
-          Find my herbs
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M4 7h6M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- LOADING SCREEN -->
-  <div class="screen" id="screen-loading">
-    <div class="loading-inner">
-      <div class="loading-glyph">C.H.I</div>
-      <h2 class="loading-title">Reading between<br>the <em>lines.</em></h2>
-      <p class="loading-sub">We're looking at everything you've shared and finding the herbs that genuinely fit — not just the most popular ones.</p>
-      <div class="loading-steps">
-        <div class="loading-step active" id="ls-1"><span class="step-dot"></span>Reading your consultation</div>
-        <div class="loading-step" id="ls-2"><span class="step-dot"></span>Identifying relevant body systems</div>
-        <div class="loading-step" id="ls-3"><span class="step-dot"></span>Matching herbs to your profile</div>
-        <div class="loading-step" id="ls-4"><span class="step-dot"></span>Checking for interactions</div>
-        <div class="loading-step" id="ls-5"><span class="step-dot"></span>Preparing your personalised results</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- RESULTS SCREEN -->
-  <div class="screen" id="screen-results">
-    <div class="results-wrap" id="results-content"></div>
-  </div>
-
 </div>
 
-<div class="toast" id="toast"></div>
+<!-- Edge tabs for cross-nav -->
+<button class="herb-match-pi-tab" id="herb-match-pi-tab" onclick="window.location.href='phytochemistry.html'">Plant Intelligence →</button>
+<button class="back-to-match-tab" id="back-to-match-tab" onclick="backToResults()">← Back to Herb Match</button>
+
+<!-- Alternatives Modal -->
+<div class="modal-overlay" id="alternatives-modal">
+  <div class="modal">
+    <h3>Finding alternatives...</h3>
+    <div class="loading">
+      <div class="spinner"></div>
+      <p style="margin-top:1rem;font-size:13px;color:var(--muted);">Searching for a better match</p>
+    </div>
+  </div>
+</div>
 
 <script>
-// ─── STATE ────────────────────────────────────────────────────────
-const answers = { q1:'', q2:'', q3:[], q4:[], q5:'', 'q-age':'', 'q-sex':'', 'q-preg':'', q6:'', 'q6-extra':'' };
-let currentScreen = 0;
-const totalSteps = 6;
+// ─── DATA ───────────────────────────────────────────────
+const ISSUE_CATEGORIES = {
+  'Sleep & Rest': ['Insomnia', 'Restlessness', 'Light sleep'],
+  'Mood & Mind': ['Stress', 'Anxiety', 'Low mood', 'Focus'],
+  'Energy & Stamina': ['Low energy', 'Fatigue', 'Brain fog'],
+  'Digestion & Gut': ['Bloating', 'Slow digestion', 'Cramping'],
+  'Immune Support': ['Occasional illness', 'Immune boost'],
+  'Inflammation & Pain': ['Joint stiffness', 'Occasional pain'],
+};
 
-// ─── NAVIGATION ───────────────────────────────────────────────────
-function startFlow(){ goToScreen(1); }
+let selectedIssues = [];
+let currentResults = [];
+let currentProfile = null;
 
-function goNext(){
-  if(currentScreen < totalSteps) goToScreen(currentScreen + 1);
-}
-function goBack(){
-  if(currentScreen > 0) goToScreen(currentScreen - 1);
-}
+// ─── BUILD PYRAMID ──────────────────────────────────────
+function buildPyramid() {
+  const container = document.getElementById('issues-container');
+  container.innerHTML = '';
 
-function goToScreen(n){
-  const cur = document.getElementById('screen-' + currentScreen);
-  const next = document.getElementById('screen-' + n);
-  cur.classList.add('exit');
-  setTimeout(()=>{ cur.classList.remove('active','exit'); next.classList.add('active'); window.scrollTo(0,0); },280);
-  currentScreen = n;
-  updateProgress();
-}
+  Object.entries(ISSUE_CATEGORIES).forEach(([category, issues]) => {
+    const categoryDiv = document.createElement('div');
+    categoryDiv.className = 'issue-category';
 
-function updateProgress(){
-  const pct = currentScreen === 0 ? 0 : Math.round((currentScreen / totalSteps) * 100);
-  document.getElementById('progress').style.width = pct + '%';
-}
+    const categoryTitle = document.createElement('div');
+    categoryTitle.className = 'category-name';
+    categoryTitle.textContent = category;
+    categoryDiv.appendChild(categoryTitle);
 
-// ─── ANSWER COLLECTION ────────────────────────────────────────────
-function updateQ1(){
-  const val = document.getElementById('q1').value;
-  answers.q1 = val;
-  document.getElementById('q1-hint').textContent = val.length + ' / 500';
-  document.getElementById('btn1').disabled = val.trim().length < 10;
-}
+    const gridDiv = document.createElement('div');
+    gridDiv.className = 'issues-grid';
 
-// Single select chip
-function selectChip(el, key, val){
-  const parent = el.parentElement;
-  parent.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
-  el.classList.add('selected');
-  answers[key] = val;
-  // enable next button for this step
-  const stepMap = {'q2':'btn2','q-age':null,'q-sex':null,'q-preg':null,'q6':'btn6'};
-  if(stepMap[key]) document.getElementById(stepMap[key]).disabled = false;
-  if(key==='q6') document.getElementById('btn6').disabled = false;
-}
+    issues.forEach(issue => {
+      const checkboxDiv = document.createElement('label');
+      checkboxDiv.className = 'issue-checkbox';
 
-// Multi select chip (no limit)
-function toggleChip(el, key){
-  el.classList.toggle('selected');
-  const vals = [...document.querySelectorAll(`[onclick*="toggleChip(this,'${key}'"]`)]
-    .filter(c=>c.classList.contains('selected')).map(c=>c.textContent.replace('✓  ',''));
-  answers[key] = vals;
-}
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.value = issue;
+      input.onchange = (e) => {
+        if (e.target.checked) {
+          if (selectedIssues.length < 3) {
+            selectedIssues.push(issue);
+          } else {
+            e.target.checked = false;
+            return;
+          }
+        } else {
+          selectedIssues = selectedIssues.filter(i => i !== issue);
+        }
+        updateSelectionStatus();
+      };
 
-// Multi select chip with max
-function toggleChipMax(el, key, max){
-  const group = [...document.querySelectorAll(`[onclick*="toggleChipMax(this,'${key}'"]`)];
-  const selected = group.filter(c=>c.classList.contains('selected'));
-  if(!el.classList.contains('selected') && selected.length >= max){
-    showToast(`Pick up to ${max} goals`); return;
-  }
-  el.classList.toggle('selected');
-  const vals = group.filter(c=>c.classList.contains('selected')).map(c=>c.textContent.replace('✓  ',''));
-  answers[key] = vals;
-  const note = document.getElementById('q4-note');
-  note.textContent = vals.length ? `${vals.length} selected (max ${max})` : `Select up to ${max}`;
-  document.getElementById('btn4').disabled = vals.length === 0;
+      const label = document.createElement('label');
+      label.textContent = issue;
+
+      checkboxDiv.appendChild(input);
+      checkboxDiv.appendChild(label);
+      gridDiv.appendChild(checkboxDiv);
+    });
+
+    categoryDiv.appendChild(gridDiv);
+    container.appendChild(categoryDiv);
+  });
 }
 
-// ─── LOADING ANIMATION ────────────────────────────────────────────
-function runLoadingSteps(cb){
-  const steps = ['ls-1','ls-2','ls-3','ls-4','ls-5'];
-  let i = 0;
-  function tick(){
-    if(i > 0) document.getElementById(steps[i-1]).classList.replace('active','done');
-    if(i < steps.length){
-      document.getElementById(steps[i]).classList.add('active');
-      i++;
-      setTimeout(tick, 900 + Math.random()*400);
-    } else {
-      setTimeout(cb, 600);
-    }
-  }
-  tick();
+function updateSelectionStatus() {
+  document.getElementById('selection-count').textContent = `${selectedIssues.length}/3`;
+  document.getElementById('submit-btn').disabled = selectedIssues.length === 0;
 }
 
-// ─── SUBMIT & DEMO RESULTS ────────────────────────────────────────
-function submitConsultation(){
-  answers.q5 = document.getElementById('q5').value;
-  answers['q6-extra'] = document.getElementById('q6-extra').value;
-
-  // go to loading screen
-  const cur = document.getElementById('screen-' + currentScreen);
-  cur.classList.add('exit');
-  setTimeout(()=>{
-    cur.classList.remove('active','exit');
-    document.getElementById('screen-loading').classList.add('active');
-    window.scrollTo(0,0);
-  },280);
-  document.getElementById('progress').style.width = '100%';
-
-  // run loading steps then show demo results
-  // ── WHEN API IS READY: replace callAPI() here ──
-  runLoadingSteps(()=>{ showDemoResults(); });
+function submitIssues() {
+  if (selectedIssues.length === 0) return;
+  findMatchingHerbs(selectedIssues);
 }
 
-// ─── DEMO RESULTS (placeholder until API is connected) ────────────
-function showDemoResults(){
-  const name = answers['q1'].split(' ').slice(0,6).join(' ');
-  const goals = answers['q4'].length ? answers['q4'].join(', ') : 'your wellness goals';
-  const duration = answers['q2'] || 'some time';
+// ─── FIND MATCHING HERBS ────────────────────────────────
+function findMatchingHerbs(issues) {
+  // For now, use demo herbs. Later: call API
+  const demoResults = [
+    { name: 'Ashwagandha', latin: 'Withania somnifera', matches: 3 },
+    { name: 'Passionflower', latin: 'Passiflora edulis', matches: 2 },
+    { name: 'Lemon balm', latin: 'Melissa officinalis', matches: 3 },
+    { name: 'Valerian', latin: 'Valeriana officinalis', matches: 2 },
+  ];
 
-  // Build a contextual intro from their answers
-  const lifestyle = answers['q3'];
-  const lifestyleNote = lifestyle.length
-    ? `With ${lifestyle.slice(0,2).join(' and ').toLowerCase()} in the picture, your body is likely dealing with more than one thing at once.`
-    : '';
+  currentResults = demoResults;
+  showResults(issues, demoResults);
+}
 
-  const html = `
-    <div class="results-header">
-      <p class="step-label">Your herb match results</p>
-      <h2 class="results-greeting">Based on what you've shared,<br><em>here's what we found.</em></h2>
-      <p class="results-context">You've been feeling this way for ${duration.toLowerCase()}. Your priorities are ${goals.toLowerCase()}. ${lifestyleNote} The herbs below are matched to your specific picture — not a generic list.</p>
-      <div class="disclaimer-small"><strong>Remember:</strong> These suggestions are for educational and wellness purposes only. They are not a diagnosis or prescription. Always speak to a qualified practitioner before using herbs alongside medications or for serious health concerns.</div>
-    </div>
+function showResults(issues, herbs) {
+  document.getElementById('pyramid-section').style.display = 'none';
+  document.getElementById('results-section').classList.add('show');
+  document.getElementById('results-description').textContent = `Herbs matching: ${issues.join(', ')}`;
 
-    ${buildCard({
-      name:'Ashwagandha', latin:'Withania somnifera', score:94, level:'high',
-      cats:['Adaptogen','Nervine','Anti-inflammatory'],
-      forms:['Capsule','Powder','Tincture'],
-      why:`Withanolides in ashwagandha are steroidal lactone compounds structurally similar to your own stress hormones. They modulate the HPA axis — your body's central stress command system — reducing cortisol by up to 27% in double-blind trials. This directly addresses fatigue, brain fog and disrupted sleep that are driven by chronic stress activation.`,
-      organ:{title:'What\'s happening in your body',body:`Your adrenal glands sit on top of your kidneys and produce cortisol — your primary stress hormone. When stress is sustained over weeks or months, cortisol stays elevated. Chronically high cortisol suppresses thyroid function, disrupts sleep architecture, impairs prefrontal cortex activity (focus and decision-making) and depletes energy reserves. This is not a character flaw — it is a measurable physiological state that herbs can genuinely support.`},
-      lifestyle:{title:'The lifestyle connection',body:`High stress, poor sleep and heavy screen use all elevate cortisol independently. When they combine, the effect is compounded. No herb can fully compensate for a lifestyle that continuously re-triggers the stress response — but ashwagandha can meaningfully reduce the physical burden while you work on the inputs.`},
-      nonObvious:null,
-      amazon:'https://www.amazon.co.uk/s?k=ashwagandha+KSM-66&tag=chi-affiliate-20'
-    })}
+  updateResultsGrid();
+}
 
-    ${buildCard({
-      name:'Lion\'s mane', latin:'Hericium erinaceus', score:88, level:'high',
-      cats:['Nootropic','Adaptogen-Nootropic','Immunomodulator'],
-      forms:['Capsule','Powder'],
-      why:`Hericenones (fruiting body) and erinacines (mycelium) are the only known dietary compounds that cross the blood-brain barrier and directly stimulate nerve growth factor (NGF) synthesis in the hippocampus. NGF supports the growth and maintenance of nerve cells involved in memory and focus. Human trials show cumulative cognitive improvement over 4–8 weeks of consistent use.`,
-      organ:{title:'What\'s happening in your brain',body:`The hippocampus — your brain\'s memory and learning centre — is particularly sensitive to chronic cortisol. Elevated stress hormones literally reduce hippocampal volume over time, reducing neural efficiency and producing the fuzzy, slow thinking of brain fog. NGF stimulation supports the repair and maintenance of these neural connections.`},
-      lifestyle:{title:'The lifestyle connection',body:`Heavy screen use and poor sleep both independently reduce cognitive performance. Lion\'s mane does not overcome these inputs — but it supports the neural substrate that takes the hit from them, making recovery faster and the baseline higher.`},
-      nonObvious:null,
-      amazon:'https://www.amazon.co.uk/s?k=lions+mane+mushroom+extract&tag=chi-affiliate-20'
-    })}
+function updateResultsGrid() {
+  const grid = document.getElementById('results-grid');
+  grid.innerHTML = '';
 
-    ${buildCard({
-      name:'Lemon balm', latin:'Melissa officinalis', score:81, level:'high',
-      cats:['Nervine','Anxiolytic','Nootropic'],
-      forms:['Tea','Tincture','Capsule'],
-      why:`Rosmarinic acid in lemon balm inhibits acetylcholinesterase — the enzyme that breaks down acetylcholine, your primary focus and memory neurotransmitter. It also inhibits GABA transaminase, increasing calming GABA activity. The result is a herb that sharpens thinking and calms the nervous system simultaneously — unusual in that most herbs do one or the other.`,
-      organ:{title:'What\'s happening in your nervous system',body:`Acetylcholine is the neurotransmitter of attention, learning and memory. GABA is the neurotransmitter of calm. Most stimulants increase acetylcholine by activating the brain further — which worsens anxiety. Lemon balm\'s mechanism increases both simultaneously by slowing their breakdown rather than forcing more production. Effects are typically noticeable within 1–2 hours of a single dose.`},
-      lifestyle:{title:'The lifestyle connection',body:`Caffeine dependence for focus — common with desk work and poor sleep — continuously depletes the same neurotransmitter systems lemon balm supports. Using lemon balm alongside a caffeine reduction (rather than on top of heavy caffeine use) is the more effective approach.`},
-      nonObvious:null,
-      amazon:'https://www.amazon.co.uk/s?k=lemon+balm+extract&tag=chi-affiliate-20'
-    })}
+  currentResults.forEach(herb => {
+    const card = document.createElement('div');
+    card.className = 'herb-card';
+    card.setAttribute('data-herb', herb.name);
+    card.innerHTML = `
+      <div class="herb-name">${herb.name}</div>
+      <div class="herb-latin">${herb.latin}</div>
+      <div class="herb-actions">
+        <button class="herb-btn primary" onclick="viewProfile('${herb.name}')">View profile</button>
+        <button class="herb-btn" onclick="addHerbToStack('${herb.name}')">+ Add to stack</button>
+        <button class="herb-btn" onclick="rejectHerb('${herb.name}')">Offer alternative</button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
 
-    ${buildCard({
-      name:'Moringa', latin:'Moringa oleifera', score:74, level:'mid',
-      cats:['Nutritive','Tonic','Anti-inflammatory'],
-      forms:['Powder','Capsule'],
-      why:`Iron, B vitamins, magnesium and zinc — all directly involved in energy production, neurotransmitter synthesis and immune function — are found in moringa in highly bioavailable forms. Nutritional deficiencies are the most commonly overlooked driver of fatigue, poor focus and frequent illness, and no adaptogen can compensate for them.`,
-      organ:{title:'Why nutrition is the foundation',body:`Every cell in your body needs micronutrients to produce energy, repair tissue and manufacture neurotransmitters. When intake is insufficient — common even in people eating reasonable diets — the effects are diffuse and hard to pin to a single cause: low energy, poor concentration, slow recovery, skin issues, mood instability. Moringa is not a magic herb — it is one of the most nutrient-dense plants on earth, and that density is itself therapeutic.`},
-      lifestyle:{title:'The lifestyle connection',body:`Intermittent fasting, intensive exercise and high stress all increase micronutrient requirements. If any of these apply to you, a baseline nutritive herb like moringa is arguably more important than any adaptogen.`},
-      nonObvious:{title:'Why a food herb in a herb match?',text:'Most people come looking for an adaptogen or a specific herbal fix. Moringa is neither — it is a nutritive tonic that addresses the root deficiencies that make the other herbs necessary in the first place. It is in your results because the picture you described suggests your body may simply be running low on the raw materials it needs.'},
-      amazon:'https://www.amazon.co.uk/s?k=moringa+powder+organic&tag=chi-affiliate-20'
-    })}
+function backToPyramid() {
+  document.getElementById('pyramid-section').style.display = 'block';
+  document.getElementById('results-section').classList.remove('show');
+  document.getElementById('profile-section').classList.remove('show');
+  document.getElementById('back-to-match-tab').classList.remove('show');
+  selectedIssues = [];
+  document.querySelectorAll('.issue-checkbox input').forEach(input => input.checked = false);
+  updateSelectionStatus();
+}
 
-    <div class="restart-row">
-      <button class="btn-restart" onclick="restartFlow()">Start a new consultation</button>
+// ─── PROFILE VIEWER ─────────────────────────────────────
+function viewProfile(herbName) {
+  currentProfile = herbName;
+  document.getElementById('results-section').classList.remove('show');
+  document.getElementById('profile-section').classList.add('show');
+  document.getElementById('back-to-match-tab').classList.add('show');
+  document.getElementById('herb-match-pi-tab').classList.add('show');
+
+  // Fetch profile from API (simplified demo)
+  document.getElementById('profile-name').textContent = herbName;
+  document.getElementById('profile-latin').textContent = 'Latin binomial here';
+  document.getElementById('profile-content').innerHTML = `
+    <div style="background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:1.5rem;margin-bottom:1.5rem;">
+      <p style="font-size:13px;line-height:1.7;color:var(--muted);">
+        Profile for <strong>${herbName}</strong> would load here from the API.
+        Click "Plant Intelligence" to see the deep compound science.
+      </p>
     </div>
   `;
-
-  document.getElementById('results-content').innerHTML = html;
-
-  const loading = document.getElementById('screen-loading');
-  loading.classList.add('exit');
-  setTimeout(()=>{
-    loading.classList.remove('active','exit');
-    document.getElementById('screen-results').classList.add('active');
-    window.scrollTo(0,0);
-  },280);
 }
 
-function buildCard({name,latin,score,level,cats,forms,why,organ,lifestyle,nonObvious,amazon}){
-  return `<div class="result-card ${level}">
-    <div class="rc-top">
-      <div class="rc-conf">
-        <div class="conf-ring conf-${level==='high'?'high':'mid'}">${score}</div>
-        <span class="conf-label">${level==='high'?'Strong':'Moderate'}</span>
-      </div>
-      <div class="rc-head">
-        <div class="rc-name">${name}</div>
-        <div class="rc-latin">${latin}</div>
-        <div class="rc-tags">
-          ${cats.map(c=>`<span class="rtag cat">${c}</span>`).join('')}
-          ${forms.map(f=>`<span class="rtag">${f}</span>`).join('')}
-        </div>
-      </div>
-    </div>
-    <div class="rc-body">${why}</div>
-    ${organ?`<div class="organ-box"><div class="organ-title">${organ.title}</div><div class="organ-body">${organ.body}</div></div>`:''}
-    ${lifestyle?`<div class="lifestyle-box"><div class="lifestyle-title">${lifestyle.title}</div><div class="lifestyle-body">${lifestyle.body}</div></div>`:''}
-    ${nonObvious?`<div class="non-obvious"><div class="nob-title">${nonObvious.title}</div><p>${nonObvious.text}</p></div>`:''}
-    <div class="rc-footer">
-      <div class="rc-forms"></div>
-      <a class="buy-link" href="${amazon}" target="_blank" rel="noopener">
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7.5 3l4 3.5-4 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Find on Amazon
-      </a>
-    </div>
-  </div>`;
+function backToResults() {
+  document.getElementById('results-section').classList.add('show');
+  document.getElementById('profile-section').classList.remove('show');
+  document.getElementById('back-to-match-tab').classList.remove('show');
+  document.getElementById('herb-match-pi-tab').classList.remove('show');
 }
 
-// ─── RESTART ──────────────────────────────────────────────────────
-function restartFlow(){
-  Object.keys(answers).forEach(k=>{ answers[k] = Array.isArray(answers[k])?[]:'' });
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
-  document.getElementById('q1').value='';
-  document.getElementById('q5').value='';
-  document.getElementById('q6-extra').value='';
-  document.getElementById('q1-hint').textContent='0 / 500';
-  document.getElementById('btn1').disabled=true;
-  document.getElementById('btn2').disabled=true;
-  document.getElementById('btn4').disabled=true;
-  document.getElementById('btn6').disabled=true;
-  document.getElementById('q4-note').textContent='Select up to 3';
-  ['ls-1','ls-2','ls-3','ls-4','ls-5'].forEach(id=>{
-    const el=document.getElementById(id);
-    el.classList.remove('done','active');
+// ─── ALTERNATIVES (Rejection Flow) ──────────────────────
+function rejectHerb(herbName) {
+  showAlternativesModal();
+
+  // Call herb-profile.js API to get alternative
+  // First, pick a different herb to test (in production, the backend would generate)
+  const alternativeHerbs = ['Rhodiola', 'Skullcap', 'Holy Basil', 'Reishi', 'Chamomile', 'Lavender'];
+  const alternative = alternativeHerbs.find(h => h !== herbName && !currentResults.find(r => r.name === h));
+
+  if (!alternative) {
+    hideAlternativesModal();
+    alert('No more alternatives available. Try selecting different issues.');
+    return;
+  }
+
+  // Call API with excluded herb context
+  fetch('/.netlify/functions/herb-profile', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      herbName: alternative,
+      excludedHerb: herbName,
+      issues: selectedIssues
+    })
+  })
+  .then(res => res.json())
+  .then(profile => {
+    hideAlternativesModal();
+    // Add alternative to results at the top
+    currentResults.unshift({
+      name: alternative,
+      latin: profile.latin || 'Latin binomial',
+      matches: 3,
+      profile: profile
+    });
+    updateResultsGrid();
+    // Highlight the new alternative
+    const newCard = document.querySelector(`[data-herb="${alternative}"]`);
+    if (newCard) {
+      newCard.style.borderColor = 'rgba(200, 149, 42, 0.8)';
+      newCard.style.background = 'rgba(200, 149, 42, 0.15)';
+      setTimeout(() => newCard.scrollIntoView({ behavior: 'smooth' }), 100);
+    }
+  })
+  .catch(err => {
+    console.error('Alternative generation failed:', err);
+    hideAlternativesModal();
+    alert('Could not generate alternative. Please try another herb.');
   });
-  document.getElementById('ls-1').classList.add('active');
-
-  const cur = document.getElementById('screen-results');
-  cur.classList.remove('active');
-  document.getElementById('screen-0').classList.add('active');
-  currentScreen=0;
-  document.getElementById('progress').style.width='0%';
-  window.scrollTo(0,0);
 }
 
-// ─── TOAST ────────────────────────────────────────────────────────
-let toastTimer;
-function showToast(msg){
-  const t=document.getElementById('toast');
-  clearTimeout(toastTimer);
-  t.textContent=msg; t.classList.add('show');
-  toastTimer=setTimeout(()=>t.classList.remove('show'),2500);
+function showAlternativesModal() {
+  document.getElementById('alternatives-modal').classList.add('show');
 }
 
-// ─── API CALL (ready to wire in) ─────────────────────────────────
-// When Supabase auth is connected and Netlify function is set up,
-// replace showDemoResults() in submitConsultation() with callAPI()
-/*
-async function callAPI(){
-  const prompt = buildPrompt();
-  const res = await fetch('/.netlify/functions/herb-match', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({answers, prompt})
-  });
-  const data = await res.json();
-  renderAPIResults(data.content);
+function hideAlternativesModal() {
+  document.getElementById('alternatives-modal').classList.remove('show');
 }
-function buildPrompt(){
-  return `You are a knowledgeable, warm herbalist at CHI (Collective Herbal Intelligence).
-A user has completed a wellness consultation. Here are their answers:
 
-Main concern: ${answers.q1}
-Duration: ${answers.q2}
-Lifestyle factors: ${answers.q3.join(', ')||'None specified'}
-Top goals: ${answers.q4.join(', ')||'Not specified'}
-Currently taking: ${answers.q5||'Nothing'}
-Age range: ${answers['q-age']||'Not specified'}
-Biological sex: ${answers['q-sex']||'Not specified'}
-Pregnant/trying: ${answers['q-preg']||'Not specified'}
-Commitment level: ${answers.q6}
-Additional notes: ${answers['q6-extra']||'None'}
-
-Respond with 3-5 herb recommendations. For each herb include:
-1. A warm, personalised explanation of why it's relevant to THIS person's specific situation
-2. The organ/body system involved and how it's been affected
-3. How their lifestyle is feeding the issue
-4. The mechanism of action in plain English
-5. A realistic expectation of what the herb can and cannot do
-6. Suggested form and basic dosage guidance
-7. Any safety notes specific to their profile
-
-Be honest about confidence levels. Do not overstate evidence. Do not diagnose.
-Use their own words where possible to show you've listened.
-
-CRITICAL LANGUAGE RULES — you must follow these without exception:
-- Never use: "treats", "cures", "heals", "eliminates", "prevents", "fights", "kills", "proven to", "clinically proven", "guaranteed", "will cure", "will treat", "will heal"
-- Always use instead: "may support", "traditionally used for", "research suggests", "associated with", "has been shown to", "may help", "is thought to"
-- Never diagnose a condition. Never state that a herb will produce a specific outcome.
-- Every recommendation must include a note that professional medical advice should be sought for serious concerns.
-- You are an educational platform operating under UK MHRA guidelines. All content is for informational purposes only and does not constitute medical advice.`;
+// ─── HERB STACK ─────────────────────────────────────────
+function addHerbToStack(herbName) {
+  const stack = JSON.parse(localStorage.getItem('chi_herb_stack') || '[]');
+  if (!stack.includes(herbName)) {
+    stack.push(herbName);
+  }
+  localStorage.setItem('chi_herb_stack', JSON.stringify(stack));
+  alert(`${herbName} added to your stack!`);
 }
+
+function addToStack() {
+  if (currentProfile) {
+    addHerbToStack(currentProfile);
+  }
 }
-*/
+
+// ─── INIT ───────────────────────────────────────────────
+buildPyramid();
+document.getElementById('submit-btn').onclick = submitIssues;
 </script>
-<script>
-// NAV DROPDOWNS
-function toggleDD(id){
-  document.querySelectorAll('.nav-dd').forEach(d=>{if(d.id!=='dd-'+id)d.classList.remove('open');});
-  const el=document.getElementById('dd-'+id);
-  if(el)el.classList.toggle('open');
-}
-document.addEventListener('click',e=>{
-  if(!e.target.closest('.nav-dd'))document.querySelectorAll('.nav-dd').forEach(d=>d.classList.remove('open'));
-});
-</script>
+
 </body>
 </html>

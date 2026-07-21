@@ -70,7 +70,7 @@ exports.handler = async (event) => {
   try {
     // TEMP — PREVIEW TESTING ONLY. Remove `previewApiKey` handling below
     // (and the matching text box in phytochemistry.html) before launch.
-    const { herbName, previewApiKey } = JSON.parse(event.body || '{}');
+    const { herbName, previewApiKey, excludedHerb, issues } = JSON.parse(event.body || '{}');
     if (!herbName || !herbName.trim()) {
       return { statusCode: 400, body: JSON.stringify({ error: 'herbName is required' }) };
     }
@@ -106,11 +106,17 @@ exports.handler = async (event) => {
     }
     const anthropic = new Anthropic({ apiKey });
 
+    // Build user message with exclusion context for alternatives
+    let userMessage = `Provide the full deep profile for: ${name}`;
+    if (excludedHerb && issues && issues.length > 0) {
+      userMessage = `The user rejected: ${excludedHerb}. They're looking for an herb that helps with: ${issues.join(', ')}. Find a different, complementary herb that addresses these issues better than ${excludedHerb}. Provide the full deep profile for: ${name}`;
+    }
+
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-5',
       max_tokens: 1800,
       system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: `Provide the full deep profile for: ${name}` }]
+      messages: [{ role: 'user', content: userMessage }]
     });
 
     const textBlock = message.content.find(block => block.type === 'text');
