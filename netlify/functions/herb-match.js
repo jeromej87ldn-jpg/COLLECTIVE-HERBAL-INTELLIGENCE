@@ -56,21 +56,23 @@ function extractJson(text) {
   }
 }
 
-// Ask the model for herbs. If the response isn't parseable JSON, retry once
-// with an assistant-turn prefill of '{' — this strongly biases Claude to
-// continue directly as JSON with no surrounding commentary. Much cheaper
-// than failing the user's whole search over an occasional formatting slip.
+// Ask the model for herbs. We prefill the assistant turn with '{' on every
+// call (not just as a fallback) — this strongly biases Claude to continue
+// directly as JSON with no surrounding commentary, so the common case
+// succeeds on the first round-trip instead of needing a retry. That matters
+// here specifically because an 8-herb request already takes a few seconds;
+// a second full model call to recover from a formatting slip risks tipping
+// past Netlify's function timeout. The retry below is now a rare fallback,
+// not the common path.
 async function requestHerbs(anthropic, userMsg, attempt = 1) {
   const message = await anthropic.messages.create({
     model: 'claude-sonnet-5',
     max_tokens: 1600,
     system: SYSTEM_PROMPT,
-    messages: attempt === 1
-      ? [{ role: 'user', content: userMsg }]
-      : [
-          { role: 'user', content: userMsg },
-          { role: 'assistant', content: '{' },
-        ]
+    messages: [
+      { role: 'user', content: userMsg },
+      { role: 'assistant', content: '{' },
+    ]
   });
 
   const textBlock = message.content.find(block => block.type === 'text');
@@ -78,7 +80,7 @@ async function requestHerbs(anthropic, userMsg, attempt = 1) {
     return { error: 'No text content in model response' };
   }
 
-  const rawText = attempt === 1 ? textBlock.text : '{' + textBlock.text;
+  const rawText = '{' + textBlock.text;
 
   try {
     return extractJson(rawText);

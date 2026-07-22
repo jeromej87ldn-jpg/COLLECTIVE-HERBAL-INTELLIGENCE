@@ -45,12 +45,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .category-name{font-size:14px;font-weight:600;color:var(--gold-light);letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
 .category-name::before{content:'▸';font-size:16px;}
 
-.issues-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-left:1.5rem;}
-.issue-checkbox{display:flex;align-items:center;gap:8px;padding:.6rem;background:rgba(0,0,0,.2);border:1px solid var(--card-border);border-radius:6px;cursor:pointer;transition:all .2s;}
-.issue-checkbox:hover{border-color:rgba(200,149,42,.4);background:rgba(200,149,42,.1);}
-.issue-checkbox input{cursor:pointer;width:16px;height:16px;}
-.issue-checkbox label{cursor:pointer;font-size:13px;flex:1;}
-.issue-checkbox.picked{border-color:rgba(232,184,75,.55);background:rgba(200,149,42,.12);}
+.issues-grid{display:flex;flex-wrap:wrap;gap:.6rem;margin-left:1.5rem;}
+.issue-chip{padding:.55rem 1.15rem;border-radius:999px;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .2s;}
+.issue-chip:hover{border-color:rgba(200,149,42,.45);}
+.issue-chip.picked{background:rgba(200,149,42,.22);border-color:var(--gold);color:var(--gold-light);}
 
 .selection-status{text-align:center;padding:1.5rem;background:rgba(200,149,42,.08);border:1px solid rgba(200,149,42,.15);border-radius:8px;margin-top:1.5rem;}
 .selection-status p{font-size:13px;color:var(--muted);}
@@ -228,7 +226,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 </div>
 
 <!-- Edge tabs for cross-nav -->
-<button class="herb-match-pi-tab" id="herb-match-pi-tab" onclick="window.location.href='phytochemistry.html'">Plant Intelligence →</button>
+<button class="herb-match-pi-tab" id="herb-match-pi-tab" onclick="goToPlantIntelligence()">Plant Intelligence →</button>
 <button class="back-to-match-tab" id="back-to-match-tab" onclick="backToResults()">← Back to Herb Match</button>
 
 <!-- Alternatives Modal -->
@@ -289,6 +287,29 @@ function buildAvoidList(extra) {
   return [...new Set(combined.filter(Boolean))];
 }
 
+// ─── STATE HANDOFF (Plant Intelligence round-trip) ──────
+// The results grid, selected issues/specifics, and whichever herb profile
+// is open all live in memory — which a full page navigation wipes out. We
+// persist the essentials to sessionStorage so that jumping to Plant
+// Intelligence and coming back lands you exactly where you left off.
+function persistMatchState() {
+  try {
+    sessionStorage.setItem('chi_match_state', JSON.stringify({
+      issues: selectedIssues,
+      specifics: selectedSpecifics,
+      results: currentResults
+    }));
+  } catch (e) {}
+}
+
+function goToPlantIntelligence() {
+  if (currentProfile) {
+    sessionStorage.setItem('chi_nav_return', JSON.stringify({ source: 'herb-match', herb: currentProfile }));
+  }
+  persistMatchState();
+  window.location.href = 'phytochemistry.html';
+}
+
 // ─── BUILD PYRAMID ──────────────────────────────────────
 function buildPyramid() {
   const container = document.getElementById('issues-container');
@@ -307,38 +328,28 @@ function buildPyramid() {
     gridDiv.className = 'issues-grid';
 
     issues.forEach(issue => {
-      const checkboxDiv = document.createElement('label');
-      checkboxDiv.className = 'issue-checkbox';
-      checkboxDiv.id = 'issue-' + slug(issue);
-
-      const input = document.createElement('input');
-      input.type = 'checkbox';
-      input.value = issue;
-      input.onchange = (e) => {
-        if (e.target.checked) {
-          if (selectedIssues.length < 3) {
-            selectedIssues.push(issue);
-            checkboxDiv.classList.add('picked');
-            ensureSpecifics(issue);
-          } else {
-            e.target.checked = false;
-            return;
-          }
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'issue-chip';
+      chip.id = 'issue-' + slug(issue);
+      chip.textContent = issue;
+      chip.onclick = () => {
+        const isPicked = chip.classList.contains('picked');
+        if (!isPicked) {
+          if (selectedIssues.length >= 3) return;
+          selectedIssues.push(issue);
+          chip.classList.add('picked');
+          ensureSpecifics(issue);
         } else {
           selectedIssues = selectedIssues.filter(i => i !== issue);
           delete selectedSpecifics[issue];
-          checkboxDiv.classList.remove('picked');
+          chip.classList.remove('picked');
         }
         updateSelectionStatus();
         renderSpecificsSection();
       };
 
-      const label = document.createElement('label');
-      label.textContent = issue;
-
-      checkboxDiv.appendChild(input);
-      checkboxDiv.appendChild(label);
-      gridDiv.appendChild(checkboxDiv);
+      gridDiv.appendChild(chip);
     });
 
     categoryDiv.appendChild(gridDiv);
@@ -453,7 +464,7 @@ async function findMatchingHerbs(issues) {
         issues,
         specifics: flattenSpecifics(),
         avoid: buildAvoidList(),
-        count: 8
+        count: 6
       })
     });
     if (!res.ok) {
@@ -462,9 +473,10 @@ async function findMatchingHerbs(issues) {
     }
     const data = await res.json();
     currentResults = data.herbs || [];
-    rememberSeenHerbs(currentResults.map(h => h.name));
+    rememberSeenHerbs(currentResults.map(h => h && h.name));
     document.getElementById('results-loading').style.display = 'none';
     updateResultsGrid();
+    persistMatchState();
   } catch (err) {
     console.error(err);
     document.getElementById('results-loading').style.display = 'none';
@@ -482,7 +494,18 @@ function updateResultsGrid() {
   const grid = document.getElementById('results-grid');
   grid.innerHTML = '';
 
-  currentResults.forEach(herb => {
+  // Defensive: a single malformed entry (e.g. missing name) shouldn't be
+  // able to blank the whole preview. Drop anything unusable and still show
+  // whatever's left; only fall back to an error message if nothing is left.
+  const validHerbs = (currentResults || []).filter(h => h && typeof h.name === 'string' && h.name.trim());
+
+  if (!validHerbs.length) {
+    grid.innerHTML = `<div class="results-error" style="grid-column:1/-1"><p>We didn't get back anything usable that time. Please try again — it usually works on the next try.</p></div>`;
+    return;
+  }
+
+  validHerbs.forEach(herb => {
+    const safeName = herb.name.replace(/'/g, "\\'");
     const card = document.createElement('div');
     card.className = 'herb-card';
     card.setAttribute('data-herb', herb.name);
@@ -492,9 +515,9 @@ function updateResultsGrid() {
       ${herb.matchStrength ? `<div class="match-badge ${badgeClass(herb.matchStrength)}">${herb.matchStrength}</div>` : ''}
       ${herb.matchReason ? `<div class="match-reason">${herb.matchReason}</div>` : ''}
       <div class="herb-actions">
-        <button class="herb-btn primary" onclick="viewProfile('${herb.name.replace(/'/g, "\\'")}')">View profile</button>
-        <button class="herb-btn" onclick="addHerbToStack('${herb.name.replace(/'/g, "\\'")}')">+ Add to stack</button>
-        <button class="herb-btn" onclick="rejectHerb('${herb.name.replace(/'/g, "\\'")}')">Offer alternative</button>
+        <button class="herb-btn primary" onclick="viewProfile('${safeName}')">View profile</button>
+        <button class="herb-btn" onclick="addHerbToStack('${safeName}')">+ Add to stack</button>
+        <button class="herb-btn" onclick="rejectHerb('${safeName}')">Offer alternative</button>
       </div>
     `;
     grid.appendChild(card);
@@ -509,10 +532,11 @@ function backToPyramid() {
   selectedIssues = [];
   selectedSpecifics = {};
   specificsCache = {};
-  document.querySelectorAll('.issue-checkbox input').forEach(input => input.checked = false);
-  document.querySelectorAll('.issue-checkbox').forEach(el => el.classList.remove('picked'));
+  document.querySelectorAll('.issue-chip').forEach(el => el.classList.remove('picked'));
   document.getElementById('specifics-section').innerHTML = '';
   updateSelectionStatus();
+  sessionStorage.removeItem('chi_match_state');
+  sessionStorage.removeItem('chi_nav_return');
 }
 
 // ─── PROFILE VIEWER (real AI call, reuses herb-profile.js) ──
@@ -631,6 +655,7 @@ async function rejectHerb(herbName) {
     currentResults = currentResults.filter(r => r.name !== herbName);
     currentResults.unshift(alt);
     updateResultsGrid();
+    persistMatchState();
 
     const newCard = document.querySelector(`[data-herb="${alt.name}"]`);
     if (newCard) {
@@ -672,6 +697,30 @@ function addToStack() {
 // ─── INIT ───────────────────────────────────────────────
 buildPyramid();
 document.getElementById('submit-btn').onclick = submitIssues;
+
+// Restore state if we're arriving back from Plant Intelligence (or a page
+// refresh) rather than starting fresh.
+(function restoreOnLoad() {
+  try {
+    const saved = JSON.parse(sessionStorage.getItem('chi_match_state') || 'null');
+    if (saved && saved.results && saved.results.length) {
+      selectedIssues = saved.issues || [];
+      selectedSpecifics = saved.specifics || {};
+      currentResults = saved.results;
+      document.getElementById('pyramid-section').style.display = 'none';
+      document.getElementById('results-section').classList.add('show');
+      document.getElementById('results-description').textContent = selectedIssues.length ? `Herbs matching: ${selectedIssues.join(', ')}` : '';
+      document.getElementById('results-loading').style.display = 'none';
+      updateResultsGrid();
+    }
+  } catch (e) {}
+
+  const reopenHerb = sessionStorage.getItem('chi_reopen_profile');
+  if (reopenHerb) {
+    sessionStorage.removeItem('chi_reopen_profile');
+    viewProfile(reopenHerb);
+  }
+})();
 </script>
 
 </body>

@@ -322,8 +322,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   </div>
 </div>
 
-<!-- Back to Herbadex edge panel -->
-<button class="pi-herbadex-tab" id="pi-herbadex-tab" onclick="window.location.href='supreme.html'">Back to Herbadex Profile ↶</button>
+<!-- Back to Herbadex / Herb Match edge panel (target set dynamically depending on where you arrived from) -->
+<button class="pi-herbadex-tab" id="pi-herbadex-tab" onclick="handlePiBackTab()">Back to Herbadex Profile ↶</button>
 
 <!-- TOOL TABS -->
 <div class="tool-tabs">
@@ -1443,6 +1443,32 @@ buildFilters();
 renderQBar();
 renderStackInput();
 renderCurrentTab();
+
+// ─── CROSS-NAV: arriving from Herb Match ──────────────────────────
+// Herb Match's profile viewer hands off which herb was open (and where to
+// return to) via sessionStorage before navigating here. If present, select
+// that herb automatically (reusing the normal addHerbToStack flow — same
+// toast/highlighting as picking it manually) and point the back-tab at
+// Herb Match instead of the default Herbadex target.
+let piBackTarget = 'supreme.html';
+(function initNavReturn() {
+  try {
+    const nav = JSON.parse(sessionStorage.getItem('chi_nav_return') || 'null');
+    if (nav && nav.source === 'herb-match' && nav.herb) {
+      piBackTarget = 'herb-match.html';
+      const tabEl = document.getElementById('pi-herbadex-tab');
+      if (tabEl) tabEl.textContent = 'Back to Herb Match ↶';
+      addHerbToStack(nav.herb);
+    }
+  } catch (e) {}
+})();
+
+function handlePiBackTab() {
+  if (piBackTarget === 'herb-match.html') {
+    try { sessionStorage.setItem('chi_reopen_profile', userStack[0] || ''); } catch (e) {}
+  }
+  window.location.href = piBackTarget;
+}
 </script>
 <script>
 // NAV DROPDOWNS

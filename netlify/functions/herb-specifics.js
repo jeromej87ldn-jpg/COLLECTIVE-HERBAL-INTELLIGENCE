@@ -35,20 +35,18 @@ function extractJson(text) {
   }
 }
 
-// Ask the model for specifics. If the response isn't parseable JSON, retry
-// once with an assistant-turn prefill of '{' — this strongly biases Claude
-// to continue directly as JSON with no surrounding commentary.
+// Ask the model for specifics. We prefill the assistant turn with '{' on
+// every call (not just as a fallback) so the common case succeeds on the
+// first round-trip — see herb-match.js for why that matters for latency.
 async function requestSpecifics(anthropic, issue, attempt = 1) {
   const message = await anthropic.messages.create({
     model: 'claude-haiku-4-5-20251001',
     max_tokens: 400,
     system: SYSTEM_PROMPT,
-    messages: attempt === 1
-      ? [{ role: 'user', content: `Broad concern: ${issue}` }]
-      : [
-          { role: 'user', content: `Broad concern: ${issue}` },
-          { role: 'assistant', content: '{' },
-        ]
+    messages: [
+      { role: 'user', content: `Broad concern: ${issue}` },
+      { role: 'assistant', content: '{' },
+    ]
   });
 
   const textBlock = message.content.find(block => block.type === 'text');
@@ -56,7 +54,7 @@ async function requestSpecifics(anthropic, issue, attempt = 1) {
     return { error: 'No text content in model response' };
   }
 
-  const rawText = attempt === 1 ? textBlock.text : '{' + textBlock.text;
+  const rawText = '{' + textBlock.text;
 
   try {
     return extractJson(rawText);
