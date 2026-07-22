@@ -33,10 +33,10 @@ Return ONLY valid JSON:
   "preparations": ["tea","tincture","capsule","etc"],
   "safetyLevel": "Generally safe | Use with caution | Consult professional",
   "summary": "2 sentence overview",
-  "functionalOverview": "3-5 sentence in-depth paragraph, plain and grounded (not mystical), on what the herb actually does, what it's commonly used for, and how it helps people",
+  "functionalOverview": "2-3 sentence in-depth summary, plain and grounded (not mystical), on what the herb actually does, what it's commonly used for, and how it helps people",
   "source": "a real, verifiable citation for functionalOverview — a specific study, textbook, monograph or pharmacopoeia (e.g. 'Commission E Monograph' or a named clinical trial/journal). Use null if you are not genuinely confident a real citation exists — never invent one",
   "spiritualHistory": {
-    "overview": "2 concise paragraphs on the herb's spiritual, shamanic, religious and cultural significance",
+    "overview": "1 concise but rich paragraph (3-4 sentences) on the herb's spiritual, shamanic, religious and cultural significance",
     "timeline": [
       {"era":"time period or culture","text":"one short sentence on what they knew/used it for"}
     ]
@@ -60,7 +60,7 @@ Return ONLY valid JSON:
   ]
 }
 
-Limits: timeline max 3 entries. compounds max 4 entries. bodyEffects max 4 entries. interactions max 4 entries. forumSeed exactly 2 entries.`;
+Limits: timeline max 2 entries. compounds max 4 entries. bodyEffects max 4 entries. interactions max 3 entries. forumSeed exactly 2 entries.`;
 
 // Claude occasionally wraps JSON in a code fence, or adds a short sentence
 // before/after it despite being told to return JSON only. Rather than only
@@ -91,7 +91,7 @@ function extractJson(text) {
 async function requestProfile(anthropic, userMessage, attempt = 1) {
   const message = await anthropic.messages.create({
     model: 'claude-sonnet-5',
-    max_tokens: 1800,
+    max_tokens: 1400,
     system: SYSTEM_PROMPT,
     messages: [
       { role: 'user', content: attempt === 1 ? userMessage : userMessage + '\n\nReturn ONLY the JSON object, with no other text before or after it.' }

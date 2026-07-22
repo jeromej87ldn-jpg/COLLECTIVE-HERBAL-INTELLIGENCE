@@ -56,15 +56,14 @@ function extractJson(text) {
   }
 }
 
-// Ask the model for herbs. NOTE: this model rejects assistant-message
-// prefill ("the conversation must end with a user message"), so we can't
-// force JSON-only output that way — a plain question/answer call is the
-// only option here. If parsing fails, we retry once with an extra plain
-// reminder appended to the user message.
-async function requestHerbs(anthropic, userMsg, attempt = 1) {
+// Ask the model for one batch of herbs. NOTE: this model rejects assistant-
+// message prefill ("the conversation must end with a user message"), so a
+// plain question/answer call is the only option. If parsing fails, retry
+// once with an extra plain reminder appended to the user message.
+async function requestBatch(anthropic, userMsg, attempt = 1) {
   const message = await anthropic.messages.create({
     model: 'claude-sonnet-5',
-    max_tokens: 1600,
+    max_tokens: 1200,
     system: SYSTEM_PROMPT,
     messages: [
       { role: 'user', content: attempt === 1 ? userMsg : userMsg + '\n\nReturn ONLY the JSON object, with no other text before or after it.' }
@@ -73,17 +72,60 @@ async function requestHerbs(anthropic, userMsg, attempt = 1) {
 
   const textBlock = message.content.find(block => block.type === 'text');
   if (!textBlock || !textBlock.text) {
-    return { error: 'No text content in model response' };
+    return { herbs: [] };
   }
 
   try {
-    return extractJson(textBlock.text);
+    const parsed = extractJson(textBlock.text);
+    return { herbs: Array.isArray(parsed.herbs) ? parsed.herbs : [] };
   } catch (parseErr) {
     if (attempt === 1) {
-      return requestHerbs(anthropic, userMsg, 2);
+      return requestBatch(anthropic, userMsg, 2);
     }
-    return { error: 'Model response was not valid JSON', raw: textBlock.text.trim().slice(0, 500) };
+    return { herbs: [] };
   }
+}
+
+function buildUserMsg(issues, specifics, avoidList, n, batchNote) {
+  return [
+    `Concerns: ${issues.join(', ')}`,
+    (specifics && specifics.length) ? `Specifics the person picked: ${specifics.join(', ')}` : null,
+    avoidList.length ? `Avoid defaulting to (already familiar or shown recently): ${avoidList.join(', ')}` : null,
+    `Return exactly ${n} herb(s).`,
+    batchNote || null
+  ].filter(Boolean).join('\n');
+}
+
+// A single request for more than ~6 rich herb entries risks running long
+// enough to hit Netlify's function timeout (confirmed in production as a
+// 504 on the similarly-shaped herb-profile.js call). Rather than ask for a
+// large count in one go, split anything above 6 into two smaller requests
+// fired in parallel and merge the results — each individual call stays
+// fast, and running them concurrently means the person isn't waiting
+// twice as long for it.
+async function requestHerbs(anthropic, issues, specifics, avoidList, n) {
+  if (n <= 6) {
+    const { herbs } = await requestBatch(anthropic, buildUserMsg(issues, specifics, avoidList, n));
+    return herbs;
+  }
+
+  const half1 = Math.ceil(n / 2);
+  const half2 = n - half1;
+  const [batchA, batchB] = await Promise.all([
+    requestBatch(anthropic, buildUserMsg(issues, specifics, avoidList, half1, '(This is batch 1 of 2 — someone else is independently generating another batch, so lean toward well-established, classic matches here.)')),
+    requestBatch(anthropic, buildUserMsg(issues, specifics, avoidList, half2, '(This is batch 2 of 2 — someone else is independently generating another batch of well-known matches, so favor lesser-known or less mainstream options here.)'))
+  ]);
+
+  const merged = [];
+  const seen = new Set();
+  [...batchA.herbs, ...batchB.herbs].forEach(h => {
+    if (!h || !h.name) return;
+    const key = h.name.trim().toLowerCase();
+    if (seen.has(key)) return;
+    seen.add(key);
+    merged.push(h);
+  });
+  return merged.slice(0, n);
 }
 
 exports.handler = async (event) => {
@@ -103,25 +145,19 @@ exports.handler = async (event) => {
     }
     const anthropic = new Anthropic({ apiKey });
 
-    const n = Math.max(1, Math.min(10, Number(count) || 8));
+    const n = Math.max(1, Math.min(12, Number(count) || 12));
     const avoidList = Array.isArray(avoid) ? avoid.filter(Boolean) : [];
 
-    const userMsg = [
-      `Concerns: ${issues.join(', ')}`,
-      (specifics && specifics.length) ? `Specifics the person picked: ${specifics.join(', ')}` : null,
-      avoidList.length ? `Avoid defaulting to (already familiar or shown recently): ${avoidList.join(', ')}` : null,
-      `Return exactly ${n} herb(s).`
-    ].filter(Boolean).join('\n');
+    const herbs = await requestHerbs(anthropic, issues, specifics, avoidList, n);
 
-    const parsed = await requestHerbs(anthropic, userMsg);
-    if (parsed.error) {
-      return { statusCode: 502, body: JSON.stringify(parsed) };
+    if (!herbs.length) {
+      return { statusCode: 502, body: JSON.stringify({ error: 'Model response was not valid JSON' }) };
     }
 
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ herbs: parsed.herbs || [] })
+      body: JSON.stringify({ herbs })
     };
   } catch (error) {
     return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
