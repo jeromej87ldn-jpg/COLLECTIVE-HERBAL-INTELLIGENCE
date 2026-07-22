@@ -34,7 +34,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 /* HERO SECTION */
 .hero{text-align:center;margin-bottom:3rem;}
 .hero h1{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;color:var(--parchment);margin-bottom:.5rem;}
-.hero p{font-size:15px;color:var(--muted);line-height:1.8;max-width:600px;margin:0 auto 1.5rem;}
+.hero p{font-size:15px;color:var(--muted);line-height:1.8;max-width:620px;margin:0 auto 1.5rem;}
 
 /* PYRAMID/TREE ISSUES */
 .pyramid-section{background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:2rem;margin-bottom:2.5rem;}
@@ -50,10 +50,23 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .issue-checkbox:hover{border-color:rgba(200,149,42,.4);background:rgba(200,149,42,.1);}
 .issue-checkbox input{cursor:pointer;width:16px;height:16px;}
 .issue-checkbox label{cursor:pointer;font-size:13px;flex:1;}
+.issue-checkbox.picked{border-color:rgba(232,184,75,.55);background:rgba(200,149,42,.12);}
 
 .selection-status{text-align:center;padding:1.5rem;background:rgba(200,149,42,.08);border:1px solid rgba(200,149,42,.15);border-radius:8px;margin-top:1.5rem;}
 .selection-status p{font-size:13px;color:var(--muted);}
 .selection-status .count{font-size:18px;font-weight:600;color:var(--gold-light);margin:0.5rem 0;}
+
+/* SPECIFICS (second-tier drill-down) */
+.specifics-section{margin-top:1.75rem;}
+.specifics-panel{background:rgba(0,0,0,.18);border:1px dashed rgba(200,149,42,.3);border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:1rem;}
+.specifics-panel-title{font-size:13px;color:var(--gold-light);margin-bottom:.9rem;line-height:1.5;}
+.specifics-panel-title strong{color:var(--parchment);}
+.specific-chips{display:flex;flex-wrap:wrap;gap:.6rem;}
+.specific-chip{padding:.5rem 1rem;border-radius:999px;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--text);font-size:12.5px;cursor:pointer;transition:all .2s;}
+.specific-chip:hover{border-color:rgba(200,149,42,.45);}
+.specific-chip.picked{background:rgba(200,149,42,.22);border-color:var(--gold);color:var(--gold-light);}
+.specifics-loading{font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:8px;}
+.specifics-note{font-size:11.5px;color:var(--muted);margin-top:.9rem;font-style:italic;}
 
 /* SUBMIT BUTTON */
 .submit-btn{display:block;margin:2rem auto 0;padding:1rem 2.5rem;background:var(--gold);color:var(--forest);border:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s;}
@@ -64,17 +77,29 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .results-section{display:none;}
 .results-section.show{display:block;}
 
-.results-header{margin-bottom:2rem;text-align:center;}
+.results-header{margin-bottom:1.25rem;text-align:center;}
 .results-header h2{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:500;color:var(--parchment);margin-bottom:.5rem;}
 .results-header p{font-size:13px;color:var(--muted);}
+.results-note{font-size:12px;color:var(--muted);font-style:italic;max-width:480px;margin:.75rem auto 0;line-height:1.6;}
 
-.results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem;margin-bottom:3rem;}
+.results-loading{text-align:center;padding:3rem 1rem;}
+.results-loading p{font-size:13px;color:var(--muted);margin-top:1rem;}
 
-.herb-card{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:1.5rem;cursor:pointer;transition:all .2s;text-align:center;}
+.results-error{text-align:center;padding:2rem;background:rgba(220,90,90,.08);border:1px solid rgba(220,90,90,.25);border-radius:10px;margin-bottom:2rem;}
+.results-error p{font-size:13px;color:#e39a9a;line-height:1.6;}
+
+.results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem;margin-bottom:2rem;}
+
+.herb-card{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:1.5rem;cursor:default;transition:all .2s;text-align:center;}
 .herb-card:hover{border-color:rgba(200,149,42,.4);background:rgba(200,149,42,.08);}
 
-.herb-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--gold-light);margin-bottom:.5rem;}
-.herb-latin{font-style:italic;font-size:12px;color:var(--muted);margin-bottom:1rem;}
+.herb-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--gold-light);margin-bottom:.25rem;}
+.herb-latin{font-style:italic;font-size:12px;color:var(--muted);margin-bottom:.75rem;}
+.match-badge{display:inline-block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:.25rem .6rem;border-radius:999px;margin-bottom:.75rem;}
+.match-badge.strong{background:rgba(122,204,160,.18);color:#7acca0;}
+.match-badge.good{background:rgba(200,149,42,.18);color:var(--gold-light);}
+.match-badge.worth-exploring{background:rgba(160,160,220,.18);color:#b3b3e6;}
+.match-reason{font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:1rem;text-align:left;}
 
 .herb-actions{display:flex;flex-direction:column;gap:.6rem;margin-top:1rem;}
 .herb-btn{padding:.6rem;border:1px solid var(--card-border);border-radius:5px;background:transparent;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;}
@@ -92,6 +117,14 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .profile-btn{padding:.7rem 1.2rem;border:1px solid var(--card-border);border-radius:5px;background:transparent;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;}
 .profile-btn:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
 .profile-btn.primary{background:var(--gold);color:var(--forest);border-color:var(--gold);}
+
+.profile-block{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:1.5rem;margin-bottom:1.25rem;text-align:left;}
+.profile-block-title{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold-light);margin-bottom:.75rem;}
+.profile-block p{font-size:13px;line-height:1.7;color:var(--muted);}
+.profile-compound-row{display:flex;justify-content:space-between;gap:1rem;padding:.5rem 0;border-bottom:1px solid var(--card-border);font-size:13px;}
+.profile-compound-row:last-child{border-bottom:none;}
+.profile-compound-row .cname{color:var(--text);}
+.profile-compound-row .crole{color:var(--muted);font-size:12px;}
 
 /* EDGE TABS (cross-navigation) */
 .herb-match-pi-tab{position:fixed;right:0;top:45%;transform:translateY(-50%);writing-mode:vertical-lr;background:var(--gold);color:var(--forest);border:none;border-radius:8px 0 0 8px;padding:1rem .5rem;font-family:'DM Sans',sans-serif;font-size:11.5px;font-weight:700;letter-spacing:.04em;cursor:pointer;z-index:150;box-shadow:-3px 0 12px rgba(0,0,0,.25);display:none;}
@@ -116,6 +149,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 /* LOADING */
 .loading{text-align:center;padding:2rem;}
 .spinner{display:inline-block;width:24px;height:24px;border:2px solid rgba(200,149,42,.2);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;}
+.spinner.small{width:14px;height:14px;border-width:2px;}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 @media(max-width:600px){
@@ -141,32 +175,41 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 <div class="container">
   <!-- HERO -->
   <div class="hero">
-    <h1>Find Your Herbs</h1>
-    <p>Tell us what you're working on, and we'll discover herbs that match your needs. Don't like our suggestion? Explore alternatives and help us learn.</p>
+    <h1>Let's find what your body's asking for</h1>
+    <p>There's no wrong answer here — just pick whatever's been on your mind lately. We'll ask a couple of gentle follow-up questions, then bring you a real spread of herbs to consider, not just the usual suspects.</p>
   </div>
 
   <!-- PYRAMID/TREE ISSUES -->
   <div class="pyramid-section" id="pyramid-section">
-    <div class="pyramid-title">What common issues are you tackling?</div>
-    <div class="pyramid-intro">Select up to 3 areas you'd like support with. The more specific, the better matches we'll find.</div>
+    <div class="pyramid-title">What's been on your mind lately?</div>
+    <div class="pyramid-intro">Choose up to 3 — whatever feels most present for you right now. Once you pick one, we'll ask a couple more specific questions about it.</div>
 
     <div id="issues-container"></div>
 
+    <div class="specifics-section" id="specifics-section"></div>
+
     <div class="selection-status">
-      <p>Selected issues:</p>
+      <p>You've chosen:</p>
       <div class="count" id="selection-count">0/3</div>
     </div>
 
-    <button class="submit-btn" id="submit-btn" disabled>Find Matching Herbs</button>
+    <button class="submit-btn" id="submit-btn" disabled>See what might help</button>
   </div>
 
   <!-- RESULTS -->
   <div class="results-section" id="results-section">
     <div class="results-header">
-      <h2>Herbs for your needs</h2>
+      <h2>Herbs worth considering</h2>
       <p id="results-description"></p>
+      <p class="results-note">We keep this fresh on purpose — herbs already in your stack, or ones we've shown you recently, take a back seat unless they're genuinely the best fit.</p>
     </div>
-    <div class="results-grid" id="results-grid"></div>
+    <div id="results-body">
+      <div class="results-loading" id="results-loading">
+        <div class="spinner"></div>
+        <p>Looking beyond the obvious choices…</p>
+      </div>
+      <div class="results-grid" id="results-grid"></div>
+    </div>
     <button class="submit-btn" onclick="backToPyramid()">← Search again</button>
   </div>
 
@@ -191,28 +234,60 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 <!-- Alternatives Modal -->
 <div class="modal-overlay" id="alternatives-modal">
   <div class="modal">
-    <h3>Finding alternatives...</h3>
+    <h3>Looking for something different…</h3>
     <div class="loading">
       <div class="spinner"></div>
-      <p style="margin-top:1rem;font-size:13px;color:var(--muted);">Searching for a better match</p>
+      <p style="margin-top:1rem;font-size:13px;color:var(--muted);">Searching further afield for a better match</p>
     </div>
   </div>
 </div>
 
 <script>
 // ─── DATA ───────────────────────────────────────────────
+// A broader spread of common, everyday concerns, grouped so the list feels
+// approachable rather than clinical. Selecting one reveals a second,
+// AI-generated tier of more specific options (see ensureSpecifics()).
 const ISSUE_CATEGORIES = {
-  'Sleep & Rest': ['Insomnia', 'Restlessness', 'Light sleep'],
-  'Mood & Mind': ['Stress', 'Anxiety', 'Low mood', 'Focus'],
-  'Energy & Stamina': ['Low energy', 'Fatigue', 'Brain fog'],
-  'Digestion & Gut': ['Bloating', 'Slow digestion', 'Cramping'],
-  'Immune Support': ['Occasional illness', 'Immune boost'],
-  'Inflammation & Pain': ['Joint stiffness', 'Occasional pain'],
+  'Sleep & Rest': ['Trouble falling asleep', 'Waking in the night', 'Restless or light sleep', 'Racing mind at bedtime'],
+  'Mood & Mind': ['Everyday stress', 'Anxious feelings', 'Low mood', 'Irritability', 'Emotional overwhelm'],
+  'Focus & Cognitive': ['Brain fog', 'Trouble concentrating', 'Memory support', 'Mental fatigue'],
+  'Energy & Stamina': ['Low energy', 'Afternoon slump', 'Fatigue that lingers', 'Burnout recovery'],
+  'Digestion & Gut': ['Bloating', 'Slow digestion', 'Occasional cramping', 'Gut sensitivity', 'Nausea'],
+  'Immune Support': ['Catching colds often', 'Wanting a stronger baseline', 'Recovering from illness'],
+  'Inflammation & Joints': ['Joint stiffness', 'Occasional aches', 'Muscle soreness', 'Morning stiffness'],
+  'Heart & Circulation': ['Cold hands and feet', 'Wanting circulatory support', 'Healthy blood pressure support'],
+  'Skin & Beauty': ['Dry or irritated skin', 'Occasional breakouts', 'Wanting a healthy glow', 'Signs of aging'],
+  'Hormonal Balance': ['PMS-type symptoms', 'Cycle irregularity', 'Menopause-related changes', 'Libido support'],
+  "Men's Vitality": ['Stamina and drive', 'Prostate support', 'Healthy testosterone support'],
+  'Respiratory & Sinus': ['Seasonal congestion', 'Occasional cough', 'Sinus pressure', 'Allergy-type symptoms'],
+  'Detox & Liver': ['Feeling sluggish', 'Wanting gentle liver support', 'Supporting natural detox'],
+  'Headaches & Tension': ['Tension headaches', 'Occasional migraines', 'Jaw or neck tension'],
 };
 
 let selectedIssues = [];
+let selectedSpecifics = {};   // { issue: [specific, specific, ...] }
+let specificsCache = {};      // { issue: [specific, specific, ...] | 'loading' | 'error' }
 let currentResults = [];
 let currentProfile = null;
+
+// ─── OWNED / SEEN HERBS (used to widen variety) ─────────
+function getOwnedHerbs() {
+  try { return JSON.parse(localStorage.getItem('chi_herb_stack') || '[]'); } catch (e) { return []; }
+}
+function getSeenHerbs() {
+  try { return JSON.parse(localStorage.getItem('chi_match_seen') || '[]'); } catch (e) { return []; }
+}
+function rememberSeenHerbs(names) {
+  let seen = getSeenHerbs();
+  names.forEach(n => { if (n && !seen.includes(n)) seen.push(n); });
+  // Keep this bounded so it doesn't grow forever.
+  if (seen.length > 40) seen = seen.slice(seen.length - 40);
+  localStorage.setItem('chi_match_seen', JSON.stringify(seen));
+}
+function buildAvoidList(extra) {
+  const combined = [...getOwnedHerbs(), ...getSeenHerbs(), ...(extra || [])];
+  return [...new Set(combined.filter(Boolean))];
+}
 
 // ─── BUILD PYRAMID ──────────────────────────────────────
 function buildPyramid() {
@@ -234,6 +309,7 @@ function buildPyramid() {
     issues.forEach(issue => {
       const checkboxDiv = document.createElement('label');
       checkboxDiv.className = 'issue-checkbox';
+      checkboxDiv.id = 'issue-' + slug(issue);
 
       const input = document.createElement('input');
       input.type = 'checkbox';
@@ -242,14 +318,19 @@ function buildPyramid() {
         if (e.target.checked) {
           if (selectedIssues.length < 3) {
             selectedIssues.push(issue);
+            checkboxDiv.classList.add('picked');
+            ensureSpecifics(issue);
           } else {
             e.target.checked = false;
             return;
           }
         } else {
           selectedIssues = selectedIssues.filter(i => i !== issue);
+          delete selectedSpecifics[issue];
+          checkboxDiv.classList.remove('picked');
         }
         updateSelectionStatus();
+        renderSpecificsSection();
       };
 
       const label = document.createElement('label');
@@ -265,9 +346,90 @@ function buildPyramid() {
   });
 }
 
+function slug(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, '-'); }
+
 function updateSelectionStatus() {
   document.getElementById('selection-count').textContent = `${selectedIssues.length}/3`;
   document.getElementById('submit-btn').disabled = selectedIssues.length === 0;
+}
+
+// ─── SECOND TIER: GET MORE SPECIFIC ─────────────────────
+// For each selected issue, ask the AI for a handful of more specific
+// variations. This is what lets one broad pick ("Stress") turn into a
+// sharper signal ("work deadline pressure" vs "social anxiety") before we
+// go looking for herbs — rather than guessing from the broad label alone.
+async function ensureSpecifics(issue) {
+  if (specificsCache[issue]) { renderSpecificsSection(); return; }
+  specificsCache[issue] = 'loading';
+  renderSpecificsSection();
+
+  try {
+    const res = await fetch('/.netlify/functions/herb-specifics', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ issue })
+    });
+    if (!res.ok) throw new Error('Request failed');
+    const data = await res.json();
+    specificsCache[issue] = (data.specifics && data.specifics.length) ? data.specifics : 'error';
+  } catch (err) {
+    specificsCache[issue] = 'error';
+  }
+  renderSpecificsSection();
+}
+
+function renderSpecificsSection() {
+  const section = document.getElementById('specifics-section');
+  section.innerHTML = '';
+
+  selectedIssues.forEach(issue => {
+    const state = specificsCache[issue];
+    const panel = document.createElement('div');
+    panel.className = 'specifics-panel';
+
+    const title = document.createElement('div');
+    title.className = 'specifics-panel-title';
+    title.innerHTML = `More specifically, with <strong>${issue}</strong>? <span style="opacity:.7">(optional)</span>`;
+    panel.appendChild(title);
+
+    if (state === 'loading') {
+      panel.innerHTML += `<div class="specifics-loading"><div class="spinner small"></div> Thinking of a few angles…</div>`;
+    } else if (state === 'error' || !state) {
+      panel.innerHTML += `<div class="specifics-note">Couldn't load extra options right now — no problem, we'll work from "${issue}" as-is.</div>`;
+    } else {
+      const chipsWrap = document.createElement('div');
+      chipsWrap.className = 'specific-chips';
+      state.forEach(spec => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'specific-chip';
+        if (selectedSpecifics[issue] && selectedSpecifics[issue].includes(spec)) chip.classList.add('picked');
+        chip.textContent = spec;
+        chip.onclick = () => toggleSpecific(issue, spec, chip);
+        chipsWrap.appendChild(chip);
+      });
+      panel.appendChild(chipsWrap);
+    }
+
+    section.appendChild(panel);
+  });
+}
+
+function toggleSpecific(issue, spec, chipEl) {
+  if (!selectedSpecifics[issue]) selectedSpecifics[issue] = [];
+  const list = selectedSpecifics[issue];
+  const idx = list.indexOf(spec);
+  if (idx >= 0) {
+    list.splice(idx, 1);
+    chipEl.classList.remove('picked');
+  } else {
+    list.push(spec);
+    chipEl.classList.add('picked');
+  }
+}
+
+function flattenSpecifics() {
+  return Object.values(selectedSpecifics).flat();
 }
 
 function submitIssues() {
@@ -275,26 +437,45 @@ function submitIssues() {
   findMatchingHerbs(selectedIssues);
 }
 
-// ─── FIND MATCHING HERBS ────────────────────────────────
-function findMatchingHerbs(issues) {
-  // For now, use demo herbs. Later: call API
-  const demoResults = [
-    { name: 'Ashwagandha', latin: 'Withania somnifera', matches: 3 },
-    { name: 'Passionflower', latin: 'Passiflora edulis', matches: 2 },
-    { name: 'Lemon balm', latin: 'Melissa officinalis', matches: 3 },
-    { name: 'Valerian', latin: 'Valeriana officinalis', matches: 2 },
-  ];
-
-  currentResults = demoResults;
-  showResults(issues, demoResults);
-}
-
-function showResults(issues, herbs) {
+// ─── FIND MATCHING HERBS (real AI call) ─────────────────
+async function findMatchingHerbs(issues) {
   document.getElementById('pyramid-section').style.display = 'none';
   document.getElementById('results-section').classList.add('show');
   document.getElementById('results-description').textContent = `Herbs matching: ${issues.join(', ')}`;
+  document.getElementById('results-loading').style.display = 'block';
+  document.getElementById('results-grid').innerHTML = '';
 
-  updateResultsGrid();
+  try {
+    const res = await fetch('/.netlify/functions/herb-match', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        issues,
+        specifics: flattenSpecifics(),
+        avoid: buildAvoidList(),
+        count: 8
+      })
+    });
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      throw new Error(errBody.error || `Request failed (${res.status})`);
+    }
+    const data = await res.json();
+    currentResults = data.herbs || [];
+    rememberSeenHerbs(currentResults.map(h => h.name));
+    document.getElementById('results-loading').style.display = 'none';
+    updateResultsGrid();
+  } catch (err) {
+    console.error(err);
+    document.getElementById('results-loading').style.display = 'none';
+    document.getElementById('results-grid').innerHTML = `<div class="results-error" style="grid-column:1/-1"><p>We couldn't reach the matching engine just now (${err.message}). Please try again in a moment.</p></div>`;
+  }
+}
+
+function badgeClass(strength) {
+  if (strength === 'strong') return 'strong';
+  if (strength === 'good') return 'good';
+  return 'worth-exploring';
 }
 
 function updateResultsGrid() {
@@ -307,11 +488,13 @@ function updateResultsGrid() {
     card.setAttribute('data-herb', herb.name);
     card.innerHTML = `
       <div class="herb-name">${herb.name}</div>
-      <div class="herb-latin">${herb.latin}</div>
+      <div class="herb-latin">${herb.latin || ''}</div>
+      ${herb.matchStrength ? `<div class="match-badge ${badgeClass(herb.matchStrength)}">${herb.matchStrength}</div>` : ''}
+      ${herb.matchReason ? `<div class="match-reason">${herb.matchReason}</div>` : ''}
       <div class="herb-actions">
-        <button class="herb-btn primary" onclick="viewProfile('${herb.name}')">View profile</button>
-        <button class="herb-btn" onclick="addHerbToStack('${herb.name}')">+ Add to stack</button>
-        <button class="herb-btn" onclick="rejectHerb('${herb.name}')">Offer alternative</button>
+        <button class="herb-btn primary" onclick="viewProfile('${herb.name.replace(/'/g, "\\'")}')">View profile</button>
+        <button class="herb-btn" onclick="addHerbToStack('${herb.name.replace(/'/g, "\\'")}')">+ Add to stack</button>
+        <button class="herb-btn" onclick="rejectHerb('${herb.name.replace(/'/g, "\\'")}')">Offer alternative</button>
       </div>
     `;
     grid.appendChild(card);
@@ -324,29 +507,86 @@ function backToPyramid() {
   document.getElementById('profile-section').classList.remove('show');
   document.getElementById('back-to-match-tab').classList.remove('show');
   selectedIssues = [];
+  selectedSpecifics = {};
+  specificsCache = {};
   document.querySelectorAll('.issue-checkbox input').forEach(input => input.checked = false);
+  document.querySelectorAll('.issue-checkbox').forEach(el => el.classList.remove('picked'));
+  document.getElementById('specifics-section').innerHTML = '';
   updateSelectionStatus();
 }
 
-// ─── PROFILE VIEWER ─────────────────────────────────────
-function viewProfile(herbName) {
+// ─── PROFILE VIEWER (real AI call, reuses herb-profile.js) ──
+async function viewProfile(herbName) {
   currentProfile = herbName;
   document.getElementById('results-section').classList.remove('show');
   document.getElementById('profile-section').classList.add('show');
   document.getElementById('back-to-match-tab').classList.add('show');
   document.getElementById('herb-match-pi-tab').classList.add('show');
 
-  // Fetch profile from API (simplified demo)
   document.getElementById('profile-name').textContent = herbName;
-  document.getElementById('profile-latin').textContent = 'Latin binomial here';
-  document.getElementById('profile-content').innerHTML = `
-    <div style="background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:1.5rem;margin-bottom:1.5rem;">
-      <p style="font-size:13px;line-height:1.7;color:var(--muted);">
-        Profile for <strong>${herbName}</strong> would load here from the API.
-        Click "Plant Intelligence" to see the deep compound science.
-      </p>
-    </div>
-  `;
+  document.getElementById('profile-latin').textContent = '';
+  document.getElementById('profile-content').innerHTML = `<div class="loading"><div class="spinner"></div><p style="margin-top:1rem;font-size:13px;color:var(--muted);">Loading everything we know about ${herbName}…</p></div>`;
+
+  try {
+    const res = await fetch('/.netlify/functions/herb-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ herbName })
+    });
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      throw new Error(errBody.error || `Request failed (${res.status})`);
+    }
+    const profile = await res.json();
+    renderProfileContent(profile);
+  } catch (err) {
+    console.error(err);
+    document.getElementById('profile-content').innerHTML = `<div class="results-error"><p>Couldn't load the full profile for ${herbName} (${err.message}). You can still add it to your stack, or view it directly in Plant Intelligence.</p></div>`;
+  }
+}
+
+function renderProfileContent(profile) {
+  document.getElementById('profile-name').textContent = profile.name || currentProfile;
+  document.getElementById('profile-latin').textContent = profile.latin || '';
+
+  let html = '';
+
+  if (profile.summary) {
+    html += `<div class="profile-block"><div class="profile-block-title">Overview</div><p>${profile.summary}</p></div>`;
+  }
+
+  if (profile.compounds && profile.compounds.length) {
+    html += `<div class="profile-block"><div class="profile-block-title">Key compounds</div>`;
+    profile.compounds.forEach(c => {
+      html += `<div class="profile-compound-row"><span class="cname">${c.name}</span><span class="crole">${c.role || ''}</span></div>`;
+    });
+    html += `</div>`;
+  }
+
+  if (profile.bodyEffects && profile.bodyEffects.length) {
+    html += `<div class="profile-block"><div class="profile-block-title">Body system effects</div>`;
+    profile.bodyEffects.forEach(be => {
+      html += `<div class="profile-compound-row"><span class="cname">${be.system}</span><span class="crole">${be.effect || ''}</span></div>`;
+    });
+    html += `</div>`;
+  }
+
+  if (profile.preparation) {
+    const preps = Object.entries(profile.preparation).filter(([, v]) => v);
+    if (preps.length) {
+      html += `<div class="profile-block"><div class="profile-block-title">Preparation</div>`;
+      preps.forEach(([method, dose]) => {
+        html += `<p style="margin-bottom:.6rem"><strong style="color:var(--text)">${method}:</strong> ${dose}</p>`;
+      });
+      html += `</div>`;
+    }
+  }
+
+  if (profile.safetyLevel) {
+    html += `<div class="profile-block"><div class="profile-block-title">Safety</div><p>${profile.safetyLevel}</p></div>`;
+  }
+
+  document.getElementById('profile-content').innerHTML = html || `<div class="profile-block"><p>No further detail available for this herb yet.</p></div>`;
 }
 
 function backToResults() {
@@ -356,55 +596,53 @@ function backToResults() {
   document.getElementById('herb-match-pi-tab').classList.remove('show');
 }
 
-// ─── ALTERNATIVES (Rejection Flow) ──────────────────────
-function rejectHerb(herbName) {
+// ─── ALTERNATIVES (Rejection Flow, real AI call) ────────
+async function rejectHerb(herbName) {
   showAlternativesModal();
 
-  // Call herb-profile.js API to get alternative
-  // First, pick a different herb to test (in production, the backend would generate)
-  const alternativeHerbs = ['Rhodiola', 'Skullcap', 'Holy Basil', 'Reishi', 'Chamomile', 'Lavender'];
-  const alternative = alternativeHerbs.find(h => h !== herbName && !currentResults.find(r => r.name === h));
+  const shownNames = currentResults.map(r => r.name);
+  const avoid = buildAvoidList([herbName, ...shownNames]);
 
-  if (!alternative) {
-    hideAlternativesModal();
-    alert('No more alternatives available. Try selecting different issues.');
-    return;
-  }
-
-  // Call API with excluded herb context
-  fetch('/.netlify/functions/herb-profile', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      herbName: alternative,
-      excludedHerb: herbName,
-      issues: selectedIssues
-    })
-  })
-  .then(res => res.json())
-  .then(profile => {
-    hideAlternativesModal();
-    // Add alternative to results at the top
-    currentResults.unshift({
-      name: alternative,
-      latin: profile.latin || 'Latin binomial',
-      matches: 3,
-      profile: profile
+  try {
+    const res = await fetch('/.netlify/functions/herb-match', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        issues: selectedIssues.length ? selectedIssues : ['general wellbeing'],
+        specifics: flattenSpecifics(),
+        avoid,
+        count: 1
+      })
     });
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      throw new Error(errBody.error || `Request failed (${res.status})`);
+    }
+    const data = await res.json();
+    const alt = (data.herbs || [])[0];
+    hideAlternativesModal();
+
+    if (!alt) {
+      alert("Couldn't find a fresh alternative right now — try adjusting your selections instead.");
+      return;
+    }
+
+    rememberSeenHerbs([alt.name]);
+    currentResults = currentResults.filter(r => r.name !== herbName);
+    currentResults.unshift(alt);
     updateResultsGrid();
-    // Highlight the new alternative
-    const newCard = document.querySelector(`[data-herb="${alternative}"]`);
+
+    const newCard = document.querySelector(`[data-herb="${alt.name}"]`);
     if (newCard) {
       newCard.style.borderColor = 'rgba(200, 149, 42, 0.8)';
       newCard.style.background = 'rgba(200, 149, 42, 0.15)';
-      setTimeout(() => newCard.scrollIntoView({ behavior: 'smooth' }), 100);
+      setTimeout(() => newCard.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
     }
-  })
-  .catch(err => {
+  } catch (err) {
     console.error('Alternative generation failed:', err);
     hideAlternativesModal();
-    alert('Could not generate alternative. Please try another herb.');
-  });
+    alert('Could not generate an alternative right now. Please try again shortly.');
+  }
 }
 
 function showAlternativesModal() {
@@ -417,7 +655,7 @@ function hideAlternativesModal() {
 
 // ─── HERB STACK ─────────────────────────────────────────
 function addHerbToStack(herbName) {
-  const stack = JSON.parse(localStorage.getItem('chi_herb_stack') || '[]');
+  const stack = getOwnedHerbs();
   if (!stack.includes(herbName)) {
     stack.push(herbName);
   }
