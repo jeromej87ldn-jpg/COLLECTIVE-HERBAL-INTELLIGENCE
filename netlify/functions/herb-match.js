@@ -56,22 +56,18 @@ function extractJson(text) {
   }
 }
 
-// Ask the model for herbs. We prefill the assistant turn with '{' on every
-// call (not just as a fallback) — this strongly biases Claude to continue
-// directly as JSON with no surrounding commentary, so the common case
-// succeeds on the first round-trip instead of needing a retry. That matters
-// here specifically because an 8-herb request already takes a few seconds;
-// a second full model call to recover from a formatting slip risks tipping
-// past Netlify's function timeout. The retry below is now a rare fallback,
-// not the common path.
+// Ask the model for herbs. NOTE: this model rejects assistant-message
+// prefill ("the conversation must end with a user message"), so we can't
+// force JSON-only output that way — a plain question/answer call is the
+// only option here. If parsing fails, we retry once with an extra plain
+// reminder appended to the user message.
 async function requestHerbs(anthropic, userMsg, attempt = 1) {
   const message = await anthropic.messages.create({
     model: 'claude-sonnet-5',
     max_tokens: 1600,
     system: SYSTEM_PROMPT,
     messages: [
-      { role: 'user', content: userMsg },
-      { role: 'assistant', content: '{' },
+      { role: 'user', content: attempt === 1 ? userMsg : userMsg + '\n\nReturn ONLY the JSON object, with no other text before or after it.' }
     ]
   });
 
@@ -80,15 +76,13 @@ async function requestHerbs(anthropic, userMsg, attempt = 1) {
     return { error: 'No text content in model response' };
   }
 
-  const rawText = '{' + textBlock.text;
-
   try {
-    return extractJson(rawText);
+    return extractJson(textBlock.text);
   } catch (parseErr) {
     if (attempt === 1) {
       return requestHerbs(anthropic, userMsg, 2);
     }
-    return { error: 'Model response was not valid JSON', raw: rawText.trim().slice(0, 500) };
+    return { error: 'Model response was not valid JSON', raw: textBlock.text.trim().slice(0, 500) };
   }
 }
 

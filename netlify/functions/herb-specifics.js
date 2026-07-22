@@ -35,17 +35,18 @@ function extractJson(text) {
   }
 }
 
-// Ask the model for specifics. We prefill the assistant turn with '{' on
-// every call (not just as a fallback) so the common case succeeds on the
-// first round-trip — see herb-match.js for why that matters for latency.
+// Ask the model for specifics. NOTE: this model rejects assistant-message
+// prefill ("the conversation must end with a user message"), so a plain
+// question/answer call is the only option. If parsing fails, retry once
+// with an extra plain reminder appended to the user message.
 async function requestSpecifics(anthropic, issue, attempt = 1) {
+  const baseMsg = `Broad concern: ${issue}`;
   const message = await anthropic.messages.create({
     model: 'claude-haiku-4-5-20251001',
     max_tokens: 400,
     system: SYSTEM_PROMPT,
     messages: [
-      { role: 'user', content: `Broad concern: ${issue}` },
-      { role: 'assistant', content: '{' },
+      { role: 'user', content: attempt === 1 ? baseMsg : baseMsg + '\n\nReturn ONLY the JSON object, with no other text before or after it.' }
     ]
   });
 
@@ -54,15 +55,13 @@ async function requestSpecifics(anthropic, issue, attempt = 1) {
     return { error: 'No text content in model response' };
   }
 
-  const rawText = '{' + textBlock.text;
-
   try {
-    return extractJson(rawText);
+    return extractJson(textBlock.text);
   } catch (parseErr) {
     if (attempt === 1) {
       return requestSpecifics(anthropic, issue, 2);
     }
-    return { error: 'Model response was not valid JSON', raw: rawText.trim().slice(0, 300) };
+    return { error: 'Model response was not valid JSON', raw: textBlock.text.trim().slice(0, 300) };
   }
 }
 
