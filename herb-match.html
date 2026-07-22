@@ -552,20 +552,37 @@ async function viewProfile(herbName) {
   document.getElementById('profile-content').innerHTML = `<div class="loading"><div class="spinner"></div><p style="margin-top:1rem;font-size:13px;color:var(--muted);">Loading everything we know about ${herbName}…</p></div>`;
 
   try {
+    const profile = await fetchHerbProfilePolling(herbName);
+    renderProfileContent(profile);
+  } catch (err) {
+    console.error(err);
+    document.getElementById('profile-content').innerHTML = `<div class="results-error"><p>Couldn't load the full profile for ${herbName} (${err.message}). You can still add it to your stack, or view it directly in Plant Intelligence.</p></div>`;
+  }
+}
+
+// The herb-profile endpoint returns the profile immediately (200) or, for a
+// herb it hasn't generated before, kicks off background generation and
+// returns 202 {status:'generating'}. Poll until it's ready so a slow
+// first-time generation no longer times out.
+async function fetchHerbProfilePolling(herbName, { maxMs = 90000, intervalMs = 2500 } = {}) {
+  const started = Date.now();
+  while (true) {
     const res = await fetch('/.netlify/functions/herb-profile', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ herbName })
     });
-    if (!res.ok) {
-      const errBody = await res.json().catch(() => ({}));
-      throw new Error(errBody.error || `Request failed (${res.status})`);
+
+    if (res.status === 200) return await res.json();
+
+    if (res.status === 202) {
+      if (Date.now() - started > maxMs) throw new Error('Timed out waiting for the profile to generate');
+      await new Promise(r => setTimeout(r, intervalMs));
+      continue;
     }
-    const profile = await res.json();
-    renderProfileContent(profile);
-  } catch (err) {
-    console.error(err);
-    document.getElementById('profile-content').innerHTML = `<div class="results-error"><p>Couldn't load the full profile for ${herbName} (${err.message}). You can still add it to your stack, or view it directly in Plant Intelligence.</p></div>`;
+
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody.error || `Request failed (${res.status})`);
   }
 }
 
@@ -698,6 +715,7 @@ function addToStack() {
 buildPyramid();
 document.getElementById('submit-btn').onclick = submitIssues;
 
+
 // Restore state if we're arriving back from Plant Intelligence (or a page
 // refresh) rather than starting fresh.
 (function restoreOnLoad() {
@@ -722,6 +740,9 @@ document.getElementById('submit-btn').onclick = submitIssues;
   }
 })();
 </script>
+
+<!-- Shared CHI glossary: auto-tags known terms in the herb profile and shows definition tooltips on hover -->
+<script src="chi-glossary.js"></script>
 
 </body>
 </html>

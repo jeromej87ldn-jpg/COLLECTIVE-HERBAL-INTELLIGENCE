@@ -512,20 +512,37 @@ async function loadHerbProfile(herbName) {
   window.scrollTo({top:0,behavior:'smooth'});
 
   try {
-    const res = await fetch('/.netlify/functions/herb-profile', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ herbName })
-    });
-    if(!res.ok) {
-      const errBody = await res.json().catch(()=>({}));
-      throw new Error(errBody.error || `Request failed (${res.status})`);
-    }
-    const herb = await res.json();
+    const herb = await fetchHerbProfilePolling(herbName);
     renderProfile(herb);
   } catch(err) {
     console.error(err);
     document.getElementById('profile-loading').innerHTML = '<p style="color:#c4522a;padding:2rem;text-align:center;">Unable to load herb data. Please try again in a moment.</p>';
+  }
+}
+
+// The herb-profile endpoint may return the data immediately (200) or, for a
+// herb it hasn't generated before, kick off background generation and return
+// 202 {status:'generating'}. In the 202 case we poll until it's ready, so a
+// slow first-time generation no longer times out the request.
+async function fetchHerbProfilePolling(herbName, { maxMs = 90000, intervalMs = 2500 } = {}) {
+  const started = Date.now();
+  while (true) {
+    const res = await fetch('/.netlify/functions/herb-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ herbName })
+    });
+
+    if (res.status === 200) return await res.json();
+
+    if (res.status === 202) {
+      if (Date.now() - started > maxMs) throw new Error('Timed out waiting for the profile to generate');
+      await new Promise(r => setTimeout(r, intervalMs));
+      continue;
+    }
+
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody.error || `Request failed (${res.status})`);
   }
 }
 
@@ -707,137 +724,8 @@ function closeProfile() {
   else go();
 })();
 
-// ── HOVER TERM TOOLTIPS (definitions) ──────────────────────────────
-// Lightweight, non-scientific glossary for the Herbadex — covers the
-// spiritual/traditional vocabulary this page focuses on, plus common
-// herbal action terms. For deep pharmacology, see Plant Intelligence.
-(function(){
-  const DEFS = {
-    'adaptogen': {l:'Adaptogen',d:'A herb that helps the body resist physical and mental stress without causing harm, by supporting the body’s stress-response system.'},
-    'adaptogenic': {l:'Adaptogenic',d:'Having the properties of an adaptogen — helping the body resist stress and return to balance.'},
-    'nervine': {l:'Nervine',d:'A herb that supports and calms the nervous system, traditionally used for stress, tension or sleep.'},
-    'carminative': {l:'Carminative',d:'A herb that relieves intestinal gas and gut discomfort, usually via aromatic oils.'},
-    'demulcent': {l:'Demulcent',d:'A herb that soothes irritated tissue by forming a protective, moistening coating.'},
-    'diaphoretic': {l:'Diaphoretic',d:'Promotes sweating; traditionally used to help break fevers.'},
-    'astringent': {l:'Astringent',d:'A herb that tightens and tones tissue, traditionally used for wound care and digestive complaints.'},
-    'decoction': {l:'Decoction',d:'A preparation made by simmering tougher plant parts — roots, bark, seeds — in water, usually longer than a simple tea.'},
-    'infusion': {l:'Infusion',d:'A preparation made by steeping softer plant parts — leaves, flowers — in hot water, like a tea.'},
-    'tincture': {l:'Tincture',d:'A concentrated herbal extract made by soaking plant material in alcohol (or alcohol and water) over time.'},
-    'ayurveda': {l:'Ayurveda',d:'A traditional system of medicine from the Indian subcontinent, dating back thousands of years, focused on balancing mind, body and spirit.'},
-    'dosha': {l:'Dosha',d:'In Ayurveda, one of three fundamental energies (Vata, Pitta, Kapha) believed to govern the body’s constitution and balance.'},
-    'qi': {l:'Qi (Chi)',d:'In Traditional Chinese Medicine, the vital life force or energy believed to flow through the body along meridians.'},
-    'tcm': {l:'TCM',d:'Traditional Chinese Medicine — a system of practice going back over 2,000 years, including herbal medicine, acupuncture and energetic diagnosis.'},
-    'shamanic': {l:'Shamanic',d:'Relating to shamanism — traditional practices involving spirit communication, healing and ritual use of plants, found across many cultures.'},
-    'energetics': {l:'Herbal energetics',d:'A traditional way of classifying herbs by qualities like warming/cooling or drying/moistening, rather than by chemical constituents.'},
-    'folk medicine': {l:'Folk medicine',d:'Traditional healing knowledge passed down through communities and generations, outside formal medical systems.'},
-    'doctrine of signatures': {l:'Doctrine of Signatures',d:'A historical belief that a plant’s appearance hints at what it can treat — e.g. walnut resembling a brain being used for head ailments.'},
-    'entheogen': {l:'Entheogen',d:'A plant or substance used to bring about a spiritual or mystical experience, often in ceremonial or religious contexts.'},
-    'alkaloid': {l:'Alkaloid',d:'A nitrogen-containing plant compound, often bitter and pharmacologically active — caffeine and morphine are well-known examples.'},
-    'flavonoid': {l:'Flavonoid',d:'A large class of plant compounds broadly linked to antioxidant and anti-inflammatory effects.'},
-    'saponin': {l:'Saponin',d:'A soap-like plant compound found in many adaptogenic herbs, which foams in water.'},
-    'tannin': {l:'Tannin',d:'A plant compound that gives an astringent, drying sensation and has traditionally been used for wound care.'}
-  };
-
-  const tip = document.createElement('div');
-  tip.className = 'chi-tooltip';
-  tip.innerHTML = '<div class="chi-tooltip-term"></div><div class="chi-tooltip-def"></div><div class="chi-tooltip-footer">📚 CHI Glossary</div>';
-  document.body.appendChild(tip);
-
-  let hideTimer;
-
-  function showTip(el, e){
-    const term = el.dataset.term || el.textContent.trim();
-    const def = DEFS[term.toLowerCase()];
-    if(!def) return;
-    tip.querySelector('.chi-tooltip-term').textContent = def.l;
-    tip.querySelector('.chi-tooltip-def').textContent = def.d;
-    clearTimeout(hideTimer);
-    positionTip(e);
-    tip.classList.add('show');
-  }
-
-  function positionTip(e){
-    const pad = 14, tw = 300, th = 130;
-    let x = e.clientX + pad;
-    let y = e.clientY + pad;
-    if(x + tw > window.innerWidth) x = e.clientX - tw - pad;
-    if(y + th > window.innerHeight) y = e.clientY - th - pad;
-    tip.style.left = x + 'px';
-    tip.style.top = y + 'px';
-  }
-
-  document.addEventListener('mouseover', function(e){
-    const el = e.target.closest('.chi-term');
-    if(!el) return;
-    showTip(el, e);
-  });
-
-  document.addEventListener('mousemove', function(e){
-    if(tip.classList.contains('show') && e.target.closest('.chi-term'))
-      positionTip(e);
-  });
-
-  document.addEventListener('mouseout', function(e){
-    if(!e.target.closest('.chi-term')) return;
-    hideTimer = setTimeout(()=>tip.classList.remove('show'), 250);
-  });
-
-  // Auto-tag known terms in rendered profile content
-  const tagged = new WeakSet();
-  const termKeys = Object.keys(DEFS).sort((a,b)=>b.length-a.length); // longest first
-
-  function tagNode(node){
-    if(node.nodeType !== Node.TEXT_NODE) return;
-    if(!node.textContent.trim()) return;
-    const parent = node.parentElement;
-    if(!parent) return;
-    if(parent.closest('.chi-term,.chi-tooltip,script,style,input,textarea,a,button')) return;
-    if(tagged.has(node)) return;
-    tagged.add(node);
-
-    let html = node.textContent;
-    let changed = false;
-
-    termKeys.forEach(term=>{
-      if(!html.toLowerCase().includes(term)) return;
-      const re = new RegExp('(?<![\\w-])(' + term.replace(/[-[\]{}()*+?.,\\^$|#\s]/g,'\\$&') + ')(?![\\w-])', 'gi');
-      if(re.test(html)){
-        html = html.replace(re, '<span class="chi-term" data-term="' + term + '">$1</span>');
-        changed = true;
-      }
-    });
-
-    if(changed){
-      const span = document.createElement('span');
-      span.innerHTML = html;
-      parent.replaceChild(span, node);
-    }
-  }
-
-  function tagTree(root){
-    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
-    const nodes = [];
-    let n;
-    while((n = walker.nextNode())) nodes.push(n);
-    nodes.forEach(tagNode);
-  }
-
-  // Watch the profile content areas for dynamically rendered herb text
-  const watchTargets = ['profile-main-content'];
-  watchTargets.forEach(id=>{
-    const el = document.getElementById(id);
-    if(!el) return;
-    const observer = new MutationObserver(muts=>{
-      muts.forEach(m=>{
-        m.addedNodes.forEach(n=>{
-          if(n.nodeType === Node.ELEMENT_NODE) tagTree(n);
-          else if(n.nodeType === Node.TEXT_NODE) tagNode(n);
-        });
-      });
-    });
-    observer.observe(el, {childList:true, subtree:true});
-  });
-})();
 </script>
+<!-- Shared CHI glossary: auto-tags known terms in the herb profile and shows definition tooltips on hover -->
+<script src="chi-glossary.js"></script>
 </body>
 </html>

@@ -130,134 +130,43 @@ async function requestProfile(anthropic, userMessage, attempt = 1) {
   }
 }
 
+// ── BACKGROUND FUNCTION ────────────────────────────────────────────
+// Netlify runs any function whose filename ends in "-background" as a
+// background job: it returns 202 immediately and may run for up to 15
+// minutes. That's plenty for a full profile generation, so this is where
+// the actual (potentially slow) model call happens. herb-profile.js
+// triggers this, and the client polls herb-profile.js until the result
+// this writes to Supabase is ready.
 exports.handler = async (event) => {
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
-  }
-
+  let name = '';
   try {
-    // TEMP — PREVIEW TESTING ONLY. Remove `previewApiKey` handling below
-    // (and the matching text box in phytochemistry.html) before launch.
-    const { herbName, previewApiKey, excludedHerb, issues } = JSON.parse(event.body || '{}');
-    if (!herbName || !herbName.trim()) {
-      return { statusCode: 400, body: JSON.stringify({ error: 'herbName is required' }) };
-    }
-    const name = herbName.trim().toLowerCase();
-    const serverKey = process.env.ANTHROPIC_API_KEY;
-    // END TEMP
+    const { herbName, excludedHerb, issues } = JSON.parse(event.body || '{}');
+    if (!herbName || !herbName.trim()) return; // nothing to do
+    name = herbName.trim().toLowerCase();
 
-    // ── 1. CACHE CHECK ──────────────────────────────────────────────
-    // If this herb is already generated, return it instantly. If a
-    // generation is currently in flight, tell the client to keep polling.
-    if (supabase) {
-      try {
-        const { data: row } = await supabase
-          .from('herbs')
-          .select('data, status')
-          .eq('name', name)
-          .maybeSingle();
-
-        if (row && row.status === 'complete' && row.data && row.data.name) {
-          return {
-            statusCode: 200,
-            headers: { 'Content-Type': 'application/json', 'X-Cache': 'hit' },
-            body: JSON.stringify(row.data)
-          };
-        }
-
-        if (row && row.status === 'generating') {
-          // A generation is already running. Keep the client polling —
-          // unless the row looks stale (a previous run that died), in
-          // which case we fall through and kick off a fresh one.
-          const startedAt = (row.data && row.data.generating_at) || 0;
-          if (Date.now() - startedAt < STALE_GENERATING_MS) {
-            return {
-              statusCode: 202,
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ status: 'generating' })
-            };
-          }
-        }
-
-        if (row && row.status === 'error') {
-          // The background job finished but failed. Surface the error to
-          // the client once, and clear the row so the next attempt starts
-          // fresh rather than looping on the same failure.
-          const message = (row.data && row.data.error) || 'Profile generation failed';
-          try { await supabase.from('herbs').delete().eq('name', name); } catch (e) {}
-          return { statusCode: 502, body: JSON.stringify({ error: message }) };
-        }
-      } catch (cacheErr) {
-        console.error('Supabase read failed, continuing without cache:', cacheErr.message);
-      }
-    }
-
-    // ── 2. PREFERRED PATH: hand generation to a background function ──
-    // The full rich profile can take longer than a synchronous function's
-    // execution limit (this is the 504 users were hitting). A background
-    // function has a 15-minute budget, so it can always finish; it writes
-    // the result to Supabase and the client polls this endpoint until the
-    // cache check above returns it. Needs Supabase (to store the result),
-    // the server API key, and the site URL (to invoke the background fn).
-    const siteURL = process.env.URL || process.env.DEPLOY_PRIME_URL;
-    if (supabase && serverKey && siteURL) {
-      try {
-        // Mark 'generating' so concurrent requests don't each fire a job.
-        await supabase.from('herbs').upsert({
-          name,
-          status: 'generating',
-          data: { generating_at: Date.now() }
-        });
-
-        await fetch(`${siteURL}/.netlify/functions/herb-profile-background`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ herbName: name, excludedHerb, issues })
-        });
-
-        return {
-          statusCode: 202,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: 'generating' })
-        };
-      } catch (bgErr) {
-        console.error('Background dispatch failed, falling back to synchronous:', bgErr.message);
-        // fall through to synchronous generation
-      }
-    }
-
-    // ── 3. FALLBACK: synchronous generation ─────────────────────────
-    // Used when Supabase or the site URL isn't available (e.g. local dev
-    // or preview-key testing). Same behavior as before — may be slow, but
-    // it's the only option without somewhere to store an async result.
-    const apiKey = serverKey || previewApiKey;
+    const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
-      return { statusCode: 500, body: JSON.stringify({ error: 'Server is missing ANTHROPIC_API_KEY' }) };
+      console.error('herb-profile-background: missing ANTHROPIC_API_KEY');
+      if (supabase) await supabase.from('herbs').upsert({ name, status: 'error', data: { error: 'Server is missing ANTHROPIC_API_KEY' } });
+      return;
     }
-    const anthropic = new Anthropic({ apiKey });
 
+    const anthropic = new Anthropic({ apiKey });
     const herb = await requestProfile(anthropic, buildUserMessage(name, excludedHerb, issues));
+
     if (herb.error) {
-      return { statusCode: 502, body: JSON.stringify(herb) };
+      console.error('herb-profile-background: generation failed for', name, herb.error);
+      if (supabase) await supabase.from('herbs').upsert({ name, status: 'error', data: { error: herb.error } });
+      return;
     }
 
     if (supabase) {
-      try {
-        await supabase.from('herbs').upsert({ name, data: herb, status: 'complete' });
-      } catch (saveErr) {
-        console.error('Supabase write failed:', saveErr.message);
-      }
+      await supabase.from('herbs').upsert({ name, data: herb, status: 'complete' });
     }
-
-    return {
-      statusCode: 200,
-      headers: { 'Content-Type': 'application/json', 'X-Cache': 'miss' },
-      body: JSON.stringify(herb)
-    };
   } catch (error) {
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: error.message })
-    };
+    console.error('herb-profile-background: unexpected error for', name, error.message);
+    try {
+      if (supabase && name) await supabase.from('herbs').upsert({ name, status: 'error', data: { error: error.message } });
+    } catch (e) {}
   }
 };

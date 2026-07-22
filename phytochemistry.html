@@ -1126,16 +1126,33 @@ function hideCompoundGlossary(){
 }
 
 // ─── LAZY LOAD FROM API ──────────────────────────────────────────
-async function fetchHerbProfileFromAPI(herbName, targetId){
-  try {
-    const response = await fetch('/.netlify/functions/herb-profile', {
+// The herb-profile endpoint returns the profile immediately (200) or, for a
+// herb it hasn't generated before, kicks off background generation and
+// returns 202 {status:'generating'}. Poll until it's ready so a slow
+// first-time generation no longer times out.
+async function fetchHerbProfilePolling(herbName, maxMs, intervalMs){
+  maxMs = maxMs || 90000; intervalMs = intervalMs || 2500;
+  const started = Date.now();
+  while(true){
+    const res = await fetch('/.netlify/functions/herb-profile', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ herbName })
     });
+    if(res.status === 200) return await res.json();
+    if(res.status === 202){
+      if(Date.now() - started > maxMs) throw new Error('Timed out waiting for the profile to generate');
+      await new Promise(r => setTimeout(r, intervalMs));
+      continue;
+    }
+    const errBody = await res.json().catch(()=>({}));
+    throw new Error(errBody.error || `API error: ${res.status}`);
+  }
+}
 
-    if(!response.ok) throw new Error(`API error: ${response.status}`);
-    const profile = await response.json();
+async function fetchHerbProfileFromAPI(herbName, targetId){
+  try {
+    const profile = await fetchHerbProfilePolling(herbName);
 
     // Display API result
     let html = `<div style="margin-bottom:1.5rem">
@@ -1576,15 +1593,12 @@ document.addEventListener('click',e=>{
   'trophorestorative': {l:'Trophorestorative',d:"Restores and rebuilds the function of a specific organ or system over time through regular use. Milk thistle is trophorestorative for the liver; lion's mane for the nervous system."},
   'alterative': {l:'Alterative',d:'Gradually improves metabolism and nutrition, traditionally said to "alter" the body towards better health. Cleavers, nettle and burdock are classic alteratives.'},
   'bitter tonic': {l:'Bitter tonic',d:'A herb that stimulates digestion through bitter taste receptors (TAS2R) on the tongue. Must be tasted to work — capsules bypass the mechanism. Dandelion, mugwort and gentian are bitter tonics.'},
-  // TODO: DUPLICATE - 'flavonoid' (singular with examples) vs 'flavonoids' (plural generic). Consolidate to one definition.
-  'flavonoid': {l:'Flavonoid',d:'The largest class of plant polyphenols — over 6,000 known. Includes quercetin, apigenin, luteolin and kaempferol. Broadly anti-inflammatory, antioxidant and cardioprotective.'},
-  'flavonoids': {l:'Flavonoids',d:'The largest class of plant polyphenols — over 6,000 known. Broadly anti-inflammatory, antioxidant and cardioprotective. Found in almost every herb.'},
-  'alkaloid': {l:'Alkaloid',d:'Nitrogen-containing plant compounds — often bitter, pharmacologically potent, and the basis of many pharmaceuticals (morphine, caffeine, berberine). Work on specific receptors with clear dose-dependence.'},
-  'alkaloids': {l:'Alkaloids',d:'Nitrogen-containing plant compounds — often bitter and pharmacologically potent. Include berberine (barberry), caffeine (green tea) and many pharmaceutical drugs derived from plants.'},
-  'tannin': {l:'Tannin',d:'Polyphenols that bind and precipitate proteins — creating an astringent sensation. Protect wound surfaces, reduce inflammation and have antimicrobial properties. High in raspberry leaf, green tea and witch hazel.'},
-  'tannins': {l:'Tannins',d:'Polyphenolic compounds with an astringent action — they bind proteins and contract tissue. Found in raspberry leaf, oak bark, green tea. Useful for wound healing and diarrhoea.'},
-  'saponin': {l:'Saponin',d:'Soap-like plant compounds that foam in water. Improve cell membrane permeability (enhancing nutrient absorption), have immune-stimulating properties, and lower cholesterol.'},
-  'saponins': {l:'Saponins',d:'Soap-like compounds found in ashwagandha, liquorice and many herbs. Enhance bioavailability of other compounds, support immune function and have cholesterol-lowering effects.'},
+  // Singular and plural keys point at one shared definition so the tagger
+  // matches either form without maintaining two copies that can drift.
+  'flavonoid': {l:'Flavonoid',d:'The largest class of plant polyphenols — over 6,000 known. Includes quercetin, apigenin, luteolin and kaempferol. Broadly anti-inflammatory, antioxidant and cardioprotective; found in almost every herb.'},
+  'alkaloid': {l:'Alkaloid',d:'Nitrogen-containing plant compounds — often bitter and pharmacologically potent. Include berberine (barberry), caffeine (green tea) and morphine; the basis of many plant-derived pharmaceuticals. Work on specific receptors with clear dose-dependence.'},
+  'tannin': {l:'Tannin',d:'Polyphenols that bind and precipitate proteins, creating an astringent sensation that contracts tissue. Protect wound surfaces, reduce inflammation and have antimicrobial properties. High in raspberry leaf, oak bark, green tea and witch hazel.'},
+  'saponin': {l:'Saponin',d:'Soap-like plant compounds that foam in water. Improve cell membrane permeability (enhancing absorption of other compounds), support immune function and lower cholesterol. Found in ashwagandha, liquorice and many herbs.'},
   'terpenoid': {l:'Terpenoid',d:'The largest class of plant compounds — built from five-carbon isoprene units. Includes essential oil components (monoterpenes), withanolides (diterpenes), silymarin (triterpenoid) and carotenoids.'},
   'terpenoids': {l:'Terpenoids',d:"The most diverse class of plant compounds. Responsible for most herbal scents (monoterpenes) and many therapeutic actions. Includes everything from lemon balm's citral to ashwagandha's withanolides."},
   'polysaccharide': {l:'Polysaccharide',d:"Long-chain sugars found in medicinal mushrooms and herbs. Beta-glucans in lion's mane activate immune surveillance; arabinogalactans in marshmallow coat and protect gut mucosa."},
@@ -1649,6 +1663,11 @@ document.addEventListener('click',e=>{
   'half-life': {l:'Half-life',d:'Time for half a dose of a compound to leave your body. Caffeine: 5 hours; curcumin: 6 hours; berberine: 4-6 hours. Matters for dosing frequency and whether it builds up or washes out.'},
   'synergy': {l:'Synergy',d:'Herbal synergy means combinations work better than single herbs. This is why traditional formulas with 5+ herbs often outperform isolated single compounds. Whole-plant medicine is more than the sum of its parts.'}
   };
+
+  // Plural aliases — the word-boundary tagger matches whole words, so the
+  // plural forms need their own keys, but they point at the singular's
+  // single canonical definition rather than duplicating the text.
+  ['flavonoid','alkaloid','tannin','saponin'].forEach(base=>{ DEFS[base+'s'] = DEFS[base]; });
 
   // Create tooltip element
   const tip = document.createElement('div');
