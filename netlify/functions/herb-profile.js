@@ -62,6 +62,65 @@ Return ONLY valid JSON:
 
 Limits: timeline max 3 entries. compounds max 4 entries. bodyEffects max 4 entries. interactions max 4 entries. forumSeed exactly 2 entries.`;
 
+// Claude occasionally wraps JSON in a code fence, or adds a short sentence
+// before/after it despite being told to return JSON only. Rather than only
+// stripping fences anchored at the very start/end of the string (which
+// misses any leading/trailing prose), pull out the outermost {...} block
+// and parse that instead.
+function extractJson(text) {
+  const stripped = text.trim()
+    .replace(/^```json\s*/i, '')
+    .replace(/^```\s*/, '')
+    .replace(/\s*```$/, '');
+  try {
+    return JSON.parse(stripped);
+  } catch (e) {
+    const start = stripped.indexOf('{');
+    const end = stripped.lastIndexOf('}');
+    if (start !== -1 && end !== -1 && end > start) {
+      return JSON.parse(stripped.slice(start, end + 1));
+    }
+    throw e;
+  }
+}
+
+// Ask the model for a herb profile. If the response isn't parseable JSON,
+// retry once with an assistant-turn prefill of '{' — this strongly biases
+// Claude to continue directly as JSON with no surrounding commentary.
+async function requestProfile(anthropic, userMessage, attempt = 1) {
+  const message = await anthropic.messages.create({
+    model: 'claude-sonnet-5',
+    max_tokens: 1800,
+    system: SYSTEM_PROMPT,
+    messages: attempt === 1
+      ? [{ role: 'user', content: userMessage }]
+      : [
+          { role: 'user', content: userMessage },
+          { role: 'assistant', content: '{' },
+        ]
+  });
+
+  const textBlock = message.content.find(block => block.type === 'text');
+  if (!textBlock || !textBlock.text) {
+    return { error: 'No text content in model response', stopReason: message.stop_reason };
+  }
+
+  const rawText = attempt === 1 ? textBlock.text : '{' + textBlock.text;
+
+  try {
+    return extractJson(rawText);
+  } catch (parseErr) {
+    if (attempt === 1) {
+      return requestProfile(anthropic, userMessage, 2);
+    }
+    return {
+      error: 'Model response was not valid JSON',
+      stopReason: message.stop_reason,
+      raw: rawText.trim().slice(0, 500)
+    };
+  }
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
@@ -112,33 +171,9 @@ exports.handler = async (event) => {
       userMessage = `The user rejected: ${excludedHerb}. They're looking for an herb that helps with: ${issues.join(', ')}. Find a different, complementary herb that addresses these issues better than ${excludedHerb}. Provide the full deep profile for: ${name}`;
     }
 
-    const message = await anthropic.messages.create({
-      model: 'claude-sonnet-5',
-      max_tokens: 1800,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: userMessage }]
-    });
-
-    const textBlock = message.content.find(block => block.type === 'text');
-    if (!textBlock || !textBlock.text) {
-      return {
-        statusCode: 502,
-        body: JSON.stringify({ error: 'No text content in model response', stopReason: message.stop_reason })
-      };
-    }
-
-    const raw = textBlock.text.trim()
-      .replace(/^```json\s*/, '')
-      .replace(/\s*```$/, '');
-
-    let herb;
-    try {
-      herb = JSON.parse(raw);
-    } catch (parseErr) {
-      return {
-        statusCode: 502,
-        body: JSON.stringify({ error: 'Model response was not valid JSON', stopReason: message.stop_reason, raw: raw.slice(0, 500) })
-      };
+    const herb = await requestProfile(anthropic, userMessage);
+    if (herb.error) {
+      return { statusCode: 502, body: JSON.stringify(herb) };
     }
 
     // Save to Supabase (best-effort — a caching failure shouldn't fail
