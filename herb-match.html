@@ -556,22 +556,82 @@ async function viewProfile(herbName) {
 
   document.getElementById('profile-name').textContent = herbName;
   document.getElementById('profile-latin').textContent = '';
-  document.getElementById('profile-content').innerHTML = `<div class="loading"><div class="spinner"></div><p style="margin-top:1rem;font-size:13px;color:var(--muted);">Loading everything we know about ${herbName}…</p></div>`;
+
+  // Show a spinner + ticker while loading
+  const tickerHTML = `<div class="loading">
+    <div class="spinner"></div>
+    <p style="margin-top:1rem;font-size:13px;color:var(--muted);">Loading everything we know about ${herbName}…</p>
+    <div id="loading-ticker" style="margin-top:1.5rem;padding:0.8rem;background:rgba(200,149,42,.08);border-left:2px solid var(--gold);font-size:12px;color:var(--muted);font-style:italic;max-height:80px;overflow:auto;"></div>
+  </div>`;
+  document.getElementById('profile-content').innerHTML = tickerHTML;
+
+  // Start the ticker (rotates through herbal facts)
+  startLoadingTicker();
 
   try {
     const profile = await fetchHerbProfilePolling(herbName);
+
+    // Render Stage 1 immediately (essentials)
     renderProfileContent(profile);
+
+    // If Stage 2 is still loading, poll for updates and merge when ready
+    if (profile.stage2Status === 'loading') {
+      const updated = await pollForStage2Update(herbName);
+      if (updated && updated.stage2Status === 'complete') {
+        // Stage 2 arrived, re-render with full content
+        renderProfileContent(updated);
+      }
+    }
   } catch (err) {
     console.error(err);
-    document.getElementById('profile-content').innerHTML = `<div class="results-error"><p>Couldn't load the full profile for ${herbName} (${err.message}). You can still add it to your stack, or view it directly in Plant Intelligence.</p></div>`;
+    document.getElementById('profile-content').innerHTML = `<div class="results-error"><p>Couldn't load the profile for ${herbName} (${err.message}). You can still add it to your stack, or view it directly in Plant Intelligence.</p></div>`;
   }
 }
 
-// The herb-profile endpoint returns the profile immediately (200) or, for a
-// herb it hasn't generated before, kicks off background generation and
-// returns 202 {status:'generating'}. Poll until it's ready so a slow
-// first-time generation no longer times out.
-async function fetchHerbProfilePolling(herbName, { maxMs = 90000, intervalMs = 2500 } = {}) {
+// Rotating ticker of herbal facts while profile loads
+const HERBAL_FACTS = [
+  '💚 Adaptogens like ashwagandha help your body handle stress without overstimulating any one system.',
+  '🌿 Bitter herbs like gentian work through taste receptors on your tongue — they must be tasted, not swallowed as capsules.',
+  '🔬 Quercetin, found in nettle and onions, stabilizes mast cells and can ease allergic responses.',
+  '⚡ Turmeric\'s curcumin alone is weak; black pepper\'s piperine boosts absorption 2000-fold.',
+  '🌱 Tannins in oak bark and raspberry leaf contract tissue — useful for wounds and diarrhea.',
+  '🧠 Reishi has been used for centuries to calm the nervous system; modern studies confirm it.',
+  '💪 Saponins in ashwagandha improve cell membrane permeability so other compounds absorb better.',
+  '🌊 Herbal synergy means five-herb formulas often outperform single isolated compounds.',
+  '☘️ Fresh herb teas capture volatile oils; dried herbs preserve alkaloids and bitter principles.',
+  '✨ Silymarin from milk thistle is so powerful it\'s used clinically for mushroom poisoning.'
+];
+
+let tickerIndex = 0;
+let tickerInterval = null;
+
+function startLoadingTicker() {
+  const ticker = document.getElementById('loading-ticker');
+  if (!ticker) return;
+
+  tickerIndex = 0;
+  ticker.textContent = HERBAL_FACTS[tickerIndex];
+
+  if (tickerInterval) clearInterval(tickerInterval);
+  tickerInterval = setInterval(() => {
+    tickerIndex = (tickerIndex + 1) % HERBAL_FACTS.length;
+    const el = document.getElementById('loading-ticker');
+    if (el) el.textContent = HERBAL_FACTS[tickerIndex];
+  }, 5000); // Change fact every 5 seconds
+}
+
+function stopLoadingTicker() {
+  if (tickerInterval) {
+    clearInterval(tickerInterval);
+    tickerInterval = null;
+  }
+}
+
+// Two-stage profile loading: Stage 1 (essentials: name, latin, summary, safety,
+// preparations) returns instantly via Haiku. Stage 2 (richness: spiritual history,
+// compounds, interactions, forum) loads in background via Sonnet. Show Stage 1 with
+// a ticker immediately, then merge Stage 2 as it arrives.
+async function fetchHerbProfilePolling(herbName, { maxMs = 180000, intervalMs = 2500 } = {}) {
   const started = Date.now();
   while (true) {
     const res = await fetch('/.netlify/functions/herb-profile', {
@@ -580,7 +640,12 @@ async function fetchHerbProfilePolling(herbName, { maxMs = 90000, intervalMs = 2
       body: JSON.stringify({ herbName })
     });
 
-    if (res.status === 200) return await res.json();
+    if (res.status === 200) {
+      const data = await res.json();
+      // Return immediately; if stage2Status is 'loading', the caller will
+      // poll for updates. If 'complete', all data is here.
+      return data;
+    }
 
     if (res.status === 202) {
       if (Date.now() - started > maxMs) throw new Error('Timed out waiting for the profile to generate');
@@ -593,7 +658,31 @@ async function fetchHerbProfilePolling(herbName, { maxMs = 90000, intervalMs = 2
   }
 }
 
+// Poll for Stage 2 updates (richness content that loads in background).
+// Called after Stage 1 renders, keeps checking until stage2Status === 'complete'.
+async function pollForStage2Update(herbName, { maxMs = 120000, intervalMs = 3000 } = {}) {
+  const started = Date.now();
+  while (true) {
+    if (Date.now() - started > maxMs) return null; // give up
+    const res = await fetch('/.netlify/functions/herb-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ herbName })
+    });
+
+    if (res.status === 200) {
+      const data = await res.json();
+      if (data.stage2Status === 'complete') {
+        return data; // Stage 2 is ready, return the full profile
+      }
+    }
+
+    await new Promise(r => setTimeout(r, intervalMs));
+  }
+}
+
 function renderProfileContent(profile) {
+  stopLoadingTicker(); // Stop the spinner ticker
   document.getElementById('profile-name').textContent = profile.name || currentProfile;
   document.getElementById('profile-latin').textContent = profile.latin || '';
 

@@ -1131,7 +1131,7 @@ function hideCompoundGlossary(){
 // returns 202 {status:'generating'}. Poll until it's ready so a slow
 // first-time generation no longer times out.
 async function fetchHerbProfilePolling(herbName, maxMs, intervalMs){
-  maxMs = maxMs || 90000; intervalMs = intervalMs || 2500;
+  maxMs = maxMs || 180000; intervalMs = intervalMs || 2500;
   const started = Date.now();
   while(true){
     const res = await fetch('/.netlify/functions/herb-profile', {
@@ -1147,6 +1147,25 @@ async function fetchHerbProfilePolling(herbName, maxMs, intervalMs){
     }
     const errBody = await res.json().catch(()=>({}));
     throw new Error(errBody.error || `API error: ${res.status}`);
+  }
+}
+
+// Poll for Stage 2 updates (rich content loading in background)
+async function pollForStage2Update(herbName, maxMs, intervalMs){
+  maxMs = maxMs || 120000; intervalMs = intervalMs || 3000;
+  const started = Date.now();
+  while(true){
+    if(Date.now() - started > maxMs) return null;
+    const res = await fetch('/.netlify/functions/herb-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ herbName })
+    });
+    if(res.status === 200){
+      const data = await res.json();
+      if(data.stage2Status === 'complete') return data;
+    }
+    await new Promise(r => setTimeout(r, intervalMs));
   }
 }
 

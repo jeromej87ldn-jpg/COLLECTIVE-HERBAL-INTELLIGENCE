@@ -1,9 +1,6 @@
 const Anthropic = require('@anthropic-ai/sdk');
 const { createClient } = require('@supabase/supabase-js');
 
-// SUPABASE_URL is sometimes stored with a trailing /rest/v1/ path (a REST
-// endpoint URL) rather than the bare project URL the JS client expects.
-// Normalise it so createClient always gets the bare project URL.
 function supabaseProjectUrl() {
   return (process.env.SUPABASE_URL || '').replace(/\/rest\/v1\/?$/, '');
 }
@@ -13,73 +10,65 @@ if (process.env.SUPABASE_URL && process.env.SUPABASE_KEY) {
   supabase = createClient(supabaseProjectUrl(), process.env.SUPABASE_KEY);
 }
 
-const SYSTEM_PROMPT = `You are the Herbadex — CHI's deep herb knowledge engine.
-You provide a rich but CONCISE profile of any herb requested.
-The SPIRITUAL and ENERGETIC history is THE MAIN FEATURE — prioritise it, but keep every field tight.
-Go deep into ancient use, shamanic and religious traditions, folklore, mythology — in a compact way.
-Also cover: modern research, active compounds, preparation methods, body system effects.
-
-IMPORTANT: You must return complete, valid JSON that fits comfortably within 1400 output tokens.
-Prioritise finishing valid JSON over exhaustive depth. Do not exceed the array/field limits below.
-
-Return ONLY valid JSON:
+// ── STAGE 1: Fast essentials (Haiku) ──────────────────────────────────
+// Returns immediately: name, latin, summary, category, safety, preparations,
+// functional overview, source. Enough to read and understand the herb.
+const STAGE1_PROMPT = `You are the Herbadex — CHI's herb knowledge engine.
+Provide a quick, essential profile for the requested herb. Return ONLY valid JSON:
 {
   "name": "common name",
   "latin": "latin binomial",
   "category": "primary action category",
-  "categoryColor": "#hex",
-  "origin": "native region",
-  "tradition": "primary healing tradition(s)",
-  "preparations": ["tea","tincture","capsule","etc"],
+  "categoryColor": "#hex (e.g. #e8a840)",
+  "summary": "2 sentence overview, warm and plain",
   "safetyLevel": "Generally safe | Use with caution | Consult professional",
-  "summary": "2 sentence overview",
-  "functionalOverview": "2-3 sentence in-depth summary, plain and grounded (not mystical), on what the herb actually does, what it's commonly used for, and how it helps people",
-  "source": "a real, verifiable citation for functionalOverview — a specific study, textbook, monograph or pharmacopoeia (e.g. 'Commission E Monograph' or a named clinical trial/journal). Use null if you are not genuinely confident a real citation exists — never invent one",
+  "preparations": ["tea","tincture","capsule","etc - list up to 4"],
+  "functionalOverview": "2 sentence summary: what it does, how people use it",
+  "source": "verifiable citation (e.g. 'Commission E Monograph') or null"
+}`;
+
+// ── STAGE 2: Rich depth (Sonnet, background) ──────────────────────────
+// Returns later: spiritual history, timeline, modern research, compounds,
+// body effects, detailed preparation methods, interactions, forum seed.
+// Can be slow; loads after Stage 1 renders.
+const STAGE2_PROMPT = `You are the Herbadex — CHI's deep herb knowledge engine.
+Provide the rich, deep profile for the requested herb. Return ONLY valid JSON:
+{
+  "origin": "native region or origin",
+  "tradition": "primary healing tradition(s) (e.g. Ayurvedic, TCM, Western)",
   "spiritualHistory": {
-    "overview": "1 concise but rich paragraph (3-4 sentences) on the herb's spiritual, shamanic, religious and cultural significance",
+    "overview": "1 rich paragraph (3-4 sentences) on spiritual/shamanic/religious/cultural significance",
     "timeline": [
-      {"era":"time period or culture","text":"one short sentence on what they knew/used it for"}
+      {"era":"time period or culture","text":"one short sentence on use/knowledge"}
     ]
   },
-  "modernUse": "1 concise paragraph on current research and applications",
-  "compounds": [{"name":"compound","role":"one short phrase","strength":0-100}],
-  "bodyEffects": [{"system":"body system","effect":"one short phrase"}],
+  "modernUse": "1 paragraph on current research and modern applications",
+  "compounds": [
+    {"name":"compound","role":"one short phrase","strength":0-100}
+  ],
+  "bodyEffects": [
+    {"system":"body system","effect":"one short phrase"}
+  ],
   "preparation": {
     "tea": "method and dose or null",
     "tincture": "method and dose or null",
     "capsule": "dose or null",
     "topical": "method or null",
     "smoke": "method or null",
-    "traditional": "any traditional preparation method"
+    "traditional": "traditional preparation method if any"
   },
   "rareFact": "one genuinely surprising fact, one sentence",
-  "interactions": ["short list of known drug/herb interactions"],
+  "interactions": ["known drug or herb interactions - max 3"],
   "forumSeed": [
-    {"user":"Name","initials":"XX","rating":5,"comment":"short realistic user experience comment"},
-    {"user":"Name","initials":"XX","rating":4,"comment":"short realistic user experience comment"}
+    {"user":"Name","initials":"XX","rating":5,"comment":"realistic user experience"},
+    {"user":"Name","initials":"XX","rating":4,"comment":"realistic user experience"}
   ]
 }
 
-Limits: timeline max 2 entries. compounds max 4 entries. bodyEffects max 4 entries. interactions max 3 entries. forumSeed exactly 2 entries.`;
+Limits: timeline max 2, compounds max 4, bodyEffects max 4, interactions max 3, forumSeed exactly 2.`;
 
-// If a row has been stuck in 'generating' longer than this, assume the
-// previous background job died and allow a fresh one to be kicked off.
 const STALE_GENERATING_MS = 120000; // 2 minutes
 
-// Builds the model prompt for a herb, optionally with the "user rejected X,
-// suggest a better alternative" framing used by Herb Match's alternatives.
-function buildUserMessage(name, excludedHerb, issues) {
-  if (excludedHerb && issues && issues.length > 0) {
-    return `The user rejected: ${excludedHerb}. They're looking for an herb that helps with: ${issues.join(', ')}. Find a different, complementary herb that addresses these issues better than ${excludedHerb}. Provide the full deep profile for: ${name}`;
-  }
-  return `Provide the full deep profile for: ${name}`;
-}
-
-// Claude occasionally wraps JSON in a code fence, or adds a short sentence
-// before/after it despite being told to return JSON only. Rather than only
-// stripping fences anchored at the very start/end of the string (which
-// misses any leading/trailing prose), pull out the outermost {...} block
-// and parse that instead.
 function extractJson(text) {
   const stripped = text.trim()
     .replace(/^```json\s*/i, '')
@@ -97,15 +86,19 @@ function extractJson(text) {
   }
 }
 
-// Ask the model for a herb profile. NOTE: this model rejects assistant-
-// message prefill ("the conversation must end with a user message"), so a
-// plain question/answer call is the only option. If parsing fails, retry
-// once with an extra plain reminder appended to the user message.
-async function requestProfile(anthropic, userMessage, attempt = 1) {
+function buildUserMessage(name, excludedHerb, issues) {
+  if (excludedHerb && issues && issues.length > 0) {
+    return `The user rejected: ${excludedHerb}. They're looking for an herb that helps with: ${issues.join(', ')}. Find a different, complementary herb that addresses these issues better than ${excludedHerb}. Provide the profile for: ${name}`;
+  }
+  return `Provide the profile for: ${name}`;
+}
+
+// Stage 1: Haiku, fast, essentials only
+async function requestStage1(anthropic, userMessage, attempt = 1) {
   const message = await anthropic.messages.create({
-    model: 'claude-sonnet-5',
-    max_tokens: 1400,
-    system: SYSTEM_PROMPT,
+    model: 'claude-haiku-4-5-20251001',
+    max_tokens: 800,
+    system: STAGE1_PROMPT,
     messages: [
       { role: 'user', content: attempt === 1 ? userMessage : userMessage + '\n\nReturn ONLY the JSON object, with no other text before or after it.' }
     ]
@@ -120,13 +113,35 @@ async function requestProfile(anthropic, userMessage, attempt = 1) {
     return extractJson(textBlock.text);
   } catch (parseErr) {
     if (attempt === 1) {
-      return requestProfile(anthropic, userMessage, 2);
+      return requestStage1(anthropic, userMessage, 2);
     }
-    return {
-      error: 'Model response was not valid JSON',
-      stopReason: message.stop_reason,
-      raw: textBlock.text.trim().slice(0, 500)
-    };
+    return { error: 'Model response was not valid JSON', stopReason: message.stop_reason, raw: textBlock.text.trim().slice(0, 300) };
+  }
+}
+
+// Stage 2: Sonnet, slower, rich depth (can run in background or after Stage 1)
+async function requestStage2(anthropic, userMessage, attempt = 1) {
+  const message = await anthropic.messages.create({
+    model: 'claude-sonnet-5',
+    max_tokens: 1400,
+    system: STAGE2_PROMPT,
+    messages: [
+      { role: 'user', content: attempt === 1 ? userMessage : userMessage + '\n\nReturn ONLY the JSON object, with no other text before or after it.' }
+    ]
+  });
+
+  const textBlock = message.content.find(block => block.type === 'text');
+  if (!textBlock || !textBlock.text) {
+    return { error: 'No text content in model response', stopReason: message.stop_reason };
+  }
+
+  try {
+    return extractJson(textBlock.text);
+  } catch (parseErr) {
+    if (attempt === 1) {
+      return requestStage2(anthropic, userMessage, 2);
+    }
+    return { error: 'Model response was not valid JSON', stopReason: message.stop_reason, raw: textBlock.text.trim().slice(0, 500) };
   }
 }
 
@@ -136,19 +151,14 @@ exports.handler = async (event) => {
   }
 
   try {
-    // TEMP — PREVIEW TESTING ONLY. Remove `previewApiKey` handling below
-    // (and the matching text box in phytochemistry.html) before launch.
     const { herbName, previewApiKey, excludedHerb, issues } = JSON.parse(event.body || '{}');
     if (!herbName || !herbName.trim()) {
       return { statusCode: 400, body: JSON.stringify({ error: 'herbName is required' }) };
     }
     const name = herbName.trim().toLowerCase();
     const serverKey = process.env.ANTHROPIC_API_KEY;
-    // END TEMP
 
-    // ── 1. CACHE CHECK ──────────────────────────────────────────────
-    // If this herb is already generated, return it instantly. If a
-    // generation is currently in flight, tell the client to keep polling.
+    // ── 1. CACHE CHECK: if both stages are cached, return full data ──
     if (supabase) {
       try {
         const { data: row } = await supabase
@@ -166,9 +176,6 @@ exports.handler = async (event) => {
         }
 
         if (row && row.status === 'generating') {
-          // A generation is already running. Keep the client polling —
-          // unless the row looks stale (a previous run that died), in
-          // which case we fall through and kick off a fresh one.
           const startedAt = (row.data && row.data.generating_at) || 0;
           if (Date.now() - startedAt < STALE_GENERATING_MS) {
             return {
@@ -180,79 +187,63 @@ exports.handler = async (event) => {
         }
 
         if (row && row.status === 'error') {
-          // The background job finished but failed. Surface the error to
-          // the client once, and clear the row so the next attempt starts
-          // fresh rather than looping on the same failure.
           const message = (row.data && row.data.error) || 'Profile generation failed';
           try { await supabase.from('herbs').delete().eq('name', name); } catch (e) {}
           return { statusCode: 502, body: JSON.stringify({ error: message }) };
         }
       } catch (cacheErr) {
-        console.error('Supabase read failed, continuing without cache:', cacheErr.message);
+        console.error('Supabase read failed:', cacheErr.message);
       }
     }
 
-    // ── 2. PREFERRED PATH: hand generation to a background function ──
-    // The full rich profile can take longer than a synchronous function's
-    // execution limit (this is the 504 users were hitting). A background
-    // function has a 15-minute budget, so it can always finish; it writes
-    // the result to Supabase and the client polls this endpoint until the
-    // cache check above returns it. Needs Supabase (to store the result),
-    // the server API key, and the site URL (to invoke the background fn).
-    const siteURL = process.env.URL || process.env.DEPLOY_PRIME_URL;
-    if (supabase && serverKey && siteURL) {
-      try {
-        // Mark 'generating' so concurrent requests don't each fire a job.
-        await supabase.from('herbs').upsert({
-          name,
-          status: 'generating',
-          data: { generating_at: Date.now() }
-        });
-
-        await fetch(`${siteURL}/.netlify/functions/herb-profile-background`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ herbName: name, excludedHerb, issues })
-        });
-
-        return {
-          statusCode: 202,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: 'generating' })
-        };
-      } catch (bgErr) {
-        console.error('Background dispatch failed, falling back to synchronous:', bgErr.message);
-        // fall through to synchronous generation
-      }
-    }
-
-    // ── 3. FALLBACK: synchronous generation ─────────────────────────
-    // Used when Supabase or the site URL isn't available (e.g. local dev
-    // or preview-key testing). Same behavior as before — may be slow, but
-    // it's the only option without somewhere to store an async result.
+    // ── 2. FAST PATH: Generate Stage 1 immediately (Haiku) ──────────
     const apiKey = serverKey || previewApiKey;
     if (!apiKey) {
       return { statusCode: 500, body: JSON.stringify({ error: 'Server is missing ANTHROPIC_API_KEY' }) };
     }
     const anthropic = new Anthropic({ apiKey });
 
-    const herb = await requestProfile(anthropic, buildUserMessage(name, excludedHerb, issues));
-    if (herb.error) {
-      return { statusCode: 502, body: JSON.stringify(herb) };
+    const userMsg = buildUserMessage(name, excludedHerb, issues);
+    const stage1 = await requestStage1(anthropic, userMsg);
+
+    if (stage1.error) {
+      return { statusCode: 502, body: JSON.stringify({ error: 'Stage 1 generation failed: ' + stage1.error }) };
     }
 
-    if (supabase) {
+    // Stage 1 succeeded. Return it immediately while Stage 2 loads in background.
+    const response = {
+      ...stage1,
+      stage2: null,
+      stage2Status: 'loading'
+    };
+
+    // ── 3. BACKGROUND PATH: Generate Stage 2 (Sonnet) if Supabase + URL available ──
+    // Fire and forget — client doesn't wait, but we try to cache the result.
+    const siteURL = process.env.URL || process.env.DEPLOY_PRIME_URL;
+    if (supabase && serverKey && siteURL) {
       try {
-        await supabase.from('herbs').upsert({ name, data: herb, status: 'complete' });
-      } catch (saveErr) {
-        console.error('Supabase write failed:', saveErr.message);
+        await supabase.from('herbs').upsert({
+          name,
+          status: 'generating',
+          data: { ...response, generating_at: Date.now() }
+        });
+
+        // Fire off the background Stage 2 generation
+        fetch(`${siteURL}/.netlify/functions/herb-profile-stage2`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ herbName: name, excludedHerb, issues, stage1 })
+        }).catch(e => console.error('Stage 2 background dispatch failed:', e.message));
+      } catch (e) {
+        console.error('Stage 2 background setup failed:', e.message);
       }
     }
 
+    // Return Stage 1 immediately; client will poll for Stage 2
     return {
       statusCode: 200,
-      headers: { 'Content-Type': 'application/json', 'X-Cache': 'miss' },
-      body: JSON.stringify(herb)
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(response)
     };
   } catch (error) {
     return {
