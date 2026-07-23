@@ -1155,15 +1155,50 @@ async function fetchHerbProfileFromAPI(herbName, targetId){
   try {
     const profile = await fetchHerbProfilePolling(herbName);
 
-    // Display API result
+    // Display API result — complete brain box with all profile data
     let html = `<div style="margin-bottom:1.5rem">
       <div style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:500;color:var(--gold-light);margin-bottom:.25rem">${profile.name}</div>
       <div style="font-size:12px;color:var(--muted);font-style:italic">${profile.latin}</div>
       <div style="font-size:13px;color:var(--muted);margin-top:.5rem">${profile.summary}</div>
     </div>`;
 
+    // Origin & Tradition
+    if(profile.origin || profile.tradition){
+      html += `<div class="sec-head"><span class="sec-title">Origins & Tradition</span></div>`;
+      if(profile.origin) html += `<div style="font-size:13px;color:var(--muted);margin-bottom:0.75rem"><strong>Origin:</strong> ${profile.origin}</div>`;
+      if(profile.tradition) html += `<div style="font-size:13px;color:var(--muted);margin-bottom:0.75rem"><strong>Tradition:</strong> ${profile.tradition}</div>`;
+    }
+
+    // Spiritual History & Timeline
+    if(profile.spiritualHistory && profile.spiritualHistory.overview){
+      html += `<div class="sec-head"><span class="sec-title">Spiritual & Cultural History</span></div>`;
+      html += `<div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:1rem">${profile.spiritualHistory.overview}</div>`;
+      if(profile.spiritualHistory.timeline && profile.spiritualHistory.timeline.length){
+        html += `<div style="font-size:12px;color:var(--muted);margin-bottom:1rem">`;
+        profile.spiritualHistory.timeline.forEach(t => {
+          html += `<div style="margin-bottom:0.6rem"><strong style="color:var(--gold)">${t.era}:</strong> ${t.text}</div>`;
+        });
+        html += `</div>`;
+      }
+    }
+
+    // Modern Use & Research
+    if(profile.modernUse){
+      html += `<div class="sec-head"><span class="sec-title">Modern Research & Use</span></div>`;
+      html += `<div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:1rem">${profile.modernUse}</div>`;
+    }
+
+    // Rare Fact
+    if(profile.rareFact){
+      html += `<div style="background:rgba(200,149,42,.08);border-left:3px solid var(--gold);padding:1rem;margin-bottom:1.5rem;border-radius:4px;">`;
+      html += `<div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.4rem;font-weight:500">Rare Fact</div>`;
+      html += `<div style="font-size:13px;color:var(--parchment);line-height:1.6">${profile.rareFact}</div>`;
+      html += `</div>`;
+    }
+
+    // Key Compounds
     if(profile.compounds && profile.compounds.length){
-      html += `<div class="sec-head"><span class="sec-title">Key compounds</span><span class="sec-count">${profile.compounds.length}</span></div><div class="grid">`;
+      html += `<div class="sec-head"><span class="sec-title">Key Compounds</span><span class="sec-count">${profile.compounds.length}</span></div><div class="grid">`;
       profile.compounds.forEach(c => {
         html += `<div class="crd" style="cursor:default">
           <div class="cn">${c.name}</div>
@@ -1174,8 +1209,9 @@ async function fetchHerbProfileFromAPI(herbName, targetId){
       html += '</div>';
     }
 
+    // Body System Effects
     if(profile.bodyEffects && profile.bodyEffects.length){
-      html += `<div class="sec-head"><span class="sec-title">Body system effects</span><span class="sec-count">${profile.bodyEffects.length}</span></div><div class="grid">`;
+      html += `<div class="sec-head"><span class="sec-title">Body System Effects</span><span class="sec-count">${profile.bodyEffects.length}</span></div><div class="grid">`;
       profile.bodyEffects.forEach(be => {
         html += `<div class="crd" style="cursor:default">
           <div class="cn" style="color:var(--gold-light)">${be.system}</div>
@@ -1185,16 +1221,18 @@ async function fetchHerbProfileFromAPI(herbName, targetId){
       html += '</div>';
     }
 
+    // Preparation Methods
     if(profile.preparation){
-      html += `<div class="sec-head"><span class="sec-title">Preparation</span></div><div style="font-size:12px;color:var(--muted);line-height:1.6">`;
+      html += `<div class="sec-head"><span class="sec-title">Preparation Methods</span></div><div style="font-size:12px;color:var(--muted);line-height:1.6">`;
       Object.entries(profile.preparation).forEach(([method, dose]) => {
         if(dose) html += `<div style="margin-bottom:0.75rem"><strong>${method}:</strong> ${dose}</div>`;
       });
       html += '</div>';
     }
 
+    // Known Interactions
     if(profile.interactions && profile.interactions.length){
-      html += `<div class="sec-head"><span class="sec-title">Known interactions</span></div><div class="pill-row">`;
+      html += `<div class="sec-head"><span class="sec-title">Known Interactions</span></div><div class="pill-row">`;
       profile.interactions.forEach(i => {
         html += `<span class="pill pill-gold">${i}</span>`;
       });
