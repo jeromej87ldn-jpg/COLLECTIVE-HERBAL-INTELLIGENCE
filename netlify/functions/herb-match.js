@@ -56,13 +56,20 @@ function extractJson(text) {
   }
 }
 
-// Ask the model for one batch of herbs. NOTE: this model rejects assistant-
-// message prefill ("the conversation must end with a user message"), so a
-// plain question/answer call is the only option. If parsing fails, retry
-// once with an extra plain reminder appended to the user message.
+// Ask the model for one batch of herbs.
+// MODEL CHOICE: Haiku, deliberately — not Sonnet. Sonnet calls run long
+// enough to blow the serverless function's execution limit, which showed up
+// as a bodiless 502 (the function killed mid-run, before our try/catch could
+// return anything). The one part of the app that already used Haiku — the
+// follow-up-questions endpoint — is also the one that kept working. Herb
+// matching is a light task, so Haiku is both fast enough to finish well
+// inside the limit and perfectly capable here.
+// NOTE: this model rejects assistant-message prefill, so a plain
+// question/answer call is the only option. If parsing fails, retry once with
+// an extra plain reminder appended to the user message.
 async function requestBatch(anthropic, userMsg, attempt = 1) {
   const message = await anthropic.messages.create({
-    model: 'claude-sonnet-5',
+    model: 'claude-haiku-4-5-20251001',
     max_tokens: 1500,
     system: SYSTEM_PROMPT,
     messages: [
