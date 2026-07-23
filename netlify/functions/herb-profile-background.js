@@ -144,6 +144,19 @@ exports.handler = async (event) => {
     if (!herbName || !herbName.trim()) return; // nothing to do
     name = herbName.trim().toLowerCase();
 
+    // DIAGNOSTIC heartbeat — proves this background function actually
+    // executed (written before the slow model call). Read by diag-bg.js.
+    // Safe to remove once the background path is confirmed working.
+    if (supabase) {
+      try {
+        await supabase.from('herbs').upsert({
+          name: '__bg_heartbeat__',
+          status: 'complete',
+          data: { name: '__bg_heartbeat__', ranAt: new Date().toISOString(), forHerb: name }
+        });
+      } catch (e) { console.error('heartbeat write failed:', e.message); }
+    }
+
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
       console.error('herb-profile-background: missing ANTHROPIC_API_KEY');
