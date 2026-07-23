@@ -216,26 +216,9 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .nav-inbox:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
 @media(max-width:760px){.nav-right a:not(.nav-cta):not(.nav-inbox){display:none;}}
 
-/* ── HOVER TERM TOOLTIPS (definitions) ── */
-.chi-term{border-bottom:1px dashed rgba(200,149,42,.55);cursor:help;transition:border-color .15s;}
-.chi-term:hover{border-bottom-color:rgba(200,149,42,.95);}
-.chi-tooltip{
-  position:fixed;z-index:2000;
-  background:var(--forest);
-  border:1px solid rgba(200,149,42,.35);
-  border-radius:8px;
-  padding:.85rem 1.1rem;
-  max-width:300px;min-width:190px;
-  box-shadow:0 8px 28px rgba(0,0,0,.4);
-  pointer-events:none;
-  opacity:0;
-  transform:translateY(4px);
-  transition:opacity .18s,transform .18s;
-}
-.chi-tooltip.show{opacity:1;transform:translateY(0);}
-.chi-tooltip-term{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:500;color:var(--gold-light);margin-bottom:.3rem;}
-.chi-tooltip-def{font-size:12.5px;color:rgba(245,240,232,.8);line-height:1.6;}
-.chi-tooltip-footer{font-size:10.5px;color:rgba(245,240,232,.3);margin-top:.5rem;display:flex;align-items:center;gap:5px;}
+/* Hover term tooltip styles now come from the shared chi-glossary.js
+   (injected at runtime); the old inline copy was removed with the inline
+   glossary it belonged to. */
 
 /* ── PLANT INTELLIGENCE CTA ── */
 .pi-cta{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-top:1.25rem;padding:1rem 1.25rem;background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;}
