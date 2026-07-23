@@ -1,6 +1,9 @@
 {
   "name": "chi",
   "version": "1.0.0",
+  "scripts": {
+    "test": "node tests/functions.test.js"
+  },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.0",
     "@anthropic-ai/sdk": "^0.20.0"
