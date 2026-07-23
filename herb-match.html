@@ -570,18 +570,7 @@ async function viewProfile(herbName) {
 
   try {
     const profile = await fetchHerbProfilePolling(herbName);
-
-    // Render Stage 1 immediately (essentials)
     renderProfileContent(profile);
-
-    // If Stage 2 is still loading, poll for updates and merge when ready
-    if (profile.stage2Status === 'loading') {
-      const updated = await pollForStage2Update(herbName);
-      if (updated && updated.stage2Status === 'complete') {
-        // Stage 2 arrived, re-render with full content
-        renderProfileContent(updated);
-      }
-    }
   } catch (err) {
     console.error(err);
     document.getElementById('profile-content').innerHTML = `<div class="results-error"><p>Couldn't load the profile for ${herbName} (${err.message}). You can still add it to your stack, or view it directly in Plant Intelligence.</p></div>`;
@@ -627,10 +616,8 @@ function stopLoadingTicker() {
   }
 }
 
-// Two-stage profile loading: Stage 1 (essentials: name, latin, summary, safety,
-// preparations) returns instantly via Haiku. Stage 2 (richness: spiritual history,
-// compounds, interactions, forum) loads in background via Sonnet. Show Stage 1 with
-// a ticker immediately, then merge Stage 2 as it arrives.
+// Poll for full profile generation. The endpoint may return 202 (generating) initially,
+// so we keep polling until we get 200 with the complete profile.
 async function fetchHerbProfilePolling(herbName, { maxMs = 180000, intervalMs = 2500 } = {}) {
   const started = Date.now();
   while (true) {
@@ -641,10 +628,7 @@ async function fetchHerbProfilePolling(herbName, { maxMs = 180000, intervalMs = 
     });
 
     if (res.status === 200) {
-      const data = await res.json();
-      // Return immediately; if stage2Status is 'loading', the caller will
-      // poll for updates. If 'complete', all data is here.
-      return data;
+      return await res.json(); // Full profile ready
     }
 
     if (res.status === 202) {
@@ -655,29 +639,6 @@ async function fetchHerbProfilePolling(herbName, { maxMs = 180000, intervalMs = 
 
     const errBody = await res.json().catch(() => ({}));
     throw new Error(errBody.error || `Request failed (${res.status})`);
-  }
-}
-
-// Poll for Stage 2 updates (richness content that loads in background).
-// Called after Stage 1 renders, keeps checking until stage2Status === 'complete'.
-async function pollForStage2Update(herbName, { maxMs = 120000, intervalMs = 3000 } = {}) {
-  const started = Date.now();
-  while (true) {
-    if (Date.now() - started > maxMs) return null; // give up
-    const res = await fetch('/.netlify/functions/herb-profile', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ herbName })
-    });
-
-    if (res.status === 200) {
-      const data = await res.json();
-      if (data.stage2Status === 'complete') {
-        return data; // Stage 2 is ready, return the full profile
-      }
-    }
-
-    await new Promise(r => setTimeout(r, intervalMs));
   }
 }
 

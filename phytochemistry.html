@@ -1150,24 +1150,6 @@ async function fetchHerbProfilePolling(herbName, maxMs, intervalMs){
   }
 }
 
-// Poll for Stage 2 updates (rich content loading in background)
-async function pollForStage2Update(herbName, maxMs, intervalMs){
-  maxMs = maxMs || 120000; intervalMs = intervalMs || 3000;
-  const started = Date.now();
-  while(true){
-    if(Date.now() - started > maxMs) return null;
-    const res = await fetch('/.netlify/functions/herb-profile', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ herbName })
-    });
-    if(res.status === 200){
-      const data = await res.json();
-      if(data.stage2Status === 'complete') return data;
-    }
-    await new Promise(r => setTimeout(r, intervalMs));
-  }
-}
 
 async function fetchHerbProfileFromAPI(herbName, targetId){
   try {

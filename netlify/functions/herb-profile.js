@@ -10,11 +10,10 @@ if (process.env.SUPABASE_URL && process.env.SUPABASE_KEY) {
   supabase = createClient(supabaseProjectUrl(), process.env.SUPABASE_KEY);
 }
 
-// ── STAGE 1: Fast essentials (Haiku) ──────────────────────────────────
-// Returns immediately: name, latin, summary, category, safety, preparations,
-// functional overview, source. Enough to read and understand the herb.
-const STAGE1_PROMPT = `You are the Herbadex — CHI's herb knowledge engine.
-Provide a quick, essential profile for the requested herb. Return ONLY valid JSON:
+// ── FULL PROFILE: Complete herb profile (Sonnet) ──────────────────────
+// Single comprehensive prompt that generates all fields: essentials + rich depth
+const FULL_PROFILE_PROMPT = `You are the Herbadex — CHI's herb knowledge engine.
+Provide a complete, comprehensive profile for the requested herb. Return ONLY valid JSON:
 {
   "name": "common name",
   "latin": "latin binomial",
@@ -24,16 +23,7 @@ Provide a quick, essential profile for the requested herb. Return ONLY valid JSO
   "safetyLevel": "Generally safe | Use with caution | Consult professional",
   "preparations": ["tea","tincture","capsule","etc - list up to 4"],
   "functionalOverview": "2 sentence summary: what it does, how people use it",
-  "source": "verifiable citation (e.g. 'Commission E Monograph') or null"
-}`;
-
-// ── STAGE 2: Rich depth (Sonnet, background) ──────────────────────────
-// Returns later: spiritual history, timeline, modern research, compounds,
-// body effects, detailed preparation methods, interactions, forum seed.
-// Can be slow; loads after Stage 1 renders.
-const STAGE2_PROMPT = `You are the Herbadex — CHI's deep herb knowledge engine.
-Provide the rich, deep profile for the requested herb. Return ONLY valid JSON:
-{
+  "source": "verifiable citation (e.g. 'Commission E Monograph') or null",
   "origin": "native region or origin",
   "tradition": "primary healing tradition(s) (e.g. Ayurvedic, TCM, Western)",
   "spiritualHistory": {
@@ -93,38 +83,12 @@ function buildUserMessage(name, excludedHerb, issues) {
   return `Provide the profile for: ${name}`;
 }
 
-// Stage 1: Haiku, fast, essentials only
-async function requestStage1(anthropic, userMessage, attempt = 1) {
-  const message = await anthropic.messages.create({
-    model: 'claude-haiku-4-5-20251001',
-    max_tokens: 800,
-    system: STAGE1_PROMPT,
-    messages: [
-      { role: 'user', content: attempt === 1 ? userMessage : userMessage + '\n\nReturn ONLY the JSON object, with no other text before or after it.' }
-    ]
-  });
-
-  const textBlock = message.content.find(block => block.type === 'text');
-  if (!textBlock || !textBlock.text) {
-    return { error: 'No text content in model response', stopReason: message.stop_reason };
-  }
-
-  try {
-    return extractJson(textBlock.text);
-  } catch (parseErr) {
-    if (attempt === 1) {
-      return requestStage1(anthropic, userMessage, 2);
-    }
-    return { error: 'Model response was not valid JSON', stopReason: message.stop_reason, raw: textBlock.text.trim().slice(0, 300) };
-  }
-}
-
-// Stage 2: Sonnet, slower, rich depth (can run in background or after Stage 1)
-async function requestStage2(anthropic, userMessage, attempt = 1) {
+// Full profile: Sonnet, comprehensive generation
+async function requestProfile(anthropic, userMessage, attempt = 1) {
   const message = await anthropic.messages.create({
     model: 'claude-sonnet-5',
-    max_tokens: 1400,
-    system: STAGE2_PROMPT,
+    max_tokens: 2000,
+    system: FULL_PROFILE_PROMPT,
     messages: [
       { role: 'user', content: attempt === 1 ? userMessage : userMessage + '\n\nReturn ONLY the JSON object, with no other text before or after it.' }
     ]
@@ -139,7 +103,7 @@ async function requestStage2(anthropic, userMessage, attempt = 1) {
     return extractJson(textBlock.text);
   } catch (parseErr) {
     if (attempt === 1) {
-      return requestStage2(anthropic, userMessage, 2);
+      return requestProfile(anthropic, userMessage, 2);
     }
     return { error: 'Model response was not valid JSON', stopReason: message.stop_reason, raw: textBlock.text.trim().slice(0, 500) };
   }
@@ -196,7 +160,7 @@ exports.handler = async (event) => {
       }
     }
 
-    // ── 2. FAST PATH: Generate Stage 1 immediately (Haiku) ──────────
+    // ── 2. GENERATE FULL PROFILE (Sonnet) ──────────────────────────
     const apiKey = serverKey || previewApiKey;
     if (!apiKey) {
       return { statusCode: 500, body: JSON.stringify({ error: 'Server is missing ANTHROPIC_API_KEY' }) };
@@ -204,46 +168,31 @@ exports.handler = async (event) => {
     const anthropic = new Anthropic({ apiKey });
 
     const userMsg = buildUserMessage(name, excludedHerb, issues);
-    const stage1 = await requestStage1(anthropic, userMsg);
+    const profile = await requestProfile(anthropic, userMsg);
 
-    if (stage1.error) {
-      return { statusCode: 502, body: JSON.stringify({ error: 'Stage 1 generation failed: ' + stage1.error }) };
+    if (profile.error) {
+      return { statusCode: 502, body: JSON.stringify({ error: 'Profile generation failed: ' + profile.error }) };
     }
 
-    // Stage 1 succeeded. Return it immediately while Stage 2 loads in background.
-    const response = {
-      ...stage1,
-      stage2: null,
-      stage2Status: 'loading'
-    };
-
-    // ── 3. BACKGROUND PATH: Generate Stage 2 (Sonnet) if Supabase + URL available ──
-    // Fire and forget — client doesn't wait, but we try to cache the result.
-    const siteURL = process.env.URL || process.env.DEPLOY_PRIME_URL;
-    if (supabase && serverKey && siteURL) {
+    // ── 3. CACHE THE COMPLETE PROFILE ──────────────────────────────
+    if (supabase && serverKey) {
       try {
         await supabase.from('herbs').upsert({
           name,
-          status: 'generating',
-          data: { ...response, generating_at: Date.now() }
+          status: 'complete',
+          data: profile
         });
-
-        // Fire off the background Stage 2 generation
-        fetch(`${siteURL}/.netlify/functions/herb-profile-stage2`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ herbName: name, excludedHerb, issues, stage1 })
-        }).catch(e => console.error('Stage 2 background dispatch failed:', e.message));
-      } catch (e) {
-        console.error('Stage 2 background setup failed:', e.message);
+      } catch (cacheErr) {
+        console.error('Supabase upsert failed:', cacheErr.message);
+        // Non-fatal; we still return the generated profile
       }
     }
 
-    // Return Stage 1 immediately; client will poll for Stage 2
+    // Return the full profile
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(response)
+      body: JSON.stringify(profile)
     };
   } catch (error) {
     return {

@@ -119,29 +119,70 @@ await test('fresh generating row returns 202 (keep polling)', async () => {
   assert.strictEqual(JSON.parse(res.body).status, 'generating');
 });
 
-await test('cache miss returns Stage 1 immediately, triggers Stage 2 background', async () => {
-  // Two-stage: cache miss returns Stage 1 (essentials) as 200, triggers background Stage 2 async
+await test('cache miss returns full profile', async () => {
+  // Single-stage: cache miss generates full profile (essentials + rich depth) and returns 200
   anthropicQueue = [
-    JSON.stringify({ name: 'Gotu Kola', latin: 'Bacopa monnieri', category: 'Cognitive', categoryColor: '#5cab7a', summary: 'A gentle herb for memory.', safetyLevel: 'Generally safe', preparations: ['tea','tincture'], functionalOverview: 'Supports brain health.', source: null })
+    JSON.stringify({
+      name: 'Gotu Kola',
+      latin: 'Bacopa monnieri',
+      category: 'Cognitive',
+      categoryColor: '#5cab7a',
+      summary: 'A gentle herb for memory.',
+      safetyLevel: 'Generally safe',
+      preparations: ['tea','tincture'],
+      functionalOverview: 'Supports brain health.',
+      source: null,
+      origin: 'Southeast Asia',
+      tradition: 'Ayurvedic, TCM',
+      spiritualHistory: { overview: 'Used for spiritual clarity.', timeline: [{ era: 'Ancient', text: 'Used in meditation.' }] },
+      modernUse: 'Studied for cognitive enhancement.',
+      compounds: [{ name: 'Bacoside A', role: 'neuroprotective', strength: 80 }],
+      bodyEffects: [{ system: 'nervous', effect: 'enhances memory' }],
+      preparation: { tea: 'steep 1-2g in water', tincture: '1-2ml daily', capsule: null, topical: null, smoke: null, traditional: null },
+      rareFact: 'Known as Brahmi in Ayurveda.',
+      interactions: [],
+      forumSeed: [{ user: 'Sam', initials: 'S', rating: 5, comment: 'Great for focus.' }]
+    })
   ];
   const { handler, sb } = loadFunction('netlify/functions/herb-profile.js', { env: SUPA_ENV, getRow: () => null });
   const res = await handler(ev({ herbName: 'Gotu Kola' }));
   assert.strictEqual(res.statusCode, 200);
   const body = JSON.parse(res.body);
-  assert.ok(body.name, 'Stage 1 should have name');
-  assert.strictEqual(body.stage2Status, 'loading', 'Stage 2 should be loading');
-  assert.ok(sb.log.upserts.some(u => u.status === 'generating'), 'should mark generating in cache');
-  // Background job dispatch is tried; may succeed or fail gracefully depending on siteURL
+  assert.ok(body.name, 'should have name');
+  assert.ok(body.origin, 'should have origin (full profile)');
+  assert.ok(body.modernUse, 'should have modernUse (full profile)');
+  assert.ok(sb.log.upserts.some(u => u.status === 'complete'), 'should mark complete in cache');
 });
 
-await test('stale generating row generates Stage 1 fresh', async () => {
-  anthropicQueue = [JSON.stringify({ name: 'Sage', latin: 'Salvia', category: 'Cognitive', categoryColor: '#5cab7a', summary: 'An herb for memory.', safetyLevel: 'Generally safe', preparations: ['tea'], functionalOverview: 'Enhances clarity.', source: null })];
+await test('stale generating row generates full profile fresh', async () => {
+  anthropicQueue = [JSON.stringify({
+    name: 'Sage',
+    latin: 'Salvia officinalis',
+    category: 'Cognitive',
+    categoryColor: '#5cab7a',
+    summary: 'An herb for memory and clarity.',
+    safetyLevel: 'Generally safe',
+    preparations: ['tea'],
+    functionalOverview: 'Enhances mental clarity and memory.',
+    source: 'Commission E',
+    origin: 'Mediterranean',
+    tradition: 'Western herbalism',
+    spiritualHistory: { overview: 'Sacred herb.', timeline: [{ era: 'Ancient Rome', text: 'Used for memory.' }] },
+    modernUse: 'Studied for cognitive support.',
+    compounds: [{ name: 'Thujone', role: 'activating', strength: 60 }],
+    bodyEffects: [{ system: 'nervous', effect: 'enhances clarity' }],
+    preparation: { tea: 'steep 1-2g', tincture: null, capsule: null, topical: null, smoke: null, traditional: null },
+    rareFact: 'Used in medieval education.',
+    interactions: [],
+    forumSeed: [{ user: 'Teacher', initials: 'T', rating: 5, comment: 'Great for studying.' }]
+  })];
   const row = { status: 'generating', data: { generating_at: Date.now() - 5 * 60 * 1000 } };
   const { handler } = loadFunction('netlify/functions/herb-profile.js', { env: SUPA_ENV, getRow: () => row });
   const res = await handler(ev({ herbName: 'Sage' }));
   assert.strictEqual(res.statusCode, 200);
   const body = JSON.parse(res.body);
-  assert.ok(body.name, 'should generate Stage 1 fresh for stale row');
+  assert.ok(body.name, 'should generate full profile fresh for stale row');
+  assert.ok(body.origin, 'should include origin from full generation');
 });
 
 await test('error row returns 502 and clears the row', async () => {

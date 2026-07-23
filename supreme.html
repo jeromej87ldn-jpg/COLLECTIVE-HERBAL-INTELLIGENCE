@@ -503,10 +503,8 @@ async function loadHerbProfile(herbName) {
   }
 }
 
-// The herb-profile endpoint may return the data immediately (200) or, for a
-// herb it hasn't generated before, kick off background generation and return
-// 202 {status:'generating'}. In the 202 case we poll until it's ready, so a
-// slow first-time generation no longer times out the request.
+// Poll for full profile generation. The endpoint may return 202 (generating) initially,
+// so we keep polling until we get 200 with the complete profile.
 async function fetchHerbProfilePolling(herbName, { maxMs = 180000, intervalMs = 2500 } = {}) {
   const started = Date.now();
   while (true) {
@@ -526,26 +524,6 @@ async function fetchHerbProfilePolling(herbName, { maxMs = 180000, intervalMs = 
 
     const errBody = await res.json().catch(() => ({}));
     throw new Error(errBody.error || `Request failed (${res.status})`);
-  }
-}
-
-// Poll for Stage 2 updates (rich content that loads in background).
-async function pollForStage2Update(herbName, { maxMs = 120000, intervalMs = 3000 } = {}) {
-  const started = Date.now();
-  while (true) {
-    if (Date.now() - started > maxMs) return null;
-    const res = await fetch('/.netlify/functions/herb-profile', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ herbName })
-    });
-
-    if (res.status === 200) {
-      const data = await res.json();
-      if (data.stage2Status === 'complete') return data;
-    }
-
-    await new Promise(r => setTimeout(r, intervalMs));
   }
 }
 
