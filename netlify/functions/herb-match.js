@@ -63,7 +63,7 @@ function extractJson(text) {
 async function requestBatch(anthropic, userMsg, attempt = 1) {
   const message = await anthropic.messages.create({
     model: 'claude-sonnet-5',
-    max_tokens: 1200,
+    max_tokens: 1500,
     system: SYSTEM_PROMPT,
     messages: [
       { role: 'user', content: attempt === 1 ? userMsg : userMsg + '\n\nReturn ONLY the JSON object, with no other text before or after it.' }
@@ -72,7 +72,7 @@ async function requestBatch(anthropic, userMsg, attempt = 1) {
 
   const textBlock = message.content.find(block => block.type === 'text');
   if (!textBlock || !textBlock.text) {
-    return { herbs: [] };
+    return { herbs: [], diag: { reason: 'no text block', stopReason: message.stop_reason } };
   }
 
   try {
@@ -82,7 +82,17 @@ async function requestBatch(anthropic, userMsg, attempt = 1) {
     if (attempt === 1) {
       return requestBatch(anthropic, userMsg, 2);
     }
-    return { herbs: [] };
+    // Final failure — carry back WHY so the 502 is self-explaining instead
+    // of a generic "not valid JSON". stopReason 'max_tokens' means the JSON
+    // was truncated; otherwise the raw snippet shows prose/refusal/etc.
+    return {
+      herbs: [],
+      diag: {
+        reason: 'json parse failed',
+        stopReason: message.stop_reason,
+        rawSnippet: textBlock.text.trim().slice(0, 300)
+      }
+    };
   }
 }
 
@@ -105,8 +115,8 @@ function buildUserMsg(issues, specifics, avoidList, n, batchNote) {
 // twice as long for it.
 async function requestHerbs(anthropic, issues, specifics, avoidList, n) {
   if (n <= 6) {
-    const { herbs } = await requestBatch(anthropic, buildUserMsg(issues, specifics, avoidList, n));
-    return herbs;
+    const b = await requestBatch(anthropic, buildUserMsg(issues, specifics, avoidList, n));
+    return { herbs: b.herbs, diags: b.diag ? [b.diag] : [] };
   }
 
   const half1 = Math.ceil(n / 2);
@@ -125,7 +135,8 @@ async function requestHerbs(anthropic, issues, specifics, avoidList, n) {
     seen.add(key);
     merged.push(h);
   });
-  return merged.slice(0, n);
+  const diags = [batchA.diag, batchB.diag].filter(Boolean);
+  return { herbs: merged.slice(0, n), diags };
 }
 
 exports.handler = async (event) => {
@@ -148,10 +159,16 @@ exports.handler = async (event) => {
     const n = Math.max(1, Math.min(12, Number(count) || 12));
     const avoidList = Array.isArray(avoid) ? avoid.filter(Boolean) : [];
 
-    const herbs = await requestHerbs(anthropic, issues, specifics, avoidList, n);
+    const { herbs, diags } = await requestHerbs(anthropic, issues, specifics, avoidList, n);
 
     if (!herbs.length) {
-      return { statusCode: 502, body: JSON.stringify({ error: 'Model response was not valid JSON' }) };
+      // Self-explaining failure: include what the model actually did so we
+      // can tell truncation (stopReason 'max_tokens') from prose/refusal
+      // (rawSnippet) without another blind round-trip.
+      return {
+        statusCode: 502,
+        body: JSON.stringify({ error: 'Model response was not valid JSON', detail: diags })
+      };
     }
 
     return {

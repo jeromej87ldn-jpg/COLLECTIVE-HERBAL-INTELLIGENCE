@@ -469,7 +469,13 @@ async function findMatchingHerbs(issues) {
     });
     if (!res.ok) {
       const errBody = await res.json().catch(() => ({}));
-      throw new Error(errBody.error || `Request failed (${res.status})`);
+      // Surface the server's diagnostic detail (e.g. the raw model output or
+      // a 'max_tokens' truncation) into the console so failures are
+      // diagnosable instead of generic.
+      if (errBody.detail) console.error('herb-match failure detail:', errBody.detail);
+      const err = new Error(errBody.error || `Request failed (${res.status})`);
+      err.detail = errBody.detail;
+      throw err;
     }
     const data = await res.json();
     currentResults = data.herbs || [];
@@ -480,7 +486,8 @@ async function findMatchingHerbs(issues) {
   } catch (err) {
     console.error(err);
     document.getElementById('results-loading').style.display = 'none';
-    document.getElementById('results-grid').innerHTML = `<div class="results-error" style="grid-column:1/-1"><p>We couldn't reach the matching engine just now (${err.message}). Please try again in a moment.</p></div>`;
+    const detailText = err.detail ? `<pre style="text-align:left;white-space:pre-wrap;font-size:11px;opacity:.75;margin-top:1rem;overflow:auto;max-height:220px">${JSON.stringify(err.detail, null, 2).replace(/</g,'&lt;')}</pre>` : '';
+    document.getElementById('results-grid').innerHTML = `<div class="results-error" style="grid-column:1/-1"><p>We couldn't reach the matching engine just now (${err.message}). Please try again in a moment.</p>${detailText}</div>`;
   }
 }
 

@@ -208,6 +208,18 @@ await test('herb-match missing issues returns 400', async () => {
   assert.strictEqual(res.statusCode, 400);
 });
 
+await test('herb-match unparseable model output returns 502 WITH diagnostic detail', async () => {
+  // Two attempts, both junk → failure should carry the raw snippet so the
+  // error is self-explaining rather than generic.
+  anthropicQueue = ['I cannot help with that.', 'Still not JSON, sorry.'];
+  const { handler } = loadFunction('netlify/functions/herb-match.js', { env: { ANTHROPIC_API_KEY: 'sk-test' } });
+  const res = await handler(ev({ issues: ['sleep'], count: 6 }));
+  assert.strictEqual(res.statusCode, 502);
+  const body = JSON.parse(res.body);
+  assert.ok(Array.isArray(body.detail) && body.detail.length === 1, 'detail present');
+  assert.ok(body.detail[0].rawSnippet.includes('Still not JSON'), 'raw snippet captured from final attempt');
+});
+
 // ── summary ──────────────────────────────────────────────────────────
 console.log('\n' + passed + ' passed, ' + failed + ' failed');
 if (failed) { failures.forEach(([n, e]) => console.log('FAIL: ' + n + '\n' + (e.stack || e.message))); process.exit(1); }
