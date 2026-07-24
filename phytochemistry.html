@@ -1223,12 +1223,52 @@ async function fetchHerbProfilePolling(herbName, maxMs, intervalMs){
   }
 }
 
+// Poll for Stage 2 (mechanisms, evidence, spiritual history, richer actions).
+// Resolves with the complete profile, or null if it doesn't arrive in time.
+async function pollForStage2Update(herbName, maxMs, intervalMs){
+  maxMs = maxMs || 120000; intervalMs = intervalMs || 3000;
+  const started = Date.now();
+  while(true){
+    if(Date.now() - started > maxMs) return null;
+    const res = await fetch('/.netlify/functions/herb-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ herbName })
+    });
+    if(res.status === 200){
+      const data = await res.json();
+      if(data.stage2Status === 'complete') return data;
+    }
+    await new Promise(r => setTimeout(r, intervalMs));
+  }
+}
+
 
 async function fetchHerbProfileFromAPI(herbName, targetId){
   try {
     const profile = await fetchHerbProfilePolling(herbName);
+    renderApiProfile(profile, targetId);
 
+    // Stage 2 carries mechanisms, evidence, spiritual history and the richer
+    // actions. Without this the page would sit on placeholders forever.
+    if(profile && profile.stage2Status === 'loading'){
+      pollForStage2Update(herbName).then(full => {
+        if(full) renderApiProfile(full, targetId);
+      }).catch(()=>{});
+    }
+  } catch(err){
+    document.getElementById(targetId).innerHTML = `<div class="empty" style="color:#dd6a6a">Could not generate profile: ${err.message}. Check that the API key is configured.</div>`;
+  }
+}
+
+function renderApiProfile(profile, targetId){
+  {
     const F = window.CHI_FALLBACK;
+    const stage2Pending = profile.stage2Status === 'loading';
+    // While Stage 2 is in flight, say so — don't claim nothing was ever recorded.
+    const pend = (field) => stage2Pending
+      ? '<p class="chi-nodata">Still gathering this section…</p>'
+      : F.note(field);
 
     // Display API result — complete brain box with all profile data
     let html = `<div style="margin-bottom:1.5rem">
@@ -1247,7 +1287,7 @@ async function fetchHerbProfileFromAPI(herbName, targetId){
     html += `<div class="sec-head"><span class="sec-title">Spiritual & Cultural History</span></div>`;
     html += F.has(spirit.overview)
       ? `<div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:1rem">${spirit.overview}</div>`
-      : F.note('spiritualHistory');
+      : pend('spiritualHistory');
     if(F.has(spirit.timeline)){
       html += `<div style="font-size:12px;color:var(--muted);margin-bottom:1rem">`;
       spirit.timeline.forEach(t => {
@@ -1260,14 +1300,14 @@ async function fetchHerbProfileFromAPI(herbName, targetId){
     html += `<div class="sec-head"><span class="sec-title">Modern Research & Use</span></div>`;
     html += F.has(profile.modernUse)
       ? `<div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:1rem">${profile.modernUse}</div>`
-      : F.note('modernUse');
+      : pend('modernUse');
 
     // Rare Fact
     html += `<div style="background:rgba(200,149,42,.08);border-left:3px solid var(--gold);padding:1rem;margin-bottom:1.5rem;border-radius:4px;">`;
     html += `<div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.4rem;font-weight:500">Rare Fact</div>`;
     html += F.has(profile.rareFact)
       ? `<div style="font-size:13px;color:var(--parchment);line-height:1.6">${profile.rareFact}</div>`
-      : F.note('rareFact');
+      : pend('rareFact');
     html += `</div>`;
 
     // Compound Classes (from compounds)
@@ -1294,9 +1334,9 @@ async function fetchHerbProfileFromAPI(herbName, targetId){
           <div class="ct">${F.has(c.class) ? c.class : 'Compound'}</div>
           <div class="cs">${F.has(c.role) ? c.role : ''}</div>
           <div class="dl" style="margin-top:8px">Mechanism</div>
-          ${F.has(c.mechanism) ? `<div class="mbox">${c.mechanism}</div>` : `<div class="mbox chi-nodata">${F.message('mechanism')}</div>`}
+          ${F.has(c.mechanism) ? `<div class="mbox">${c.mechanism}</div>` : `<div class="mbox chi-nodata">${stage2Pending ? 'Still gathering the mechanism…' : F.message('mechanism')}</div>`}
           <div class="dl" style="margin-top:8px">Evidence</div>
-          ${F.has(c.evidence) ? `<div class="mbox" style="font-size:11px;color:var(--muted)">${c.evidence}</div>` : `<div class="mbox chi-nodata" style="font-size:11px">${F.message('evidence')}</div>`}
+          ${F.has(c.evidence) ? `<div class="mbox" style="font-size:11px;color:var(--muted)">${c.evidence}</div>` : `<div class="mbox chi-nodata" style="font-size:11px">${stage2Pending ? 'Still gathering the evidence…' : F.message('evidence')}</div>`}
         </div>`;
       });
       html += '</div>';
@@ -1362,8 +1402,6 @@ async function fetchHerbProfileFromAPI(herbName, targetId){
     }
 
     document.getElementById(targetId).innerHTML = html;
-  } catch(err){
-    document.getElementById(targetId).innerHTML = `<div class="empty" style="color:#dd6a6a">Could not generate profile: ${err.message}. Check that the API key is configured.</div>`;
   }
 }
 

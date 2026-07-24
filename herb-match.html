@@ -112,6 +112,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .profile-name{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:500;color:var(--gold-light);margin-bottom:.5rem;}
 .profile-latin{font-style:italic;font-size:13px;color:var(--muted);margin-bottom:1rem;}
 
+/* CAUTION BLOCKS — interactions and safety read as warnings, not as detail */
+.profile-caution{background:rgba(220,90,90,.07)!important;border:1px solid rgba(220,90,90,.22)!important;border-left:3px solid #dc5a5a!important;}
+.profile-caution-title{color:#e39a9a!important;}
+
 /* PROFILE VIEW TOGGLE */
 .profile-view-toggle{display:inline-flex;background:rgba(0,0,0,.25);border:1px solid var(--card-border);border-radius:999px;padding:3px;margin-bottom:1.25rem;}
 .view-toggle-btn{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;padding:.4rem 1rem;border-radius:999px;cursor:pointer;transition:all .18s;white-space:nowrap;}
@@ -798,11 +802,17 @@ function renderProfileByView(profile, view) {
   });
   html += `</div>`;
 
-  html += `<div class="profile-block"><div class="profile-block-title">Known interactions</div>`;
-  html += F.section(profile.interactions, 'interactions', list => list.map(i => `<p style="margin-bottom:.4rem">• ${i}</p>`).join(''));
-  html += `</div>`;
+  // Cautions are visually separated so they read as warnings, not as more detail
+  const caution = (title, body) =>
+    `<div class="profile-block profile-caution"><div class="profile-block-title profile-caution-title">⚠ ${title}</div>${body}</div>`;
 
-  html += `<div class="profile-block"><div class="profile-block-title">Safety</div>${F.has(profile.safetyLevel) ? `<p>${profile.safetyLevel}</p>` : F.note('safetyLevel')}</div>`;
+  html += caution('Known interactions',
+    F.has(profile.interactions)
+      ? profile.interactions.map(i => `<p style="margin-bottom:.4rem">• ${i}</p>`).join('')
+      : `<p class="chi-nodata">${F.message('interactions')}</p>`);
+
+  html += caution('Safety',
+    F.has(profile.safetyLevel) ? `<p>${profile.safetyLevel}</p>` : `<p class="chi-nodata">${F.message('safetyLevel')}</p>`);
 
   document.getElementById('profile-content').innerHTML = html;
 }

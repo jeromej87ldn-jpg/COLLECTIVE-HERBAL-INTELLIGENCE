@@ -27,6 +27,12 @@ Provide the essential profile for the requested herb. Return ONLY valid JSON wit
   "source": "verifiable citation or null",
   "origin": "native region or origin",
   "tradition": "primary healing tradition(s) (e.g. Ayurvedic, TCM, Western)",
+  "compounds": [
+    {"name":"compound name","class":"Flavonoid | Alkaloid | Terpenoid | Saponin | Glycoside | Tannin | Polysaccharide | Phenolic acid","role":"primary action, one short phrase","strength":75}
+  ],
+  "herbalActions": [
+    {"name":"action name (e.g. Adaptogen, Nervine, Anti-inflammatory)","system":"body system","description":"one sentence on what it does"}
+  ],
   "bodyEffects": [
     {"system":"body system","effect":"one short phrase"}
   ],
@@ -41,6 +47,7 @@ Provide the essential profile for the requested herb. Return ONLY valid JSON wit
   "interactions": ["interaction1", "interaction2"]
 }
 
+Limits: compounds max 4, herbalActions max 4, bodyEffects max 4, interactions max 3.
 Return ONLY the JSON object. No other text.`;
 
 // ── STAGE 2: Rich depth (Sonnet, background) ──────────────────────────────────
@@ -103,7 +110,7 @@ function buildUserMessage(name, excludedHerb, issues) {
 async function requestStage1(anthropic, userMessage, attempt = 1) {
   const message = await anthropic.messages.create({
     model: 'claude-haiku-4-5-20251001',
-    max_tokens: 900,
+    max_tokens: 1800,
     system: STAGE1_PROMPT,
     messages: [
       { role: 'user', content: attempt === 1 ? userMessage : userMessage + '\n\nReturn ONLY the JSON object, with no other text before or after it.' }
