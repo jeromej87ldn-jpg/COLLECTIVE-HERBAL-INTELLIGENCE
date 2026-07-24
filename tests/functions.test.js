@@ -119,8 +119,8 @@ await test('fresh generating row returns 202 (keep polling)', async () => {
   assert.strictEqual(JSON.parse(res.body).status, 'generating');
 });
 
-await test('cache miss returns full profile', async () => {
-  // Single-stage: cache miss generates full profile (essentials + rich depth) and returns 200
+await test('cache miss returns Stage 1 immediately, triggers Stage 2 background', async () => {
+  // Hybrid: cache miss returns Stage 1 (essentials + basic compounds/actions) as 200, triggers background Stage 2 async
   anthropicQueue = [
     JSON.stringify({
       name: 'Gotu Kola',
@@ -134,30 +134,25 @@ await test('cache miss returns full profile', async () => {
       source: null,
       origin: 'Southeast Asia',
       tradition: 'Ayurvedic, TCM',
-      spiritualHistory: { overview: 'Used for spiritual clarity.', timeline: [{ era: 'Ancient', text: 'Used in meditation.' }] },
-      modernUse: 'Studied for cognitive enhancement.',
-      compounds: [{ name: 'Bacoside A', class: 'Glycoside', role: 'neuroprotective', strength: 80, mechanism: 'Enhances synaptic plasticity', evidence: 'Clinical studies show improved memory' }],
-      herbalActions: [{ name: 'Nootropic', system: 'Cognitive', description: 'Enhances memory and focus', compounds: ['Bacoside A'] }],
+      compounds: [{ name: 'Bacoside A', class: 'Glycoside', role: 'neuroprotective', strength: 80 }],
+      herbalActions: [{ name: 'Nootropic', system: 'Cognitive', description: 'Enhances memory' }],
       bodyEffects: [{ system: 'nervous', effect: 'enhances memory' }],
       preparation: { tea: 'steep 1-2g in water', tincture: '1-2ml daily', capsule: null, topical: null, smoke: null, traditional: null },
-      rareFact: 'Known as Brahmi in Ayurveda.',
-      interactions: [],
-      forumSeed: [{ user: 'Sam', initials: 'S', rating: 5, comment: 'Great for focus.' }]
+      interactions: []
     })
   ];
   const { handler, sb } = loadFunction('netlify/functions/herb-profile.js', { env: SUPA_ENV, getRow: () => null });
   const res = await handler(ev({ herbName: 'Gotu Kola' }));
   assert.strictEqual(res.statusCode, 200);
   const body = JSON.parse(res.body);
-  assert.ok(body.name, 'should have name');
-  assert.ok(body.origin, 'should have origin (full profile)');
-  assert.ok(body.modernUse, 'should have modernUse (full profile)');
-  assert.ok(body.herbalActions, 'should have herbalActions');
-  assert.ok(body.compounds[0].mechanism, 'should have detailed compound mechanism');
-  assert.ok(sb.log.upserts.some(u => u.status === 'complete'), 'should mark complete in cache');
+  assert.ok(body.name, 'Stage 1 should have name');
+  assert.ok(body.origin, 'Stage 1 should have origin');
+  assert.ok(body.herbalActions, 'Stage 1 should have herbalActions');
+  assert.strictEqual(body.stage2Status, 'loading', 'Stage 2 should be loading');
+  assert.ok(sb.log.upserts.some(u => u.status === 'generating'), 'should mark generating in cache');
 });
 
-await test('stale generating row generates full profile fresh', async () => {
+await test('stale generating row generates Stage 1 fresh', async () => {
   anthropicQueue = [JSON.stringify({
     name: 'Sage',
     latin: 'Salvia officinalis',
@@ -170,24 +165,20 @@ await test('stale generating row generates full profile fresh', async () => {
     source: 'Commission E',
     origin: 'Mediterranean',
     tradition: 'Western herbalism',
-    spiritualHistory: { overview: 'Sacred herb.', timeline: [{ era: 'Ancient Rome', text: 'Used for memory.' }] },
-    modernUse: 'Studied for cognitive support.',
-    compounds: [{ name: 'Thujone', class: 'Monoterpene', role: 'activating', strength: 60, mechanism: 'Stimulates memory centers', evidence: 'Traditional use confirmed' }],
-    herbalActions: [{ name: 'Nootropic', system: 'Cognitive', description: 'Enhances clarity and recall', compounds: ['Thujone'] }],
+    compounds: [{ name: 'Thujone', class: 'Monoterpene', role: 'activating', strength: 60 }],
+    herbalActions: [{ name: 'Nootropic', system: 'Cognitive', description: 'Enhances clarity' }],
     bodyEffects: [{ system: 'nervous', effect: 'enhances clarity' }],
     preparation: { tea: 'steep 1-2g', tincture: null, capsule: null, topical: null, smoke: null, traditional: null },
-    rareFact: 'Used in medieval education.',
-    interactions: [],
-    forumSeed: [{ user: 'Teacher', initials: 'T', rating: 5, comment: 'Great for studying.' }]
+    interactions: []
   })];
   const row = { status: 'generating', data: { generating_at: Date.now() - 5 * 60 * 1000 } };
   const { handler } = loadFunction('netlify/functions/herb-profile.js', { env: SUPA_ENV, getRow: () => row });
   const res = await handler(ev({ herbName: 'Sage' }));
   assert.strictEqual(res.statusCode, 200);
   const body = JSON.parse(res.body);
-  assert.ok(body.name, 'should generate full profile fresh for stale row');
-  assert.ok(body.origin, 'should include origin from full generation');
-  assert.ok(body.herbalActions, 'should include herbalActions');
+  assert.ok(body.name, 'should generate Stage 1 fresh for stale row');
+  assert.ok(body.origin, 'should include origin from Stage 1');
+  assert.strictEqual(body.stage2Status, 'loading', 'should mark Stage 2 as loading');
 });
 
 await test('error row returns 502 and clears the row', async () => {

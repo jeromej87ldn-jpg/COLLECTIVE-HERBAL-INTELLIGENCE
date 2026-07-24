@@ -503,8 +503,7 @@ async function loadHerbProfile(herbName) {
   }
 }
 
-// Poll for full profile generation. The endpoint may return 202 (generating) initially,
-// so we keep polling until we get 200 with the complete profile.
+// Poll for profile generation. Returns Stage 1 immediately, Stage 2 loads in background.
 async function fetchHerbProfilePolling(herbName, { maxMs = 180000, intervalMs = 2500 } = {}) {
   const started = Date.now();
   while (true) {
@@ -524,6 +523,26 @@ async function fetchHerbProfilePolling(herbName, { maxMs = 180000, intervalMs = 
 
     const errBody = await res.json().catch(() => ({}));
     throw new Error(errBody.error || `Request failed (${res.status})`);
+  }
+}
+
+// Poll for Stage 2 updates (detailed mechanisms, spiritual history, etc.)
+async function pollForStage2Update(herbName, { maxMs = 120000, intervalMs = 3000 } = {}) {
+  const started = Date.now();
+  while (true) {
+    if (Date.now() - started > maxMs) return null;
+    const res = await fetch('/.netlify/functions/herb-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ herbName })
+    });
+
+    if (res.status === 200) {
+      const data = await res.json();
+      if (data.stage2Status === 'complete') return data;
+    }
+
+    await new Promise(r => setTimeout(r, intervalMs));
   }
 }
 

@@ -10,11 +10,11 @@ if (process.env.SUPABASE_URL && process.env.SUPABASE_KEY) {
   supabase = createClient(supabaseProjectUrl(), process.env.SUPABASE_KEY);
 }
 
-// ── FULL PROFILE: Complete herb profile (Sonnet) ──────────────────────
-// Single comprehensive prompt that generates all fields: essentials + rich depth
-// Includes detailed compound data and herbal actions for Plant Intelligence display
-const FULL_PROFILE_PROMPT = `You are the Herbadex — CHI's herb knowledge engine.
-Provide a complete, comprehensive profile for the requested herb. Return ONLY valid JSON:
+// ── STAGE 1: Fast essentials + basic compounds/actions (Haiku, sync) ──────────
+// Returns immediately: name, latin, category, summary, safety, preparations,
+// functional overview, origin, tradition, basic compounds/actions, body effects
+const STAGE1_PROMPT = `You are the Herbadex — CHI's herb knowledge engine.
+Provide the essential profile for the requested herb. Return ONLY valid JSON:
 {
   "name": "common name",
   "latin": "latin binomial",
@@ -27,18 +27,11 @@ Provide a complete, comprehensive profile for the requested herb. Return ONLY va
   "source": "verifiable citation (e.g. 'Commission E Monograph') or null",
   "origin": "native region or origin",
   "tradition": "primary healing tradition(s) (e.g. Ayurvedic, TCM, Western)",
-  "spiritualHistory": {
-    "overview": "1 rich paragraph (3-4 sentences) on spiritual/shamanic/religious/cultural significance",
-    "timeline": [
-      {"era":"time period or culture","text":"one short sentence on use/knowledge"}
-    ]
-  },
-  "modernUse": "1 paragraph on current research and modern applications",
   "compounds": [
-    {"name":"compound name","class":"compound class (e.g. Flavonoid, Alkaloid, Terpenoid)","role":"primary action phrase","strength":0-100,"mechanism":"detailed mechanism of action (1-2 sentences)","evidence":"scientific evidence or traditional use note"}
+    {"name":"compound name","class":"compound class (e.g. Flavonoid, Alkaloid)","role":"primary action phrase","strength":0-100}
   ],
   "herbalActions": [
-    {"name":"action name","system":"body system or category","description":"how this action works in 1-2 sentences","compounds":["compound1","compound2"]}
+    {"name":"action name","system":"body system","description":"brief description"}
   ],
   "bodyEffects": [
     {"system":"body system","effect":"one short phrase"}
@@ -51,17 +44,40 @@ Provide a complete, comprehensive profile for the requested herb. Return ONLY va
     "smoke": "method or null",
     "traditional": "traditional preparation method if any"
   },
+  "interactions": ["known drug or herb interactions - max 3"]
+}
+
+Limits: compounds max 4, herbalActions max 4, bodyEffects max 4, interactions max 3.`;
+
+// ── STAGE 2: Rich depth (Sonnet, background) ──────────────────────────────────
+// Returns later: spiritual history, detailed compound mechanisms/evidence,
+// full herbal actions, modern use, rare fact, forum seed
+const STAGE2_PROMPT = `You are the Herbadex — CHI's deep herb knowledge engine.
+Provide rich, detailed profile for the requested herb. Return ONLY valid JSON:
+{
+  "spiritualHistory": {
+    "overview": "1 rich paragraph (3-4 sentences) on spiritual/shamanic/religious/cultural significance",
+    "timeline": [
+      {"era":"time period or culture","text":"one short sentence on use/knowledge"}
+    ]
+  },
+  "modernUse": "1 paragraph on current research and modern applications",
+  "compounds": [
+    {"name":"compound name","mechanism":"detailed mechanism of action (1-2 sentences)","evidence":"scientific evidence or traditional use note"}
+  ],
+  "herbalActions": [
+    {"name":"action name","description":"detailed how this action works in 1-2 sentences","compounds":["compound1","compound2"]}
+  ],
   "rareFact": "one genuinely surprising fact, one sentence",
-  "interactions": ["known drug or herb interactions - max 3"],
   "forumSeed": [
     {"user":"Name","initials":"XX","rating":5,"comment":"realistic user experience"},
     {"user":"Name","initials":"XX","rating":4,"comment":"realistic user experience"}
   ]
 }
 
-Limits: timeline max 2, compounds max 4, herbalActions max 7, bodyEffects max 4, interactions max 3, forumSeed exactly 2.
-For compounds: include detailed mechanism and scientific evidence.
-For herbalActions: include the key compounds that drive each action.`;
+Limits: timeline max 2, compounds max 4, herbalActions max 7, forumSeed exactly 2.
+For compounds: add mechanism and evidence to match the compound names from Stage 1.
+For herbalActions: expand descriptions and list key compounds that drive each action.`;
 
 const STALE_GENERATING_MS = 120000; // 2 minutes
 
@@ -89,12 +105,12 @@ function buildUserMessage(name, excludedHerb, issues) {
   return `Provide the profile for: ${name}`;
 }
 
-// Full profile: Sonnet, comprehensive generation
-async function requestProfile(anthropic, userMessage, attempt = 1) {
+// Stage 1: Haiku, fast, essentials + basic compounds/actions
+async function requestStage1(anthropic, userMessage, attempt = 1) {
   const message = await anthropic.messages.create({
-    model: 'claude-sonnet-5',
-    max_tokens: 2000,
-    system: FULL_PROFILE_PROMPT,
+    model: 'claude-haiku-4-5-20251001',
+    max_tokens: 900,
+    system: STAGE1_PROMPT,
     messages: [
       { role: 'user', content: attempt === 1 ? userMessage : userMessage + '\n\nReturn ONLY the JSON object, with no other text before or after it.' }
     ]
@@ -109,7 +125,33 @@ async function requestProfile(anthropic, userMessage, attempt = 1) {
     return extractJson(textBlock.text);
   } catch (parseErr) {
     if (attempt === 1) {
-      return requestProfile(anthropic, userMessage, 2);
+      return requestStage1(anthropic, userMessage, 2);
+    }
+    return { error: 'Model response was not valid JSON', stopReason: message.stop_reason, raw: textBlock.text.trim().slice(0, 300) };
+  }
+}
+
+// Stage 2: Sonnet, slower, detailed mechanisms/evidence/spiritual history
+async function requestStage2(anthropic, userMessage, attempt = 1) {
+  const message = await anthropic.messages.create({
+    model: 'claude-sonnet-5',
+    max_tokens: 1400,
+    system: STAGE2_PROMPT,
+    messages: [
+      { role: 'user', content: attempt === 1 ? userMessage : userMessage + '\n\nReturn ONLY the JSON object, with no other text before or after it.' }
+    ]
+  });
+
+  const textBlock = message.content.find(block => block.type === 'text');
+  if (!textBlock || !textBlock.text) {
+    return { error: 'No text content in model response', stopReason: message.stop_reason };
+  }
+
+  try {
+    return extractJson(textBlock.text);
+  } catch (parseErr) {
+    if (attempt === 1) {
+      return requestStage2(anthropic, userMessage, 2);
     }
     return { error: 'Model response was not valid JSON', stopReason: message.stop_reason, raw: textBlock.text.trim().slice(0, 500) };
   }
@@ -166,7 +208,7 @@ exports.handler = async (event) => {
       }
     }
 
-    // ── 2. GENERATE FULL PROFILE (Sonnet) ──────────────────────────
+    // ── 2. STAGE 1: Generate essentials (Haiku, sync) ──────────────────
     const apiKey = serverKey || previewApiKey;
     if (!apiKey) {
       return { statusCode: 500, body: JSON.stringify({ error: 'Server is missing ANTHROPIC_API_KEY' }) };
@@ -174,31 +216,45 @@ exports.handler = async (event) => {
     const anthropic = new Anthropic({ apiKey });
 
     const userMsg = buildUserMessage(name, excludedHerb, issues);
-    const profile = await requestProfile(anthropic, userMsg);
+    const stage1 = await requestStage1(anthropic, userMsg);
 
-    if (profile.error) {
-      return { statusCode: 502, body: JSON.stringify({ error: 'Profile generation failed: ' + profile.error }) };
+    if (stage1.error) {
+      return { statusCode: 502, body: JSON.stringify({ error: 'Stage 1 generation failed: ' + stage1.error }) };
     }
 
-    // ── 3. CACHE THE COMPLETE PROFILE ──────────────────────────────
-    if (supabase && serverKey) {
+    // Prepare response with Stage 1 data and Stage 2 flag
+    const response = {
+      ...stage1,
+      stage2Status: 'loading'
+    };
+
+    // ── 3. STAGE 2: Dispatch background Sonnet generation ───────────────
+    const siteURL = process.env.URL || process.env.DEPLOY_PRIME_URL;
+    if (supabase && serverKey && siteURL) {
       try {
+        // Mark as 'generating' in database
         await supabase.from('herbs').upsert({
           name,
-          status: 'complete',
-          data: profile
+          status: 'generating',
+          data: { ...response, generating_at: Date.now() }
         });
-      } catch (cacheErr) {
-        console.error('Supabase upsert failed:', cacheErr.message);
-        // Non-fatal; we still return the generated profile
+
+        // Fire off background Stage 2 generation
+        fetch(`${siteURL}/.netlify/functions/herb-profile-stage2`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ herbName: name, excludedHerb, issues, stage1 })
+        }).catch(e => console.error('Stage 2 background dispatch failed:', e.message));
+      } catch (e) {
+        console.error('Stage 2 background setup failed:', e.message);
       }
     }
 
-    // Return the full profile
+    // Return Stage 1 immediately; client will poll for Stage 2
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(profile)
+      body: JSON.stringify(response)
     };
   } catch (error) {
     return {
