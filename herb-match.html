@@ -110,7 +110,13 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 
 .profile-header{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:2rem;margin-bottom:2rem;text-align:center;}
 .profile-name{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:500;color:var(--gold-light);margin-bottom:.5rem;}
-.profile-latin{font-style:italic;font-size:13px;color:var(--muted);margin-bottom:1.5rem;}
+.profile-latin{font-style:italic;font-size:13px;color:var(--muted);margin-bottom:1rem;}
+
+/* PROFILE VIEW TOGGLE */
+.profile-view-toggle{display:inline-flex;background:rgba(0,0,0,.25);border:1px solid var(--card-border);border-radius:999px;padding:3px;margin-bottom:1.25rem;}
+.view-toggle-btn{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;padding:.4rem 1rem;border-radius:999px;cursor:pointer;transition:all .18s;white-space:nowrap;}
+.view-toggle-btn:hover{color:var(--text);}
+.view-toggle-btn.active{background:var(--gold);color:var(--forest);}
 .profile-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
 .profile-btn{padding:.7rem 1.2rem;border:1px solid var(--card-border);border-radius:5px;background:transparent;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;}
 .profile-btn:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
@@ -216,6 +222,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <div class="profile-header">
       <div class="profile-name" id="profile-name"></div>
       <div class="profile-latin" id="profile-latin"></div>
+      <div class="profile-view-toggle" id="profile-view-toggle">
+        <button class="view-toggle-btn active" id="btn-essential" onclick="setProfileView('essential')">Essential</button>
+        <button class="view-toggle-btn" id="btn-full" onclick="setProfileView('full')">Full Profile</button>
+      </div>
       <div class="profile-actions">
         <button class="profile-btn primary" onclick="addToStack()">+ Add to stack</button>
         <button class="profile-btn" onclick="backToResults()">← Back to results</button>
@@ -556,6 +566,7 @@ async function viewProfile(herbName) {
 
   document.getElementById('profile-name').textContent = herbName;
   document.getElementById('profile-latin').textContent = '';
+  document.getElementById('profile-view-toggle').style.display = 'none';
 
   // Show a spinner + ticker while loading
   const tickerHTML = `<div class="loading">
@@ -679,16 +690,92 @@ function renderProfileContent(profile) {
   document.getElementById('profile-name').textContent = profile.name || currentProfile;
   document.getElementById('profile-latin').textContent = profile.latin || '';
 
+  // Store the profile so the toggle can re-render it
+  currentProfileData = profile;
+
+  // Show the toggle if we have Stage 2 data (or it's loading)
+  const toggle = document.getElementById('profile-view-toggle');
+  const hasFullData = profile.spiritualHistory || profile.modernUse || profile.rareFact ||
+                      (profile.compounds && profile.compounds.some(c => c.mechanism));
+  toggle.style.display = hasFullData ? 'inline-flex' : 'none';
+
+  renderProfileByView(profile, profileView);
+}
+
+// Current profile data and view mode
+let currentProfileData = null;
+let profileView = 'essential'; // 'essential' or 'full'
+
+function setProfileView(view) {
+  profileView = view;
+  document.getElementById('btn-essential').classList.toggle('active', view === 'essential');
+  document.getElementById('btn-full').classList.toggle('active', view === 'full');
+  if (currentProfileData) renderProfileByView(currentProfileData, view);
+}
+
+function renderProfileByView(profile, view) {
   let html = '';
 
   if (profile.summary) {
     html += `<div class="profile-block"><div class="profile-block-title">Overview</div><p>${profile.summary}</p></div>`;
   }
 
+  // Full profile only: Origins & Tradition
+  if (view === 'full' && (profile.origin || profile.tradition)) {
+    html += `<div class="profile-block"><div class="profile-block-title">Origins & Tradition</div>`;
+    if (profile.origin) html += `<p style="margin-bottom:.5rem"><strong style="color:var(--text)">Origin:</strong> ${profile.origin}</p>`;
+    if (profile.tradition) html += `<p><strong style="color:var(--text)">Tradition:</strong> ${profile.tradition}</p>`;
+    html += `</div>`;
+  }
+
+  // Full profile only: Spiritual History
+  if (view === 'full' && profile.spiritualHistory && profile.spiritualHistory.overview) {
+    html += `<div class="profile-block"><div class="profile-block-title">Spiritual & Cultural History</div>`;
+    html += `<p style="margin-bottom:1rem">${profile.spiritualHistory.overview}</p>`;
+    if (profile.spiritualHistory.timeline && profile.spiritualHistory.timeline.length) {
+      profile.spiritualHistory.timeline.forEach(t => {
+        html += `<p style="margin-bottom:.6rem;font-size:12.5px"><strong style="color:var(--gold-light)">${t.era}:</strong> ${t.text}</p>`;
+      });
+    }
+    html += `</div>`;
+  }
+
+  // Full profile only: Modern Use
+  if (view === 'full' && profile.modernUse) {
+    html += `<div class="profile-block"><div class="profile-block-title">Modern Research & Use</div><p>${profile.modernUse}</p></div>`;
+  }
+
+  // Full profile only: Rare Fact
+  if (view === 'full' && profile.rareFact) {
+    html += `<div class="profile-block" style="background:rgba(200,149,42,.08);border-left:3px solid var(--gold)"><div class="profile-block-title" style="color:var(--gold)">Rare Fact</div><p>${profile.rareFact}</p></div>`;
+  }
+
+  // Compounds — essential shows name+role, full shows mechanisms too
   if (profile.compounds && profile.compounds.length) {
     html += `<div class="profile-block"><div class="profile-block-title">Key compounds</div>`;
     profile.compounds.forEach(c => {
       html += `<div class="profile-compound-row"><span class="cname">${c.name}</span><span class="crole">${c.role || ''}</span></div>`;
+      if (view === 'full' && c.mechanism) {
+        html += `<p style="font-size:12px;color:var(--muted);margin:.3rem 0 .8rem 0;padding-left:.5rem;border-left:2px solid rgba(200,149,42,.2)">${c.mechanism}</p>`;
+      }
+      if (view === 'full' && c.evidence) {
+        html += `<p style="font-size:11.5px;color:var(--muted);font-style:italic;margin:0 0 .8rem .5rem">${c.evidence}</p>`;
+      }
+    });
+    html += `</div>`;
+  }
+
+  // Full profile only: Herbal Actions
+  if (view === 'full' && profile.herbalActions && profile.herbalActions.length) {
+    html += `<div class="profile-block"><div class="profile-block-title">Herbal Actions</div>`;
+    profile.herbalActions.forEach(a => {
+      html += `<div style="margin-bottom:1rem">`;
+      html += `<div class="profile-compound-row"><span class="cname">${a.name}</span><span class="crole">${a.system || ''}</span></div>`;
+      if (a.description) html += `<p style="font-size:12.5px;color:var(--muted);margin-top:.3rem">${a.description}</p>`;
+      if (a.compounds && a.compounds.length) {
+        html += `<p style="font-size:11.5px;color:var(--muted);margin-top:.3rem">Key compounds: ${a.compounds.join(', ')}</p>`;
+      }
+      html += `</div>`;
     });
     html += `</div>`;
   }
@@ -710,6 +797,14 @@ function renderProfileContent(profile) {
       });
       html += `</div>`;
     }
+  }
+
+  if (profile.interactions && profile.interactions.length) {
+    html += `<div class="profile-block"><div class="profile-block-title">Known interactions</div>`;
+    profile.interactions.forEach(i => {
+      html += `<p style="margin-bottom:.4rem">• ${i}</p>`;
+    });
+    html += `</div>`;
   }
 
   if (profile.safetyLevel) {
