@@ -120,7 +120,7 @@ await test('fresh generating row returns 202 (keep polling)', async () => {
 });
 
 await test('cache miss returns Stage 1 immediately, triggers Stage 2 background', async () => {
-  // Hybrid: cache miss returns Stage 1 (essentials + basic compounds/actions) as 200, triggers background Stage 2 async
+  // Hybrid: cache miss returns Stage 1 (essentials only) as 200, triggers background Stage 2 async
   anthropicQueue = [
     JSON.stringify({
       name: 'Gotu Kola',
@@ -129,13 +129,11 @@ await test('cache miss returns Stage 1 immediately, triggers Stage 2 background'
       categoryColor: '#5cab7a',
       summary: 'A gentle herb for memory.',
       safetyLevel: 'Generally safe',
-      preparations: ['tea','tincture'],
+      preparations: ['tea','tincture','capsule'],
       functionalOverview: 'Supports brain health.',
       source: null,
       origin: 'Southeast Asia',
       tradition: 'Ayurvedic, TCM',
-      compounds: [{ name: 'Bacoside A', class: 'Glycoside', role: 'neuroprotective', strength: 80 }],
-      herbalActions: [{ name: 'Nootropic', system: 'Cognitive', description: 'Enhances memory' }],
       bodyEffects: [{ system: 'nervous', effect: 'enhances memory' }],
       preparation: { tea: 'steep 1-2g in water', tincture: '1-2ml daily', capsule: null, topical: null, smoke: null, traditional: null },
       interactions: []
@@ -147,7 +145,7 @@ await test('cache miss returns Stage 1 immediately, triggers Stage 2 background'
   const body = JSON.parse(res.body);
   assert.ok(body.name, 'Stage 1 should have name');
   assert.ok(body.origin, 'Stage 1 should have origin');
-  assert.ok(body.herbalActions, 'Stage 1 should have herbalActions');
+  assert.ok(body.bodyEffects, 'Stage 1 should have bodyEffects');
   assert.strictEqual(body.stage2Status, 'loading', 'Stage 2 should be loading');
   assert.ok(sb.log.upserts.some(u => u.status === 'generating'), 'should mark generating in cache');
 });
@@ -160,13 +158,11 @@ await test('stale generating row generates Stage 1 fresh', async () => {
     categoryColor: '#5cab7a',
     summary: 'An herb for memory and clarity.',
     safetyLevel: 'Generally safe',
-    preparations: ['tea'],
+    preparations: ['tea','tincture','capsule'],
     functionalOverview: 'Enhances mental clarity and memory.',
     source: 'Commission E',
     origin: 'Mediterranean',
     tradition: 'Western herbalism',
-    compounds: [{ name: 'Thujone', class: 'Monoterpene', role: 'activating', strength: 60 }],
-    herbalActions: [{ name: 'Nootropic', system: 'Cognitive', description: 'Enhances clarity' }],
     bodyEffects: [{ system: 'nervous', effect: 'enhances clarity' }],
     preparation: { tea: 'steep 1-2g', tincture: null, capsule: null, topical: null, smoke: null, traditional: null },
     interactions: []

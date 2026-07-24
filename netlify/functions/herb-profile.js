@@ -10,11 +10,11 @@ if (process.env.SUPABASE_URL && process.env.SUPABASE_KEY) {
   supabase = createClient(supabaseProjectUrl(), process.env.SUPABASE_KEY);
 }
 
-// ── STAGE 1: Fast essentials + basic compounds/actions (Haiku, sync) ──────────
-// Returns immediately: name, latin, category, summary, safety, preparations,
-// functional overview, origin, tradition, basic compounds/actions, body effects
+// ── STAGE 1: Fast essentials (Haiku, sync) ──────────────────────────
+// Returns immediately: name, latin, category, summary, safety, origin, tradition
+// Keep it minimal so Haiku generates valid JSON reliably
 const STAGE1_PROMPT = `You are the Herbadex — CHI's herb knowledge engine.
-Provide the essential profile for the requested herb. Return ONLY valid JSON:
+Provide the essential profile for the requested herb. Return ONLY valid JSON with no preamble or explanation:
 {
   "name": "common name",
   "latin": "latin binomial",
@@ -22,17 +22,11 @@ Provide the essential profile for the requested herb. Return ONLY valid JSON:
   "categoryColor": "#hex (e.g. #e8a840)",
   "summary": "2 sentence overview, warm and plain",
   "safetyLevel": "Generally safe | Use with caution | Consult professional",
-  "preparations": ["tea","tincture","capsule","etc - list up to 4"],
-  "functionalOverview": "2 sentence summary: what it does, how people use it",
-  "source": "verifiable citation (e.g. 'Commission E Monograph') or null",
+  "preparations": ["tea","tincture","capsule"],
+  "functionalOverview": "2 sentence summary of what it does and how people use it",
+  "source": "verifiable citation or null",
   "origin": "native region or origin",
   "tradition": "primary healing tradition(s) (e.g. Ayurvedic, TCM, Western)",
-  "compounds": [
-    {"name":"compound name","class":"compound class (e.g. Flavonoid, Alkaloid)","role":"primary action phrase","strength":0-100}
-  ],
-  "herbalActions": [
-    {"name":"action name","system":"body system","description":"brief description"}
-  ],
   "bodyEffects": [
     {"system":"body system","effect":"one short phrase"}
   ],
@@ -44,10 +38,10 @@ Provide the essential profile for the requested herb. Return ONLY valid JSON:
     "smoke": "method or null",
     "traditional": "traditional preparation method if any"
   },
-  "interactions": ["known drug or herb interactions - max 3"]
+  "interactions": ["interaction1", "interaction2"]
 }
 
-Limits: compounds max 4, herbalActions max 4, bodyEffects max 4, interactions max 3.`;
+Return ONLY the JSON object. No other text.`;
 
 // ── STAGE 2: Rich depth (Sonnet, background) ──────────────────────────────────
 // Returns later: spiritual history, detailed compound mechanisms/evidence,
