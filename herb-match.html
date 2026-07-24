@@ -693,11 +693,9 @@ function renderProfileContent(profile) {
   // Store the profile so the toggle can re-render it
   currentProfileData = profile;
 
-  // Show the toggle if we have Stage 2 data (or it's loading)
-  const toggle = document.getElementById('profile-view-toggle');
-  const hasFullData = profile.spiritualHistory || profile.modernUse || profile.rareFact ||
-                      (profile.compounds && profile.compounds.some(c => c.mechanism));
-  toggle.style.display = hasFullData ? 'inline-flex' : 'none';
+  // The toggle is always available — the Full view reports what is still
+  // generating or was never recorded, rather than hiding the option outright.
+  document.getElementById('profile-view-toggle').style.display = 'inline-flex';
 
   renderProfileByView(profile, profileView);
 }
@@ -714,104 +712,99 @@ function setProfileView(view) {
 }
 
 function renderProfileByView(profile, view) {
+  const F = window.CHI_FALLBACK;
+  const spirit = profile.spiritualHistory || {};
+  const stage2Pending = profile.stage2Status === 'loading';
   let html = '';
 
-  if (profile.summary) {
-    html += `<div class="profile-block"><div class="profile-block-title">Overview</div><p>${profile.summary}</p></div>`;
-  }
+  // Sections that only exist once Stage 2 lands. While it's still generating we
+  // say so rather than claiming nothing was ever recorded.
+  const deep = (value, field, builder) => {
+    if (F.has(value)) return builder(value);
+    return stage2Pending
+      ? `<p class="chi-nodata">Still gathering this section…</p>`
+      : F.note(field);
+  };
+
+  html += `<div class="profile-block"><div class="profile-block-title">Overview</div>${F.has(profile.summary) ? `<p>${profile.summary}</p>` : F.note('summary')}</div>`;
 
   // Full profile only: Origins & Tradition
-  if (view === 'full' && (profile.origin || profile.tradition)) {
+  if (view === 'full') {
     html += `<div class="profile-block"><div class="profile-block-title">Origins & Tradition</div>`;
-    if (profile.origin) html += `<p style="margin-bottom:.5rem"><strong style="color:var(--text)">Origin:</strong> ${profile.origin}</p>`;
-    if (profile.tradition) html += `<p><strong style="color:var(--text)">Tradition:</strong> ${profile.tradition}</p>`;
+    html += `<p style="margin-bottom:.5rem"><strong style="color:var(--text)">Origin:</strong> <span${F.has(profile.origin) ? '' : ' class="chi-nodata"'}>${F.text(profile.origin, 'origin')}</span></p>`;
+    html += `<p><strong style="color:var(--text)">Tradition:</strong> <span${F.has(profile.tradition) ? '' : ' class="chi-nodata"'}>${F.text(profile.tradition, 'tradition')}</span></p>`;
     html += `</div>`;
-  }
 
-  // Full profile only: Spiritual History
-  if (view === 'full' && profile.spiritualHistory && profile.spiritualHistory.overview) {
     html += `<div class="profile-block"><div class="profile-block-title">Spiritual & Cultural History</div>`;
-    html += `<p style="margin-bottom:1rem">${profile.spiritualHistory.overview}</p>`;
-    if (profile.spiritualHistory.timeline && profile.spiritualHistory.timeline.length) {
-      profile.spiritualHistory.timeline.forEach(t => {
+    html += deep(spirit.overview, 'spiritualHistory', v => `<p style="margin-bottom:1rem">${v}</p>`);
+    if (F.has(spirit.timeline)) {
+      spirit.timeline.forEach(t => {
         html += `<p style="margin-bottom:.6rem;font-size:12.5px"><strong style="color:var(--gold-light)">${t.era}:</strong> ${t.text}</p>`;
       });
     }
     html += `</div>`;
+
+    html += `<div class="profile-block"><div class="profile-block-title">Modern Research & Use</div>${deep(profile.modernUse, 'modernUse', v => `<p>${v}</p>`)}</div>`;
+
+    html += `<div class="profile-block" style="background:rgba(200,149,42,.08);border-left:3px solid var(--gold)"><div class="profile-block-title" style="color:var(--gold)">Rare Fact</div>${deep(profile.rareFact, 'rareFact', v => `<p>${v}</p>`)}</div>`;
   }
 
-  // Full profile only: Modern Use
-  if (view === 'full' && profile.modernUse) {
-    html += `<div class="profile-block"><div class="profile-block-title">Modern Research & Use</div><p>${profile.modernUse}</p></div>`;
-  }
-
-  // Full profile only: Rare Fact
-  if (view === 'full' && profile.rareFact) {
-    html += `<div class="profile-block" style="background:rgba(200,149,42,.08);border-left:3px solid var(--gold)"><div class="profile-block-title" style="color:var(--gold)">Rare Fact</div><p>${profile.rareFact}</p></div>`;
-  }
-
-  // Compounds — essential shows name+role, full shows mechanisms too
-  if (profile.compounds && profile.compounds.length) {
-    html += `<div class="profile-block"><div class="profile-block-title">Key compounds</div>`;
+  // Compounds — essential shows name+role, full adds mechanism and evidence
+  html += `<div class="profile-block"><div class="profile-block-title">Key compounds</div>`;
+  if (F.has(profile.compounds)) {
     profile.compounds.forEach(c => {
-      html += `<div class="profile-compound-row"><span class="cname">${c.name}</span><span class="crole">${c.role || ''}</span></div>`;
-      if (view === 'full' && c.mechanism) {
-        html += `<p style="font-size:12px;color:var(--muted);margin:.3rem 0 .8rem 0;padding-left:.5rem;border-left:2px solid rgba(200,149,42,.2)">${c.mechanism}</p>`;
-      }
-      if (view === 'full' && c.evidence) {
-        html += `<p style="font-size:11.5px;color:var(--muted);font-style:italic;margin:0 0 .8rem .5rem">${c.evidence}</p>`;
+      html += `<div class="profile-compound-row"><span class="cname">${c.name}</span><span class="crole">${F.has(c.role) ? c.role : ''}</span></div>`;
+      if (view === 'full') {
+        html += F.has(c.mechanism)
+          ? `<p style="font-size:12px;color:var(--muted);margin:.3rem 0 .8rem 0;padding-left:.5rem;border-left:2px solid rgba(200,149,42,.2)">${c.mechanism}</p>`
+          : `<p class="chi-nodata" style="font-size:12px;margin:.3rem 0 .8rem .5rem">${stage2Pending ? 'Still gathering the mechanism…' : F.message('mechanism')}</p>`;
+        if (F.has(c.evidence)) {
+          html += `<p style="font-size:11.5px;color:var(--muted);font-style:italic;margin:0 0 .8rem .5rem">${c.evidence}</p>`;
+        }
       }
     });
-    html += `</div>`;
+  } else {
+    html += F.note('compounds');
   }
+  html += `</div>`;
 
   // Full profile only: Herbal Actions
-  if (view === 'full' && profile.herbalActions && profile.herbalActions.length) {
+  if (view === 'full') {
     html += `<div class="profile-block"><div class="profile-block-title">Herbal Actions</div>`;
-    profile.herbalActions.forEach(a => {
-      html += `<div style="margin-bottom:1rem">`;
-      html += `<div class="profile-compound-row"><span class="cname">${a.name}</span><span class="crole">${a.system || ''}</span></div>`;
-      if (a.description) html += `<p style="font-size:12.5px;color:var(--muted);margin-top:.3rem">${a.description}</p>`;
-      if (a.compounds && a.compounds.length) {
-        html += `<p style="font-size:11.5px;color:var(--muted);margin-top:.3rem">Key compounds: ${a.compounds.join(', ')}</p>`;
-      }
-      html += `</div>`;
-    });
+    html += deep(profile.herbalActions, 'herbalActions', list => list.map(a => {
+      let block = `<div style="margin-bottom:1rem">`;
+      block += `<div class="profile-compound-row"><span class="cname">${a.name}</span><span class="crole">${F.has(a.system) ? a.system : ''}</span></div>`;
+      block += F.has(a.description) ? `<p style="font-size:12.5px;color:var(--muted);margin-top:.3rem">${a.description}</p>` : '';
+      block += F.has(a.compounds) ? `<p style="font-size:11.5px;color:var(--muted);margin-top:.3rem">Key compounds: ${a.compounds.join(', ')}</p>` : '';
+      return block + `</div>`;
+    }).join(''));
     html += `</div>`;
   }
 
-  if (profile.bodyEffects && profile.bodyEffects.length) {
-    html += `<div class="profile-block"><div class="profile-block-title">Body system effects</div>`;
-    profile.bodyEffects.forEach(be => {
-      html += `<div class="profile-compound-row"><span class="cname">${be.system}</span><span class="crole">${be.effect || ''}</span></div>`;
-    });
-    html += `</div>`;
-  }
+  html += `<div class="profile-block"><div class="profile-block-title">Body system effects</div>`;
+  html += F.section(profile.bodyEffects, 'bodyEffects', list => list.map(be =>
+    `<div class="profile-compound-row"><span class="cname">${be.system}</span><span class="crole">${F.has(be.effect) ? be.effect : ''}</span></div>`
+  ).join(''));
+  html += `</div>`;
 
-  if (profile.preparation) {
-    const preps = Object.entries(profile.preparation).filter(([, v]) => v);
-    if (preps.length) {
-      html += `<div class="profile-block"><div class="profile-block-title">Preparation</div>`;
-      preps.forEach(([method, dose]) => {
-        html += `<p style="margin-bottom:.6rem"><strong style="color:var(--text)">${method}:</strong> ${dose}</p>`;
-      });
-      html += `</div>`;
-    }
-  }
+  // Preparation — list every format so a missing dose is visible, not absent
+  const prepLabels = { tea:'Tea', tincture:'Tincture', capsule:'Capsule', topical:'Topical', smoke:'Smoke', traditional:'Traditional' };
+  const prepData = profile.preparation || {};
+  html += `<div class="profile-block"><div class="profile-block-title">Preparation</div>`;
+  Object.keys(prepLabels).forEach(k => {
+    html += F.has(prepData[k])
+      ? `<p style="margin-bottom:.6rem"><strong style="color:var(--text)">${prepLabels[k]}:</strong> ${prepData[k]}</p>`
+      : `<p class="chi-nodata" style="margin-bottom:.6rem"><strong style="color:var(--text);font-style:normal">${prepLabels[k]}:</strong> ${F.message('dosage')}</p>`;
+  });
+  html += `</div>`;
 
-  if (profile.interactions && profile.interactions.length) {
-    html += `<div class="profile-block"><div class="profile-block-title">Known interactions</div>`;
-    profile.interactions.forEach(i => {
-      html += `<p style="margin-bottom:.4rem">• ${i}</p>`;
-    });
-    html += `</div>`;
-  }
+  html += `<div class="profile-block"><div class="profile-block-title">Known interactions</div>`;
+  html += F.section(profile.interactions, 'interactions', list => list.map(i => `<p style="margin-bottom:.4rem">• ${i}</p>`).join(''));
+  html += `</div>`;
 
-  if (profile.safetyLevel) {
-    html += `<div class="profile-block"><div class="profile-block-title">Safety</div><p>${profile.safetyLevel}</p></div>`;
-  }
+  html += `<div class="profile-block"><div class="profile-block-title">Safety</div>${F.has(profile.safetyLevel) ? `<p>${profile.safetyLevel}</p>` : F.note('safetyLevel')}</div>`;
 
-  document.getElementById('profile-content').innerHTML = html || `<div class="profile-block"><p>No further detail available for this herb yet.</p></div>`;
+  document.getElementById('profile-content').innerHTML = html;
 }
 
 function backToResults() {
@@ -926,6 +919,7 @@ document.getElementById('submit-btn').onclick = submitIssues;
 </script>
 
 <!-- Shared CHI glossary: auto-tags known terms in the herb profile and shows definition tooltips on hover -->
+<script src="chi-fallbacks.js"></script>
 <script src="chi-glossary.js"></script>
 
 </body>

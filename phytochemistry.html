@@ -428,6 +428,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   <span class="toast-arrow">↓</span>
 </div>
 
+<script src="chi-fallbacks.js"></script>
 <script>
 // ─── HERB DATABASE ───────────────────────────────────────────────
 const HERB_DB = [
@@ -1227,119 +1228,137 @@ async function fetchHerbProfileFromAPI(herbName, targetId){
   try {
     const profile = await fetchHerbProfilePolling(herbName);
 
+    const F = window.CHI_FALLBACK;
+
     // Display API result — complete brain box with all profile data
     let html = `<div style="margin-bottom:1.5rem">
       <div style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:500;color:var(--gold-light);margin-bottom:.25rem">${profile.name}</div>
-      <div style="font-size:12px;color:var(--muted);font-style:italic">${profile.latin}</div>
-      <div style="font-size:13px;color:var(--muted);margin-top:.5rem">${profile.summary}</div>
+      <div style="font-size:12px;color:var(--muted);font-style:italic">${F.text(profile.latin, 'latin')}</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:.5rem">${F.text(profile.summary, 'summary')}</div>
     </div>`;
 
     // Origin & Tradition
-    if(profile.origin || profile.tradition){
-      html += `<div class="sec-head"><span class="sec-title">Origins & Tradition</span></div>`;
-      if(profile.origin) html += `<div style="font-size:13px;color:var(--muted);margin-bottom:0.75rem"><strong>Origin:</strong> ${profile.origin}</div>`;
-      if(profile.tradition) html += `<div style="font-size:13px;color:var(--muted);margin-bottom:0.75rem"><strong>Tradition:</strong> ${profile.tradition}</div>`;
-    }
+    html += `<div class="sec-head"><span class="sec-title">Origins & Tradition</span></div>`;
+    html += `<div style="font-size:13px;color:var(--muted);margin-bottom:0.75rem"><strong>Origin:</strong> <span${F.has(profile.origin) ? '' : ' class="chi-nodata"'}>${F.text(profile.origin, 'origin')}</span></div>`;
+    html += `<div style="font-size:13px;color:var(--muted);margin-bottom:0.75rem"><strong>Tradition:</strong> <span${F.has(profile.tradition) ? '' : ' class="chi-nodata"'}>${F.text(profile.tradition, 'tradition')}</span></div>`;
 
     // Spiritual History & Timeline
-    if(profile.spiritualHistory && profile.spiritualHistory.overview){
-      html += `<div class="sec-head"><span class="sec-title">Spiritual & Cultural History</span></div>`;
-      html += `<div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:1rem">${profile.spiritualHistory.overview}</div>`;
-      if(profile.spiritualHistory.timeline && profile.spiritualHistory.timeline.length){
-        html += `<div style="font-size:12px;color:var(--muted);margin-bottom:1rem">`;
-        profile.spiritualHistory.timeline.forEach(t => {
-          html += `<div style="margin-bottom:0.6rem"><strong style="color:var(--gold)">${t.era}:</strong> ${t.text}</div>`;
-        });
-        html += `</div>`;
-      }
-    }
-
-    // Modern Use & Research
-    if(profile.modernUse){
-      html += `<div class="sec-head"><span class="sec-title">Modern Research & Use</span></div>`;
-      html += `<div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:1rem">${profile.modernUse}</div>`;
-    }
-
-    // Rare Fact
-    if(profile.rareFact){
-      html += `<div style="background:rgba(200,149,42,.08);border-left:3px solid var(--gold);padding:1rem;margin-bottom:1.5rem;border-radius:4px;">`;
-      html += `<div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.4rem;font-weight:500">Rare Fact</div>`;
-      html += `<div style="font-size:13px;color:var(--parchment);line-height:1.6">${profile.rareFact}</div>`;
+    const spirit = profile.spiritualHistory || {};
+    html += `<div class="sec-head"><span class="sec-title">Spiritual & Cultural History</span></div>`;
+    html += F.has(spirit.overview)
+      ? `<div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:1rem">${spirit.overview}</div>`
+      : F.note('spiritualHistory');
+    if(F.has(spirit.timeline)){
+      html += `<div style="font-size:12px;color:var(--muted);margin-bottom:1rem">`;
+      spirit.timeline.forEach(t => {
+        html += `<div style="margin-bottom:0.6rem"><strong style="color:var(--gold)">${t.era}:</strong> ${t.text}</div>`;
+      });
       html += `</div>`;
     }
 
+    // Modern Use & Research
+    html += `<div class="sec-head"><span class="sec-title">Modern Research & Use</span></div>`;
+    html += F.has(profile.modernUse)
+      ? `<div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:1rem">${profile.modernUse}</div>`
+      : F.note('modernUse');
+
+    // Rare Fact
+    html += `<div style="background:rgba(200,149,42,.08);border-left:3px solid var(--gold);padding:1rem;margin-bottom:1.5rem;border-radius:4px;">`;
+    html += `<div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.4rem;font-weight:500">Rare Fact</div>`;
+    html += F.has(profile.rareFact)
+      ? `<div style="font-size:13px;color:var(--parchment);line-height:1.6">${profile.rareFact}</div>`
+      : F.note('rareFact');
+    html += `</div>`;
+
     // Compound Classes (from compounds)
-    if(profile.compounds && profile.compounds.length){
-      const compClasses = [...new Set(profile.compounds.map(c => c.class).filter(Boolean))];
-      if(compClasses.length){
-        html += `<div class="sec-head"><span class="sec-title">Compound Classes</span></div>`;
-        html += `<div class="pill-row" style="margin-bottom:1.5rem">`;
-        compClasses.forEach(cls => {
-          html += `<span class="pill" style="background:rgba(200,149,42,.15);color:var(--gold-light);border:1px solid rgba(200,149,42,.3);font-size:12.5px;padding:3px 10px">${cls}</span>`;
-        });
-        html += `</div>`;
-      }
+    const compClasses = F.has(profile.compounds)
+      ? [...new Set(profile.compounds.map(c => c.class).filter(Boolean))] : [];
+    html += `<div class="sec-head"><span class="sec-title">Compound Classes</span></div>`;
+    if(compClasses.length){
+      html += `<div class="pill-row" style="margin-bottom:1.5rem">`;
+      compClasses.forEach(cls => {
+        html += `<span class="pill" style="background:rgba(200,149,42,.15);color:var(--gold-light);border:1px solid rgba(200,149,42,.3);font-size:12.5px;padding:3px 10px">${cls}</span>`;
+      });
+      html += `</div>`;
+    } else {
+      html += F.note('compounds');
     }
 
     // Key Compounds (detailed)
-    if(profile.compounds && profile.compounds.length){
-      html += `<div class="sec-head"><span class="sec-title">Key Compounds</span><span class="sec-count">${profile.compounds.length}</span></div><div class="grid">`;
+    html += `<div class="sec-head"><span class="sec-title">Key Compounds</span><span class="sec-count">${F.has(profile.compounds) ? profile.compounds.length : 0}</span></div>`;
+    if(F.has(profile.compounds)){
+      html += `<div class="grid">`;
       profile.compounds.forEach(c => {
         html += `<div class="crd" style="cursor:default">
           <div class="cn">${c.name}</div>
-          <div class="ct">${c.class || 'Compound'}</div>
-          <div class="cs">${c.role}</div>
-          ${c.mechanism ? `<div class="dl" style="margin-top:8px">Mechanism</div><div class="mbox">${c.mechanism}</div>` : ''}
-          ${c.evidence ? `<div class="dl" style="margin-top:8px">Evidence</div><div class="mbox" style="font-size:11px;color:var(--muted)">${c.evidence}</div>` : ''}
+          <div class="ct">${F.has(c.class) ? c.class : 'Compound'}</div>
+          <div class="cs">${F.has(c.role) ? c.role : ''}</div>
+          <div class="dl" style="margin-top:8px">Mechanism</div>
+          ${F.has(c.mechanism) ? `<div class="mbox">${c.mechanism}</div>` : `<div class="mbox chi-nodata">${F.message('mechanism')}</div>`}
+          <div class="dl" style="margin-top:8px">Evidence</div>
+          ${F.has(c.evidence) ? `<div class="mbox" style="font-size:11px;color:var(--muted)">${c.evidence}</div>` : `<div class="mbox chi-nodata" style="font-size:11px">${F.message('evidence')}</div>`}
         </div>`;
       });
       html += '</div>';
+    } else {
+      html += F.note('compounds');
     }
 
     // Herbal Actions (detailed)
-    if(profile.herbalActions && profile.herbalActions.length){
-      html += `<div class="sec-head"><span class="sec-title">Herbal Actions</span><span class="sec-count">${profile.herbalActions.length}</span></div><div class="grid wide">`;
+    html += `<div class="sec-head"><span class="sec-title">Herbal Actions</span><span class="sec-count">${F.has(profile.herbalActions) ? profile.herbalActions.length : 0}</span></div>`;
+    if(F.has(profile.herbalActions)){
+      html += `<div class="grid wide">`;
       profile.herbalActions.forEach(a => {
         html += `<div class="crd" style="cursor:default">
           <div style="display:flex;justify-content:space-between;gap:6px;margin-bottom:4px">
             <span class="cn">${a.name}</span>
-            <span class="sys-tag" style="background:rgba(200,149,42,.15);color:var(--gold-light);font-size:10px;padding:2px 8px;border-radius:3px">${a.system}</span>
+            <span class="sys-tag" style="background:rgba(200,149,42,.15);color:var(--gold-light);font-size:10px;padding:2px 8px;border-radius:3px">${F.has(a.system) ? a.system : '—'}</span>
           </div>
-          <div class="cs">${a.description}</div>
-          ${a.compounds && a.compounds.length ? `<div class="dl" style="margin-top:8px">Key Compounds</div><div class="pill-row">${a.compounds.map(c => `<span class="pill" style="background:rgba(160,160,220,.15);color:#b3b3e6;border:1px solid rgba(160,160,220,.3);font-size:11px;padding:2px 6px">${c}</span>`).join('')}</div>` : ''}
+          <div class="cs">${F.has(a.description) ? a.description : ''}</div>
+          ${F.has(a.compounds) ? `<div class="dl" style="margin-top:8px">Key Compounds</div><div class="pill-row">${a.compounds.map(c => `<span class="pill" style="background:rgba(160,160,220,.15);color:#b3b3e6;border:1px solid rgba(160,160,220,.3);font-size:11px;padding:2px 6px">${c}</span>`).join('')}</div>` : ''}
         </div>`;
       });
       html += '</div>';
+    } else {
+      html += F.note('herbalActions');
     }
 
     // Body System Effects
-    if(profile.bodyEffects && profile.bodyEffects.length){
-      html += `<div class="sec-head"><span class="sec-title">Body System Effects</span><span class="sec-count">${profile.bodyEffects.length}</span></div><div class="grid">`;
+    html += `<div class="sec-head"><span class="sec-title">Body System Effects</span><span class="sec-count">${F.has(profile.bodyEffects) ? profile.bodyEffects.length : 0}</span></div>`;
+    if(F.has(profile.bodyEffects)){
+      html += `<div class="grid">`;
       profile.bodyEffects.forEach(be => {
         html += `<div class="crd" style="cursor:default">
           <div class="cn" style="color:var(--gold-light)">${be.system}</div>
-          <div class="cs">${be.effect}</div>
+          <div class="cs">${F.has(be.effect) ? be.effect : ''}</div>
         </div>`;
       });
       html += '</div>';
+    } else {
+      html += F.note('bodyEffects');
     }
 
-    // Preparation Methods
-    if(profile.preparation){
-      html += `<div class="sec-head"><span class="sec-title">Preparation Methods</span></div><div style="font-size:12px;color:var(--muted);line-height:1.6">`;
-      Object.entries(profile.preparation).forEach(([method, dose]) => {
-        if(dose) html += `<div style="margin-bottom:0.75rem"><strong>${method}:</strong> ${dose}</div>`;
-      });
-      html += '</div>';
-    }
+    // Preparation Methods — every format listed, dosage gaps stated plainly
+    const prepLabels = {tea:'Tea',tincture:'Tincture',capsule:'Capsule',topical:'Topical',smoke:'Smoke',traditional:'Traditional'};
+    const prepData = profile.preparation || {};
+    html += `<div class="sec-head"><span class="sec-title">Preparation Methods</span></div><div style="font-size:12px;color:var(--muted);line-height:1.6">`;
+    Object.keys(prepLabels).forEach(k => {
+      html += F.has(prepData[k])
+        ? `<div style="margin-bottom:0.75rem"><strong>${prepLabels[k]}:</strong> ${prepData[k]}</div>`
+        : `<div style="margin-bottom:0.75rem"><strong>${prepLabels[k]}:</strong> <span class="chi-nodata">${F.message('dosage')}</span></div>`;
+    });
+    html += '</div>';
 
     // Known Interactions
-    if(profile.interactions && profile.interactions.length){
-      html += `<div class="sec-head"><span class="sec-title">Known Interactions</span></div><div class="pill-row">`;
+    html += `<div class="sec-head"><span class="sec-title">Known Interactions</span></div>`;
+    if(F.has(profile.interactions)){
+      html += `<div class="pill-row">`;
       profile.interactions.forEach(i => {
         html += `<span class="pill pill-gold">${i}</span>`;
       });
       html += '</div>';
+    } else {
+      html += F.note('interactions');
     }
 
     document.getElementById(targetId).innerHTML = html;

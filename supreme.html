@@ -548,60 +548,69 @@ async function pollForStage2Update(herbName, { maxMs = 120000, intervalMs = 3000
 
 function renderProfile(h) {
   // Hero
+  const F = window.CHI_FALLBACK;
+  const spirit = h.spiritualHistory || {};
+
   document.getElementById('ph-name').textContent = h.name;
-  document.getElementById('ph-latin').textContent = h.latin;
-  document.getElementById('ph-origin').textContent = h.origin;
-  document.getElementById('ph-cat').textContent = h.category;
-  document.getElementById('ph-cat').style.background = h.categoryColor + '22';
-  document.getElementById('ph-cat').style.color = h.categoryColor;
-  document.getElementById('ph-cat').style.borderColor = h.categoryColor + '55';
-  document.getElementById('ph-category').textContent = h.category;
-  document.getElementById('ph-tradition').textContent = h.tradition;
-  document.getElementById('ph-preps').textContent = (h.preparations || []).join(', ');
-  document.getElementById('ph-safety').textContent = h.safetyLevel;
+  document.getElementById('ph-latin').textContent = F.text(h.latin, 'latin');
+  document.getElementById('ph-origin').textContent = F.text(h.origin, 'origin');
+  document.getElementById('ph-cat').textContent = F.has(h.category) ? h.category : 'Uncategorised';
+  const catColor = F.has(h.categoryColor) ? h.categoryColor : '#8a8a80';
+  document.getElementById('ph-cat').style.background = catColor + '22';
+  document.getElementById('ph-cat').style.color = catColor;
+  document.getElementById('ph-cat').style.borderColor = catColor + '55';
+  document.getElementById('ph-category').textContent = F.has(h.category) ? h.category : 'Not yet assigned';
+  document.getElementById('ph-tradition').textContent = F.text(h.tradition, 'tradition');
+  document.getElementById('ph-preps').textContent = F.has(h.preparations) ? h.preparations.join(', ') : F.message('preparations');
+  document.getElementById('ph-safety').textContent = F.text(h.safetyLevel, 'safetyLevel');
   document.getElementById('profile-bc-name').textContent = h.name;
   document.getElementById('bc-current').textContent = h.name;
 
   // Timeline HTML
-  const timelineHTML = (h.spiritualHistory.timeline || []).map(t =>
+  const timelineHTML = (spirit.timeline || []).map(t =>
     `<div class="tl-item"><div class="tl-year">${t.era}</div><div class="tl-text">${t.text}</div></div>`
   ).join('');
 
   // Compounds
-  const compoundsHTML = (h.compounds || []).map(c =>
+  const compoundsHTML = F.section(h.compounds, 'compounds', list => list.map(c =>
     `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--parchment-dark);">
       <span style="font-size:13px;font-weight:500;color:var(--charcoal);min-width:130px;">${c.name}</span>
-      <div style="flex:1;height:3px;background:var(--parchment-deep);border-radius:2px;overflow:hidden;"><div style="width:${c.strength}%;height:100%;background:var(--gold);border-radius:2px;"></div></div>
-      <span style="font-size:12px;color:var(--charcoal-mid);min-width:150px;text-align:right;">${c.role}</span>
+      <div style="flex:1;height:3px;background:var(--parchment-deep);border-radius:2px;overflow:hidden;"><div style="width:${c.strength || 0}%;height:100%;background:var(--gold);border-radius:2px;"></div></div>
+      <span style="font-size:12px;color:var(--charcoal-mid);min-width:150px;text-align:right;">${F.has(c.role) ? c.role : '—'}</span>
     </div>`
-  ).join('');
+  ).join(''));
 
   // Body effects
-  const bodyHTML = (h.bodyEffects || []).map(b =>
+  const bodyHTML = F.section(h.bodyEffects, 'bodyEffects', list => list.map(b =>
     `<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--parchment-dark);">
       <strong style="font-size:13px;color:var(--forest);min-width:130px;">${b.system}</strong>
-      <span style="font-size:13px;color:var(--charcoal-mid);flex:1;">${b.effect}</span>
+      <span style="font-size:13px;color:var(--charcoal-mid);flex:1;">${F.has(b.effect) ? b.effect : '—'}</span>
     </div>`
-  ).join('');
+  ).join(''));
 
-  // Preparation
+  // Preparation — every format is listed, with a note where no dose is recorded
   const prepLabels = {tea:'Tea',tincture:'Tincture',capsule:'Capsule',topical:'Topical',smoke:'Smoke',traditional:'Traditional'};
-  const prepHTML = Object.entries(h.preparation || {}).filter(([k,v])=>v).map(([k,v])=>
-    `<div style="padding:1.1rem 1.35rem;background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-radius:6px;">
-      <div style="font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:8px;">${prepLabels[k] || k}</div>
-      <div style="font-size:13.5px;color:var(--charcoal-mid);line-height:1.7;">${v}</div>
-    </div>`
-  ).join('');
+  const prepData = h.preparation || {};
+  const prepHTML = Object.keys(prepLabels).map(k => {
+    const v = prepData[k];
+    const body = F.has(v)
+      ? `<div style="font-size:13.5px;color:var(--charcoal-mid);line-height:1.7;">${v}</div>`
+      : `<div style="font-size:12.5px;color:var(--charcoal-mid);line-height:1.7;opacity:.62;font-style:italic;">${F.message('dosage')}</div>`;
+    return `<div style="padding:1.1rem 1.35rem;background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-radius:6px;">
+      <div style="font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:8px;">${prepLabels[k]}</div>
+      ${body}
+    </div>`;
+  }).join('');
 
   document.getElementById('profile-main-content').innerHTML = `
-    ${h.functionalOverview ? `<div style="background:rgba(200,149,42,.07);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
-      <div style="font-size:14.5px;line-height:1.8;color:var(--charcoal);margin-bottom:${h.source ? '1rem' : '0'};">${h.functionalOverview}</div>
-      ${h.source ? `<div style="font-size:11.5px;color:var(--charcoal-mid);border-top:1px solid rgba(200,149,42,.2);padding-top:.75rem;"><span style="text-transform:uppercase;letter-spacing:.08em;color:var(--gold);font-weight:600;">Source</span><span style="margin-left:.5rem;">${h.source}</span></div>` : ''}
-    </div>` : ''}
+    <div style="background:rgba(200,149,42,.07);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
+      <div style="font-size:14.5px;line-height:1.8;color:var(--charcoal);margin-bottom:1rem;${F.has(h.functionalOverview) ? '' : 'opacity:.62;font-style:italic;'}">${F.text(h.functionalOverview, 'functionalOverview')}</div>
+      <div style="font-size:11.5px;color:var(--charcoal-mid);border-top:1px solid rgba(200,149,42,.2);padding-top:.75rem;"><span style="text-transform:uppercase;letter-spacing:.08em;color:var(--gold);font-weight:600;">Source</span><span style="margin-left:.5rem;${F.has(h.source) ? '' : 'opacity:.62;font-style:italic;'}">${F.text(h.source, 'source')}</span></div>
+    </div>
 
     <div class="content-section">
       <h2><span class="cs-icon">🔬</span>Modern research &amp; use</h2>
-      ${(h.modernUse||'').split('\n\n').map(p=>`<p>${p}</p>`).join('')}
+      ${F.section(h.modernUse, 'modernUse', v => v.split('\n\n').map(p=>`<p>${p}</p>`).join(''))}
       <div class="pi-cta">
         <div class="pi-cta-text">Want the deep compound science — bioavailability, mechanisms, dosing evidence? <strong>Plant Intelligence</strong> covers it in full clinical detail.</div>
         <a class="pi-cta-link" href="phytochemistry.html" target="_blank">Explore Plant Intelligence →</a>
@@ -610,12 +619,12 @@ function renderProfile(h) {
 
     <div class="content-section">
       <h2><span class="cs-icon">✦</span>Spiritual &amp; cultural history</h2>
-      ${h.spiritualHistory.overview.split('\n\n').map(p=>`<p>${p}</p>`).join('')}
+      ${F.section(spirit.overview, 'spiritualHistory', v => v.split('\n\n').map(p=>`<p>${p}</p>`).join(''))}
       <div class="spirit-block">
         <div class="sb-label">Ancient knowledge</div>
-        <p>${h.rareFact}</p>
+        ${F.has(h.rareFact) ? `<p>${h.rareFact}</p>` : F.note('rareFact')}
       </div>
-      ${timelineHTML ? `<div class="timeline" style="margin-top:1.5rem;">${timelineHTML}</div>` : ''}
+      ${timelineHTML ? `<div class="timeline" style="margin-top:1.5rem;">${timelineHTML}</div>` : `<div style="margin-top:1.5rem;">${F.note('timeline')}</div>`}
     </div>
 
     <div class="content-section">
@@ -633,13 +642,14 @@ function renderProfile(h) {
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;">${prepHTML}</div>
     </div>
 
-    ${h.interactions && h.interactions.length ? `
     <div class="content-section">
       <h2><span class="cs-icon">⚠</span>Interactions &amp; cautions</h2>
       <div style="background:rgba(196,82,42,.06);border:1px solid rgba(196,82,42,.18);border-left:3px solid #c4522a;border-radius:0 4px 4px 0;padding:1.25rem 1.5rem;">
-        ${h.interactions.map(i=>`<div style="font-size:14px;color:var(--charcoal-mid);padding:6px 0;border-bottom:1px solid rgba(196,82,42,.08);display:flex;gap:8px;"><span style="color:#c4522a;font-weight:700;font-size:12px;margin-top:2px;">!</span>${i}</div>`).join('')}
+        ${F.has(h.interactions)
+          ? h.interactions.map(i=>`<div style="font-size:14px;color:var(--charcoal-mid);padding:6px 0;border-bottom:1px solid rgba(196,82,42,.08);display:flex;gap:8px;"><span style="color:#c4522a;font-weight:700;font-size:12px;margin-top:2px;">!</span>${i}</div>`).join('')
+          : `<div style="font-size:13px;color:var(--charcoal-mid);line-height:1.7;opacity:.72;font-style:italic;">${F.message('interactions')}</div>`}
       </div>
-    </div>` : ''}`;
+    </div>`;
 
   // Sidebar: ranking + forum
   const rankData = TOP20.find(r => r.name.toLowerCase() === h.name.toLowerCase()) || {rank:'—',stars:4.5,votes:0};
@@ -726,6 +736,7 @@ function closeProfile() {
 
 </script>
 <!-- Shared CHI glossary: auto-tags known terms in the herb profile and shows definition tooltips on hover -->
+<script src="chi-fallbacks.js"></script>
 <script src="chi-glossary.js"></script>
 </body>
 </html>
