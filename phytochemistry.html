@@ -1196,14 +1196,45 @@ async function fetchHerbProfileFromAPI(herbName, targetId){
       html += `</div>`;
     }
 
-    // Key Compounds
+    // Compound Classes (from compounds)
+    if(profile.compounds && profile.compounds.length){
+      const compClasses = [...new Set(profile.compounds.map(c => c.class).filter(Boolean))];
+      if(compClasses.length){
+        html += `<div class="sec-head"><span class="sec-title">Compound Classes</span></div>`;
+        html += `<div class="pill-row" style="margin-bottom:1.5rem">`;
+        compClasses.forEach(cls => {
+          html += `<span class="pill" style="background:rgba(200,149,42,.15);color:var(--gold-light);border:1px solid rgba(200,149,42,.3);font-size:12.5px;padding:3px 10px">${cls}</span>`;
+        });
+        html += `</div>`;
+      }
+    }
+
+    // Key Compounds (detailed)
     if(profile.compounds && profile.compounds.length){
       html += `<div class="sec-head"><span class="sec-title">Key Compounds</span><span class="sec-count">${profile.compounds.length}</span></div><div class="grid">`;
       profile.compounds.forEach(c => {
         html += `<div class="crd" style="cursor:default">
           <div class="cn">${c.name}</div>
-          <div class="ct">${c.role}</div>
-          <div class="cs" style="margin-top:0.5rem">Strength: <strong>${c.strength}/100</strong></div>
+          <div class="ct">${c.class || 'Compound'}</div>
+          <div class="cs">${c.role}</div>
+          ${c.mechanism ? `<div class="dl" style="margin-top:8px">Mechanism</div><div class="mbox">${c.mechanism}</div>` : ''}
+          ${c.evidence ? `<div class="dl" style="margin-top:8px">Evidence</div><div class="mbox" style="font-size:11px;color:var(--muted)">${c.evidence}</div>` : ''}
+        </div>`;
+      });
+      html += '</div>';
+    }
+
+    // Herbal Actions (detailed)
+    if(profile.herbalActions && profile.herbalActions.length){
+      html += `<div class="sec-head"><span class="sec-title">Herbal Actions</span><span class="sec-count">${profile.herbalActions.length}</span></div><div class="grid wide">`;
+      profile.herbalActions.forEach(a => {
+        html += `<div class="crd" style="cursor:default">
+          <div style="display:flex;justify-content:space-between;gap:6px;margin-bottom:4px">
+            <span class="cn">${a.name}</span>
+            <span class="sys-tag" style="background:rgba(200,149,42,.15);color:var(--gold-light);font-size:10px;padding:2px 8px;border-radius:3px">${a.system}</span>
+          </div>
+          <div class="cs">${a.description}</div>
+          ${a.compounds && a.compounds.length ? `<div class="dl" style="margin-top:8px">Key Compounds</div><div class="pill-row">${a.compounds.map(c => `<span class="pill" style="background:rgba(160,160,220,.15);color:#b3b3e6;border:1px solid rgba(160,160,220,.3);font-size:11px;padding:2px 6px">${c}</span>`).join('')}</div>` : ''}
         </div>`;
       });
       html += '</div>';

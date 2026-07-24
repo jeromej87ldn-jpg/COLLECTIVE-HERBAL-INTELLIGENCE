@@ -12,6 +12,7 @@ if (process.env.SUPABASE_URL && process.env.SUPABASE_KEY) {
 
 // ── FULL PROFILE: Complete herb profile (Sonnet) ──────────────────────
 // Single comprehensive prompt that generates all fields: essentials + rich depth
+// Includes detailed compound data and herbal actions for Plant Intelligence display
 const FULL_PROFILE_PROMPT = `You are the Herbadex — CHI's herb knowledge engine.
 Provide a complete, comprehensive profile for the requested herb. Return ONLY valid JSON:
 {
@@ -34,7 +35,10 @@ Provide a complete, comprehensive profile for the requested herb. Return ONLY va
   },
   "modernUse": "1 paragraph on current research and modern applications",
   "compounds": [
-    {"name":"compound","role":"one short phrase","strength":0-100}
+    {"name":"compound name","class":"compound class (e.g. Flavonoid, Alkaloid, Terpenoid)","role":"primary action phrase","strength":0-100,"mechanism":"detailed mechanism of action (1-2 sentences)","evidence":"scientific evidence or traditional use note"}
+  ],
+  "herbalActions": [
+    {"name":"action name","system":"body system or category","description":"how this action works in 1-2 sentences","compounds":["compound1","compound2"]}
   ],
   "bodyEffects": [
     {"system":"body system","effect":"one short phrase"}
@@ -55,7 +59,9 @@ Provide a complete, comprehensive profile for the requested herb. Return ONLY va
   ]
 }
 
-Limits: timeline max 2, compounds max 4, bodyEffects max 4, interactions max 3, forumSeed exactly 2.`;
+Limits: timeline max 2, compounds max 4, herbalActions max 7, bodyEffects max 4, interactions max 3, forumSeed exactly 2.
+For compounds: include detailed mechanism and scientific evidence.
+For herbalActions: include the key compounds that drive each action.`;
 
 const STALE_GENERATING_MS = 120000; // 2 minutes
 

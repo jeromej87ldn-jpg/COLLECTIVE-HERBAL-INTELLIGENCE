@@ -136,7 +136,8 @@ await test('cache miss returns full profile', async () => {
       tradition: 'Ayurvedic, TCM',
       spiritualHistory: { overview: 'Used for spiritual clarity.', timeline: [{ era: 'Ancient', text: 'Used in meditation.' }] },
       modernUse: 'Studied for cognitive enhancement.',
-      compounds: [{ name: 'Bacoside A', role: 'neuroprotective', strength: 80 }],
+      compounds: [{ name: 'Bacoside A', class: 'Glycoside', role: 'neuroprotective', strength: 80, mechanism: 'Enhances synaptic plasticity', evidence: 'Clinical studies show improved memory' }],
+      herbalActions: [{ name: 'Nootropic', system: 'Cognitive', description: 'Enhances memory and focus', compounds: ['Bacoside A'] }],
       bodyEffects: [{ system: 'nervous', effect: 'enhances memory' }],
       preparation: { tea: 'steep 1-2g in water', tincture: '1-2ml daily', capsule: null, topical: null, smoke: null, traditional: null },
       rareFact: 'Known as Brahmi in Ayurveda.',
@@ -151,6 +152,8 @@ await test('cache miss returns full profile', async () => {
   assert.ok(body.name, 'should have name');
   assert.ok(body.origin, 'should have origin (full profile)');
   assert.ok(body.modernUse, 'should have modernUse (full profile)');
+  assert.ok(body.herbalActions, 'should have herbalActions');
+  assert.ok(body.compounds[0].mechanism, 'should have detailed compound mechanism');
   assert.ok(sb.log.upserts.some(u => u.status === 'complete'), 'should mark complete in cache');
 });
 
@@ -169,7 +172,8 @@ await test('stale generating row generates full profile fresh', async () => {
     tradition: 'Western herbalism',
     spiritualHistory: { overview: 'Sacred herb.', timeline: [{ era: 'Ancient Rome', text: 'Used for memory.' }] },
     modernUse: 'Studied for cognitive support.',
-    compounds: [{ name: 'Thujone', role: 'activating', strength: 60 }],
+    compounds: [{ name: 'Thujone', class: 'Monoterpene', role: 'activating', strength: 60, mechanism: 'Stimulates memory centers', evidence: 'Traditional use confirmed' }],
+    herbalActions: [{ name: 'Nootropic', system: 'Cognitive', description: 'Enhances clarity and recall', compounds: ['Thujone'] }],
     bodyEffects: [{ system: 'nervous', effect: 'enhances clarity' }],
     preparation: { tea: 'steep 1-2g', tincture: null, capsule: null, topical: null, smoke: null, traditional: null },
     rareFact: 'Used in medieval education.',
@@ -183,6 +187,7 @@ await test('stale generating row generates full profile fresh', async () => {
   const body = JSON.parse(res.body);
   assert.ok(body.name, 'should generate full profile fresh for stale row');
   assert.ok(body.origin, 'should include origin from full generation');
+  assert.ok(body.herbalActions, 'should include herbalActions');
 });
 
 await test('error row returns 502 and clears the row', async () => {
