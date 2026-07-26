@@ -660,25 +660,44 @@ function getApiProfile(name){
   return name ? apiProfiles[name.toLowerCase()] : null;
 }
 
-// Fetch (once) and cache the profile for a herb, then refresh dependent tabs.
-function loadApiProfileForHerb(name){
+const apiProfileError = {};   // herbNameLower -> error message
+const apiProfileSubs = {};    // herbNameLower -> [callbacks]
+
+// Fetch (once) and cache the profile for a herb, then notify anything showing it.
+// onUpdate fires on Stage 1 and again on Stage 2, so views refresh progressively.
+function loadApiProfileForHerb(name, onUpdate){
   if(!name) return;
   const key = name.toLowerCase();
-  if(apiProfiles[key] || apiProfilePending[key]) return;
+
+  if(onUpdate){
+    (apiProfileSubs[key] = apiProfileSubs[key] || []).push(onUpdate);
+  }
+  const notify = () => {
+    refreshHerbDependentTabs();
+    (apiProfileSubs[key] || []).forEach(cb => { try{ cb(); }catch(e){} });
+  };
+
+  // Already have it, or already in flight — just make sure the caller renders.
+  if(apiProfiles[key]){ if(onUpdate) onUpdate(); return; }
+  if(apiProfilePending[key]) return;
   apiProfilePending[key] = true;
 
   fetchHerbProfilePolling(name).then(profile => {
     apiProfiles[key] = profile;
     apiProfilePending[key] = false;
-    refreshHerbDependentTabs();
+    notify();
 
     // Stage 2 arrives later with mechanisms + richer actions — merge it in.
     if(profile && profile.stage2Status === 'loading'){
       pollForStage2Update(name).then(full => {
-        if(full){ apiProfiles[key] = full; refreshHerbDependentTabs(); }
+        if(full){ apiProfiles[key] = full; notify(); }
       }).catch(()=>{});
     }
-  }).catch(() => { apiProfilePending[key] = false; });
+  }).catch(err => {
+    apiProfilePending[key] = false;
+    apiProfileError[key] = err.message || 'Profile could not be generated';
+    notify();
+  });
 }
 
 function refreshHerbDependentTabs(){
@@ -960,8 +979,10 @@ function selectLookupHerb(name){
 // ─── HERB PROFILE PANEL ──────────────────────────────────────────
 function showHerbProfile(name){
   const panel = document.getElementById('herb-profile');
-  // Warm the generated profile so Body Systems / Traditional Systems can use it
-  loadApiProfileForHerb(name);
+  // Warm the generated profile and re-render this panel when it lands. Only
+  // subscribe while it's still missing, so the callback can't re-subscribe
+  // itself when it fires.
+  if(!getApiProfile(name)) loadApiProfileForHerb(name, () => showHerbProfile(name));
   const matchedCompounds = COMPOUNDS.filter(c=>c.herbs.some(h=>h.toLowerCase().includes(name.toLowerCase())||name.toLowerCase().includes(h.toLowerCase().replace(' root','').replace(' leaf',''))));
   const matchedActions = ACTIONS.filter(a=>a.herbs.some(h=>h.toLowerCase().includes(name.toLowerCase())||name.toLowerCase().includes(h.toLowerCase())));
   const systems = [...new Set(matchedActions.map(a=>a.sys))];
@@ -1027,8 +1048,14 @@ function showHerbProfile(name){
       <div>${actionRows}</div>
     </div>` : ''}
 
-    ${!matchedCompounds.length && !matchedActions.length ? `
-    <p style="font-size:13px;color:var(--muted);font-style:italic">No data found for "${name}" yet — full data available once the herb database is uploaded.</p>` : ''}
+    ${(() => {
+      // The generated profile is shown for every herb, alongside curated data
+      // where it exists — never one instead of the other.
+      const p = getApiProfile(name);
+      if(p) return `<div class="hp-section" style="margin-top:1rem">${apiSectionsHtml(p, matchedCompounds.length > 0, matchedActions.length > 0)}</div>`;
+      if(apiProfileError[name.toLowerCase()]) return `<p style="font-size:13px;color:#dd6a6a;font-style:italic;margin-top:.85rem">Could not generate the full profile: ${apiProfileError[name.toLowerCase()]}</p>`;
+      return `<p style="font-size:13px;color:var(--gold-light);font-style:italic;margin-top:.85rem">Gathering the full profile for ${name}…</p>`;
+    })()}
   `;
 }
 
@@ -1244,24 +1271,10 @@ async function pollForStage2Update(herbName, maxMs, intervalMs){
 }
 
 
-async function fetchHerbProfileFromAPI(herbName, targetId){
-  try {
-    const profile = await fetchHerbProfilePolling(herbName);
-    renderApiProfile(profile, targetId);
-
-    // Stage 2 carries mechanisms, evidence, spiritual history and the richer
-    // actions. Without this the page would sit on placeholders forever.
-    if(profile && profile.stage2Status === 'loading'){
-      pollForStage2Update(herbName).then(full => {
-        if(full) renderApiProfile(full, targetId);
-      }).catch(()=>{});
-    }
-  } catch(err){
-    document.getElementById(targetId).innerHTML = `<div class="empty" style="color:#dd6a6a">Could not generate profile: ${err.message}. Check that the API key is configured.</div>`;
-  }
-}
-
-function renderApiProfile(profile, targetId){
+// Returns the generated-profile sections as HTML. Compounds and actions are
+// suppressed independently: a herb can have curated actions but no curated
+// compounds, and in that case the generated compounds must still be shown.
+function apiSectionsHtml(profile, skipCompounds, skipActions){
   {
     const F = window.CHI_FALLBACK;
     const stage2Pending = profile.stage2Status === 'loading';
@@ -1270,12 +1283,7 @@ function renderApiProfile(profile, targetId){
       ? '<p class="chi-nodata">Still gathering this section…</p>'
       : F.note(field);
 
-    // Display API result — complete brain box with all profile data
-    let html = `<div style="margin-bottom:1.5rem">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:500;color:var(--gold-light);margin-bottom:.25rem">${profile.name}</div>
-      <div style="font-size:12px;color:var(--muted);font-style:italic">${F.text(profile.latin, 'latin')}</div>
-      <div style="font-size:13px;color:var(--muted);margin-top:.5rem">${F.text(profile.summary, 'summary')}</div>
-    </div>`;
+    let html = '';
 
     // Origin & Tradition
     html += `<div class="sec-head"><span class="sec-title">Origins & Tradition</span></div>`;
@@ -1310,9 +1318,10 @@ function renderApiProfile(profile, targetId){
       : pend('rareFact');
     html += `</div>`;
 
-    // Compound Classes (from compounds)
+    // Compound Classes (from compounds) — skipped when curated cards already shown
     const compClasses = F.has(profile.compounds)
       ? [...new Set(profile.compounds.map(c => c.class).filter(Boolean))] : [];
+    if(!skipCompounds){
     html += `<div class="sec-head"><span class="sec-title">Compound Classes</span></div>`;
     if(compClasses.length){
       html += `<div class="pill-row" style="margin-bottom:1.5rem">`;
@@ -1343,8 +1352,10 @@ function renderApiProfile(profile, targetId){
     } else {
       html += F.note('compounds');
     }
+    } // end !skipCompounds
 
     // Herbal Actions (detailed)
+    if(!skipActions){
     html += `<div class="sec-head"><span class="sec-title">Herbal Actions</span><span class="sec-count">${F.has(profile.herbalActions) ? profile.herbalActions.length : 0}</span></div>`;
     if(F.has(profile.herbalActions)){
       html += `<div class="grid wide">`;
@@ -1362,6 +1373,7 @@ function renderApiProfile(profile, targetId){
     } else {
       html += F.note('herbalActions');
     }
+    } // end !skipActions
 
     // Body System Effects
     html += `<div class="sec-head"><span class="sec-title">Body System Effects</span><span class="sec-count">${F.has(profile.bodyEffects) ? profile.bodyEffects.length : 0}</span></div>`;
@@ -1401,7 +1413,7 @@ function renderApiProfile(profile, targetId){
       html += F.note('interactions');
     }
 
-    document.getElementById(targetId).innerHTML = html;
+    return html;
   }
 }
 
@@ -1414,22 +1426,53 @@ function renderHerbLookup(){
   showHerbProfileInline(q, 'herb-lookup-out');
 }
 
+// Every herb gets the same page. Curated glossary depth where it exists, the
+// generated profile always — not one or the other depending on the herb.
 function showHerbProfileInline(name, targetId){
+  renderUnifiedHerb(name, targetId);
+  loadApiProfileForHerb(name, () => renderUnifiedHerb(name, targetId));
+}
+
+function renderUnifiedHerb(name, targetId){
+  const key = name.toLowerCase();
+  const profile = getApiProfile(name);
+  const F = window.CHI_FALLBACK;
+  const curated = curatedSectionsHtml(name);
+
+  // Header: latin/summary come from the profile once it lands
+  let html = `<div style="margin-bottom:1.5rem">
+    <div style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:500;color:var(--gold-light);margin-bottom:.25rem">${(profile && profile.name) || name}</div>
+    ${profile ? `<div style="font-size:12px;color:var(--muted);font-style:italic">${F.text(profile.latin,'latin')}</div>` : ''}
+    <div style="font-size:12px;color:var(--muted);margin-top:.35rem">${curated.stats}</div>
+    ${profile ? `<div style="font-size:13px;color:var(--muted);margin-top:.5rem">${F.text(profile.summary,'summary')}</div>` : ''}
+  </div>`;
+
+  html += curated.html;
+
+  if(profile){
+    html += apiSectionsHtml(profile, curated.hasCompounds, curated.hasActions);
+  } else if(apiProfileError[key]){
+    html += `<div class="empty" style="color:#dd6a6a">Could not generate the full profile: ${apiProfileError[key]}</div>`;
+  } else {
+    html += `<div class="empty" style="color:var(--gold-light)">Gathering the full profile for <strong>${name}</strong>…</div>`;
+  }
+
+  document.getElementById(targetId).innerHTML = html;
+}
+
+// Curated glossary sections — compound classes, compounds with mechanisms,
+// herbal actions. Returns empty strings for herbs the glossary doesn't cover.
+function curatedSectionsHtml(name){
   const matchedCompounds = COMPOUNDS.filter(c=>c.herbs.some(h=>h.toLowerCase().includes(name.toLowerCase())||name.toLowerCase().includes(h.toLowerCase().replace(' root','').replace(' leaf',''))));
   const matchedActions = ACTIONS.filter(a=>a.herbs.some(h=>h.toLowerCase().includes(name.toLowerCase())||name.toLowerCase().includes(h.toLowerCase())));
 
-  if(!matchedCompounds.length && !matchedActions.length){
-    // No local data — try API
-    document.getElementById(targetId).innerHTML=`<div class="empty" style="color:var(--gold-light)">Generating AI profile for <strong>${name}</strong>…</div>`;
-    fetchHerbProfileFromAPI(name, targetId);
-    return;
-  }
   const systems=[...new Set(matchedActions.map(a=>a.sys))];
   const compClasses=[...new Set(matchedCompounds.map(c=>c.cls))];
-  let html=`<div style="margin-bottom:1.5rem">
-    <div style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:500;color:var(--gold-light);margin-bottom:.25rem">${name}</div>
-    <div style="font-size:12px;color:var(--muted)">${compClasses.length} compound classes · ${matchedCompounds.length} compounds · ${matchedActions.length} herbal actions · ${systems.length} body systems</div>
-  </div>`;
+  const stats = (matchedCompounds.length || matchedActions.length)
+    ? `${compClasses.length} compound classes · ${matchedCompounds.length} compounds · ${matchedActions.length} herbal actions · ${systems.length} body systems`
+    : '';
+
+  let html='';
   if(compClasses.length){
     html+=`<div class="sec-head"><span class="sec-title">Compound classes</span></div>
     <div class="pill-row" style="margin-bottom:1rem">${compClasses.map(c=>`<span class="pill" style="background:${hexToRgba(CLASS_COLORS[c]||'#aaa',0.2)};color:${CLASS_COLORS[c]||'#aaa'};border:1px solid ${hexToRgba(CLASS_COLORS[c]||'#aaa',0.35)};font-size:12.5px;padding:3px 10px">${c}</span>`).join('')}</div>`;
@@ -1463,7 +1506,7 @@ function showHerbProfileInline(name, targetId){
     });
     html+='</div>';
   }
-  document.getElementById(targetId).innerHTML=html;
+  return { html, stats, hasCompounds: matchedCompounds.length > 0, hasActions: matchedActions.length > 0 };
 }
 
 // ─── RENDER ACTIONS ──────────────────────────────────────────────
