@@ -1736,15 +1736,28 @@ let piBackTarget = 'supreme.html';
       const tabEl = document.getElementById('pi-herbadex-tab');
       if (tabEl) tabEl.textContent = 'Back to Herb Match ↶';
       addHerbToStack(nav.herb);
+      return;
     }
   } catch (e) {}
+
+  // Arriving from Herbadex's "Explore Plant Intelligence" link or edge tab,
+  // which passes the herb via the same ?herb= convention Herbadex uses for
+  // its own deep links. piBackTarget stays 'supreme.html' (the default).
+  const urlHerb = new URLSearchParams(window.location.search).get('herb');
+  if (urlHerb) {
+    const name = decodeURIComponent(urlHerb).replace(/-/g, ' ').trim();
+    addHerbToStack(name);
+  }
 })();
 
 function handlePiBackTab() {
   if (piBackTarget === 'herb-match.html') {
     try { sessionStorage.setItem('chi_reopen_profile', userStack[0] || ''); } catch (e) {}
+    window.location.href = piBackTarget;
+    return;
   }
-  window.location.href = piBackTarget;
+  const herb = userStack[0] || '';
+  window.location.href = herb ? `${piBackTarget}?herb=${encodeURIComponent(herb)}` : piBackTarget;
 }
 </script>
 <script>

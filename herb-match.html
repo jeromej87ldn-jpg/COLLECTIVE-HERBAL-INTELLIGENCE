@@ -227,8 +227,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
       <div class="profile-name" id="profile-name"></div>
       <div class="profile-latin" id="profile-latin"></div>
       <div class="profile-view-toggle" id="profile-view-toggle">
-        <button class="view-toggle-btn active" id="btn-essential" onclick="setProfileView('essential')">Essential</button>
-        <button class="view-toggle-btn" id="btn-full" onclick="setProfileView('full')">Full Profile</button>
+        <button class="view-toggle-btn" id="btn-essential" onclick="setProfileView('essential')">Essential</button>
+        <button class="view-toggle-btn active" id="btn-full" onclick="setProfileView('full')">Full Profile</button>
       </div>
       <div class="profile-actions">
         <button class="profile-btn primary" onclick="addToStack()">+ Add to stack</button>
@@ -706,7 +706,7 @@ function renderProfileContent(profile) {
 
 // Current profile data and view mode
 let currentProfileData = null;
-let profileView = 'essential'; // 'essential' or 'full'
+let profileView = 'full'; // 'essential' or 'full' — defaults to full so every herb shows the same depth as Plant Intelligence
 
 function setProfileView(view) {
   profileView = view;

@@ -353,7 +353,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 </section>
 
 <!-- Back to Plant Intelligence edge panel -->
-<button class="herbadex-pi-tab" id="herbadex-pi-tab" onclick="window.location.href='phytochemistry.html'">Back to Plant Intelligence ↶</button>
+<button class="herbadex-pi-tab" id="herbadex-pi-tab" onclick="goToPI()">Back to Plant Intelligence ↶</button>
 
 <!-- HERB PROFILE (hidden until search) -->
 <section id="herb-profile">
@@ -613,7 +613,7 @@ function renderProfile(h) {
       ${F.section(h.modernUse, 'modernUse', v => v.split('\n\n').map(p=>`<p>${p}</p>`).join(''))}
       <div class="pi-cta">
         <div class="pi-cta-text">Want the deep compound science — bioavailability, mechanisms, dosing evidence? <strong>Plant Intelligence</strong> covers it in full clinical detail.</div>
-        <a class="pi-cta-link" href="phytochemistry.html" target="_blank">Explore Plant Intelligence →</a>
+        <a class="pi-cta-link" href="phytochemistry.html?herb=${encodeURIComponent(h.name)}" target="_blank">Explore Plant Intelligence →</a>
       </div>
     </div>
 
@@ -713,6 +713,11 @@ function addForumEntry(herbName) {
   newEntry.innerHTML = `<div class="fe-meta"><div class="fe-avatar">U</div><span class="fe-name">You</span><span class="fe-date">Just now</span></div><div class="fe-stars"><span class="fe-star">★★★★★</span></div><div class="fe-text">${text}</div>`;
   entries.insertAdjacentElement('afterend', newEntry);
   document.getElementById('forum-input').value = '';
+}
+
+function goToPI() {
+  const herb = document.getElementById('ph-name').textContent || '';
+  window.location.href = herb ? `phytochemistry.html?herb=${encodeURIComponent(herb)}` : 'phytochemistry.html';
 }
 
 function closeProfile() {
