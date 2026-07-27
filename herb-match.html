@@ -117,10 +117,34 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .profile-caution-title{color:#e39a9a!important;}
 
 /* PROFILE VIEW TOGGLE */
-.profile-view-toggle{display:inline-flex;background:rgba(0,0,0,.25);border:1px solid var(--card-border);border-radius:999px;padding:3px;margin-bottom:1.25rem;}
-.view-toggle-btn{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;padding:.4rem 1rem;border-radius:999px;cursor:pointer;transition:all .18s;white-space:nowrap;}
-.view-toggle-btn:hover{color:var(--text);}
-.view-toggle-btn.active{background:var(--gold);color:var(--forest);}
+
+
+/* Herb profile content — ported to match Herbadex's presentation exactly
+   (same section layout/typography), with a Plant Intelligence compound
+   science section appended after it. Scoped light/parchment theme so it
+   reads correctly against this page's dark chrome. Herbadex (supreme.html)
+   itself is not modified — these rules are a deliberate duplicate. */
+#profile-content{
+  --parchment-dark:#ede5d0;--parchment-deep:#e0d5b8;
+  --charcoal:#2a2a25;--charcoal-mid:#4a4a42;
+  background:var(--parchment);color:var(--charcoal);
+  border-radius:10px;padding:2rem 2.25rem;text-align:left;
+}
+#profile-content .content-section{margin-bottom:3rem;}
+#profile-content .content-section h2{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;color:var(--charcoal);margin-bottom:1.1rem;padding-bottom:.6rem;border-bottom:1px solid var(--parchment-dark);display:flex;align-items:center;gap:10px;}
+#profile-content .content-section h2 .cs-icon{font-size:17px;}
+#profile-content .content-section p{font-size:14px;color:var(--charcoal-mid);line-height:1.8;margin-bottom:1rem;}
+#profile-content .spirit-block{background:linear-gradient(135deg,rgba(26,58,42,.07) 0%,rgba(200,149,42,.06) 100%);border:1px solid rgba(200,149,42,.2);border-radius:6px;padding:1.75rem;margin:1.5rem 0;}
+#profile-content .spirit-block .sb-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+#profile-content .spirit-block .sb-label::before{content:'✦';}
+#profile-content .spirit-block p{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:300;font-style:italic;color:var(--charcoal);line-height:1.65;margin-bottom:0;}
+#profile-content .timeline{position:relative;padding-left:2rem;}
+#profile-content .timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;background:var(--parchment-deep);}
+#profile-content .tl-item{position:relative;padding-bottom:1.5rem;}
+#profile-content .tl-item::before{content:'';position:absolute;left:-2rem;top:5px;width:8px;height:8px;border-radius:50%;background:var(--gold);border:2px solid var(--parchment);}
+#profile-content .tl-year{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}
+#profile-content .tl-text{font-size:14px;color:var(--charcoal-mid);line-height:1.7;}
+@media(max-width:600px){#profile-content{padding:1.5rem 1.25rem;}}
 .profile-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
 .profile-btn{padding:.7rem 1.2rem;border:1px solid var(--card-border);border-radius:5px;background:transparent;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;}
 .profile-btn:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
@@ -226,10 +250,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <div class="profile-header">
       <div class="profile-name" id="profile-name"></div>
       <div class="profile-latin" id="profile-latin"></div>
-      <div class="profile-view-toggle" id="profile-view-toggle">
-        <button class="view-toggle-btn" id="btn-essential" onclick="setProfileView('essential')">Essential</button>
-        <button class="view-toggle-btn active" id="btn-full" onclick="setProfileView('full')">Full Profile</button>
-      </div>
       <div class="profile-actions">
         <button class="profile-btn primary" onclick="addToStack()">+ Add to stack</button>
         <button class="profile-btn" onclick="backToResults()">← Back to results</button>
@@ -570,7 +590,6 @@ async function viewProfile(herbName) {
 
   document.getElementById('profile-name').textContent = herbName;
   document.getElementById('profile-latin').textContent = '';
-  document.getElementById('profile-view-toggle').style.display = 'none';
 
   // Show a spinner + ticker while loading
   const tickerHTML = `<div class="loading">
@@ -693,130 +712,136 @@ function renderProfileContent(profile) {
   stopLoadingTicker(); // Stop the spinner ticker
   document.getElementById('profile-name').textContent = profile.name || currentProfile;
   document.getElementById('profile-latin').textContent = profile.latin || '';
-
-  // Store the profile so the toggle can re-render it
-  currentProfileData = profile;
-
-  // The toggle is always available — the Full view reports what is still
-  // generating or was never recorded, rather than hiding the option outright.
-  document.getElementById('profile-view-toggle').style.display = 'inline-flex';
-
-  renderProfileByView(profile, profileView);
+  document.getElementById('profile-content').innerHTML = buildHerbadexStyleProfileHtml(profile);
 }
 
-// Current profile data and view mode
-let currentProfileData = null;
-let profileView = 'full'; // 'essential' or 'full' — defaults to full so every herb shows the same depth as Plant Intelligence
-
-function setProfileView(view) {
-  profileView = view;
-  document.getElementById('btn-essential').classList.toggle('active', view === 'essential');
-  document.getElementById('btn-full').classList.toggle('active', view === 'full');
-  if (currentProfileData) renderProfileByView(currentProfileData, view);
-}
-
-function renderProfileByView(profile, view) {
+// Ported from Herbadex's renderProfile() (supreme.html) so a herb viewed
+// from Herb Match reads identically to its Herbadex entry — same sections,
+// same layout — with Plant Intelligence's compound-mechanism/herbal-action
+// detail appended after it. Deliberately duplicated here rather than
+// shared, since supreme.html itself is not to be modified. There is no
+// more "essential vs full" split — this is the one profile.
+function buildHerbadexStyleProfileHtml(h) {
   const F = window.CHI_FALLBACK;
-  const spirit = profile.spiritualHistory || {};
-  const stage2Pending = profile.stage2Status === 'loading';
-  let html = '';
+  const spirit = h.spiritualHistory || {};
+  const stage2Pending = h.stage2Status === 'loading';
 
-  // Sections that only exist once Stage 2 lands. While it's still generating we
-  // say so rather than claiming nothing was ever recorded.
-  const deep = (value, field, builder) => {
-    if (F.has(value)) return builder(value);
-    return stage2Pending
-      ? `<p class="chi-nodata">Still gathering this section…</p>`
-      : F.note(field);
-  };
+  const timelineHTML = (spirit.timeline || []).map(t =>
+    `<div class="tl-item"><div class="tl-year">${t.era}</div><div class="tl-text">${t.text}</div></div>`
+  ).join('');
 
-  html += `<div class="profile-block"><div class="profile-block-title">Overview</div>${F.has(profile.summary) ? `<p>${profile.summary}</p>` : F.note('summary')}</div>`;
-
-  // Full profile only: Origins & Tradition
-  if (view === 'full') {
-    html += `<div class="profile-block"><div class="profile-block-title">Origins & Tradition</div>`;
-    html += `<p style="margin-bottom:.5rem"><strong style="color:var(--text)">Origin:</strong> <span${F.has(profile.origin) ? '' : ' class="chi-nodata"'}>${F.text(profile.origin, 'origin')}</span></p>`;
-    html += `<p><strong style="color:var(--text)">Tradition:</strong> <span${F.has(profile.tradition) ? '' : ' class="chi-nodata"'}>${F.text(profile.tradition, 'tradition')}</span></p>`;
-    html += `</div>`;
-
-    html += `<div class="profile-block"><div class="profile-block-title">Spiritual & Cultural History</div>`;
-    html += deep(spirit.overview, 'spiritualHistory', v => `<p style="margin-bottom:1rem">${v}</p>`);
-    if (F.has(spirit.timeline)) {
-      spirit.timeline.forEach(t => {
-        html += `<p style="margin-bottom:.6rem;font-size:12.5px"><strong style="color:var(--gold-light)">${t.era}:</strong> ${t.text}</p>`;
-      });
-    }
-    html += `</div>`;
-
-    html += `<div class="profile-block"><div class="profile-block-title">Modern Research & Use</div>${deep(profile.modernUse, 'modernUse', v => `<p>${v}</p>`)}</div>`;
-
-    html += `<div class="profile-block" style="background:rgba(200,149,42,.08);border-left:3px solid var(--gold)"><div class="profile-block-title" style="color:var(--gold)">Rare Fact</div>${deep(profile.rareFact, 'rareFact', v => `<p>${v}</p>`)}</div>`;
-  }
-
-  // Compounds — essential shows name+role, full adds mechanism and evidence
-  html += `<div class="profile-block"><div class="profile-block-title">Key compounds</div>`;
-  if (F.has(profile.compounds)) {
-    profile.compounds.forEach(c => {
-      html += `<div class="profile-compound-row"><span class="cname">${c.name}</span><span class="crole">${F.has(c.role) ? c.role : ''}</span></div>`;
-      if (view === 'full') {
-        html += F.has(c.mechanism)
-          ? `<p style="font-size:12px;color:var(--muted);margin:.3rem 0 .8rem 0;padding-left:.5rem;border-left:2px solid rgba(200,149,42,.2)">${c.mechanism}</p>`
-          : `<p class="chi-nodata" style="font-size:12px;margin:.3rem 0 .8rem .5rem">${stage2Pending ? 'Still gathering the mechanism…' : F.message('mechanism')}</p>`;
-        if (F.has(c.evidence)) {
-          html += `<p style="font-size:11.5px;color:var(--muted);font-style:italic;margin:0 0 .8rem .5rem">${c.evidence}</p>`;
-        }
-      }
-    });
-  } else {
-    html += F.note('compounds');
-  }
-  html += `</div>`;
-
-  // Full profile only: Herbal Actions
-  if (view === 'full') {
-    html += `<div class="profile-block"><div class="profile-block-title">Herbal Actions</div>`;
-    html += deep(profile.herbalActions, 'herbalActions', list => list.map(a => {
-      let block = `<div style="margin-bottom:1rem">`;
-      block += `<div class="profile-compound-row"><span class="cname">${a.name}</span><span class="crole">${F.has(a.system) ? a.system : ''}</span></div>`;
-      block += F.has(a.description) ? `<p style="font-size:12.5px;color:var(--muted);margin-top:.3rem">${a.description}</p>` : '';
-      block += F.has(a.compounds) ? `<p style="font-size:11.5px;color:var(--muted);margin-top:.3rem">Key compounds: ${a.compounds.join(', ')}</p>` : '';
-      return block + `</div>`;
-    }).join(''));
-    html += `</div>`;
-  }
-
-  html += `<div class="profile-block"><div class="profile-block-title">Body system effects</div>`;
-  html += F.section(profile.bodyEffects, 'bodyEffects', list => list.map(be =>
-    `<div class="profile-compound-row"><span class="cname">${be.system}</span><span class="crole">${F.has(be.effect) ? be.effect : ''}</span></div>`
+  const compoundsHTML = F.section(h.compounds, 'compounds', list => list.map(c =>
+    `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--parchment-dark);">
+      <span style="font-size:13px;font-weight:500;color:var(--charcoal);min-width:130px;">${c.name}</span>
+      <div style="flex:1;height:3px;background:var(--parchment-deep);border-radius:2px;overflow:hidden;"><div style="width:${c.strength || 0}%;height:100%;background:var(--gold);border-radius:2px;"></div></div>
+      <span style="font-size:12px;color:var(--charcoal-mid);min-width:150px;text-align:right;">${F.has(c.role) ? c.role : '—'}</span>
+    </div>`
   ).join(''));
-  html += `</div>`;
 
-  // Preparation — list every format so a missing dose is visible, not absent
-  const prepLabels = { tea:'Tea', tincture:'Tincture', capsule:'Capsule', topical:'Topical', smoke:'Smoke', traditional:'Traditional' };
-  const prepData = profile.preparation || {};
-  html += `<div class="profile-block"><div class="profile-block-title">Preparation</div>`;
-  Object.keys(prepLabels).forEach(k => {
-    html += F.has(prepData[k])
-      ? `<p style="margin-bottom:.6rem"><strong style="color:var(--text)">${prepLabels[k]}:</strong> ${prepData[k]}</p>`
-      : `<p class="chi-nodata" style="margin-bottom:.6rem"><strong style="color:var(--text);font-style:normal">${prepLabels[k]}:</strong> ${F.message('dosage')}</p>`;
-  });
-  html += `</div>`;
+  const bodyHTML = F.section(h.bodyEffects, 'bodyEffects', list => list.map(b =>
+    `<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--parchment-dark);">
+      <strong style="font-size:13px;color:var(--forest);min-width:130px;">${b.system}</strong>
+      <span style="font-size:13px;color:var(--charcoal-mid);flex:1;">${F.has(b.effect) ? b.effect : '—'}</span>
+    </div>`
+  ).join(''));
 
-  // Cautions are visually separated so they read as warnings, not as more detail
-  const caution = (title, body) =>
-    `<div class="profile-block profile-caution"><div class="profile-block-title profile-caution-title">⚠ ${title}</div>${body}</div>`;
+  const prepLabels = {tea:'Tea',tincture:'Tincture',capsule:'Capsule',topical:'Topical',smoke:'Smoke',traditional:'Traditional'};
+  const prepData = h.preparation || {};
+  const prepHTML = Object.keys(prepLabels).map(k => {
+    const v = prepData[k];
+    const body = F.has(v)
+      ? `<div style="font-size:13.5px;color:var(--charcoal-mid);line-height:1.7;">${v}</div>`
+      : `<div style="font-size:12.5px;color:var(--charcoal-mid);line-height:1.7;opacity:.62;font-style:italic;">${F.message('dosage')}</div>`;
+    return `<div style="padding:1.1rem 1.35rem;background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-radius:6px;">
+      <div style="font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:8px;">${prepLabels[k]}</div>
+      ${body}
+    </div>`;
+  }).join('');
 
-  html += caution('Known interactions',
-    F.has(profile.interactions)
-      ? profile.interactions.map(i => `<p style="margin-bottom:.4rem">• ${i}</p>`).join('')
-      : `<p class="chi-nodata">${F.message('interactions')}</p>`);
+  // Plant Intelligence — compound mechanism & evidence, and full herbal
+  // actions, appended after the Herbadex-style profile rather than
+  // replacing any of it.
+  const piCompoundsHTML = F.has(h.compounds) ? h.compounds.map(c => `
+    <div style="padding:.9rem 0;border-bottom:1px solid var(--parchment-dark);">
+      <div style="font-size:13.5px;font-weight:500;color:var(--charcoal);margin-bottom:.3rem;">${c.name}</div>
+      ${F.has(c.mechanism)
+        ? `<p style="font-size:13px;color:var(--charcoal-mid);line-height:1.7;margin-bottom:.3rem;">${c.mechanism}</p>`
+        : `<p style="font-size:12.5px;color:var(--charcoal-mid);opacity:.62;font-style:italic;">${stage2Pending ? 'Still gathering the mechanism…' : F.message('mechanism')}</p>`}
+      ${F.has(c.evidence) ? `<p style="font-size:12px;color:var(--charcoal-mid);opacity:.75;font-style:italic;">${c.evidence}</p>` : ''}
+    </div>`).join('') : F.note('compounds');
 
-  html += caution('Safety',
-    F.has(profile.safetyLevel) ? `<p>${profile.safetyLevel}</p>` : `<p class="chi-nodata">${F.message('safetyLevel')}</p>`);
+  const piActionsHTML = F.has(h.herbalActions) ? h.herbalActions.map(a => `
+    <div style="padding:.9rem 0;border-bottom:1px solid var(--parchment-dark);">
+      <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:.3rem;flex-wrap:wrap;">
+        <span style="font-size:13.5px;font-weight:500;color:var(--charcoal);">${a.name}</span>
+        <span style="font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:.05em;">${F.has(a.system) ? a.system : ''}</span>
+      </div>
+      ${F.has(a.description) ? `<p style="font-size:13px;color:var(--charcoal-mid);line-height:1.7;">${a.description}</p>` : ''}
+      ${F.has(a.compounds) ? `<p style="font-size:12px;color:var(--charcoal-mid);opacity:.75;margin-top:.3rem;">Key compounds: ${a.compounds.join(', ')}</p>` : ''}
+    </div>`).join('') : (stage2Pending
+      ? `<p style="font-size:13px;color:var(--charcoal-mid);opacity:.62;font-style:italic;">Still gathering this section…</p>`
+      : F.note('herbalActions'));
 
-  document.getElementById('profile-content').innerHTML = html;
+  return `
+    <div style="background:rgba(200,149,42,.07);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.85rem;">
+        ${F.has(h.category) ? `<span style="font-size:11px;padding:3px 10px;border-radius:999px;background:rgba(200,149,42,.15);color:var(--gold);font-weight:600;">${h.category}</span>` : ''}
+        ${F.has(h.origin) ? `<span style="font-size:11px;color:var(--charcoal-mid);">Origin: ${h.origin}</span>` : ''}
+        ${F.has(h.tradition) ? `<span style="font-size:11px;color:var(--charcoal-mid);">Tradition: ${h.tradition}</span>` : ''}
+      </div>
+      <div style="font-size:14.5px;line-height:1.8;color:var(--charcoal);margin-bottom:1rem;${F.has(h.functionalOverview) ? '' : 'opacity:.62;font-style:italic;'}">${F.text(h.functionalOverview, 'functionalOverview')}</div>
+      <div style="font-size:11.5px;color:var(--charcoal-mid);border-top:1px solid rgba(200,149,42,.2);padding-top:.75rem;"><span style="text-transform:uppercase;letter-spacing:.08em;color:var(--gold);font-weight:600;">Source</span><span style="margin-left:.5rem;${F.has(h.source) ? '' : 'opacity:.62;font-style:italic;'}">${F.text(h.source, 'source')}</span></div>
+    </div>
+
+    <div class="content-section">
+      <h2><span class="cs-icon">🔬</span>Modern research &amp; use</h2>
+      ${F.section(h.modernUse, 'modernUse', v => v.split('\n\n').map(p=>`<p>${p}</p>`).join(''))}
+    </div>
+
+    <div class="content-section">
+      <h2><span class="cs-icon">✦</span>Spiritual &amp; cultural history</h2>
+      ${F.section(spirit.overview, 'spiritualHistory', v => v.split('\n\n').map(p=>`<p>${p}</p>`).join(''))}
+      <div class="spirit-block">
+        <div class="sb-label">Ancient knowledge</div>
+        ${F.has(h.rareFact) ? `<p>${h.rareFact}</p>` : F.note('rareFact')}
+      </div>
+      ${timelineHTML ? `<div class="timeline" style="margin-top:1.5rem;">${timelineHTML}</div>` : `<div style="margin-top:1.5rem;">${F.note('timeline')}</div>`}
+    </div>
+
+    <div class="content-section">
+      <h2><span class="cs-icon">⚗</span>Active compounds</h2>
+      ${compoundsHTML}
+    </div>
+
+    <div class="content-section">
+      <h2><span class="cs-icon">🫀</span>Effects on body systems</h2>
+      ${bodyHTML}
+    </div>
+
+    <div class="content-section">
+      <h2><span class="cs-icon">🌿</span>How to prepare &amp; use</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;">${prepHTML}</div>
+    </div>
+
+    <div class="content-section">
+      <h2><span class="cs-icon">⚠</span>Interactions &amp; cautions</h2>
+      <div style="background:rgba(196,82,42,.06);border:1px solid rgba(196,82,42,.18);border-left:3px solid #c4522a;border-radius:0 4px 4px 0;padding:1.25rem 1.5rem;">
+        ${F.has(h.interactions)
+          ? h.interactions.map(i=>`<div style="font-size:14px;color:var(--charcoal-mid);padding:6px 0;border-bottom:1px solid rgba(196,82,42,.08);display:flex;gap:8px;"><span style="color:#c4522a;font-weight:700;font-size:12px;margin-top:2px;">!</span>${i}</div>`).join('')
+          : `<div style="font-size:13px;color:var(--charcoal-mid);line-height:1.7;opacity:.72;font-style:italic;">${F.message('interactions')}</div>`}
+        <div style="margin-top:.85rem;font-size:12.5px;color:var(--charcoal-mid);"><strong style="color:var(--charcoal)">Safety:</strong> ${F.has(h.safetyLevel) ? h.safetyLevel : F.message('safetyLevel')}</div>
+      </div>
+    </div>
+
+    <div class="content-section" style="border-top:2px solid var(--gold);padding-top:2rem;margin-top:3rem;">
+      <h2><span class="cs-icon">🧪</span>Compound science — Plant Intelligence</h2>
+      <div style="font-size:12px;color:var(--charcoal-mid);opacity:.7;margin-bottom:1rem;font-style:italic;">Mechanism, evidence, and full herbal-action detail from Plant Intelligence.</div>
+      <div style="margin-bottom:1.5rem;">${piCompoundsHTML}</div>
+      <h2 style="margin-top:1.5rem;font-size:19px;"><span class="cs-icon">🧬</span>Herbal actions</h2>
+      ${piActionsHTML}
+    </div>
+  `;
 }
-
 function backToResults() {
   document.getElementById('results-section').classList.add('show');
   document.getElementById('profile-section').classList.remove('show');
