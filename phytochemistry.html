@@ -1285,38 +1285,10 @@ function apiSectionsHtml(profile, skipCompounds, skipActions){
 
     let html = '';
 
-    // Origin & Tradition
-    html += `<div class="sec-head"><span class="sec-title">Origins & Tradition</span></div>`;
-    html += `<div style="font-size:13px;color:var(--muted);margin-bottom:0.75rem"><strong>Origin:</strong> <span${F.has(profile.origin) ? '' : ' class="chi-nodata"'}>${F.text(profile.origin, 'origin')}</span></div>`;
-    html += `<div style="font-size:13px;color:var(--muted);margin-bottom:0.75rem"><strong>Tradition:</strong> <span${F.has(profile.tradition) ? '' : ' class="chi-nodata"'}>${F.text(profile.tradition, 'tradition')}</span></div>`;
-
-    // Spiritual History & Timeline
-    const spirit = profile.spiritualHistory || {};
-    html += `<div class="sec-head"><span class="sec-title">Spiritual & Cultural History</span></div>`;
-    html += F.has(spirit.overview)
-      ? `<div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:1rem">${spirit.overview}</div>`
-      : pend('spiritualHistory');
-    if(F.has(spirit.timeline)){
-      html += `<div style="font-size:12px;color:var(--muted);margin-bottom:1rem">`;
-      spirit.timeline.forEach(t => {
-        html += `<div style="margin-bottom:0.6rem"><strong style="color:var(--gold)">${t.era}:</strong> ${t.text}</div>`;
-      });
-      html += `</div>`;
-    }
-
-    // Modern Use & Research
-    html += `<div class="sec-head"><span class="sec-title">Modern Research & Use</span></div>`;
-    html += F.has(profile.modernUse)
-      ? `<div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:1rem">${profile.modernUse}</div>`
-      : pend('modernUse');
-
-    // Rare Fact
-    html += `<div style="background:rgba(200,149,42,.08);border-left:3px solid var(--gold);padding:1rem;margin-bottom:1.5rem;border-radius:4px;">`;
-    html += `<div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.4rem;font-weight:500">Rare Fact</div>`;
-    html += F.has(profile.rareFact)
-      ? `<div style="font-size:13px;color:var(--parchment);line-height:1.6">${profile.rareFact}</div>`
-      : pend('rareFact');
-    html += `</div>`;
+    // Origins & Tradition, Spiritual & Cultural History, Modern Research &
+    // Use, and Rare Fact intentionally live on the main Herbadex profile
+    // only — PI shows compound classes, herbal actions, body system
+    // effects, and preparation methods.
 
     // Compound Classes (from compounds) — skipped when curated cards already shown
     const compClasses = F.has(profile.compounds)
