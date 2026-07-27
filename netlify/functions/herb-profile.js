@@ -240,8 +240,11 @@ exports.handler = async (event) => {
           data: { ...response, generating_at: Date.now() }
         });
 
-        // Fire off background Stage 2 generation
-        fetch(`${siteURL}/.netlify/functions/herb-profile-stage2`, {
+        // Fire off Stage 2 generation via a proper Netlify background function
+        // (filename ends in "-background" -> up to 15 min execution, vs the
+        // ~10-26s limit a regular function gets, which was silently killing
+        // slower Sonnet generations before they could save to Supabase).
+        fetch(`${siteURL}/.netlify/functions/herb-profile-stage2-background`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ herbName: name, excludedHerb, issues, stage1 })
