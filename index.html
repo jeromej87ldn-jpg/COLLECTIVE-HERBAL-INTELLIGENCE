@@ -89,10 +89,10 @@ function signIn() {
   // In production — Supabase auth here
   localStorage.setItem('chi_logged_in','true');
   localStorage.setItem('chi_display_name', email.split('@')[0]);
-  window.location.href = 'profile.html';
+  window.location.href = 'home.html';
 }
 // If already logged in, redirect
-if (localStorage.getItem('chi_logged_in') === 'true') window.location.href = 'profile.html';
+if (localStorage.getItem('chi_logged_in') === 'true') window.location.href = 'home.html';
 </script>
 </body>
 </html>

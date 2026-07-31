@@ -46,7 +46,12 @@ Return ONLY the JSON object. No other text.`;
 // herbalActions/compounds/bodyEffects have no fallback now that there's
 // no Stage 1 — if they're empty here, they're empty everywhere. Same for
 // spiritualHistory/modernUse, which were always Stage-2-only content.
-const REQUIRED_TEXT = ['name', 'latin', 'category', 'summary', 'safetyLevel', 'functionalOverview'];
+// functionalOverview is NOT in this list, even though it's a real field —
+// it overlaps enough with summary/modernUse that the model sometimes
+// treats it as redundant and skips it. Rather than spend a retry chasing
+// a field we can reliably derive, deriveFunctionalOverview() below builds
+// one from modernUse (or summary) whenever it comes back empty.
+const REQUIRED_TEXT = ['name', 'latin', 'category', 'summary', 'safetyLevel'];
 const REQUIRED_SECTIONS = ['herbalActions', 'compounds', 'bodyEffects'];
 const REQUIRED_TEXT_SECTIONS = {
   spiritualHistory: h => h.spiritualHistory && h.spiritualHistory.overview && h.spiritualHistory.overview.trim(),
@@ -64,6 +69,20 @@ function findMissing(h) {
   Object.entries(REQUIRED_TEXT_SECTIONS).forEach(([f, check]) => { if (!check(h)) missing.push(f); });
   if (!h.preparation || Object.values(h.preparation).every(v => !v)) missing.push('preparation');
   return missing;
+}
+
+// If functionalOverview came back empty, build a serviceable one instead
+// of showing "not recorded" — modernUse's opening is the closest existing
+// content to what functionalOverview is meant to say, with summary as a
+// second fallback if modernUse is somehow also missing.
+function deriveFunctionalOverview(h) {
+  if (h.functionalOverview && h.functionalOverview.trim()) return;
+  if (h.modernUse && h.modernUse.trim()) {
+    const sentences = h.modernUse.trim().split(/(?<=[.!?])\s+/).filter(Boolean);
+    h.functionalOverview = sentences.slice(0, 2).join(' ');
+  } else if (h.summary && h.summary.trim()) {
+    h.functionalOverview = h.summary.trim();
+  }
 }
 
 function extractJson(text) {
@@ -150,6 +169,17 @@ exports.handler = async (event) => {
           .maybeSingle();
 
         if (row && row.status === 'complete' && row.data && row.data.name) {
+          // Heal-on-read: older cached rows (generated before this fallback
+          // existed) can still be missing functionalOverview. Patch it here
+          // too, not just on fresh generations, and persist the fix so this
+          // row doesn't need healing again next time.
+          const before = row.data.functionalOverview;
+          deriveFunctionalOverview(row.data);
+          if (row.data.functionalOverview !== before) {
+            supabase.from('herbs').upsert({ name, status: 'complete', data: row.data }).then(
+              () => {}, e => console.error('healed-row save failed:', e.message)
+            );
+          }
           return {
             statusCode: 200,
             headers: { 'Content-Type': 'application/json', 'X-Cache': 'hit' },
@@ -178,6 +208,7 @@ exports.handler = async (event) => {
       return { statusCode: 502, body: JSON.stringify({ error: 'Generation failed: ' + herb.error }) };
     }
 
+    deriveFunctionalOverview(herb);
     herb.generatedAt = new Date().toISOString();
 
     if (supabase) {
