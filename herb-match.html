@@ -603,17 +603,20 @@ async function viewProfile(herbName) {
   startLoadingTicker();
 
   try {
-    const profile = await fetchHerbProfilePolling(herbName);
+    const profile = await fetchStage1Profile(herbName);
 
     // Render Stage 1 immediately (essentials + basic compounds/actions)
     renderProfileContent(profile);
 
-    // If Stage 2 is still loading, poll for updates and merge when ready
-    if (profile.stage2Status === 'loading') {
-      const updated = await pollForStage2Update(herbName);
-      if (updated && updated.stage2Status === 'complete') {
-        // Stage 2 arrived, re-render with full detailed content
-        renderProfileContent(updated);
+    // Stage 2 is a plain, ordinary call — no background function, no
+    // polling. If it fails or times out, Stage 1's content just stays on
+    // screen; the whole profile doesn't disappear with it.
+    if (profile.stage2Pending) {
+      try {
+        const full = await fetchStage2Profile(herbName, profile);
+        if (full) renderProfileContent(full);
+      } catch (stage2Err) {
+        console.error('Stage 2 failed, keeping Stage 1 content:', stage2Err);
       }
     }
   } catch (err) {
@@ -661,51 +664,34 @@ function stopLoadingTicker() {
   }
 }
 
-// Poll for profile generation. Returns Stage 1 immediately, Stage 2 loads in background.
-async function fetchHerbProfilePolling(herbName, { maxMs = 180000, intervalMs = 2500 } = {}) {
-  const started = Date.now();
-  while (true) {
-    const res = await fetch('/.netlify/functions/herb-profile', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ herbName })
-    });
+// Stage 1 — one ordinary request, no polling. Returns essentials fast;
+// profile.stage2Pending tells the caller whether to follow up with Stage 2.
+async function fetchStage1Profile(herbName) {
+  const res = await fetch('/.netlify/functions/herb-profile', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ herbName })
+  });
 
-    if (res.status === 200) {
-      return await res.json(); // Stage 1 ready (may have stage2Status: 'loading')
-    }
+  if (res.status === 200) return await res.json();
 
-    if (res.status === 202) {
-      if (Date.now() - started > maxMs) throw new Error('Timed out waiting for the profile to generate');
-      await new Promise(r => setTimeout(r, intervalMs));
-      continue;
-    }
-
-    const errBody = await res.json().catch(() => ({}));
-    throw new Error(errBody.error || `Request failed (${res.status})`);
-  }
+  const errBody = await res.json().catch(() => ({}));
+  throw new Error(errBody.error || `Request failed (${res.status})`);
 }
 
-// Poll for Stage 2 updates (detailed mechanisms, spiritual history, etc.)
-async function pollForStage2Update(herbName, { maxMs = 120000, intervalMs = 3000 } = {}) {
-  const started = Date.now();
-  while (true) {
-    if (Date.now() - started > maxMs) return null; // give up
-    const res = await fetch('/.netlify/functions/herb-profile', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ herbName })
-    });
+// Stage 2 — one ordinary request, no polling, no background function.
+// Sends Stage 1's data along so the model doesn't have to re-derive
+// compound/action names. On any failure this returns null rather than
+// throwing, so the caller can just keep showing Stage 1's content.
+async function fetchStage2Profile(herbName, stage1) {
+  const res = await fetch('/.netlify/functions/herb-profile-stage2', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ herbName, stage1 })
+  });
 
-    if (res.status === 200) {
-      const data = await res.json();
-      if (data.stage2Status === 'complete') {
-        return data; // Stage 2 is ready, return full profile
-      }
-    }
-
-    await new Promise(r => setTimeout(r, intervalMs));
-  }
+  if (res.status === 200) return await res.json();
+  return null;
 }
 
 function renderProfileContent(profile) {
@@ -724,7 +710,7 @@ function renderProfileContent(profile) {
 function buildHerbadexStyleProfileHtml(h) {
   const F = window.CHI_FALLBACK;
   const spirit = h.spiritualHistory || {};
-  const stage2Pending = h.stage2Status === 'loading';
+  const stage2Pending = h.stage2Pending === true;
 
   const timelineHTML = (spirit.timeline || []).map(t =>
     `<div class="tl-item"><div class="tl-year">${t.era}</div><div class="tl-text">${t.text}</div></div>`
