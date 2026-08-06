@@ -135,6 +135,10 @@ input:focus,select:focus{border-color:rgba(200,149,42,.4);}
 .herb-name{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:18px;color:var(--parchment);}
 .herb-check-inline{font-size:11px;font-weight:400;font-family:'DM Sans',sans-serif;color:var(--tag-text);}
 .herb-latin{font-size:12px;font-style:italic;color:var(--muted);margin-bottom:.4rem;}
+.herb-profile-link{font-size:11px;color:var(--gold-light);text-decoration:none;display:inline-flex;align-items:center;gap:4px;margin-bottom:.5rem;}
+.herb-profile-link:hover{text-decoration:underline;}
+.row-head-link{color:inherit;text-decoration:none;}
+.row-head-link:hover{color:var(--gold-light);text-decoration:underline;}
 .herb-blurb{font-size:12.5px;color:var(--muted);margin-bottom:.5rem;line-height:1.55;}
 .herb-dose{font-size:11.5px;color:var(--muted);margin-bottom:.5rem;}
 .herb-tags{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.5rem;}
@@ -922,6 +926,13 @@ function herbNameMatches(a, b) {
   return na === nb || na.includes(nb) || nb.includes(na);
 }
 
+// Deep link into Herbadex's own encyclopedia entry for a herb — same slug
+// convention garden.html already uses (supreme.html?herb=...), so every
+// herb name in the planner can link straight to its full profile.
+function herbProfileUrl(herb) {
+  return `supreme.html?herb=${herb.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`;
+}
+
 /* ==========================================================================
    routineEngine.js — cycle math for turning a batch of herbs into a routine
    ========================================================================== */
@@ -1383,6 +1394,7 @@ function renderHerbGrid() {
         </div>
         <div class="herb-name">${h.name}${selected ? ' <span class="herb-check-inline">✓ In routine</span>' : ''}</div>
         ${h.latin ? `<div class="herb-latin">${h.latin}</div>` : ''}
+        <a class="herb-profile-link" href="${herbProfileUrl(h)}" onclick="event.stopPropagation()">📖 View full profile in Herbadex →</a>
         <div class="herb-blurb">${h.blurb}</div>
         <div class="herb-dose">Typical dose: ${h.standardDose}</div>
         <div class="herb-tags">
@@ -1487,7 +1499,11 @@ function renderPrepStep() {
       <div class="prep-card" style="--herb-color:${h.color}">
         <div class="prep-card-header">
           <span class="herb-swatch"></span>
-          <div><div class="prep-herb-name">${h.name}</div>${h.latin ? `<div class="prep-herb-latin">${h.latin}</div>` : ''}</div>
+          <div>
+            <div class="prep-herb-name">${h.name}</div>
+            ${h.latin ? `<div class="prep-herb-latin">${h.latin}</div>` : ''}
+            <a class="herb-profile-link" href="${herbProfileUrl(h)}">📖 View full profile in Herbadex →</a>
+          </div>
         </div>
 
         ${safetyBanner}
@@ -1572,7 +1588,7 @@ function renderExplanation(herbs) {
       <div class="explain-item" style="--herb-color:${h.color}">
         <span class="herb-swatch"></span>
         <div>
-          <div class="explain-herb-name">${h.name}<span class="explain-tag">${describeCycle(h)}</span><span class="explain-tag">${slot.icon} ${slot.label}</span></div>
+          <div class="explain-herb-name"><a class="row-head-link" href="${herbProfileUrl(h)}">${h.name}</a><span class="explain-tag">${describeCycle(h)}</span><span class="explain-tag">${slot.icon} ${slot.label}</span></div>
           <div class="explain-why"><strong>Dose:</strong> ${h.standardDose}</div>
           <div class="explain-why"><strong>Why this cycle:</strong> ${h.rationale}</div>
           <div class="explain-why"><strong>Why this time:</strong> ${h.timeRationale}</div>
@@ -1601,7 +1617,7 @@ function renderExplanation(herbs) {
 function renderLegend(herbs) {
   document.getElementById('legend').innerHTML = herbs.map((h) => {
     const prep = PREP_METHODS[h.prep], slot = TIME_SLOTS[h.time];
-    return `<span class="legend-item" style="--herb-color:${h.color}"><span class="legend-dot"></span>${h.name} · ${prep.icon} ${prep.label} · ${slot.icon} ${slot.label} · ${describeCycle(h)}</span>`;
+    return `<span class="legend-item" style="--herb-color:${h.color}"><span class="legend-dot"></span><a class="row-head-link" href="${herbProfileUrl(h)}">${h.name}</a> · ${prep.icon} ${prep.label} · ${slot.icon} ${slot.label} · ${describeCycle(h)}</span>`;
   }).join('');
 }
 
@@ -1620,7 +1636,7 @@ function renderTableView(herbs) {
       const content = status === 'ON' ? prep.icon : '—';
       return `<td class="${cls}" style="--herb-color:${herb.color}" title="${isLast ? 'Last day before your break' : ''}">${content}</td>`;
     }).join('');
-    return `<tr><th class="row-head" style="--herb-color:${herb.color}"><span class="herb-swatch"></span>${herb.name}</th>${cells}</tr>`;
+    return `<tr><th class="row-head" style="--herb-color:${herb.color}"><span class="herb-swatch"></span><a class="row-head-link" href="${herbProfileUrl(herb)}">${herb.name}</a></th>${cells}</tr>`;
   }).join('');
 
   wrap.innerHTML = `
@@ -1689,7 +1705,7 @@ function buildDayDetailHTML(day) {
         <div class="day-detail-item" style="--herb-color:${h.color}">
           <span class="herb-swatch"></span>
           <div>
-            <div class="day-detail-herb">${h.name} <span class="day-detail-prep">${prep.icon} ${prep.label}</span></div>
+            <div class="day-detail-herb"><a class="row-head-link" href="${herbProfileUrl(h)}">${h.name}</a> <span class="day-detail-prep">${prep.icon} ${prep.label}</span></div>
             <div class="day-detail-why">Typical dose: ${h.standardDose}</div>
             ${isLastDay ? `<div class="day-detail-last-day">⏸ Last day before your break — ${h.offWeeks} week${h.offWeeks === 1 ? '' : 's'} off starts tomorrow.</div>` : ''}
           </div>
@@ -1725,5 +1741,9 @@ function startOver() {
   goToStep(1);
 }
 </script>
+
+<!-- Shared C.H.I glossary — auto-tags known terms (tincture, capsule, infusion,
+     adaptogen, etc) anywhere in the page text with a hover definition. -->
+<script src="chi-glossary.js"></script>
 </body>
 </html>
