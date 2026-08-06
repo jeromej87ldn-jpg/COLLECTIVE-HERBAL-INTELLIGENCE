@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resources — C.H.I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#1a3a2a;--forest-mid:#2d5c42;--forest-light:#4a8c65;
+  --gold:#c8952a;--gold-light:#e8b84b;--night:#0c1a10;
+  --parchment:#f5f0e8;--muted:rgba(245,240,232,0.5);
+  --card:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.08);
+  --text:#f5f0e8;--accent:#c8952a;
+  --tag-bg:rgba(74,140,101,0.15);--tag-border:rgba(74,140,101,0.3);--tag-text:#7acca0;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--night);color:var(--text);min-height:100vh;
+  background-image:radial-gradient(ellipse 80% 50% at 50% -5%,rgba(74,140,101,0.12),transparent 60%),radial-gradient(ellipse 40% 40% at 90% 90%,rgba(200,149,42,0.05),transparent 50%);}
+
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:var(--forest);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:100;}
+.nav-logo{text-decoration:none;display:flex;flex-direction:column;}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-light);letter-spacing:.1em;}
+.nav-full{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.5);}
+.nav-right{display:flex;align-items:center;gap:1.5rem;}
+.nav-right>a,.nav-right>.nav-dd{color:rgba(245,240,232,.6);text-decoration:none;font-size:13px;transition:color .2s;}
+.nav-right>a:hover,.nav-right>a.active{color:var(--gold-light);}
+.nav-cta{background:var(--gold);color:var(--forest)!important;padding:.5rem 1rem;border-radius:4px;font-weight:500;}
+.nav-inbox{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:6px;border:1px solid rgba(255,255,255,0.08);color:rgba(245,240,232,.6);transition:all .2s;text-decoration:none;}
+.nav-inbox:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
+.nav-dd{position:relative;display:inline-flex;align-items:center;gap:4px;cursor:pointer;font-size:13px;color:rgba(245,240,232,.6);background:none;border:none;font-family:'DM Sans',sans-serif;padding:0;height:64px;}
+.nav-dd:hover,.nav-dd.open{color:var(--gold-light);}
+.nav-dd-arrow{font-size:8px;opacity:.5;transition:transform .2s;}
+.nav-dd.open .nav-dd-arrow{transform:rotate(180deg);}
+.nav-dd-menu{position:absolute;top:calc(100% - 1px);left:50%;transform:translateX(-50%);background:var(--forest);border:1px solid rgba(200,149,42,.22);border-radius:0 0 8px 8px;padding:.4rem 0;min-width:170px;display:none;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.nav-dd.open .nav-dd-menu{display:block;animation:ddFade .15s ease forwards;}
+@keyframes ddFade{from{opacity:0;transform:translateX(-50%) translateY(-4px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.nav-dd-menu a{display:flex;align-items:center;gap:.55rem;padding:.55rem 1.1rem;font-size:13px;color:rgba(245,240,232,.7);text-decoration:none;transition:all .15s;white-space:nowrap;}
+.nav-dd-menu a:hover{background:rgba(200,149,42,.08);color:var(--gold-light);}
+.nav-dd-menu a.active{color:var(--gold-light);}
+.nav-dd-divider{height:1px;background:rgba(255,255,255,.07);margin:.3rem 0;}
+.nav-dd-icon{font-size:14px;width:16px;text-align:center;flex-shrink:0;}
+@media(max-width:760px){.nav-right>a:not(.nav-cta):not(.nav-inbox){display:none;}.nav-dd{display:none;}}
+
+/* HERO */
+.hero{background:linear-gradient(160deg,var(--forest) 0%,rgba(12,26,16,0) 65%);border-bottom:1px solid var(--card-border);padding:3rem 2.5rem 2.25rem;position:relative;overflow:hidden;}
+.hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 80% at 90% 50%,rgba(74,140,101,0.12),transparent 65%);pointer-events:none;}
+.hero-inner{max-width:920px;margin:0 auto;position:relative;z-index:1;}
+.hero-eyebrow{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--tag-text);display:flex;align-items:center;gap:10px;margin-bottom:.75rem;}
+.hero-eyebrow::before{content:'';width:20px;height:1px;background:var(--tag-text);opacity:.6;}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(32px,5vw,50px);font-weight:300;line-height:1.06;color:var(--parchment);margin-bottom:.75rem;}
+.hero-title em{font-style:italic;color:var(--gold-light);}
+.hero-desc{font-size:14.5px;color:var(--muted);line-height:1.85;max-width:620px;}
+
+/* LAYOUT */
+.wrap{max-width:920px;margin:0 auto;padding:3rem 2.5rem 5rem;}
+.section{margin-bottom:3.25rem;}
+.section-head{display:flex;align-items:baseline;gap:.75rem;margin-bottom:.4rem;padding-bottom:.6rem;border-bottom:1px solid var(--card-border);}
+.section-num{font-family:'Cormorant Garamond',serif;font-size:15px;color:var(--gold);}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:var(--parchment);}
+.section-sub{font-size:13.5px;color:var(--muted);line-height:1.7;margin:.6rem 0 1.4rem;max-width:65ch;}
+
+/* TOOL GRID */
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.9rem;}
+.tool-card{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:1.1rem 1.2rem;transition:all .18s;}
+.tool-card:hover{border-color:rgba(200,149,42,.3);transform:translateY(-1px);}
+.tool-top{display:flex;align-items:center;gap:.6rem;margin-bottom:.4rem;}
+.tool-icon{font-size:19px;line-height:1;width:24px;text-align:center;flex-shrink:0;}
+.tool-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--text);}
+.tool-desc{font-size:13px;line-height:1.65;color:rgba(245,240,232,.68);}
+
+/* SAFETY CHECKLIST */
+.check-list{display:flex;flex-direction:column;gap:.6rem;}
+.check-item{display:flex;gap:.75rem;background:var(--card);border:1px solid var(--card-border);border-radius:8px;padding:.85rem 1rem;}
+.check-mark{color:var(--tag-text);font-size:15px;flex-shrink:0;line-height:1.5;}
+.check-text{font-size:13.5px;line-height:1.65;color:rgba(245,240,232,.78);}
+.check-text strong{color:var(--parchment);font-weight:500;}
+
+/* BUSINESS CALLOUT */
+.biz-note{background:rgba(200,149,42,.07);border:1px solid rgba(200,149,42,.22);border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.4rem;display:flex;gap:.75rem;}
+.biz-note-icon{font-size:16px;flex-shrink:0;}
+.biz-note-text{font-size:13px;line-height:1.7;color:rgba(245,240,232,.75);}
+
+/* CROSS-LINK CARD */
+.cross-link{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;background:rgba(74,140,101,.08);border:1px solid rgba(74,140,101,.25);border-radius:10px;padding:1.1rem 1.3rem;margin-top:.5rem;}
+.cross-link-text{font-size:13.5px;line-height:1.6;color:rgba(245,240,232,.8);max-width:60ch;}
+.cross-link-text strong{color:var(--tag-text);}
+.cross-link-btn{flex-shrink:0;background:var(--gold);color:var(--forest);text-decoration:none;padding:.6rem 1.15rem;border-radius:6px;font-size:13px;font-weight:500;white-space:nowrap;}
+.cross-link-btn:hover{background:var(--gold-light);}
+
+/* FOOTER DISCLAIMER */
+.foot-disclaimer{border-top:1px solid var(--card-border);padding-top:1.5rem;font-size:12px;line-height:1.75;color:var(--muted);}
+.foot-disclaimer a{color:var(--tag-text);text-decoration:none;}
+.foot-disclaimer a:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="home.html" class="nav-logo">
+    <span class="nav-chi">C.H.I</span>
+    <span class="nav-full">Collective Herbal Intelligence</span>
+  </a>
+  <div class="nav-right">
+    <div class="nav-dd" id="dd-tools" onclick="toggleDD('tools')">
+      <span style="color:inherit">Tools</span>
+      <span class="nav-dd-arrow">▼</span>
+      <div class="nav-dd-menu">
+        <a href="herb-match.html"><span class="nav-dd-icon">🌿</span>Herb Match</a>
+        <a href="phytochemistry.html"><span class="nav-dd-icon">⬡</span>Plant Intelligence</a>
+        <a href="supreme.html"><span class="nav-dd-icon">📖</span>Herbadex</a>
+        <a href="herb-identifier.html"><span class="nav-dd-icon">🔍</span>Herb Identifier</a>
+        <a href="herb-planner.html"><span class="nav-dd-icon">🗓️</span>Herb Planner</a>
+      </div>
+    </div>
+    <a href="resources.html" class="active">Resources</a>
+    <div class="nav-dd" id="dd-community" onclick="toggleDD('community')">
+      <span style="color:inherit">Community</span>
+      <span class="nav-dd-arrow">▼</span>
+      <div class="nav-dd-menu">
+        <a href="community.html"><span class="nav-dd-icon">💬</span>Community Feed</a>
+        <a href="garden.html"><span class="nav-dd-icon">🌱</span>Herbal Garden</a>
+        <a href="glossary.html"><span class="nav-dd-icon">📚</span>Glossary</a>
+      </div>
+    </div>
+    <div class="nav-dd" id="dd-profile" onclick="toggleDD('profile')">
+      <span style="color:inherit">Profile</span>
+      <span class="nav-dd-arrow">▼</span>
+      <div class="nav-dd-menu">
+        <a href="profile.html"><span class="nav-dd-icon">🌿</span>My Profile</a>
+        <a href="inbox.html"><span class="nav-dd-icon">✉️</span>Inbox</a>
+        <div class="nav-dd-divider"></div>
+        <a href="privacy-policy.html"><span class="nav-dd-icon">🔒</span>Privacy Policy</a>
+        <a href="terms.html"><span class="nav-dd-icon">📄</span>Terms</a>
+        <a href="disclaimer.html"><span class="nav-dd-icon">⚠️</span>Disclaimer</a>
+        <div class="nav-dd-divider"></div>
+        <a href="index.html" onclick="localStorage.clear()"><span class="nav-dd-icon">↩</span>Sign out</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Getting Started</div>
+    <div class="hero-title">Everything you need to go from <em>herb</em> to <em>preparation</em></div>
+    <div class="hero-desc">A practical kit list for making your own tinctures and tea bags at home, plus what to have in place if you ever want to take it further and prepare herbal products for other people.</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- TINCTURE TOOLS -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">01</span>
+      <span class="section-title">Making Tinctures at Home</span>
+    </div>
+    <div class="section-sub">A tincture is a herb steeped in alcohol (or vinegar/glycerin for alcohol-free versions) to draw out and preserve its active compounds. This is the core kit — most of it doubles up as normal kitchen equipment.</div>
+    <div class="tool-grid">
+      <div class="tool-card">
+        <div class="tool-top"><span class="tool-icon">🫙</span><span class="tool-name">Glass Jar with Lid</span></div>
+        <div class="tool-desc">Wide-mouth glass holds the herb-and-menstruum mix while it steeps. Glass won't react with alcohol the way some plastics can, and a tight lid keeps air and evaporation out.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-top"><span class="tool-icon">🔪</span><span class="tool-name">Sharp Knife</span></div>
+        <div class="tool-desc">For chopping roots, bark and leaves down small. A sharper blade gives cleaner cuts and more exposed surface area, which means a stronger, faster extraction.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-top"><span class="tool-icon">🪵</span><span class="tool-name">Cutting Board</span></div>
+        <div class="tool-desc">Keep one board for herb prep only if you can — it avoids cross-flavours and keeps things sanitary between batches.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-top"><span class="tool-icon">🧺</span><span class="tool-name">Fine Mesh Strainer</span></div>
+        <div class="tool-desc">Used once the tincture has finished steeping, to separate the liquid from the plant matter. A first pass through a strainer catches the bulk of the material.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-top"><span class="tool-icon">🧻</span><span class="tool-name">Cheesecloth or Muslin</span></div>
+        <div class="tool-desc">A second, finer filter after the strainer. Lining the strainer with cheesecloth (or straining through it separately) removes the fine sediment for a clear, sippable tincture.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-top"><span class="tool-icon">💧</span><span class="tool-name">Glass Dropper Bottles</span></div>
+        <div class="tool-desc">For storing and dosing the finished tincture. Amber or cobalt glass blocks light, which helps the tincture keep its potency for longer.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-top"><span class="tool-icon">🧪</span><span class="tool-name">Small Funnel</span></div>
+        <div class="tool-desc">Makes it far easier to pour the strained tincture into narrow dropper bottles without losing half of it down the side.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-top"><span class="tool-icon">🏷️</span><span class="tool-name">Labels and Marker</span></div>
+        <div class="tool-desc">Every jar and bottle should be labelled with the herb, the liquid used, the date it was started, and the date it's due to be strained.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEA BAG TOOLS -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">02</span>
+      <span class="section-title">Making Your Own Tea Bags</span>
+    </div>
+    <div class="section-sub">If tea is your preferred way of taking herbs, filling your own bags lets you control exactly what's in the blend and in what ratio.</div>
+    <div class="tool-grid">
+      <div class="tool-card">
+        <div class="tool-top"><span class="tool-icon">🍵</span><span class="tool-name">Empty Tea Filter Bags</span></div>
+        <div class="tool-desc">Unbleached paper filter bags — either drawstring or heat-seal style — sized for a single cup or a full pot, depending on how you drink.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-top"><span class="tool-icon">🥄</span><span class="tool-name">Measuring Spoons</span></div>
+        <div class="tool-desc">Keeps every bag consistent, so you know roughly how much of each herb you're taking cup to cup instead of guessing by eye.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-top"><span class="tool-icon">♨️</span><span class="tool-name">Small Iron or Straightener</span></div>
+        <div class="tool-desc">A quick way to heat-seal filter bags shut on low heat if you're using the heat-seal style rather than drawstring bags.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-top"><span class="tool-icon">🧵</span><span class="tool-name">Natural Cotton String</span></div>
+        <div class="tool-desc">For tying drawstring bags closed, or attaching a tag if you're gifting or batching several blends at once.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-top"><span class="tool-icon">✂️</span><span class="tool-name">Scissors</span></div>
+        <div class="tool-desc">For trimming string, opening bags and tidying loose leaf that's too coarse to fold neatly.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-top"><span class="tool-icon">🥣</span><span class="tool-name">Small Bowl</span></div>
+        <div class="tool-desc">For mixing multiple herbs into one blend evenly before it goes into the bag.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-top"><span class="tool-icon">📎</span><span class="tool-name">Stapler</span></div>
+        <div class="tool-desc">A fast way to close a folded filter bag if you don't have a heat-sealer to hand — staple just above the herb line.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAFETY & NEXT STEPS -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">03</span>
+      <span class="section-title">Safety and Next Steps</span>
+    </div>
+    <div class="section-sub">A few habits that make the difference between a clean, effective preparation and one that's wasted or unsafe.</div>
+    <div class="check-list">
+      <div class="check-item"><span class="check-mark">✓</span><span class="check-text"><strong>Sanitize everything first.</strong> Jars, bottles, tools and boards — wash and dry thoroughly before they touch any herb. Moisture left behind is the most common cause of mould in a tincture or jar.</span></div>
+      <div class="check-item"><span class="check-mark">✓</span><span class="check-text"><strong>Chop or bruise herbs finely.</strong> The smaller the pieces, the more surface area is exposed to the liquid, and the stronger and faster your extraction will be.</span></div>
+      <div class="check-item"><span class="check-mark">✓</span><span class="check-text"><strong>Label the moment you start.</strong> Herb, liquid, start date, strain-by date. It's easy to forget which jar is which after a few weeks on the shelf.</span></div>
+      <div class="check-item"><span class="check-mark">✓</span><span class="check-text"><strong>Store cool, dark, and out of direct sun.</strong> Give tinctures a shake most days while they steep to keep the extraction even.</span></div>
+      <div class="check-item"><span class="check-mark">✓</span><span class="check-text"><strong>Check before you use it.</strong> If a tincture or dried herb smells off, looks cloudy in an unexpected way, or shows any mould, discard it rather than risk it.</span></div>
+      <div class="check-item"><span class="check-mark">✓</span><span class="check-text"><strong>Start small.</strong> Make a small batch the first time you work with a herb or method that's new to you, so a mistake costs you little.</span></div>
+    </div>
+    <div class="cross-link">
+      <div class="cross-link-text">Already have herbs ready to take? <strong>Herb Planner</strong> turns whatever you've made into a cycled routine — with recommended timing, breaks, and safety checks built in.</div>
+      <a href="herb-planner.html" class="cross-link-btn">Open Herb Planner</a>
+    </div>
+  </div>
+
+  <!-- BUSINESS -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">04</span>
+      <span class="section-title">Taking It Further: Starting as a Business</span>
+    </div>
+    <div class="section-sub">If home batches turn into something you want to sell, the equipment above is still the foundation — but a few extra habits become non-negotiable.</div>
+    <div class="biz-note">
+      <span class="biz-note-icon">⚠️</span>
+      <span class="biz-note-text">This is general orientation, not legal, regulatory or financial advice. Rules for selling herbal products — labeling, licensing, cottage food laws, supplement regulations — vary significantly by country and region. Check with a local business advisor or the relevant regulatory body before selling anything.</span>
+    </div>
+    <div class="check-list">
+      <div class="check-item"><span class="check-mark">◆</span><span class="check-text"><strong>Source consistently and traceably.</strong> Buy from identified, reputable suppliers and keep a record of where every ingredient came from and when.</span></div>
+      <div class="check-item"><span class="check-mark">◆</span><span class="check-text"><strong>Label rigorously.</strong> Full ingredient list, net weight, date made, and any allergen warnings — beyond the basic herb-and-date label that's fine for personal use.</span></div>
+      <div class="check-item"><span class="check-mark">◆</span><span class="check-text"><strong>Track by batch.</strong> Give every batch a lot number so it can be traced back to its ingredients and process if a question about it ever comes up.</span></div>
+      <div class="check-item"><span class="check-mark">◆</span><span class="check-text"><strong>Know your shelf life.</strong> Test and document how long each preparation stays potent and safe, and reflect that honestly on the label.</span></div>
+      <div class="check-item"><span class="check-mark">◆</span><span class="check-text"><strong>Check local regulations early.</strong> Cottage food laws, herbal supplement labeling requirements, and business licensing differ by location — confirm what applies to you before you sell your first bottle.</span></div>
+      <div class="check-item"><span class="check-mark">◆</span><span class="check-text"><strong>Get product liability insurance.</strong> It protects both you and the people using what you make.</span></div>
+    </div>
+  </div>
+
+  <div class="foot-disclaimer">
+    The information on this page is educational and general in nature. It isn't medical, legal or financial advice. For guidance specific to your health or your circumstances, see our full <a href="disclaimer.html">Disclaimer</a>.
+  </div>
+
+</div>
+
+<script>
+function toggleDD(id){
+  const all=document.querySelectorAll(".nav-dd");
+  all.forEach(d=>{if(d.id!=="dd-"+id)d.classList.remove("open");});
+  const el=document.getElementById("dd-"+id);
+  if(el)el.classList.toggle("open");
+}
+document.addEventListener("click",e=>{
+  if(!e.target.closest(".nav-dd"))document.querySelectorAll(".nav-dd").forEach(d=>d.classList.remove("open"));
+});
+</script>
+</body>
+</html>
