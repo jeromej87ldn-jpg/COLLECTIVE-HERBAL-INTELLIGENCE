@@ -72,6 +72,15 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .tool-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--text);}
 .tool-desc{font-size:13px;line-height:1.65;color:rgba(245,240,232,.68);}
 
+/* SIZE TABLE */
+.size-table-wrap{background:var(--card);border:1px solid var(--card-border);border-radius:10px;overflow:hidden;margin-bottom:1.4rem;}
+.size-table{width:100%;border-collapse:collapse;font-size:13px;}
+.size-table th{background:rgba(200,149,42,.08);color:var(--gold-light);text-align:left;padding:.7rem .9rem;font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:500;border-bottom:1px solid var(--card-border);}
+.size-table td{padding:.65rem .9rem;border-bottom:1px solid rgba(255,255,255,.05);color:rgba(245,240,232,.8);}
+.size-table tr:last-child td{border-bottom:none;}
+.size-table td.size-name{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--parchment);font-weight:500;}
+.size-note{font-size:12.5px;line-height:1.7;color:var(--muted);margin:-0.6rem 0 1.4rem;max-width:70ch;}
+
 /* SAFETY CHECKLIST */
 .check-list{display:flex;flex-direction:column;gap:.6rem;}
 .check-item{display:flex;gap:.75rem;background:var(--card);border:1px solid var(--card-border);border-radius:8px;padding:.85rem 1rem;}
@@ -237,10 +246,59 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     </div>
   </div>
 
-  <!-- SAFETY & NEXT STEPS -->
+  <!-- CAPSULES -->
   <div class="section">
     <div class="section-head">
       <span class="section-num">03</span>
+      <span class="section-title">Capsules and Capsule Making</span>
+    </div>
+    <div class="section-sub">Capsules mask taste entirely and give a precise, repeatable dose — useful for bitter or strong-tasting herbs. The kit is small, but getting the right capsule size for your herb matters more here than with tinctures or tea.</div>
+    <div class="tool-grid">
+      <div class="tool-card">
+        <div class="tool-top"><span class="tool-icon">💊</span><span class="tool-name">Empty Capsules</span></div>
+        <div class="tool-desc">Two-piece shells you fill with dried, finely powdered herb. Gelatin capsules are cheaper and dissolve slightly faster; vegetarian (HPMC/pullulan) capsules suit vegans and hold up better in humid conditions.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-top"><span class="tool-icon">🧰</span><span class="tool-name">Capsule Filling Machine</span></div>
+        <div class="tool-desc">A manual tray-and-pin board that holds a batch of empty capsule bottoms upright so you can load powder into all of them at once. Home machines typically come in 24, 50, 100 or 200-hole trays — the larger the tray, the more capsules per batch.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-top"><span class="tool-icon">🪪</span><span class="tool-name">Tamping Tool</span></div>
+        <div class="tool-desc">Presses the powder down evenly into each capsule half after filling, so doses stay consistent from one capsule to the next instead of some ending up half-empty.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-top"><span class="tool-icon">🃏</span><span class="tool-name">Powder Tray or Bench Scraper</span></div>
+        <div class="tool-desc">A flat card or scraper for spreading herb powder across the loaded tray, so it settles into every hole evenly before you press the two capsule halves together.</div>
+      </div>
+      <div class="tool-card">
+        <div class="tool-top"><span class="tool-icon">⚖️</span><span class="tool-name">Small Digital Scale</span></div>
+        <div class="tool-desc">Capsule size tells you the available space, not the dose — every herb powder packs down differently. Weigh a handful of filled capsules the first time you use a new herb so you know your real per-capsule dose.</div>
+      </div>
+    </div>
+
+    <div class="section-sub" style="margin-bottom:.8rem;">Capsule sizes run from 000 (largest) down to 5 (smallest). Your capsule machine, and the shells you buy for it, need to match the same size.</div>
+    <div class="size-table-wrap">
+      <table class="size-table">
+        <thead><tr><th>Size</th><th>Volume</th><th>Approx. capacity</th></tr></thead>
+        <tbody>
+          <tr><td class="size-name">000</td><td>1.37 mL</td><td>~900 mg</td></tr>
+          <tr><td class="size-name">00</td><td>0.95 mL</td><td>~630 mg</td></tr>
+          <tr><td class="size-name">0</td><td>0.68 mL</td><td>~450 mg</td></tr>
+          <tr><td class="size-name">1</td><td>0.50 mL</td><td>~330 mg</td></tr>
+          <tr><td class="size-name">2</td><td>0.37 mL</td><td>~245 mg</td></tr>
+          <tr><td class="size-name">3</td><td>0.30 mL</td><td>~200 mg</td></tr>
+          <tr><td class="size-name">4</td><td>0.21 mL</td><td>~140 mg</td></tr>
+          <tr><td class="size-name">5</td><td>0.10 mL</td><td>~65 mg</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="size-note">Most home herb-takers use size 00 or 0 — small enough to swallow comfortably, large enough that you're not filling dozens for one day's dose. Capacity above is an estimate at typical powder density: fine, dense powders pack in more per capsule, and light, fluffy ones less. Weigh a few before you rely on the count.</div>
+  </div>
+
+  <!-- SAFETY & NEXT STEPS -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-num">04</span>
       <span class="section-title">Safety and Next Steps</span>
     </div>
     <div class="section-sub">A few habits that make the difference between a clean, effective preparation and one that's wasted or unsafe.</div>
@@ -261,7 +319,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   <!-- BUSINESS -->
   <div class="section">
     <div class="section-head">
-      <span class="section-num">04</span>
+      <span class="section-num">05</span>
       <span class="section-title">Taking It Further: Starting as a Business</span>
     </div>
     <div class="section-sub">If home batches turn into something you want to sell, the equipment above is still the foundation — but a few extra habits become non-negotiable.</div>
