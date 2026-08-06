@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+(function(){
+  try{
+    var s = localStorage.getItem('chi_font_scale');
+    if(s && s !== '100'){
+      var scale = parseInt(s,10)/100;
+      document.documentElement.style.setProperty('--chi-zoom', scale);
+      document.addEventListener('DOMContentLoaded', function(){
+        document.body.style.zoom = scale;
+        if(!('zoom' in document.body.style) || navigator.userAgent.indexOf('Firefox')>-1){
+          var supportsZoom = CSS.supports && CSS.supports('zoom', '1.5');
+          if(!supportsZoom){
+            document.body.style.transform = 'scale('+scale+')';
+            document.body.style.transformOrigin = 'top center';
+            document.body.style.width = (100/scale)+'%';
+          }
+        }
+      });
+    }
+  }catch(e){}
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herb Planner — C.H.I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#1a3a2a;--forest-mid:#2d5c42;--forest-light:#4a8c65;
+  --gold:#c8952a;--gold-light:#e8b84b;--night:#0c1a10;
+  --parchment:#f5f0e8;--muted:rgba(245,240,232,0.5);
+  --card:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.08);
+  --text:#f5f0e8;--accent:#c8952a;
+  --tag-bg:rgba(74,140,101,0.15);--tag-border:rgba(74,140,101,0.3);--tag-text:#7acca0;
+  --danger:#e0645a;--danger-bg:rgba(224,101,90,.12);--danger-border:rgba(224,101,90,.35);--danger-text:#ff9d90;
+  --amber:#d9a13f;--amber-bg:rgba(217,161,63,.12);--amber-border:rgba(217,161,63,.35);--amber-text:#f0c878;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--night);color:var(--text);min-height:100vh;
+  background-image:radial-gradient(ellipse 80% 50% at 50% -5%,rgba(74,140,101,0.12),transparent 60%),radial-gradient(ellipse 40% 40% at 90% 90%,rgba(200,149,42,0.05),transparent 50%);
+  line-height:1.6;}
+
+h1{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(26px,4vw,36px);color:var(--parchment);margin-bottom:.4rem;}
+.step-intro{color:var(--muted);font-size:13.5px;max-width:640px;margin-bottom:1.6rem;}
+
+/* ── NAV (matches site-wide C.H.I nav) ── */
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:var(--forest);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:100;}
+.nav-logo{text-decoration:none;display:flex;flex-direction:column;}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-light);letter-spacing:.1em;}
+.nav-full{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.5);}
+.nav-right{display:flex;align-items:center;gap:1.5rem;}
+.nav-right>a{color:rgba(245,240,232,.6);text-decoration:none;font-size:13px;transition:color .2s;}
+.nav-right>a:hover,.nav-right>a.active{color:var(--gold-light);}
+.nav-cta{background:var(--gold);color:var(--forest)!important;padding:.5rem 1rem;border-radius:4px;font-weight:500;}
+.nav-inbox{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:6px;border:1px solid rgba(255,255,255,0.08);color:rgba(245,240,232,.6);transition:all .2s;text-decoration:none;}
+.nav-inbox:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
+.nav-dd{position:relative;display:inline-flex;align-items:center;gap:4px;cursor:pointer;font-size:13px;color:rgba(245,240,232,.6);background:none;border:none;font-family:'DM Sans',sans-serif;padding:0;height:64px;}
+.nav-dd:hover,.nav-dd.open{color:var(--gold-light);}
+.nav-dd-arrow{font-size:8px;opacity:.5;transition:transform .2s;}
+.nav-dd.open .nav-dd-arrow{transform:rotate(180deg);}
+.nav-dd-menu{position:absolute;top:calc(100% - 1px);left:50%;transform:translateX(-50%);background:var(--forest);border:1px solid rgba(200,149,42,.22);border-radius:0 0 8px 8px;padding:.4rem 0;min-width:170px;display:none;z-index:200;box-shadow:0 8px 24px rgba(0,0,0,.4);}
+.nav-dd.open .nav-dd-menu{display:block;animation:ddFade .15s ease forwards;}
+@keyframes ddFade{from{opacity:0;transform:translateX(-50%) translateY(-4px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.nav-dd-menu a{display:flex;align-items:center;gap:.55rem;padding:.55rem 1.1rem;font-size:13px;color:rgba(245,240,232,.7);text-decoration:none;transition:all .15s;white-space:nowrap;}
+.nav-dd-menu a:hover{background:rgba(200,149,42,.08);color:var(--gold-light);}
+.nav-dd-menu a.active{color:var(--gold-light);}
+.nav-dd-divider{height:1px;background:rgba(255,255,255,.07);margin:.3rem 0;}
+.nav-dd-icon{font-size:14px;width:16px;text-align:center;flex-shrink:0;}
+@media(max-width:760px){.nav-right>a:not(.nav-cta):not(.nav-inbox){display:none;}.nav-dd{display:none;}}
+
+/* ── PAGE SHELL ── */
+.page{max-width:1000px;margin:0 auto;padding:2.5rem 2rem 6rem;}
+.screen{display:none;}
+.screen.is-active{display:block;}
+
+/* ── Privacy / checkin screen ── */
+.privacy-banner{background:rgba(74,140,101,.08);border:1px solid rgba(74,140,101,.28);color:var(--tag-text);border-radius:10px;padding:1rem 1.1rem;font-size:13px;line-height:1.7;margin-bottom:1.6rem;}
+.checkin-question{margin-bottom:1.5rem;}
+.checkin-q-text{font-weight:500;margin-bottom:.6rem;color:var(--text);font-size:14.5px;}
+.checkin-btn-row{display:flex;gap:.5rem;flex-wrap:wrap;}
+.checkin-btn{font-family:'DM Sans',sans-serif;font-size:13px;padding:.55rem 1.1rem;border-radius:999px;border:1px solid var(--card-border);background:var(--card);color:var(--muted);cursor:pointer;transition:all .15s;}
+.checkin-btn:hover{border-color:rgba(200,149,42,.3);}
+.checkin-btn.is-active-yes{background:var(--danger-bg);border-color:var(--danger-border);color:var(--danger-text);font-weight:600;}
+.checkin-btn.is-active-no{background:var(--tag-bg);border-color:var(--tag-border);color:var(--tag-text);font-weight:600;}
+.checkin-btn.is-active-declined{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.18);color:var(--text);font-weight:600;}
+.checkin-conditions{margin:1.75rem 0;}
+.conditions-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:.5rem;margin-top:.6rem;}
+.condition-item{display:flex;align-items:center;gap:.5rem;background:var(--card);border:1px solid var(--card-border);border-radius:8px;padding:.6rem .8rem;font-size:12.5px;color:var(--muted);cursor:pointer;}
+.condition-item input{accent-color:var(--gold);}
+.checkin-save-toggle{display:flex;align-items:center;gap:.5rem;font-size:12.5px;color:var(--muted);margin:1.5rem 0 6rem;}
+.checkin-save-toggle input{accent-color:var(--gold);}
+
+/* ── Step indicator ── */
+.step-indicator{display:flex;align-items:center;justify-content:center;gap:4px;margin-bottom:1.8rem;flex-wrap:wrap;}
+.step-pill{display:flex;align-items:center;gap:.5rem;padding:.4rem .8rem;border-radius:999px;color:var(--muted);font-size:12.5px;}
+.step-pill.is-current{color:var(--gold-light);font-weight:600;}
+.step-pill.is-done{color:var(--tag-text);}
+.step-num{width:20px;height:20px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:10.5px;}
+.step-pill.is-current .step-num{background:var(--gold);border-color:var(--gold);color:var(--forest);}
+.step-pill.is-done .step-num{background:var(--forest-light);border-color:var(--forest-light);color:#fff;}
+.step-connector{width:22px;height:1px;background:var(--card-border);}
+
+.step-panel{display:none;}
+.step-panel.is-active{display:block;animation:fadeIn .25s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+/* ── Controls ── */
+.pool-tabs{display:flex;gap:.5rem;margin-bottom:1rem;}
+.pool-tab{font-family:'DM Sans',sans-serif;font-size:12.5px;padding:.5rem .9rem;border-radius:999px;border:1px solid var(--card-border);background:var(--card);color:var(--muted);cursor:pointer;}
+.pool-tab.is-active{background:var(--gold);color:var(--forest);border-color:var(--gold);}
+.controls-row{display:flex;gap:.6rem;margin-bottom:1.1rem;flex-wrap:wrap;}
+input[type="search"],input[type="date"],input[type="number"],input[type="text"],select{
+  font-family:'DM Sans',sans-serif;font-size:13px;padding:.6rem .8rem;border:1px solid var(--card-border);
+  border-radius:8px;background:var(--card);color:var(--text);outline:none;}
+input::placeholder{color:rgba(245,240,232,.25);}
+input:focus,select:focus{border-color:rgba(200,149,42,.4);}
+#herb-search{flex:1;min-width:200px;}
+#category-filter{min-width:170px;}
+
+.custom-herb-row{display:flex;gap:.6rem;margin-bottom:1.1rem;flex-wrap:wrap;}
+#custom-herb-input{flex:1;min-width:200px;}
+
+/* ── Herb grid / cards ── */
+.herb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.9rem;margin-bottom:6rem;}
+.herb-card{text-align:left;background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:1rem;position:relative;transition:border-color .15s;}
+.herb-card.is-selected{border-color:var(--herb-color,var(--gold));background:rgba(255,255,255,.06);}
+.herb-card.is-blocked{opacity:.88;}
+.herb-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;}
+.herb-swatch{width:12px;height:12px;border-radius:50%;background:var(--herb-color,var(--gold));display:inline-block;flex-shrink:0;}
+.herb-name{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:18px;color:var(--parchment);}
+.herb-check-inline{font-size:11px;font-weight:400;font-family:'DM Sans',sans-serif;color:var(--tag-text);}
+.herb-latin{font-size:12px;font-style:italic;color:var(--muted);margin-bottom:.4rem;}
+.herb-blurb{font-size:12.5px;color:var(--muted);margin-bottom:.5rem;line-height:1.55;}
+.herb-dose{font-size:11.5px;color:var(--muted);margin-bottom:.5rem;}
+.herb-tags{display:flex;gap:.35rem;flex-wrap:wrap;margin-bottom:.5rem;}
+.tag{font-size:10.5px;padding:2px 8px;border-radius:999px;background:var(--tag-bg);color:var(--tag-text);border:1px solid var(--tag-border);}
+.tag-muted{background:rgba(255,255,255,.05);color:var(--muted);border-color:var(--card-border);}
+.tag-unreviewed{background:rgba(255,255,255,.05);color:var(--muted);border-color:var(--card-border);}
+
+.empty-note{color:var(--muted);font-style:italic;font-size:13px;}
+
+.stack-btn{border:none;background:none;font-size:1.05rem;cursor:pointer;color:rgba(245,240,232,.25);padding:2px 4px;line-height:1;}
+.stack-btn.is-saved{color:var(--gold-light);}
+
+.safety-banner{border-radius:8px;padding:.6rem .7rem;font-size:11.5px;font-weight:600;margin-bottom:.5rem;line-height:1.5;}
+.safety-banner.safety-blocked{background:var(--danger-bg);color:var(--danger-text);border:1px solid var(--danger-border);}
+.safety-banner.safety-caution{background:var(--amber-bg);color:var(--amber-text);border:1px solid var(--amber-border);}
+.safety-reason{font-weight:400;margin-top:.3rem;font-size:11.5px;}
+
+.select-btn{width:100%;margin-top:.3rem;font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:500;padding:.55rem;border-radius:7px;
+  border:1px solid var(--herb-color,var(--gold));background:transparent;color:var(--herb-color,var(--gold-light));cursor:pointer;transition:all .15s;}
+.select-btn.is-active{background:var(--herb-color,var(--gold));color:var(--forest);}
+.select-btn:disabled{opacity:.5;cursor:not-allowed;background:rgba(255,255,255,.03);border-color:var(--card-border);color:var(--muted);}
+
+/* ── Sticky footer ── */
+.sticky-footer{position:fixed;bottom:0;left:0;right:0;background:var(--forest);border-top:1px solid rgba(200,149,42,.22);
+  padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;box-shadow:0 -6px 20px rgba(0,0,0,.3);z-index:50;flex-wrap:wrap;}
+.selected-bar{flex:1;}
+.selected-count{font-size:11.5px;color:var(--muted);margin-bottom:.3rem;}
+.chip-row{display:flex;gap:.4rem;flex-wrap:wrap;}
+.chip{display:inline-flex;align-items:center;gap:.4rem;background:rgba(255,255,255,.06);border:1px solid var(--herb-color,var(--gold));
+  color:var(--parchment);padding:4px 6px 4px 10px;border-radius:999px;font-size:12px;}
+.chip-remove{border:none;background:none;cursor:pointer;font-size:1rem;line-height:1;color:var(--muted);padding:2px 4px;}
+
+/* ── Buttons ── */
+.btn{font-family:'DM Sans',sans-serif;font-weight:500;font-size:13px;padding:.65rem 1.3rem;border-radius:7px;border:1px solid transparent;cursor:pointer;white-space:nowrap;transition:all .2s;}
+.btn-primary{background:var(--gold);color:var(--forest);}
+.btn-primary:hover{background:var(--gold-light);}
+.btn-primary:disabled{background:rgba(255,255,255,.08);color:var(--muted);cursor:not-allowed;}
+.btn-secondary{background:transparent;border-color:rgba(245,240,232,.22);color:var(--text);}
+.btn-secondary:hover{border-color:var(--gold);color:var(--gold-light);}
+.btn-ghost{background:none;border:none;color:var(--muted);text-decoration:underline;}
+
+/* ── Prep step ── */
+.prep-list{display:flex;flex-direction:column;gap:1rem;margin-bottom:6rem;}
+.prep-card{background:var(--card);border:1px solid var(--card-border);border-left:3px solid var(--herb-color,var(--gold));border-radius:12px;padding:1.2rem 1.3rem;}
+.prep-card-header{display:flex;align-items:center;gap:.7rem;margin-bottom:.8rem;}
+.prep-herb-name{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:19px;color:var(--parchment);}
+.prep-herb-latin{font-size:12px;font-style:italic;color:var(--muted);}
+.prep-meta{font-size:12.5px;color:var(--muted);margin:.4rem 0;}
+.prep-meta strong{color:var(--text);}
+.prep-section-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:.9rem 0 .5rem;display:flex;align-items:center;gap:.4rem;}
+.info-dot{width:15px;height:15px;border-radius:50%;background:rgba(255,255,255,.08);color:var(--tag-text);font-size:9.5px;font-style:italic;display:inline-flex;align-items:center;justify-content:center;cursor:help;flex-shrink:0;}
+.prep-btn-row{display:flex;gap:.5rem;flex-wrap:wrap;}
+.prep-btn{font-family:'DM Sans',sans-serif;font-size:12.5px;padding:.55rem .8rem;border-radius:10px;border:1px solid var(--card-border);background:rgba(255,255,255,.02);color:var(--text);cursor:pointer;display:inline-flex;flex-direction:column;align-items:flex-start;gap:2px;}
+.prep-btn:hover{border-color:var(--herb-color,var(--gold));}
+.prep-btn.is-active{background:var(--herb-color,var(--gold));border-color:var(--herb-color,var(--gold));color:var(--forest);}
+.prep-btn.is-active .slot-time-sub{color:rgba(26,58,42,.7);}
+.recommended-badge{font-size:9px;background:var(--gold);color:var(--forest);padding:1px 6px;border-radius:999px;margin-left:4px;vertical-align:middle;}
+.slot-time-sub{font-size:10.5px;color:var(--muted);}
+.cycle-row{display:flex;align-items:flex-end;gap:1rem;flex-wrap:wrap;}
+.cycle-field{display:flex;flex-direction:column;gap:.3rem;font-size:11.5px;color:var(--muted);}
+.cycle-field input{width:76px;}
+.cycle-summary{font-size:13px;color:var(--tag-text);font-weight:600;}
+.cycle-warning{font-size:11.5px;color:var(--danger-text);font-weight:600;margin-top:.5rem;}
+
+/* ── Routine (step 3) ── */
+.explain-panel{margin-bottom:1.1rem;}
+.explain-details{background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:1rem 1.2rem;}
+.explain-details summary{font-weight:600;color:var(--gold-light);cursor:pointer;font-size:14px;}
+.explain-intro{color:var(--muted);font-size:12.5px;margin:.7rem 0 .9rem;line-height:1.7;}
+.explain-item{display:flex;gap:.7rem;padding:.7rem 0;border-top:1px solid var(--card-border);}
+.explain-item .herb-swatch{margin-top:4px;}
+.explain-herb-name{font-weight:600;margin-bottom:.3rem;color:var(--text);}
+.explain-tag{font-weight:400;font-size:10px;color:var(--tag-text);background:var(--tag-bg);padding:2px 8px;border-radius:999px;margin-left:.4rem;display:inline-block;}
+.explain-why{font-size:12px;color:var(--muted);margin-top:.15rem;}
+.explain-why strong{color:var(--text);}
+.warning-list{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--card-border);}
+.warning-title{font-weight:600;margin-bottom:.5rem;color:var(--text);font-size:13px;}
+.warning-item{font-size:12px;color:var(--amber-text);margin-bottom:.4rem;background:var(--amber-bg);border:1px solid var(--amber-border);padding:.55rem .7rem;border-radius:7px;}
+.warning-item strong{color:var(--text);}
+.warning-list-ok{font-size:12px;color:var(--tag-text);background:var(--tag-bg);padding:.6rem .75rem;border-radius:7px;border:1px solid var(--tag-border);margin-top:1rem;}
+
+.legend{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.1rem;}
+.legend-item{font-size:11.5px;background:var(--card);border:1px solid var(--card-border);padding:.4rem .7rem;border-radius:999px;display:inline-flex;align-items:center;gap:.4rem;color:var(--muted);}
+.legend-dot{width:9px;height:9px;border-radius:50%;background:var(--herb-color,var(--gold));display:inline-block;}
+
+.routine-controls{display:flex;gap:1.3rem;align-items:flex-end;flex-wrap:wrap;margin-bottom:1.1rem;}
+.inline-field{display:flex;flex-direction:column;gap:.3rem;font-size:11px;color:var(--muted);}
+.view-toggle{display:flex;gap:.4rem;}
+.toggle-btn{font-family:'DM Sans',sans-serif;font-size:13px;padding:.55rem .9rem;border-radius:7px;border:1px solid var(--card-border);background:var(--card);color:var(--text);cursor:pointer;}
+.toggle-btn.is-active{background:var(--gold);color:var(--forest);border-color:var(--gold);}
+.routine-view.is-hidden{display:none;}
+
+/* Table view */
+.table-scroll{overflow-x:auto;background:var(--card);border:1px solid var(--card-border);border-radius:12px;}
+.routine-table{border-collapse:collapse;width:100%;min-width:480px;}
+.routine-table th,.routine-table td{padding:.6rem .7rem;text-align:center;border-bottom:1px solid var(--card-border);font-size:13px;}
+.routine-table thead th{color:var(--muted);font-weight:500;font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;}
+.row-head,.row-head-label{text-align:left;white-space:nowrap;}
+.row-head{font-weight:600;color:var(--text);border-left:3px solid var(--herb-color,var(--gold));}
+.row-head .herb-swatch{margin-right:.4rem;}
+.cell-on{background:rgba(255,255,255,.05);font-size:1rem;}
+.cell-off{color:rgba(245,240,232,.15);}
+.cell-last-on{color:var(--danger-text)!important;font-weight:700;box-shadow:inset 0 0 0 2px var(--danger);}
+.table-hint{font-size:11.5px;color:var(--muted);margin-top:.7rem;}
+.table-hint .hl-red{color:var(--danger-text);font-weight:600;}
+
+/* Calendar view */
+.cal-week{margin-bottom:1.1rem;}
+.cal-week-label{font-size:11px;font-weight:600;color:var(--gold-light);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.05em;}
+.cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:.5rem;}
+.cal-day{background:var(--card);border:1px solid var(--card-border);border-radius:8px;padding:.5rem .4rem;min-height:60px;cursor:pointer;text-align:left;
+  font-family:'DM Sans',sans-serif;color:var(--text);transition:border-color .15s;}
+.cal-day:hover{border-color:rgba(200,149,42,.35);}
+.cal-day.is-empty{opacity:.7;}
+.cal-day.is-selected-day{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold) inset;position:relative;}
+.cal-day.is-selected-day::after{content:'';position:absolute;bottom:-9px;left:50%;transform:translateX(-50%);width:0;height:0;
+  border-left:7px solid transparent;border-right:7px solid transparent;border-top:7px solid var(--gold);z-index:2;}
+.cal-date{font-size:10.5px;color:var(--muted);margin-bottom:.4rem;}
+.cal-chips{display:flex;flex-wrap:wrap;gap:.25rem;}
+.cal-chip{width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid var(--herb-color,var(--gold));display:flex;align-items:center;justify-content:center;font-size:.68rem;}
+.cal-chip.is-last-day{border:2px solid var(--danger);box-shadow:0 0 0 1px var(--danger);}
+.cal-rest{font-size:10px;color:rgba(245,240,232,.2);font-style:italic;}
+
+/* Day detail drawer */
+.day-detail-drawer{grid-column:1/-1;margin-top:.9rem;background:rgba(74,140,101,.07);border:1px solid rgba(74,140,101,.25);border-radius:12px;padding:1rem 1.2rem;animation:fadeIn .18s ease;}
+.day-detail-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.7rem;margin-bottom:.7rem;}
+.day-detail-header{font-family:'Cormorant Garamond',serif;font-weight:500;color:var(--gold-light);font-size:18px;}
+.day-detail-close{border:none;background:rgba(255,255,255,.08);color:var(--muted);width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:.75rem;line-height:1;flex-shrink:0;}
+.day-detail-close:hover{color:var(--danger-text);}
+.day-detail-slot{margin-bottom:1rem;}
+.day-detail-slot:last-child{margin-bottom:0;}
+.day-detail-slot-label{font-size:10.5px;font-weight:600;color:var(--gold-light);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem;}
+.day-detail-slot-time{font-weight:400;text-transform:none;letter-spacing:normal;color:var(--muted);}
+.day-detail-item{display:flex;gap:.6rem;align-items:flex-start;background:rgba(12,26,16,.4);border:1px solid var(--card-border);border-radius:8px;padding:.6rem;margin-bottom:.5rem;}
+.day-detail-item:last-child{margin-bottom:0;}
+.day-detail-item .herb-swatch{margin-top:4px;}
+.day-detail-herb{font-weight:600;color:var(--text);}
+.day-detail-prep{font-weight:400;color:var(--muted);font-size:11.5px;}
+.day-detail-why{font-size:11.5px;color:var(--muted);margin-top:.2rem;}
+.day-detail-last-day{color:var(--danger-text);font-weight:600;font-size:11px;margin-top:.3rem;}
+
+/* Export card */
+.export-card{margin-top:1.4rem;background:rgba(200,149,42,.06);border:1px solid rgba(200,149,42,.2);border-radius:12px;padding:1.1rem 1.3rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;}
+.export-title{font-weight:600;color:var(--gold-light);margin-bottom:.3rem;font-size:14px;}
+.export-sub{font-size:12px;color:var(--muted);max-width:420px;line-height:1.6;}
+.export-actions{display:flex;align-items:flex-end;gap:.8rem;}
+
+.disclaimer{font-size:11px;color:var(--muted);margin-top:1.2rem;padding-bottom:5.5rem;line-height:1.7;}
+
+@media(max-width:640px){
+  .cal-days{grid-template-columns:repeat(7,minmax(34px,1fr));}
+  .cal-day{min-height:50px;padding:.4rem .3rem;}
+  .sticky-footer{flex-wrap:wrap;}
+  .export-card{flex-direction:column;align-items:flex-start;}
+  .nav-right>a:not(.nav-cta):not(.nav-inbox){display:none;}
+  .nav-dd{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="home.html" class="nav-logo">
+    <span class="nav-chi">C.H.I</span>
+    <span class="nav-full">Collective Herbal Intelligence</span>
+  </a>
+  <div class="nav-right">
+
+    <div class="nav-dd" id="dd-tools" onclick="toggleDD('tools')">
+      <span style="color:var(--gold-light)">Tools</span>
+      <span class="nav-dd-arrow">▼</span>
+      <div class="nav-dd-menu">
+        <a href="herb-match.html"><span class="nav-dd-icon">🌿</span>Herb Match</a>
+        <a href="phytochemistry.html"><span class="nav-dd-icon">⬡</span>Plant Intelligence</a>
+        <a href="supreme.html"><span class="nav-dd-icon">📖</span>Herbadex</a>
+        <a href="herb-identifier.html"><span class="nav-dd-icon">🔍</span>Herb Identifier</a>
+        <a href="herb-planner.html" class="active"><span class="nav-dd-icon">🗓️</span>Herb Planner</a>
+      </div>
+    </div>
+
+    <a href="resources.html">Resources</a>
+
+    <div class="nav-dd" id="dd-community" onclick="toggleDD('community')">
+      <span style="color:inherit">Community</span>
+      <span class="nav-dd-arrow">▼</span>
+      <div class="nav-dd-menu">
+        <a href="community.html"><span class="nav-dd-icon">💬</span>Community Feed</a>
+        <a href="garden.html"><span class="nav-dd-icon">🌱</span>Herbal Garden</a>
+        <a href="glossary.html"><span class="nav-dd-icon">📚</span>Glossary</a>
+      </div>
+    </div>
+
+    <div class="nav-dd" id="dd-profile" onclick="toggleDD('profile')">
+      <span style="color:inherit">Profile</span>
+      <span class="nav-dd-arrow">▼</span>
+      <div class="nav-dd-menu">
+        <a href="profile.html"><span class="nav-dd-icon">🌿</span>My Profile</a>
+        <a href="inbox.html"><span class="nav-dd-icon">✉️</span>Inbox</a>
+        <div class="nav-dd-divider"></div>
+        <a href="privacy-policy.html"><span class="nav-dd-icon">🔒</span>Privacy Policy</a>
+        <a href="terms.html"><span class="nav-dd-icon">📄</span>Terms</a>
+        <a href="disclaimer.html"><span class="nav-dd-icon">⚠️</span>Disclaimer</a>
+        <div class="nav-dd-divider"></div>
+        <a href="index.html" onclick="localStorage.clear()"><span class="nav-dd-icon">↩</span>Sign out</a>
+      </div>
+    </div>
+
+    <a href="inbox.html" class="nav-inbox" title="Inbox">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12v9H2V4z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M2 4l6 5 6-5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+    </a>
+    <a href="join.html" class="nav-cta">Join CHI</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- SAFETY CHECK-IN SCREEN -->
+  <section id="screen-checkin" class="screen">
+    <div class="privacy-banner">
+      🔒 <strong>Your privacy:</strong> C.H.I never shares this information with any third party — not Google, Apple, Meta, or X. That's also why sign-in here is manual rather than a social login. We can't promise protection from everything, but keeping your health information private is the whole point.
+    </div>
+
+    <h1>Before we start — a quick safety check-in</h1>
+    <p class="step-intro">This helps the Herb Planner flag herbs that might not be a good fit right now. Every question is optional — skip anything you'd rather not answer, and we'll simply ask again next time.</p>
+
+    <div class="checkin-question">
+      <div class="checkin-q-text">Are you currently fasting (e.g. intermittent fasting)?</div>
+      <div class="checkin-btn-row">
+        <button type="button" class="checkin-btn" data-q="fasting" data-val="true">Yes</button>
+        <button type="button" class="checkin-btn" data-q="fasting" data-val="false">No</button>
+        <button type="button" class="checkin-btn" data-q="fasting" data-val="declined">Prefer not to say</button>
+      </div>
+    </div>
+
+    <div class="checkin-question">
+      <div class="checkin-q-text">Are you currently taking any prescription medication?</div>
+      <div class="checkin-btn-row">
+        <button type="button" class="checkin-btn" data-q="medication" data-val="true">Yes</button>
+        <button type="button" class="checkin-btn" data-q="medication" data-val="false">No</button>
+        <button type="button" class="checkin-btn" data-q="medication" data-val="declined">Prefer not to say</button>
+      </div>
+    </div>
+
+    <div class="checkin-question">
+      <div class="checkin-q-text">Are you pregnant?</div>
+      <div class="checkin-btn-row">
+        <button type="button" class="checkin-btn" data-q="pregnant" data-val="true">Yes</button>
+        <button type="button" class="checkin-btn" data-q="pregnant" data-val="false">No</button>
+        <button type="button" class="checkin-btn" data-q="pregnant" data-val="declined">Prefer not to say</button>
+      </div>
+    </div>
+
+    <div class="checkin-conditions">
+      <div class="checkin-q-text">Anything else worth flagging? (optional — select any that apply)</div>
+      <div id="conditions-grid" class="conditions-grid"></div>
+    </div>
+
+    <label class="checkin-save-toggle">
+      <input type="checkbox" id="save-profile-checkbox" checked />
+      Remember my answers in my profile on this device
+    </label>
+
+    <div class="sticky-footer">
+      <button type="button" id="skip-checkin-btn" class="btn btn-ghost">Skip for now</button>
+      <button type="button" id="continue-checkin-btn" class="btn btn-primary">Continue →</button>
+    </div>
+  </section>
+
+  <!-- MAIN APP -->
+  <section id="screen-app" class="screen">
+    <div id="step-indicator" class="step-indicator"></div>
+
+    <!-- STEP 1 -->
+    <section id="step-1" class="step-panel is-active">
+      <div class="profile-link-row" style="display:flex;justify-content:flex-end;margin-bottom:.6rem;">
+        <button type="button" id="edit-profile-btn" class="btn btn-ghost" style="font-size:12px;">✏️ Edit my safety profile</button>
+      </div>
+
+      <h1>Build your herb batch</h1>
+      <p class="step-intro">Pick from herbs you've already saved elsewhere in C.H.I, browse Herbadex's safety-reviewed list, or add any herb by name. Everything is checked against your safety profile as you go.</p>
+
+      <div class="pool-tabs">
+        <button type="button" class="pool-tab is-active" id="tab-all-herbs" data-filter="all">All Herbs</button>
+        <button type="button" class="pool-tab" id="tab-saved-herbs" data-filter="saved">My Saved Herbs (<span id="saved-count">0</span>)</button>
+      </div>
+
+      <div class="controls-row">
+        <input type="search" id="herb-search" placeholder="Search herbs by name..." />
+        <select id="category-filter"></select>
+      </div>
+
+      <div class="custom-herb-row">
+        <input type="text" id="custom-herb-input" placeholder="Add a herb by name (e.g. Skullcap)…" />
+        <button type="button" id="custom-herb-add-btn" class="btn btn-secondary">+ Add herb</button>
+      </div>
+
+      <div id="herb-grid" class="herb-grid"></div>
+
+      <div class="sticky-footer">
+        <div id="selected-bar" class="selected-bar"></div>
+        <button type="button" id="to-step2-btn" class="btn btn-primary" disabled>Continue →</button>
+      </div>
+    </section>
+
+    <!-- STEP 2 -->
+    <section id="step-2" class="step-panel">
+      <h1>How and when will you take each herb?</h1>
+      <p class="step-intro">Choose a preparation and a time of day for every herb in your batch. Defaults are pre-filled from typical guidance — feel free to adjust the cycle or timing to fit your life.</p>
+
+      <div id="prep-list" class="prep-list"></div>
+
+      <div class="sticky-footer">
+        <button type="button" id="back-to-1-btn" class="btn btn-secondary">← Back</button>
+        <button type="button" id="generate-btn" class="btn btn-primary">Generate Routine →</button>
+      </div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section id="step-3" class="step-panel">
+      <h1>Your routine</h1>
+      <p class="step-intro">Here's an example stretch showing how your herbs line up together — including the weeks each one rests. Each herb keeps looping on its own cycle after this.</p>
+
+      <div id="explain-panel" class="explain-panel"></div>
+      <div id="legend" class="legend"></div>
+
+      <div class="routine-controls">
+        <label class="inline-field">
+          <span>Preview length</span>
+          <select id="weeks-select">
+            <option value="4" selected>4 weeks</option>
+            <option value="8">8 weeks</option>
+            <option value="12">12 weeks</option>
+          </select>
+        </label>
+        <label class="inline-field">
+          <span>Start date</span>
+          <input type="date" id="start-date-input" />
+        </label>
+        <div class="view-toggle">
+          <button type="button" id="view-table-btn" class="toggle-btn is-active">📋 Table</button>
+          <button type="button" id="view-calendar-btn" class="toggle-btn">📅 Calendar</button>
+        </div>
+      </div>
+
+      <div id="routine-table-wrap" class="routine-view"></div>
+
+      <div id="routine-calendar-wrap" class="routine-view is-hidden">
+        <p class="table-hint" style="margin-top:0;margin-bottom:.8rem;">Click any date to see exactly what to take, in what form, and the specific time range — details drop down right under the date. Click it again (or the ✕) to close. Dates outlined in <span class="hl-red">red</span> are the last day before a break.</p>
+        <div id="calendar-grid"></div>
+      </div>
+
+      <div class="export-card">
+        <div class="export-text">
+          <div class="export-title">Sync to your calendar</div>
+          <div class="export-sub">Download an .ics file with daily reminders — timed to each herb's time-of-day range — for every upcoming "on" period, ready to import into Google Calendar, Apple Calendar, or Outlook.</div>
+        </div>
+        <div class="export-actions">
+          <label class="inline-field">
+            <span>Horizon</span>
+            <select id="horizon-select">
+              <option value="3">3 months</option>
+              <option value="6" selected>6 months</option>
+              <option value="12">12 months</option>
+            </select>
+          </label>
+          <button type="button" id="export-btn" class="btn btn-primary">⬇ Download Calendar (.ics)</button>
+        </div>
+      </div>
+
+      <p class="disclaimer">This planner offers general wellness scheduling guidance only and isn't medical advice. Check with a healthcare provider before starting any herbal regimen, especially if pregnant, breastfeeding, fasting, taking medication, or managing a health condition.</p>
+
+      <div class="sticky-footer">
+        <button type="button" id="back-to-2-btn" class="btn btn-secondary">← Back</button>
+        <button type="button" id="start-over-btn" class="btn btn-ghost">Start Over</button>
+      </div>
+    </section>
+  </section>
+
+</div>
+
+<script>
+// ── NAV DROPDOWNS (shared C.H.I behavior) ──
+function toggleDD(id){
+  const all=document.querySelectorAll(".nav-dd");
+  all.forEach(d=>{if(d.id!=="dd-"+id)d.classList.remove("open");});
+  const el=document.getElementById("dd-"+id);
+  if(el)el.classList.toggle("open");
+}
+document.addEventListener("click",e=>{
+  if(!e.target.closest(".nav-dd"))document.querySelectorAll(".nav-dd").forEach(d=>d.classList.remove("open"));
+});
+</script>
+
+<script>
+/* ==========================================================================
+   herbData.js — herb profiles, prep methods, time-of-day + safety data
+   ========================================================================== */
+
+const PREP_METHODS = {
+  tincture: { key: 'tincture', label: 'Tincture', icon: '💧', description: 'Liquid extract, taken in water, juice, or under the tongue.' },
+  capsule: { key: 'capsule', label: 'Capsule', icon: '💊', description: 'Pre-measured dose — convenient and easy to take on the go.' },
+  tea: { key: 'tea', label: 'Tea / Infusion', icon: '🍵', description: 'Traditional hot-water infusion, sipped daily.' },
+  hybrid: { key: 'hybrid', label: 'Hybrid', icon: '🔀', description: "Rotate between this herb's available forms across the week." }
+};
+
+const TIME_SLOTS = {
+  morning: { key: 'morning', label: 'Morning', icon: '🌅', rangeLabel: '8:00am – 10:00am', reminderHour: 8, reminderMinute: 0 },
+  midday: { key: 'midday', label: 'Midday', icon: '☀️', rangeLabel: '12:00pm – 2:00pm', reminderHour: 12, reminderMinute: 30 },
+  meals: { key: 'meals', label: 'With Meals', icon: '🍽️', rangeLabel: 'With a meal (breakfast, lunch, or dinner)', reminderHour: 12, reminderMinute: 30 },
+  evening: { key: 'evening', label: 'Evening', icon: '🌙', rangeLabel: '6:00pm – 8:00pm', reminderHour: 18, reminderMinute: 30 }
+};
+const TIME_SLOT_ORDER = ['morning', 'midday', 'meals', 'evening'];
+
+const CATEGORIES = ['Adaptogen', 'Immune', 'Calming / Sleep', 'Digestive', 'Liver / Detox', 'Nutritive', 'Other'];
+
+const CONDITIONS = {
+  bloodPressure: 'Blood pressure condition or medication',
+  bloodThinners: 'Blood thinners or a bleeding disorder',
+  diabetes: 'Diabetes or blood sugar medication',
+  thyroid: 'Thyroid condition or medication',
+  liver: 'Liver condition',
+  kidney: 'Kidney condition',
+  autoimmune: 'Autoimmune condition',
+  sedativeMeds: 'Sedatives, sleep medication, or anti-anxiety medication',
+  heart: 'Heart condition',
+  surgery: 'Upcoming surgery or procedure',
+  allergy: 'Allergic to ragweed, daisies, or related plants',
+  transplant: 'Organ transplant or immunosuppressant therapy',
+  breastfeeding: 'Currently breastfeeding',
+  hormoneSensitive: 'Hormone-sensitive condition (e.g. certain cancers)',
+  underage: 'Under 18'
+};
+
+// Herbadex's safety-reviewed core list. General, widely-cited wellness cautions —
+// not medical advice. When in doubt, entries lean conservative and point back to
+// "confirm with your provider."
+let HERB_DATA = [
+  { id: 'ashwagandha', name: 'Ashwagandha', latin: 'Withania somnifera', category: 'Adaptogen', color: '#6b8f47',
+    blurb: 'A grounding adaptogen traditionally used for stress resilience.',
+    prepMethods: ['tincture', 'capsule', 'tea'], onWeeks: 6, offWeeks: 2, minOffWeeks: 1,
+    rationale: 'Adaptogens are commonly cycled so the body doesn’t build tolerance.',
+    defaultTime: 'evening', timeRationale: 'Often taken in the evening — its calming effect can support winding down before bed.',
+    standardDose: '300–600mg standardized root extract, 1–2x daily',
+    onsetGuidance: 'Most people notice a difference in stress resilience after 4–6 weeks of consistent use.',
+    calorieRich: false, fastingNote: '',
+    pregnancyLevel: 'avoid', pregnancyNote: 'Traditionally avoided in pregnancy; may affect the uterus and is sometimes used to induce labor.',
+    medicationCaution: 'avoid', medicationNote: 'May increase thyroid hormone levels and add to the effect of sedatives or immune-modulating medication.',
+    tags: ['sedative'],
+    conditionFlags: {
+      thyroid: { level: 'caution', note: 'May increase thyroid hormone levels.' },
+      autoimmune: { level: 'caution', note: 'May stimulate immune activity.' },
+      sedativeMeds: { level: 'caution', note: 'May add to sedative effects.' },
+      breastfeeding: { level: 'avoid', note: 'Similar caution applies while breastfeeding — limited safety data.' }
+    }
+  },
+  { id: 'rhodiola', name: 'Rhodiola', latin: 'Rhodiola rosea', category: 'Adaptogen', color: '#8a9a5b',
+    blurb: 'A stimulating adaptogen often used to support energy and focus.',
+    prepMethods: ['tincture', 'capsule'], onWeeks: 4, offWeeks: 1, minOffWeeks: 1,
+    rationale: 'More stimulating adaptogen — shorter cycles help avoid overstimulation.',
+    defaultTime: 'morning', timeRationale: 'Energizing — morning use helps avoid interfering with sleep.',
+    standardDose: '200–400mg standardized extract (3% rosavins), once daily',
+    onsetGuidance: 'Energy and focus effects are often noticed within 1–3 weeks.',
+    calorieRich: false, fastingNote: '',
+    pregnancyLevel: 'avoid', pregnancyNote: 'Limited safety data in pregnancy — generally avoided.',
+    medicationCaution: 'avoid', medicationNote: 'May interact with antidepressants (including MAOIs) and stimulant medication.',
+    tags: ['stimulant'],
+    conditionFlags: {
+      sedativeMeds: { level: 'caution', note: 'May interact with antidepressants and stimulant medication.' },
+      heart: { level: 'caution', note: 'Stimulating — may raise heart rate.' },
+      breastfeeding: { level: 'avoid', note: 'Limited safety data while breastfeeding.' }
+    }
+  },
+  { id: 'tulsi', name: 'Holy Basil (Tulsi)', latin: 'Ocimum tenuiflorum', category: 'Adaptogen', color: '#5c8a5c',
+    blurb: 'A gentle, everyday adaptogen for stress and mental clarity.',
+    prepMethods: ['tea', 'tincture', 'capsule'], onWeeks: 6, offWeeks: 2, minOffWeeks: 1,
+    rationale: 'Gentle enough for longer runs, still benefits from a periodic reset.',
+    defaultTime: 'morning', timeRationale: 'A gentle daily lift — works well first thing in the morning.',
+    standardDose: '300–600mg extract or 1 cup tea, 1–3x daily',
+    onsetGuidance: 'Calming effects are often noticed within 2–4 weeks.',
+    calorieRich: false, fastingNote: '',
+    pregnancyLevel: 'avoid', pregnancyNote: 'Higher medicinal doses are traditionally avoided in pregnancy; may affect blood sugar and fertility.',
+    medicationCaution: 'avoid', medicationNote: 'May lower blood sugar and mildly thin the blood.',
+    tags: ['blood-sugar-lowering', 'blood-thinning'],
+    conditionFlags: {
+      bloodThinners: { level: 'caution', note: 'May mildly thin the blood.' },
+      diabetes: { level: 'caution', note: 'May lower blood sugar.' },
+      breastfeeding: { level: 'avoid', note: 'Limited safety data while breastfeeding.' }
+    }
+  },
+  { id: 'ginseng', name: 'Panax Ginseng', latin: 'Panax ginseng', category: 'Adaptogen', color: '#a9762f',
+    blurb: 'A warming, energizing root used to support stamina.',
+    prepMethods: ['capsule', 'tincture'], onWeeks: 3, offWeeks: 1, minOffWeeks: 1,
+    rationale: 'Stimulating — shorter on-cycles are typically recommended.',
+    defaultTime: 'morning', timeRationale: 'Stimulating — best taken earlier in the day.',
+    standardDose: '200–400mg standardized extract, once daily',
+    onsetGuidance: 'Energy effects are often noticed within 1–2 weeks.',
+    calorieRich: false, fastingNote: '',
+    pregnancyLevel: 'avoid', pregnancyNote: 'Not recommended in pregnancy; ginsenosides may affect fetal development.',
+    medicationCaution: 'avoid', medicationNote: 'Can affect blood sugar and blood clotting, and interacts with several medication classes.',
+    tags: ['stimulant', 'blood-sugar-lowering', 'blood-thinning'],
+    conditionFlags: {
+      bloodThinners: { level: 'avoid', note: 'Can affect blood clotting.' },
+      diabetes: { level: 'caution', note: 'May affect blood sugar.' },
+      heart: { level: 'caution', note: 'Stimulating — may raise heart rate or blood pressure.' },
+      breastfeeding: { level: 'avoid', note: 'Limited safety data while breastfeeding.' }
+    }
+  },
+  { id: 'reishi', name: 'Reishi Mushroom', latin: 'Ganoderma lucidum', category: 'Adaptogen', color: '#7a4b3a',
+    blurb: 'A calming tonic mushroom used for long-term resilience and immune support.',
+    prepMethods: ['capsule', 'tincture', 'tea'], onWeeks: 8, offWeeks: 2, minOffWeeks: 1,
+    rationale: 'A slow-building tonic — well suited to longer on-cycles.',
+    defaultTime: 'evening', timeRationale: 'A calming tonic mushroom, well suited to an evening wind-down routine.',
+    standardDose: '500–1000mg standardized extract daily',
+    onsetGuidance: 'A slow-building tonic — effects often develop over 4–8 weeks.',
+    calorieRich: false, fastingNote: '',
+    pregnancyLevel: 'avoid', pregnancyNote: 'Limited safety data — generally avoided in pregnancy and breastfeeding.',
+    medicationCaution: 'avoid', medicationNote: 'May slow blood clotting and can interact with immune-suppressing medication.',
+    tags: ['blood-thinning', 'immune-stimulating'],
+    conditionFlags: {
+      bloodThinners: { level: 'caution', note: 'May slow blood clotting.' },
+      autoimmune: { level: 'caution', note: 'May affect immune activity.' },
+      surgery: { level: 'caution', note: 'Stop at least 2 weeks before scheduled surgery due to bleeding risk.' },
+      transplant: { level: 'avoid', note: 'May interfere with immunosuppressant therapy after organ transplant.' },
+      breastfeeding: { level: 'avoid', note: 'Limited safety data while breastfeeding.' }
+    }
+  },
+  { id: 'echinacea', name: 'Echinacea', latin: 'Echinacea purpurea', category: 'Immune', color: '#b5533c',
+    blurb: 'A popular short-term immune-support herb.',
+    prepMethods: ['tincture', 'capsule', 'tea'], onWeeks: 2, offWeeks: 1, minOffWeeks: 1,
+    rationale: 'Best used in short bursts rather than continuously.',
+    defaultTime: 'midday', timeRationale: 'Spacing it away from other supplements can help reduce stomach upset.',
+    standardDose: '300–500mg extract, up to 3x daily, short courses only',
+    onsetGuidance: 'Meant for short-term use — effects are usually felt within days, not weeks.',
+    calorieRich: false, fastingNote: '',
+    pregnancyLevel: 'caution', pregnancyNote: 'Considered relatively low risk short-term, but confirm with your provider.',
+    medicationCaution: 'avoid', medicationNote: 'Stimulates immune activity — avoid with autoimmune conditions or immunosuppressant medication.',
+    tags: ['immune-stimulating'],
+    conditionFlags: {
+      autoimmune: { level: 'avoid', note: 'May overstimulate the immune system.' },
+      allergy: { level: 'caution', note: 'Related to ragweed/daisy family — avoid if allergic to that plant family.' },
+      transplant: { level: 'avoid', note: 'May counteract immunosuppressant medication.' }
+    }
+  },
+  { id: 'elderberry', name: 'Elderberry', latin: 'Sambucus nigra', category: 'Immune', color: '#5b3a6b',
+    blurb: 'A berry extract traditionally used to support seasonal wellness.',
+    prepMethods: ['tincture', 'capsule', 'tea'], onWeeks: 2, offWeeks: 1, minOffWeeks: 1,
+    rationale: 'Commonly cycled in short seasonal bursts.',
+    defaultTime: 'morning', timeRationale: 'Commonly taken in the morning as part of a daily immune routine.',
+    standardDose: '300–600mg extract or 1 tbsp syrup, 1–2x daily, short courses',
+    onsetGuidance: 'Often taken at the first sign of seasonal discomfort.',
+    calorieRich: false, fastingNote: '',
+    pregnancyLevel: 'caution', pregnancyNote: 'Raw or unripe berries are toxic; properly prepared syrup is generally considered lower risk, but confirm with your provider.',
+    medicationCaution: 'caution', medicationNote: 'May stimulate immune activity; syrup preparations often contain sugar.',
+    tags: ['immune-stimulating'],
+    conditionFlags: {
+      autoimmune: { level: 'caution', note: 'May stimulate immune activity.' },
+      diabetes: { level: 'caution', note: 'Syrup preparations often contain sugar.' }
+    }
+  },
+  { id: 'astragalus', name: 'Astragalus', latin: 'Astragalus membranaceus', category: 'Immune', color: '#c99a2e',
+    blurb: 'A root used for longer-term, preventative immune support.',
+    prepMethods: ['capsule', 'tea', 'tincture'], onWeeks: 6, offWeeks: 2, minOffWeeks: 1,
+    rationale: 'Milder, tonic-style immune herb suited to longer runs.',
+    defaultTime: 'morning', timeRationale: 'A steady, tonic herb best woven into your morning routine.',
+    standardDose: '500–1000mg extract, 1–2x daily',
+    onsetGuidance: 'Tonic benefits often build over 4–6 weeks.',
+    calorieRich: false, fastingNote: '',
+    pregnancyLevel: 'avoid', pregnancyNote: 'Limited safety data — generally avoided in pregnancy.',
+    medicationCaution: 'avoid', medicationNote: 'May counteract immunosuppressant medication.',
+    tags: ['immune-stimulating'],
+    conditionFlags: {
+      autoimmune: { level: 'avoid', note: 'May overstimulate the immune system.' },
+      transplant: { level: 'avoid', note: 'May counteract immunosuppressant medication after organ transplant.' },
+      breastfeeding: { level: 'avoid', note: 'Limited safety data while breastfeeding.' }
+    }
+  },
+  { id: 'milkthistle', name: 'Milk Thistle', latin: 'Silybum marianum', category: 'Liver / Detox', color: '#4c6b8a',
+    blurb: 'A seed extract traditionally used to support liver function.',
+    prepMethods: ['capsule', 'tincture', 'tea'], onWeeks: 4, offWeeks: 2, minOffWeeks: 2,
+    rationale: 'Cycling helps assess ongoing benefit and gives the body a break.',
+    defaultTime: 'meals', timeRationale: 'Best absorbed when taken alongside food.',
+    standardDose: '200–400mg standardized extract (70–80% silymarin), with food',
+    onsetGuidance: 'Often taken for 4+ weeks before assessing benefit.',
+    calorieRich: false, fastingNote: '',
+    pregnancyLevel: 'caution', pregnancyNote: 'Generally considered lower risk, but robust safety data is limited — confirm with your provider.',
+    medicationCaution: 'avoid', medicationNote: 'Can affect how the liver processes several medication types (including some cholesterol and diabetes drugs).',
+    tags: ['blood-sugar-lowering'],
+    conditionFlags: {
+      diabetes: { level: 'caution', note: 'May lower blood sugar.' },
+      liver: { level: 'caution', note: 'Talk to your provider if you have an existing liver condition before starting.' }
+    }
+  },
+  { id: 'dandelion', name: 'Dandelion Root', latin: 'Taraxacum officinale', category: 'Liver / Detox', color: '#d19b2c',
+    blurb: 'A bitter root traditionally used to support digestion and liver.',
+    prepMethods: ['tea', 'tincture'], onWeeks: 3, offWeeks: 1, minOffWeeks: 1,
+    rationale: 'Bitters are often taken in shorter rounds to keep them effective.',
+    defaultTime: 'meals', timeRationale: 'Traditionally taken before or with meals to support digestion.',
+    standardDose: '500mg extract or 1 cup tea, 1–3x daily',
+    onsetGuidance: 'Digestive bitters are often felt within days.',
+    calorieRich: false, fastingNote: '',
+    pregnancyLevel: 'avoid', pregnancyNote: 'Traditionally avoided in pregnancy without professional guidance; has a mild diuretic effect.',
+    medicationCaution: 'avoid', medicationNote: 'Can increase the effect of diuretic medication and interacts with lithium.',
+    tags: [],
+    conditionFlags: {
+      bloodThinners: { level: 'caution', note: 'May mildly affect blood clotting.' },
+      kidney: { level: 'caution', note: 'Diuretic effect — caution with kidney conditions.' },
+      allergy: { level: 'caution', note: 'Related to ragweed/daisy family.' },
+      breastfeeding: { level: 'avoid', note: 'Limited safety data while breastfeeding.' }
+    }
+  },
+  { id: 'nettle', name: 'Nettle Leaf', latin: 'Urtica dioica', category: 'Nutritive', color: '#3f7d3f',
+    blurb: 'A mineral-rich nutritive herb, gentle enough for daily use.',
+    prepMethods: ['tea', 'capsule', 'tincture'], onWeeks: 6, offWeeks: 2, minOffWeeks: 1,
+    rationale: 'Nutritive herbs are gentle — longer on-cycles are common.',
+    defaultTime: 'morning', timeRationale: 'A nutritive, gentle herb that fits easily into a morning routine.',
+    standardDose: '300–600mg extract or 1–3 cups tea daily',
+    onsetGuidance: 'A gentle nutritive — benefits often build over several weeks.',
+    calorieRich: false, fastingNote: '',
+    pregnancyLevel: 'caution', pregnancyNote: 'Nettle leaf tea is commonly considered pregnancy-friendly, but confirm with your provider, especially in the first trimester.',
+    medicationCaution: 'caution', medicationNote: 'May affect blood pressure, blood sugar, and blood clotting.',
+    tags: ['blood-pressure-lowering', 'blood-sugar-lowering', 'blood-thinning'],
+    conditionFlags: {
+      bloodThinners: { level: 'caution', note: 'May mildly thin the blood.' },
+      bloodPressure: { level: 'caution', note: 'May lower blood pressure.' },
+      diabetes: { level: 'caution', note: 'May lower blood sugar.' }
+    }
+  },
+  { id: 'valerian', name: 'Valerian Root', latin: 'Valeriana officinalis', category: 'Calming / Sleep', color: '#6a4c93',
+    blurb: 'A root traditionally used to support relaxation and sleep onset.',
+    prepMethods: ['capsule', 'tincture', 'tea'], onWeeks: 2, offWeeks: 1, minOffWeeks: 1,
+    rationale: 'Best cycled to help avoid grogginess or reduced effect over time.',
+    defaultTime: 'evening', timeRationale: 'A classic bedtime herb — timed for roughly 30–60 minutes before sleep.',
+    standardDose: '300–600mg extract, 30–60 minutes before bed',
+    onsetGuidance: 'Often felt the same night; some need about 2 weeks of nightly use for full effect.',
+    calorieRich: false, fastingNote: '',
+    pregnancyLevel: 'avoid', pregnancyNote: 'Not enough safety data — generally avoided in pregnancy and breastfeeding.',
+    medicationCaution: 'avoid', medicationNote: 'Strong sedative — combining with other sedating medication can be dangerous.',
+    tags: ['sedative'],
+    conditionFlags: {
+      sedativeMeds: { level: 'avoid', note: 'Do not combine with prescription sedatives, sleep aids, or benzodiazepines without medical supervision.' },
+      surgery: { level: 'caution', note: 'May prolong the effect of anesthesia — stop before scheduled surgery.' },
+      breastfeeding: { level: 'avoid', note: 'Limited safety data while breastfeeding.' }
+    }
+  },
+  { id: 'chamomile', name: 'Chamomile', latin: 'Matricaria chamomilla', category: 'Calming / Sleep', color: '#e0a92e',
+    blurb: 'A gentle daily herb for relaxation, often taken as an evening tea.',
+    prepMethods: ['tea', 'tincture'], onWeeks: 8, offWeeks: 1, minOffWeeks: 1,
+    rationale: 'Very gentle — a light, occasional reset is usually enough.',
+    defaultTime: 'evening', timeRationale: 'A gentle evening ritual to support relaxation before bed.',
+    standardDose: '1 cup tea or 300–400mg extract, evening',
+    onsetGuidance: 'Often felt the same evening.',
+    calorieRich: false, fastingNote: '',
+    pregnancyLevel: 'caution', pregnancyNote: 'Tea amounts are generally considered fine; avoid high-dose extracts without guidance.',
+    medicationCaution: 'caution', medicationNote: 'Mild sedative and mild blood-thinning effect.',
+    tags: ['sedative', 'blood-thinning'],
+    conditionFlags: {
+      bloodThinners: { level: 'caution', note: 'Mild blood-thinning effect.' },
+      allergy: { level: 'caution', note: 'Related to ragweed/daisy family.' }
+    }
+  },
+  { id: 'licorice', name: 'Licorice Root', latin: 'Glycyrrhiza glabra', category: 'Digestive', color: '#8a6642',
+    blurb: 'A sweet root used for digestive and adrenal support.',
+    prepMethods: ['tea', 'capsule', 'tincture'], onWeeks: 2, offWeeks: 2, minOffWeeks: 2,
+    rationale: 'Extended daily use isn’t recommended — regular breaks are important.',
+    defaultTime: 'meals', timeRationale: 'Best taken with food to go easy on digestion.',
+    standardDose: '200–300mg extract or 1 cup tea — not for continuous long-term use',
+    onsetGuidance: 'Digestive support is often felt within days; not intended for continuous long-term use.',
+    calorieRich: false, fastingNote: '',
+    pregnancyLevel: 'avoid', pregnancyNote: 'Associated with risks to fetal development in research — avoid in pregnancy.',
+    medicationCaution: 'avoid', medicationNote: 'Can raise blood pressure and lower potassium — significant interaction risk with several medication types.',
+    tags: ['blood-pressure-raising'],
+    conditionFlags: {
+      bloodPressure: { level: 'avoid', note: 'Can raise blood pressure and cause potassium loss.' },
+      heart: { level: 'avoid', note: 'Can affect heart rhythm via potassium loss.' },
+      kidney: { level: 'avoid', note: 'Can affect fluid and electrolyte balance.' },
+      breastfeeding: { level: 'avoid', note: 'Limited safety data while breastfeeding.' }
+    }
+  },
+  { id: 'ginger', name: 'Ginger', latin: 'Zingiber officinale', category: 'Digestive', color: '#d97b29',
+    blurb: 'A warming root used to support digestion.',
+    prepMethods: ['tea', 'capsule', 'tincture'], onWeeks: 4, offWeeks: 1, minOffWeeks: 1,
+    rationale: 'Generally well tolerated; a short reset keeps things easy on digestion.',
+    defaultTime: 'meals', timeRationale: 'Most effective when taken alongside a meal.',
+    standardDose: '250–1000mg extract or fresh, with meals',
+    onsetGuidance: 'Digestive effects are often felt within the same day.',
+    calorieRich: false, fastingNote: '',
+    pregnancyLevel: 'caution', pregnancyNote: 'Commonly considered fine at food/moderate doses for nausea, but confirm with your provider, especially near delivery.',
+    medicationCaution: 'caution', medicationNote: 'May mildly thin the blood and affect blood sugar or blood pressure.',
+    tags: ['blood-thinning'],
+    conditionFlags: {
+      bloodThinners: { level: 'caution', note: 'Mild blood-thinning effect.' },
+      surgery: { level: 'caution', note: 'Consider stopping before scheduled surgery due to bleeding risk.' }
+    }
+  },
+  { id: 'moringa', name: 'Moringa', latin: 'Moringa oleifera', category: 'Nutritive', color: '#4f8f3f',
+    blurb: 'A nutrient-dense leaf powder used for general nourishment and energy.',
+    prepMethods: ['capsule', 'tea'], onWeeks: 6, offWeeks: 1, minOffWeeks: 1,
+    rationale: 'A nutritive herb — a periodic break helps you notice whether it’s still adding value.',
+    defaultTime: 'morning', timeRationale: 'Often taken in the morning as part of a daily nutrition routine.',
+    standardDose: '1 capsule (1000mg) powder, 1–2x daily',
+    onsetGuidance: 'A nutritive food-herb — general energy and nutrition benefits are often felt within 1–2 weeks.',
+    calorieRich: true,
+    fastingNote: 'Contains enough natural calories and protein that a standard dose can break an intermittent fast — many people limit themselves to one small capsule while fasting and save additional doses for eating windows.',
+    pregnancyLevel: 'caution', pregnancyNote: 'Leaf preparations are generally considered nutritious; avoid root or bark extracts, which are traditionally avoided in pregnancy.',
+    medicationCaution: 'caution', medicationNote: 'May lower blood sugar and has mild thyroid-supporting compounds.',
+    tags: ['blood-sugar-lowering'],
+    conditionFlags: {
+      diabetes: { level: 'caution', note: 'May lower blood sugar.' },
+      thyroid: { level: 'caution', note: 'Contains mild thyroid-active compounds.' }
+    }
+  }
+];
+
+const TAG_CLASH_MESSAGES = {
+  sedative: 'These are all calming or sedating herbs — combining them may cause more drowsiness than expected, especially once their "on" weeks overlap.',
+  'blood-thinning': 'These herbs may each mildly thin the blood — combining them can add up, which matters most around surgery, dental work, or if you bruise easily.',
+  'blood-sugar-lowering': 'These herbs may each lower blood sugar — combining them (especially alongside diabetes medication) raises the risk of it dropping too low.',
+  'blood-pressure-lowering': 'These herbs may each lower blood pressure — combining them could drop it more than expected.',
+  'blood-pressure-raising': "These herbs may each raise blood pressure — combining them isn't recommended, especially with existing blood pressure concerns.",
+  'immune-stimulating': "These herbs each stimulate immune activity — there's rarely a need to combine several long-term, and it may not suit autoimmune conditions.",
+  stimulant: 'These are all stimulating herbs — combining them may feel like too much energy at once, or make it harder to wind down later in the day.'
+};
+
+/**
+ * Turns a herb name typed by the user (or pulled in from chi_saved_herbs)
+ * into a minimal usable entry when it isn't in Herbadex's safety-reviewed
+ * core list above. Clearly marked as unreviewed so the UI never implies
+ * more confidence than the data supports.
+ */
+function slugify(name) {
+  return name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
+function buildStubHerb(rawName) {
+  const name = rawName.trim();
+  const palette = ['#6b8f47', '#8a9a5b', '#a9762f', '#7a4b3a', '#b5533c', '#4c6b8a', '#8a6642', '#d97b29'];
+  const color = palette[Math.abs(hashCode(name)) % palette.length];
+  return {
+    id: 'custom-' + slugify(name),
+    name,
+    latin: '',
+    category: 'Other',
+    color,
+    blurb: 'Added from your own collection — not yet on Herbadex\u2019s safety-reviewed list.',
+    prepMethods: ['tea', 'capsule', 'tincture'],
+    onWeeks: 4, offWeeks: 1, minOffWeeks: 1,
+    rationale: 'General guidance — cycling periodically helps you gauge whether it\u2019s still adding value.',
+    defaultTime: 'morning', timeRationale: 'Adjust to whatever fits your day.',
+    standardDose: 'Follow product label guidance, or a qualified practitioner\u2019s recommendation.',
+    onsetGuidance: 'Varies by herb — track how you feel over the first few weeks.',
+    calorieRich: false, fastingNote: '',
+    pregnancyLevel: 'caution', pregnancyNote: 'Not yet safety-reviewed by Herbadex — confirm with your provider before use in pregnancy.',
+    medicationCaution: 'caution', medicationNote: 'Not yet safety-reviewed by Herbadex — confirm with your provider before combining with medication.',
+    tags: [],
+    conditionFlags: {},
+    unreviewed: true
+  };
+}
+
+function hashCode(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) { hash = (hash << 5) - hash + str.charCodeAt(i); hash |= 0; }
+  return hash;
+}
+
+// Fuzzy herb-name matching, consistent with the substring-matching convention
+// already used elsewhere in C.H.I (see phytochemistry.html's isy()) — so
+// "Nettle" (as saved via Plant Intelligence) and "Nettle Leaf" (Herbadex's
+// reviewed entry) are recognized as the same herb instead of duplicating.
+function normalizeHerbName(name) {
+  return String(name).toLowerCase().trim()
+    .replace(/\broot\b/g, '')
+    .replace(/\bleaf\b/g, '')
+    .replace(/\bleaves\b/g, '')
+    .replace(/\bbark\b/g, '')
+    .replace(/\bmushroom\b/g, '')
+    .replace(/\bextract\b/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+function herbNameMatches(a, b) {
+  const na = normalizeHerbName(a), nb = normalizeHerbName(b);
+  if (!na || !nb) return false;
+  return na === nb || na.includes(nb) || nb.includes(na);
+}
+
+/* ==========================================================================
+   routineEngine.js — cycle math for turning a batch of herbs into a routine
+   ========================================================================== */
+
+function getHerbWeekStatus(herb, weekIndex) {
+  const cycleLength = herb.onWeeks + herb.offWeeks;
+  if (cycleLength <= 0) return 'ON';
+  if (herb.offWeeks <= 0) return 'ON';
+  const pos = ((weekIndex % cycleLength) + cycleLength) % cycleLength;
+  return pos < herb.onWeeks ? 'ON' : 'OFF';
+}
+
+function buildWeeklyMatrix(selectedHerbs, weeksToShow) {
+  return selectedHerbs.map((herb) => {
+    const weeks = [];
+    for (let w = 0; w < weeksToShow; w++) weeks.push(getHerbWeekStatus(herb, w));
+    return { herb, weeks };
+  });
+}
+
+function buildDailySchedule(selectedHerbs, startDate, weeksToShow) {
+  const days = [];
+  const totalDays = weeksToShow * 7;
+  for (let d = 0; d < totalDays; d++) {
+    const date = new Date(startDate);
+    date.setDate(date.getDate() + d);
+    const weekIndex = Math.floor(d / 7);
+    const herbsOn = selectedHerbs.filter((h) => getHerbWeekStatus(h, weekIndex) === 'ON');
+    days.push({ date, weekIndex, dayInWeek: d % 7, herbsOn });
+  }
+  return days;
+}
+
+function findOnBlocks(herb, lookaheadWeeks) {
+  const blocks = [];
+  let blockStart = null;
+  for (let w = 0; w < lookaheadWeeks; w++) {
+    const status = getHerbWeekStatus(herb, w);
+    if (status === 'ON' && blockStart === null) blockStart = w;
+    if (status === 'OFF' && blockStart !== null) { blocks.push({ startWeek: blockStart, endWeek: w - 1 }); blockStart = null; }
+  }
+  if (blockStart !== null) blocks.push({ startWeek: blockStart, endWeek: lookaheadWeeks - 1 });
+  return blocks;
+}
+
+function describeCycle(herb) {
+  const on = `${herb.onWeeks} week${herb.onWeeks === 1 ? '' : 's'} on`;
+  if (herb.offWeeks <= 0) return `${on}, continuous`;
+  const off = `${herb.offWeeks} week${herb.offWeeks === 1 ? '' : 's'} off`;
+  return `${on}, ${off}`;
+}
+
+function getLastOnWeeks(herb, weeksToShow) {
+  const result = new Set();
+  for (let w = 0; w < weeksToShow; w++) {
+    const cur = getHerbWeekStatus(herb, w);
+    const next = getHerbWeekStatus(herb, w + 1);
+    if (cur === 'ON' && next === 'OFF') result.add(w);
+  }
+  return result;
+}
+
+function findOverloadWarnings(days) {
+  const comboMap = new Map();
+  days.forEach((d) => {
+    const bySlot = {};
+    d.herbsOn.forEach((h) => { const slot = h.time || 'morning'; (bySlot[slot] = bySlot[slot] || []).push(h); });
+    Object.entries(bySlot).forEach(([slot, list]) => {
+      if (list.length >= 3) {
+        const ids = list.map((h) => h.id).sort().join(',');
+        const key = slot + '|' + ids;
+        if (!comboMap.has(key)) comboMap.set(key, { slot, herbNames: list.map((h) => h.name), count: 0, firstDate: d.date });
+        comboMap.get(key).count += 1;
+      }
+    });
+  });
+  return Array.from(comboMap.values());
+}
+
+function computeTagClashes(selectedHerbs) {
+  const byTag = {};
+  selectedHerbs.forEach((h) => (h.tags || []).forEach((t) => { (byTag[t] = byTag[t] || []).push(h); }));
+  return Object.entries(byTag)
+    .filter(([tag, list]) => list.length >= 2 && TAG_CLASH_MESSAGES[tag])
+    .map(([tag, list]) => ({ tag, herbNames: list.map((h) => h.name), message: TAG_CLASH_MESSAGES[tag] }));
+}
+
+/* ==========================================================================
+   safetyEngine.js — profile-based herb safety flags
+   ========================================================================== */
+
+function computeHerbSafety(herb, profile) {
+  const flags = [];
+  let status = 'ok';
+
+  function applyLevel(level, label, note) {
+    if (level === 'avoid') status = 'blocked';
+    else if (level === 'caution' && status !== 'blocked') status = 'caution';
+    flags.push({ level: level === 'avoid' ? 'blocked' : 'caution', label, note });
+  }
+
+  if (profile.pregnant === true && herb.pregnancyLevel) applyLevel(herb.pregnancyLevel, 'Pregnancy', herb.pregnancyNote);
+  if (profile.medication === true && herb.medicationCaution && herb.medicationCaution !== 'none') applyLevel(herb.medicationCaution, 'Medication', herb.medicationNote);
+  if (profile.fasting === true && herb.calorieRich) applyLevel('caution', 'Fasting', herb.fastingNote);
+
+  Object.entries(profile.conditions || {}).forEach(([key, isChecked]) => {
+    if (isChecked && herb.conditionFlags && herb.conditionFlags[key]) {
+      const cf = herb.conditionFlags[key];
+      applyLevel(cf.level, CONDITIONS[key] || key, cf.note);
+    }
+  });
+
+  return { status, flags };
+}
+
+/* ==========================================================================
+   profileStore.js — localStorage persistence, namespaced to match C.H.I's
+   existing "chi_" convention so this sits naturally alongside the rest of
+   the site's data (chi_saved_herbs, chi_phyto_stack, chi_font_scale, etc).
+
+   Only definitive Yes/No safety-checkin answers are ever saved. "Prefer not
+   to say" (and anything left unanswered) is never written to storage, so
+   the check-in screen surfaces again next time — by design.
+   ========================================================================== */
+
+function loadProfile() {
+  const base = { fasting: null, medication: null, pregnant: null, conditions: {} };
+  try {
+    const raw = localStorage.getItem('chi_safety_profile');
+    if (raw) return { ...base, ...JSON.parse(raw) };
+  } catch (e) { /* storage unavailable — fall back to session-only defaults */ }
+  return base;
+}
+
+function saveProfileToStorage(profile) {
+  try {
+    const persisted = { fasting: null, medication: null, pregnant: null, conditions: { ...profile.conditions } };
+    ['fasting', 'medication', 'pregnant'].forEach((k) => { if (profile[k] === true || profile[k] === false) persisted[k] = profile[k]; });
+    localStorage.setItem('chi_safety_profile', JSON.stringify(persisted));
+  } catch (e) { /* answers stay session-only */ }
+}
+
+// Reuses C.H.I's existing saved-herbs collection (also used by Plant
+// Intelligence) rather than inventing a separate stack.
+function loadSavedHerbNames() {
+  try {
+    const raw = localStorage.getItem('chi_saved_herbs');
+    if (raw) return JSON.parse(raw);
+  } catch (e) { /* storage unavailable */ }
+  return [];
+}
+
+function saveSavedHerbNames(names) {
+  try { localStorage.setItem('chi_saved_herbs', JSON.stringify(names)); } catch (e) { /* ignore */ }
+}
+
+function needsCheckIn(profile) {
+  return profile.fasting === null || profile.medication === null || profile.pregnant === null;
+}
+
+/* ==========================================================================
+   calendarExport.js — build & download an .ics file from the routine
+   ========================================================================== */
+
+function pad2(n) { return n.toString().padStart(2, '0'); }
+function toICSDateTimeUTC(date) { return `${date.getUTCFullYear()}${pad2(date.getUTCMonth() + 1)}${pad2(date.getUTCDate())}T${pad2(date.getUTCHours())}${pad2(date.getUTCMinutes())}${pad2(date.getUTCSeconds())}Z`; }
+function toICSFloatingDateTime(date) { return `${date.getFullYear()}${pad2(date.getMonth() + 1)}${pad2(date.getDate())}T${pad2(date.getHours())}${pad2(date.getMinutes())}${pad2(date.getSeconds())}`; }
+function escapeICSText(text) { return String(text).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n'); }
+function foldLine(line) {
+  if (line.length <= 74) return line;
+  let result = '', rest = line, first = true;
+  while (rest.length > 0) { const chunkLen = first ? 74 : 73; result += (first ? '' : '\r\n ') + rest.slice(0, chunkLen); rest = rest.slice(chunkLen); first = false; }
+  return result;
+}
+
+function buildICS(selectedHerbs, startDate, horizonWeeks) {
+  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//CHI//Herb Planner//EN', 'CALSCALE:GREGORIAN', 'X-WR-CALNAME:C.H.I Herb Routine'];
+  const now = new Date();
+  let counter = 0;
+
+  selectedHerbs.forEach((herb) => {
+    const blocks = findOnBlocks(herb, horizonWeeks);
+    const prep = PREP_METHODS[herb.prep] || PREP_METHODS.capsule;
+    const slot = TIME_SLOTS[herb.time] || TIME_SLOTS.morning;
+
+    blocks.forEach((block) => {
+      const blockStartDate = new Date(startDate);
+      blockStartDate.setDate(blockStartDate.getDate() + block.startWeek * 7);
+      const blockEndDate = new Date(startDate);
+      blockEndDate.setDate(blockEndDate.getDate() + block.endWeek * 7 + 6);
+
+      const dtStart = new Date(blockStartDate);
+      dtStart.setHours(slot.reminderHour, slot.reminderMinute, 0, 0);
+      const dtEnd = new Date(dtStart);
+      dtEnd.setMinutes(dtEnd.getMinutes() + 15);
+      const until = new Date(blockEndDate);
+      until.setHours(slot.reminderHour, slot.reminderMinute, 59, 0);
+
+      counter += 1;
+      const uid = `chi-herbplanner-${herb.id}-${block.startWeek}-${counter}@chi.app`;
+
+      lines.push('BEGIN:VEVENT');
+      lines.push(foldLine(`UID:${uid}`));
+      lines.push(foldLine(`DTSTAMP:${toICSDateTimeUTC(now)}`));
+      lines.push(foldLine(`DTSTART:${toICSFloatingDateTime(dtStart)}`));
+      lines.push(foldLine(`DTEND:${toICSFloatingDateTime(dtEnd)}`));
+      lines.push(foldLine(`RRULE:FREQ=DAILY;UNTIL=${toICSFloatingDateTime(until)}`));
+      lines.push(foldLine(`SUMMARY:${escapeICSText(`Take ${herb.name} (${prep.label})`)}`));
+      lines.push(foldLine(`DESCRIPTION:${escapeICSText(`${herb.name} — ${prep.label}, ${slot.label} (${slot.rangeLabel}). Typical dose: ${herb.standardDose}. ${describeCycle(herb)}. ${herb.rationale || ''} ${herb.timeRationale || ''} This is general wellness guidance, not medical advice.`)}`));
+      lines.push('TRANSP:TRANSPARENT');
+      lines.push('END:VEVENT');
+    });
+  });
+
+  lines.push('END:VCALENDAR');
+  return lines.join('\r\n');
+}
+
+function downloadICS(icsContent, filename) {
+  const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename || 'chi-herb-routine.ics';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+/* ==========================================================================
+   app.js — UI state + rendering
+   ========================================================================== */
+
+const state = {
+  step: 1,
+  search: '',
+  categoryFilter: 'All',
+  poolFilter: 'all', // 'all' | 'saved'
+  selectedIds: [],
+  prepSelections: {},
+  weeksToShow: 4,
+  startDate: toDateInputValue(new Date()),
+  horizonMonths: 6,
+  view: 'table',
+  profile: loadProfile(),
+  savedHerbNames: loadSavedHerbNames(),
+  checkinDraft: null
+};
+
+let currentScheduleDays = [];
+let selectedDayIndex = 0;
+
+function toDateInputValue(date) { return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`; }
+function formatShortDate(date) { return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); }
+function formatLongDate(date) { return date.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' }); }
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Merge in any herbs already saved elsewhere in C.H.I (e.g. via Plant
+  // Intelligence) that aren't part of Herbadex's reviewed core list yet.
+  state.savedHerbNames.forEach((name) => {
+    const exists = HERB_DATA.some((h) => herbNameMatches(h.name, name));
+    if (!exists) HERB_DATA.push(buildStubHerb(name));
+  });
+
+  state.checkinDraft = {
+    fasting: state.profile.fasting,
+    medication: state.profile.medication,
+    pregnant: state.profile.pregnant,
+    conditions: { ...state.profile.conditions }
+  };
+  state.screen = needsCheckIn(state.profile) ? 'checkin' : 'app';
+
+  renderCategoryFilter();
+  renderCheckinScreen();
+  renderHerbGrid();
+  renderSelectedBar();
+  wireCheckinEvents();
+  wireStaticEvents();
+  renderStepIndicator();
+  showScreen();
+});
+
+function showScreen() {
+  document.getElementById('screen-checkin').classList.toggle('is-active', state.screen === 'checkin');
+  document.getElementById('screen-app').classList.toggle('is-active', state.screen === 'app');
+  if (state.screen === 'app') { renderHerbGrid(); renderSelectedBar(); }
+}
+
+/* ---- Safety check-in screen ---- */
+
+function renderCheckinScreen() {
+  document.querySelectorAll('.checkin-btn').forEach((btn) => {
+    const q = btn.dataset.q, val = btn.dataset.val, current = state.checkinDraft[q];
+    const matches = (val === 'true' && current === true) || (val === 'false' && current === false) || (val === 'declined' && current === 'declined');
+    btn.classList.toggle('is-active-yes', val === 'true' && matches);
+    btn.classList.toggle('is-active-no', val === 'false' && matches);
+    btn.classList.toggle('is-active-declined', val === 'declined' && matches);
+  });
+
+  const grid = document.getElementById('conditions-grid');
+  grid.innerHTML = Object.entries(CONDITIONS).map(([key, label]) => {
+    const checked = !!state.checkinDraft.conditions[key];
+    return `<label class="condition-item"><input type="checkbox" data-condition="${key}" ${checked ? 'checked' : ''} />${label}</label>`;
+  }).join('');
+
+  grid.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+    cb.addEventListener('change', () => { state.checkinDraft.conditions[cb.dataset.condition] = cb.checked; });
+  });
+}
+
+function wireCheckinEvents() {
+  document.querySelectorAll('.checkin-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const q = btn.dataset.q, val = btn.dataset.val;
+      state.checkinDraft[q] = val === 'true' ? true : val === 'false' ? false : 'declined';
+      renderCheckinScreen();
+    });
+  });
+
+  document.getElementById('continue-checkin-btn').addEventListener('click', applyCheckinDraft);
+  document.getElementById('skip-checkin-btn').addEventListener('click', () => { state.screen = 'app'; showScreen(); });
+}
+
+function applyCheckinDraft() {
+  const save = document.getElementById('save-profile-checkbox').checked;
+  state.profile = {
+    fasting: state.checkinDraft.fasting,
+    medication: state.checkinDraft.medication,
+    pregnant: state.checkinDraft.pregnant,
+    conditions: { ...state.checkinDraft.conditions }
+  };
+  if (save) saveProfileToStorage(state.profile);
+  state.screen = 'app';
+  showScreen();
+}
+
+function wireStaticEvents() {
+  document.getElementById('herb-search').addEventListener('input', (e) => { state.search = e.target.value.toLowerCase(); renderHerbGrid(); });
+  document.getElementById('category-filter').addEventListener('change', (e) => { state.categoryFilter = e.target.value; renderHerbGrid(); });
+
+  document.querySelectorAll('.pool-tab').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      state.poolFilter = btn.dataset.filter;
+      document.querySelectorAll('.pool-tab').forEach((b) => b.classList.toggle('is-active', b === btn));
+      renderHerbGrid();
+    });
+  });
+
+  document.getElementById('custom-herb-add-btn').addEventListener('click', addCustomHerb);
+  document.getElementById('custom-herb-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') addCustomHerb(); });
+
+  document.getElementById('edit-profile-btn').addEventListener('click', () => {
+    state.checkinDraft = { fasting: state.profile.fasting, medication: state.profile.medication, pregnant: state.profile.pregnant, conditions: { ...state.profile.conditions } };
+    state.screen = 'checkin';
+    renderCheckinScreen();
+    showScreen();
+  });
+
+  document.getElementById('to-step2-btn').addEventListener('click', goToStep2);
+  document.getElementById('back-to-1-btn').addEventListener('click', () => goToStep(1));
+  document.getElementById('generate-btn').addEventListener('click', goToStep3);
+  document.getElementById('back-to-2-btn').addEventListener('click', () => goToStep(2));
+  document.getElementById('start-over-btn').addEventListener('click', startOver);
+
+  document.getElementById('view-table-btn').addEventListener('click', () => switchView('table'));
+  document.getElementById('view-calendar-btn').addEventListener('click', () => switchView('calendar'));
+
+  document.getElementById('weeks-select').addEventListener('change', (e) => { state.weeksToShow = parseInt(e.target.value, 10); selectedDayIndex = 0; renderRoutine(); });
+
+  document.getElementById('start-date-input').value = state.startDate;
+  document.getElementById('start-date-input').addEventListener('change', (e) => { state.startDate = e.target.value; selectedDayIndex = 0; renderRoutine(); });
+
+  document.getElementById('horizon-select').addEventListener('change', (e) => { state.horizonMonths = parseInt(e.target.value, 10); });
+  document.getElementById('export-btn').addEventListener('click', handleExport);
+}
+
+function goToStep(n) {
+  state.step = n;
+  ['step-1', 'step-2', 'step-3'].forEach((id, idx) => document.getElementById(id).classList.toggle('is-active', idx + 1 === n));
+  renderStepIndicator();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderStepIndicator() {
+  const labels = ['Select Herbs', 'Choose Prep', 'Your Routine'];
+  document.getElementById('step-indicator').innerHTML = labels.map((label, i) => {
+    const n = i + 1, cls = n === state.step ? 'is-current' : n < state.step ? 'is-done' : '';
+    return `<div class="step-pill ${cls}"><span class="step-num">${n < state.step ? '✓' : n}</span><span class="step-label">${label}</span></div>`;
+  }).join('<div class="step-connector"></div>');
+}
+
+/* ---- Step 1 ---- */
+
+function renderCategoryFilter() {
+  const sel = document.getElementById('category-filter');
+  sel.innerHTML = `<option value="All">All categories</option>` + CATEGORIES.map((c) => `<option value="${c}">${c}</option>`).join('');
+}
+
+function addCustomHerb() {
+  const input = document.getElementById('custom-herb-input');
+  const name = input.value.trim();
+  if (!name) return;
+
+  let herb = HERB_DATA.find((h) => herbNameMatches(h.name, name));
+  if (!herb) {
+    herb = buildStubHerb(name);
+    HERB_DATA.push(herb);
+  }
+  if (!state.savedHerbNames.some((n) => herbNameMatches(n, herb.name))) {
+    state.savedHerbNames.push(herb.name);
+    saveSavedHerbNames(state.savedHerbNames);
+  }
+  input.value = '';
+  toggleHerbSelection(herb.id, true);
+  renderHerbGrid();
+  renderSelectedBar();
+}
+
+function renderHerbGrid() {
+  const grid = document.getElementById('herb-grid');
+  const pool = state.poolFilter === 'saved'
+    ? HERB_DATA.filter((h) => state.savedHerbNames.some((n) => herbNameMatches(n, h.name)))
+    : HERB_DATA;
+
+  const filtered = pool.filter((h) => {
+    const matchesSearch = !state.search || h.name.toLowerCase().includes(state.search) || (h.latin || '').toLowerCase().includes(state.search);
+    const matchesCategory = state.categoryFilter === 'All' || h.category === state.categoryFilter;
+    return matchesSearch && matchesCategory;
+  });
+
+  const savedCountEl = document.getElementById('saved-count');
+  if (savedCountEl) savedCountEl.textContent = state.savedHerbNames.length;
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<p class="empty-note">${state.poolFilter === 'saved' ? 'No saved herbs match — try "All Herbs" or add one by name above.' : 'No herbs match your search.'}</p>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map((h) => {
+    const selected = state.selectedIds.includes(h.id);
+    const saved = state.savedHerbNames.some((n) => herbNameMatches(n, h.name));
+    const safety = computeHerbSafety(h, state.profile);
+    const blocked = safety.status === 'blocked';
+    const caution = safety.status === 'caution';
+
+    const safetyBanner = blocked
+      ? `<div class="safety-banner safety-blocked">🚫 Not recommended for your profile<div class="safety-reason">${safety.flags.map((f) => f.note).join(' ')}</div></div>`
+      : caution
+      ? `<div class="safety-banner safety-caution">⚠️ Use with caution<div class="safety-reason">${safety.flags.map((f) => f.note).join(' ')}</div></div>`
+      : '';
+
+    const selectButton = blocked
+      ? `<button type="button" class="select-btn" disabled>🚫 Not recommended for you</button>`
+      : `<button type="button" class="select-btn ${selected ? 'is-active' : ''}" data-select-id="${h.id}">${selected ? '✓ In your routine' : '+ Add to routine'}</button>`;
+
+    return `
+      <div class="herb-card ${selected ? 'is-selected' : ''} ${blocked ? 'is-blocked' : ''}" style="--herb-color:${h.color}">
+        <div class="herb-card-top">
+          <span class="herb-swatch"></span>
+          <button type="button" class="stack-btn ${saved ? 'is-saved' : ''}" data-stack-name="${h.name}" title="${saved ? 'Remove from your saved herbs' : 'Save to your herbs'}">${saved ? '★' : '☆'}</button>
+        </div>
+        <div class="herb-name">${h.name}${selected ? ' <span class="herb-check-inline">✓ In routine</span>' : ''}</div>
+        ${h.latin ? `<div class="herb-latin">${h.latin}</div>` : ''}
+        <div class="herb-blurb">${h.blurb}</div>
+        <div class="herb-dose">Typical dose: ${h.standardDose}</div>
+        <div class="herb-tags">
+          <span class="tag ${h.unreviewed ? 'tag-unreviewed' : ''}">${h.category}</span>
+          <span class="tag tag-muted">${describeCycle(h)}</span>
+          ${h.unreviewed ? `<span class="tag tag-unreviewed">Not yet reviewed</span>` : ''}
+        </div>
+        ${safetyBanner}
+        ${selectButton}
+      </div>`;
+  }).join('');
+
+  grid.querySelectorAll('.stack-btn').forEach((btn) => {
+    btn.addEventListener('click', (e) => { e.stopPropagation(); toggleSavedHerb(btn.dataset.stackName); });
+  });
+  grid.querySelectorAll('.select-btn[data-select-id]').forEach((btn) => {
+    btn.addEventListener('click', () => toggleHerbSelection(btn.dataset.selectId));
+  });
+}
+
+function toggleSavedHerb(name) {
+  const idx = state.savedHerbNames.findIndex((n) => herbNameMatches(n, name));
+  if (idx === -1) state.savedHerbNames.push(name); else state.savedHerbNames.splice(idx, 1);
+  saveSavedHerbNames(state.savedHerbNames);
+  renderHerbGrid();
+}
+
+function toggleHerbSelection(id, forceSelect) {
+  const idx = state.selectedIds.indexOf(id);
+  if (idx === -1) {
+    const h = HERB_DATA.find((x) => x.id === id);
+    const safety = computeHerbSafety(h, state.profile);
+    if (safety.status === 'blocked') return;
+    state.selectedIds.push(id);
+  } else if (!forceSelect) {
+    state.selectedIds.splice(idx, 1);
+    delete state.prepSelections[id];
+  }
+  renderHerbGrid();
+  renderSelectedBar();
+}
+
+function renderSelectedBar() {
+  const bar = document.getElementById('selected-bar');
+  const count = state.selectedIds.length;
+  document.getElementById('to-step2-btn').disabled = count === 0;
+
+  if (count === 0) { bar.innerHTML = `<p class="empty-note">Select one or more herbs to build your batch.</p>`; return; }
+
+  const chips = state.selectedIds.map((id) => {
+    const h = HERB_DATA.find((x) => x.id === id);
+    return `<span class="chip" style="--herb-color:${h.color}">${h.name}<button type="button" class="chip-remove" data-herb-id="${id}" aria-label="Remove ${h.name}">×</button></span>`;
+  }).join('');
+
+  bar.innerHTML = `<div class="selected-count">${count} herb${count === 1 ? '' : 's'} in batch</div><div class="chip-row">${chips}</div>`;
+  bar.querySelectorAll('.chip-remove').forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); toggleHerbSelection(b.dataset.herbId); }));
+}
+
+/* ---- Step 2 ---- */
+
+function goToStep2() {
+  state.selectedIds.forEach((id) => {
+    if (!state.prepSelections[id]) {
+      const h = HERB_DATA.find((x) => x.id === id);
+      state.prepSelections[id] = { prep: h.prepMethods[0], onWeeks: h.onWeeks, offWeeks: h.offWeeks, time: h.defaultTime };
+    }
+  });
+  renderPrepStep();
+  goToStep(2);
+}
+
+function renderPrepStep() {
+  const wrap = document.getElementById('prep-list');
+  wrap.innerHTML = state.selectedIds.map((id) => {
+    const h = HERB_DATA.find((x) => x.id === id);
+    const sel = state.prepSelections[id];
+    const safety = computeHerbSafety(h, state.profile);
+    const methodOptions = [...h.prepMethods];
+    if (h.prepMethods.length >= 2) methodOptions.push('hybrid');
+
+    const prepButtons = methodOptions.map((mKey) => {
+      const m = PREP_METHODS[mKey], active = sel.prep === mKey;
+      return `<button type="button" class="prep-btn ${active ? 'is-active' : ''}" data-herb-id="${id}" data-prep="${mKey}" title="${m.description}"><span>${m.icon} ${m.label}</span></button>`;
+    }).join('');
+
+    const timeButtons = TIME_SLOT_ORDER.map((tKey) => {
+      const t = TIME_SLOTS[tKey], active = sel.time === tKey, isRecommended = h.defaultTime === tKey;
+      return `<button type="button" class="prep-btn time-btn ${active ? 'is-active' : ''}" data-herb-id="${id}" data-time="${tKey}" title="${t.rangeLabel}">
+        <span>${t.icon} ${t.label}${isRecommended ? '<span class="recommended-badge">Recommended</span>' : ''}</span>
+        <span class="slot-time-sub">${t.rangeLabel}</span></button>`;
+    }).join('');
+
+    const safetyBanner = safety.status === 'blocked'
+      ? `<div class="safety-banner safety-blocked">🚫 Not recommended for your profile<div class="safety-reason">${safety.flags.map((f) => f.note).join(' ')}</div></div>`
+      : safety.status === 'caution'
+      ? `<div class="safety-banner safety-caution">⚠️ Use with caution<div class="safety-reason">${safety.flags.map((f) => f.note).join(' ')}</div></div>`
+      : '';
+
+    const belowMin = sel.offWeeks < h.minOffWeeks;
+
+    return `
+      <div class="prep-card" style="--herb-color:${h.color}">
+        <div class="prep-card-header">
+          <span class="herb-swatch"></span>
+          <div><div class="prep-herb-name">${h.name}</div>${h.latin ? `<div class="prep-herb-latin">${h.latin}</div>` : ''}</div>
+        </div>
+
+        ${safetyBanner}
+        <div class="prep-meta"><strong>Typical dose:</strong> ${h.standardDose}</div>
+        <div class="prep-meta"><strong>⏱ Time to feel effects:</strong> ${h.onsetGuidance}</div>
+
+        <div class="prep-section-label">How will you take it?</div>
+        <div class="prep-btn-row">${prepButtons}</div>
+
+        <div class="prep-section-label">When during the day? <span class="info-dot" tabindex="0" title="${h.timeRationale}">i</span></div>
+        <div class="prep-btn-row">${timeButtons}</div>
+
+        <div class="prep-section-label">Cycle <span class="info-dot" tabindex="0" title="${h.rationale}">i</span></div>
+        <div class="cycle-row">
+          <label class="cycle-field"><span>Weeks on</span><input type="number" min="1" max="26" value="${sel.onWeeks}" data-herb-id="${id}" data-field="onWeeks" /></label>
+          <label class="cycle-field"><span>Weeks off</span><input type="number" min="0" max="26" value="${sel.offWeeks}" data-herb-id="${id}" data-field="offWeeks" /></label>
+          <span class="cycle-summary" data-cycle-summary="${id}">${describeCycle(sel)}</span>
+        </div>
+        <div class="cycle-warning" data-cycle-warning="${id}">${belowMin ? `⚠️ Recommended minimum break is ${h.minOffWeeks} week${h.minOffWeeks === 1 ? '' : 's'}.` : ''}</div>
+      </div>`;
+  }).join('');
+
+  wrap.querySelectorAll('.prep-btn[data-prep]').forEach((btn) => btn.addEventListener('click', () => { state.prepSelections[btn.dataset.herbId].prep = btn.dataset.prep; renderPrepStep(); }));
+  wrap.querySelectorAll('.time-btn[data-time]').forEach((btn) => btn.addEventListener('click', () => { state.prepSelections[btn.dataset.herbId].time = btn.dataset.time; renderPrepStep(); }));
+
+  wrap.querySelectorAll('input[type="number"]').forEach((input) => {
+    input.addEventListener('input', () => {
+      const id = input.dataset.herbId, field = input.dataset.field, val = Math.max(0, parseInt(input.value, 10) || 0);
+      state.prepSelections[id][field] = val;
+      const summaryEl = wrap.querySelector(`[data-cycle-summary="${id}"]`);
+      if (summaryEl) summaryEl.textContent = describeCycle(state.prepSelections[id]);
+      const warnEl = wrap.querySelector(`[data-cycle-warning="${id}"]`);
+      if (warnEl) {
+        const h = HERB_DATA.find((x) => x.id === id);
+        const belowMin = state.prepSelections[id].offWeeks < h.minOffWeeks;
+        warnEl.textContent = belowMin ? `⚠️ Recommended minimum break is ${h.minOffWeeks} week${h.minOffWeeks === 1 ? '' : 's'}.` : '';
+      }
+    });
+  });
+}
+
+/* ---- Step 3 ---- */
+
+function getSelectedHerbsWithPrep() {
+  return state.selectedIds.map((id) => {
+    const h = HERB_DATA.find((x) => x.id === id);
+    const sel = state.prepSelections[id];
+    return { ...h, prep: sel.prep, onWeeks: sel.onWeeks, offWeeks: sel.offWeeks, time: sel.time };
+  });
+}
+
+function goToStep3() { selectedDayIndex = 0; renderRoutine(); goToStep(3); }
+
+function switchView(view) {
+  state.view = view;
+  document.getElementById('view-table-btn').classList.toggle('is-active', view === 'table');
+  document.getElementById('view-calendar-btn').classList.toggle('is-active', view === 'calendar');
+  document.getElementById('routine-table-wrap').classList.toggle('is-hidden', view !== 'table');
+  document.getElementById('routine-calendar-wrap').classList.toggle('is-hidden', view !== 'calendar');
+}
+
+function renderRoutine() {
+  const herbs = getSelectedHerbsWithPrep();
+  const startDate = new Date(state.startDate + 'T00:00:00');
+  currentScheduleDays = buildDailySchedule(herbs, startDate, state.weeksToShow);
+  renderExplanation(herbs);
+  renderLegend(herbs);
+  renderTableView(herbs);
+  renderCalendarView();
+  switchView(state.view);
+}
+
+function renderExplanation(herbs) {
+  const panel = document.getElementById('explain-panel');
+  const overloads = findOverloadWarnings(currentScheduleDays);
+  const clashes = computeTagClashes(herbs);
+  const safetyFlags = herbs.map((h) => ({ herb: h, safety: computeHerbSafety(h, state.profile) })).filter((x) => x.safety.status !== 'ok');
+
+  const herbItems = herbs.map((h) => {
+    const slot = TIME_SLOTS[h.time];
+    return `
+      <div class="explain-item" style="--herb-color:${h.color}">
+        <span class="herb-swatch"></span>
+        <div>
+          <div class="explain-herb-name">${h.name}<span class="explain-tag">${describeCycle(h)}</span><span class="explain-tag">${slot.icon} ${slot.label}</span></div>
+          <div class="explain-why"><strong>Dose:</strong> ${h.standardDose}</div>
+          <div class="explain-why"><strong>Why this cycle:</strong> ${h.rationale}</div>
+          <div class="explain-why"><strong>Why this time:</strong> ${h.timeRationale}</div>
+          <div class="explain-why"><strong>Time to feel effects:</strong> ${h.onsetGuidance}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  const safetyBlock = safetyFlags.length
+    ? `<div class="warning-list"><div class="warning-title">🚩 Personal safety flags for this batch</div>${safetyFlags.map((x) => `<div class="warning-item">${x.safety.status === 'blocked' ? '🚫' : '⚠️'} <strong>${x.herb.name}:</strong> ${x.safety.flags.map((f) => f.note).join(' ')}</div>`).join('')}</div>` : '';
+  const clashBlock = clashes.length
+    ? `<div class="warning-list"><div class="warning-title">🔀 Herb combinations to be mindful of</div>${clashes.map((c) => `<div class="warning-item"><strong>${c.herbNames.join(' + ')}:</strong> ${c.message}</div>`).join('')}</div>` : '';
+  const timingBlock = overloads.length
+    ? `<div class="warning-list"><div class="warning-title">⚠️ A few things to balance</div>${overloads.map((w) => `<div class="warning-item">${w.herbNames.join(' + ')} are all scheduled for ${TIME_SLOTS[w.slot].label} together on ${w.count} day${w.count === 1 ? '' : 's'} in this preview (e.g. ${formatShortDate(w.firstDate)}). Consider moving one to a different time of day.</div>`).join('')}</div>` : '';
+  const allClear = !safetyFlags.length && !clashes.length && !overloads.length
+    ? `<div class="warning-list-ok">✅ No conflicts found — your batch looks well balanced across dose timing, herb combinations, and your safety profile.</div>` : '';
+
+  panel.innerHTML = `
+    <details class="explain-details" open>
+      <summary>Why this schedule looks the way it does</summary>
+      <p class="explain-intro">Herbadex spreads each herb across "on" and "off" weeks so your body doesn't build tolerance and keeps getting the full benefit. Where possible, herbs are also spread across the day so you're not stacking too much on your system at once. None of this replaces advice from a healthcare provider — it's a starting point to help you make informed, safer choices.</p>
+      ${herbItems}${safetyBlock}${clashBlock}${timingBlock}${allClear}
+    </details>`;
+}
+
+function renderLegend(herbs) {
+  document.getElementById('legend').innerHTML = herbs.map((h) => {
+    const prep = PREP_METHODS[h.prep], slot = TIME_SLOTS[h.time];
+    return `<span class="legend-item" style="--herb-color:${h.color}"><span class="legend-dot"></span>${h.name} · ${prep.icon} ${prep.label} · ${slot.icon} ${slot.label} · ${describeCycle(h)}</span>`;
+  }).join('');
+}
+
+function renderTableView(herbs) {
+  const wrap = document.getElementById('routine-table-wrap');
+  const weeksToShow = state.weeksToShow;
+  const matrix = buildWeeklyMatrix(herbs, weeksToShow);
+  const headerCells = Array.from({ length: weeksToShow }, (_, i) => `<th>Week ${i + 1}</th>`).join('');
+
+  const rows = matrix.map(({ herb, weeks }) => {
+    const prep = PREP_METHODS[herb.prep];
+    const lastOnWeeks = getLastOnWeeks(herb, weeksToShow);
+    const cells = weeks.map((status, w) => {
+      const isLast = status === 'ON' && lastOnWeeks.has(w);
+      const cls = status === 'ON' ? (isLast ? 'cell-on cell-last-on' : 'cell-on') : 'cell-off';
+      const content = status === 'ON' ? prep.icon : '—';
+      return `<td class="${cls}" style="--herb-color:${herb.color}" title="${isLast ? 'Last day before your break' : ''}">${content}</td>`;
+    }).join('');
+    return `<tr><th class="row-head" style="--herb-color:${herb.color}"><span class="herb-swatch"></span>${herb.name}</th>${cells}</tr>`;
+  }).join('');
+
+  wrap.innerHTML = `
+    <div class="table-scroll"><table class="routine-table"><thead><tr><th class="row-head-label">Herb</th>${headerCells}</tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="table-hint">Each herb loops on its own cycle indefinitely — this table shows one example stretch so you can see how they line up together. Cells outlined in <span class="hl-red">red</span> mark the last week before a break.</p>`;
+}
+
+function renderCalendarView() {
+  const grid = document.getElementById('calendar-grid');
+  const weeksToShow = state.weeksToShow;
+  const weekRows = [];
+
+  for (let w = 0; w < weeksToShow; w++) {
+    const weekDays = currentScheduleDays.slice(w * 7, w * 7 + 7);
+    const weekStartIdx = w * 7, weekEndIdx = w * 7 + 6;
+
+    const dayCells = weekDays.map((d, i) => {
+      const globalIndex = weekStartIdx + i;
+      const chips = d.herbsOn.map((h) => {
+        const prep = PREP_METHODS[h.prep];
+        const lastOnWeeks = getLastOnWeeks(h, weeksToShow);
+        const isLastDay = d.dayInWeek === 6 && lastOnWeeks.has(d.weekIndex);
+        return `<span class="cal-chip ${isLastDay ? 'is-last-day' : ''}" style="--herb-color:${h.color}" title="${h.name} · ${prep.label}${isLastDay ? ' · Last day before break' : ''}">${prep.icon}</span>`;
+      }).join('');
+      const selectedCls = globalIndex === selectedDayIndex ? 'is-selected-day' : '';
+      return `<button type="button" class="cal-day ${d.herbsOn.length === 0 ? 'is-empty' : ''} ${selectedCls}" data-day-index="${globalIndex}">
+        <div class="cal-date">${formatShortDate(d.date)}</div><div class="cal-chips">${chips || '<span class="cal-rest">rest</span>'}</div></button>`;
+    }).join('');
+
+    const showDrawerHere = selectedDayIndex !== null && selectedDayIndex >= weekStartIdx && selectedDayIndex <= weekEndIdx;
+    const drawerHTML = showDrawerHere ? `<div class="day-detail-drawer">${buildDayDetailHTML(currentScheduleDays[selectedDayIndex])}</div>` : '';
+
+    weekRows.push(`<div class="cal-week"><div class="cal-week-label">Week ${w + 1}</div><div class="cal-days">${dayCells}</div>${drawerHTML}</div>`);
+  }
+
+  grid.innerHTML = weekRows.join('');
+
+  grid.querySelectorAll('.cal-day').forEach((el) => {
+    el.addEventListener('click', () => {
+      const idx = parseInt(el.dataset.dayIndex, 10);
+      selectedDayIndex = selectedDayIndex === idx ? null : idx;
+      renderCalendarView();
+    });
+  });
+  grid.querySelectorAll('[data-close-drawer]').forEach((btn) => {
+    btn.addEventListener('click', (e) => { e.stopPropagation(); selectedDayIndex = null; renderCalendarView(); });
+  });
+}
+
+function buildDayDetailHTML(day) {
+  if (!day) return '';
+  if (day.herbsOn.length === 0) {
+    return `<div class="day-detail-top"><div class="day-detail-header">${formatLongDate(day.date)}</div><button type="button" class="day-detail-close" data-close-drawer aria-label="Close">✕</button></div><p class="empty-note">Rest day — nothing scheduled. Your body gets a break here.</p>`;
+  }
+
+  const bySlot = {};
+  day.herbsOn.forEach((h) => { (bySlot[h.time] = bySlot[h.time] || []).push(h); });
+
+  const sections = TIME_SLOT_ORDER.filter((s) => bySlot[s]).map((s) => {
+    const slot = TIME_SLOTS[s];
+    const items = bySlot[s].map((h) => {
+      const prep = PREP_METHODS[h.prep];
+      const lastOnWeeks = getLastOnWeeks(h, state.weeksToShow);
+      const isLastDay = day.dayInWeek === 6 && lastOnWeeks.has(day.weekIndex);
+      return `
+        <div class="day-detail-item" style="--herb-color:${h.color}">
+          <span class="herb-swatch"></span>
+          <div>
+            <div class="day-detail-herb">${h.name} <span class="day-detail-prep">${prep.icon} ${prep.label}</span></div>
+            <div class="day-detail-why">Typical dose: ${h.standardDose}</div>
+            ${isLastDay ? `<div class="day-detail-last-day">⏸ Last day before your break — ${h.offWeeks} week${h.offWeeks === 1 ? '' : 's'} off starts tomorrow.</div>` : ''}
+          </div>
+        </div>`;
+    }).join('');
+    return `<div class="day-detail-slot"><div class="day-detail-slot-label">${slot.icon} ${slot.label} <span class="day-detail-slot-time">(${slot.rangeLabel})</span></div>${items}</div>`;
+  }).join('');
+
+  return `<div class="day-detail-top"><div class="day-detail-header">${formatLongDate(day.date)}</div><button type="button" class="day-detail-close" data-close-drawer aria-label="Close">✕</button></div>${sections}`;
+}
+
+function handleExport() {
+  const herbs = getSelectedHerbsWithPrep();
+  const startDate = new Date(state.startDate + 'T00:00:00');
+  const horizonWeeks = Math.round(state.horizonMonths * 4.345);
+  const ics = buildICS(herbs, startDate, horizonWeeks);
+  downloadICS(ics, 'chi-herb-routine.ics');
+}
+
+function startOver() {
+  state.selectedIds = [];
+  state.prepSelections = {};
+  state.search = '';
+  state.categoryFilter = 'All';
+  state.poolFilter = 'all';
+  selectedDayIndex = 0;
+  currentScheduleDays = [];
+  document.getElementById('herb-search').value = '';
+  document.getElementById('category-filter').value = 'All';
+  document.querySelectorAll('.pool-tab').forEach((b) => b.classList.toggle('is-active', b.dataset.filter === 'all'));
+  renderHerbGrid();
+  renderSelectedBar();
+  goToStep(1);
+}
+</script>
+</body>
+</html>
