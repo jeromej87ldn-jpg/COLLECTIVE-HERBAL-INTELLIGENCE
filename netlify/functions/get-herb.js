@@ -29,9 +29,33 @@ exports.handler = async (event) => {
       };
     }
 
+    // Validate herb first
+    const validationMessage = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 100,
+      messages: [
+        {
+          role: 'user',
+          content: `Is "${name}" a recognized medicinal herb, culinary herb, or traditional herbal plant? Answer only "yes" or "no".`
+        }
+      ]
+    });
+
+    const isHerb = validationMessage.content[0].text.toLowerCase().includes('yes');
+
+    if (!isHerb) {
+      return { 
+        statusCode: 400, 
+        body: JSON.stringify({ 
+          error: 'not_an_herb',
+          message: `"${herbName}" is not recognized as a medicinal or culinary herb. Please search for actual herbs.`
+        }) 
+      };
+    }
+
     // Generate herb data with Claude
     const message = await anthropic.messages.create({
-      model: 'claude-opus-4-6',
+      model: 'claude-haiku-4-5-20251001',
       max_tokens: 2000,
       messages: [
         {
