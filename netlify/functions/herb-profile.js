@@ -158,8 +158,61 @@ exports.handler = async (event) => {
     }
     const name = herbName.trim().toLowerCase();
     const serverKey = process.env.ANTHROPIC_API_KEY;
+    const apiKey = serverKey || previewApiKey;
+    if (!apiKey) {
+      return { statusCode: 500, body: JSON.stringify({ error: 'Server is missing ANTHROPIC_API_KEY' }) };
+    }
+    const anthropic = new Anthropic({ apiKey });
 
-    // ── 1. CACHE CHECK ────────────────────────────────────────────────
+    // ── 1. VALIDATE IT'S ACTUALLY AN HERB ────────────────────────────
+    // This runs BEFORE the cache check, on every request, not just fresh
+    // generations. That's deliberate: rows generated before this gate
+    // existed (e.g. "cabbage") are already sitting in the cache as
+    // fully-formed fake profiles, and a cache-hit path that skips
+    // validation would keep serving them forever. Running the gate first
+    // means a bad legacy row gets caught — and deleted — the next time
+    // anyone searches it, instead of needing a manual database fix.
+    // Cost/latency trade-off: one extra cheap Haiku call on every search,
+    // including hits for real cached herbs. Worth it for a tool whose
+    // whole premise is trustworthy dosing/safety info.
+    try {
+      const check = await anthropic.messages.create({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 10,
+        messages: [{
+          role: 'user',
+          content: `Is "${name}" primarily known and used as a medicinal herb, culinary herb/spice, or traditional herbal remedy plant (examples: ashwagandha, chamomile, turmeric, echinacea, ginger, rosemary)?
+Answer "no" if it is mainly a staple food eaten as a vegetable, fruit, grain, meat, or everyday produce item rather than for herbal/medicinal use (examples: cabbage, potato, chicken, apple, rice, lettuce) — even if it has a minor folk remedy use.
+Answer ONLY "yes" or "no", nothing else.`
+        }]
+      });
+      const verdictBlock = check.content.find(b => b.type === 'text');
+      const verdict = (verdictBlock && verdictBlock.text || '').trim().toLowerCase();
+      if (verdict.startsWith('no')) {
+        // Self-heal: if a bad profile for this name is already cached
+        // (generated before this gate existed), remove it so it can't
+        // keep being served on some other code path later.
+        if (supabase) {
+          supabase.from('herbs').delete().eq('name', name).then(
+            () => {}, e => console.error('bad-cache cleanup failed:', e.message)
+          );
+        }
+        return {
+          statusCode: 400,
+          body: JSON.stringify({
+            error: 'not_an_herb',
+            message: `"${herbName.trim()}" doesn't look like a recognized herb, spice, or traditional herbal remedy plant — it reads more like a staple food item. Herbadex only generates profiles for herbal/medicinal plants. If this looks wrong, try the plant's common herbal name.`
+          })
+        };
+      }
+      // If the check itself errors or returns something unparseable, we
+      // fail open (proceed) rather than blocking a real herb search
+      // because of a flaky classification call.
+    } catch (validationErr) {
+      console.error('Herb validation check failed, proceeding anyway:', validationErr.message);
+    }
+
+    // ── 2. CACHE CHECK ────────────────────────────────────────────────
     if (supabase) {
       try {
         const { data: row } = await supabase
@@ -194,50 +247,7 @@ exports.handler = async (event) => {
       }
     }
 
-    // ── 2. GENERATE (single synchronous call — no background dispatch) ──
-    const apiKey = serverKey || previewApiKey;
-    if (!apiKey) {
-      return { statusCode: 500, body: JSON.stringify({ error: 'Server is missing ANTHROPIC_API_KEY' }) };
-    }
-    const anthropic = new Anthropic({ apiKey });
-
-    // ── 1.5. VALIDATE IT'S ACTUALLY AN HERB ──────────────────────────
-    // Without this gate, any search term reaches the generator below and
-    // gets back a fully-formed profile — compounds, dosage, safety notes,
-    // all fabricated with total confidence — even for things like "cabbage"
-    // or "chicken" that aren't herbs. Given the whole point of Herbadex is
-    // giving people trustworthy dosing/safety info, a plausible-sounding
-    // fake profile for a non-herb is worse than no result at all. One cheap
-    // Haiku call up front to gate that before it ever reaches the generator.
-    try {
-      const check = await anthropic.messages.create({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 10,
-        messages: [{
-          role: 'user',
-          content: `Is "${name}" primarily known and used as a medicinal herb, culinary herb/spice, or traditional herbal remedy plant (examples: ashwagandha, chamomile, turmeric, echinacea, ginger, rosemary)?
-Answer "no" if it is mainly a staple food eaten as a vegetable, fruit, grain, meat, or everyday produce item rather than for herbal/medicinal use (examples: cabbage, potato, chicken, apple, rice, lettuce) — even if it has a minor folk remedy use.
-Answer ONLY "yes" or "no", nothing else.`
-        }]
-      });
-      const verdictBlock = check.content.find(b => b.type === 'text');
-      const verdict = (verdictBlock && verdictBlock.text || '').trim().toLowerCase();
-      if (verdict.startsWith('no')) {
-        return {
-          statusCode: 400,
-          body: JSON.stringify({
-            error: 'not_an_herb',
-            message: `"${herbName.trim()}" doesn't look like a recognized herb, spice, or traditional herbal remedy plant — it reads more like a staple food item. Herbadex only generates profiles for herbal/medicinal plants. If this looks wrong, try the plant's common herbal name.`
-          })
-        };
-      }
-      // If the check itself errors or returns something unparseable, we
-      // fail open (proceed to generation) rather than blocking a real herb
-      // search because of a flaky classification call.
-    } catch (validationErr) {
-      console.error('Herb validation check failed, proceeding anyway:', validationErr.message);
-    }
-
+    // ── 3. GENERATE (single synchronous call — no background dispatch) ──
     const userMsg = buildUserMessage(name, excludedHerb, issues);
     const herb = await requestProfile(anthropic, name, userMsg);
 
