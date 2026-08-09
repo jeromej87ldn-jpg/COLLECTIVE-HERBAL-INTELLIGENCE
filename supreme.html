@@ -494,7 +494,20 @@ async function loadHerbProfile(herbName) {
     renderProfile(herb);
   } catch(err) {
     console.error(err);
-    document.getElementById('profile-loading').innerHTML = '<p style="color:#c4522a;padding:2rem;text-align:center;">Unable to load herb data. Please try again in a moment.</p>';
+    if (err.code === 'not_an_herb') {
+      const box = document.getElementById('profile-loading');
+      box.innerHTML =
+        `<div style="padding:2.5rem 1.5rem;text-align:center;max-width:480px;margin:0 auto;">
+          <div style="font-size:32px;margin-bottom:.75rem;">🌿</div>
+          <p style="color:var(--charcoal);font-weight:500;margin-bottom:.5rem;" id="not-herb-msg"></p>
+          <a href="supreme.html" style="color:var(--forest);font-size:13px;text-decoration:underline;">Browse the Herbadex instead</a>
+        </div>`;
+      // Set via textContent, not the template above, so a search term
+      // containing HTML/script can't get echoed back and executed.
+      document.getElementById('not-herb-msg').textContent = err.message;
+    } else {
+      document.getElementById('profile-loading').innerHTML = '<p style="color:#c4522a;padding:2rem;text-align:center;">Unable to load herb data. Please try again in a moment.</p>';
+    }
   }
 }
 
@@ -517,7 +530,9 @@ async function fetchHerbProfilePolling(herbName, { maxMs = 180000, intervalMs = 
     }
 
     const errBody = await res.json().catch(() => ({}));
-    throw new Error(errBody.error || `Request failed (${res.status})`);
+    const err = new Error(errBody.message || errBody.error || `Request failed (${res.status})`);
+    err.code = errBody.error;
+    throw err;
   }
 }
 

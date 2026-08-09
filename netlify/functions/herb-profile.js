@@ -201,6 +201,43 @@ exports.handler = async (event) => {
     }
     const anthropic = new Anthropic({ apiKey });
 
+    // ── 1.5. VALIDATE IT'S ACTUALLY AN HERB ──────────────────────────
+    // Without this gate, any search term reaches the generator below and
+    // gets back a fully-formed profile — compounds, dosage, safety notes,
+    // all fabricated with total confidence — even for things like "cabbage"
+    // or "chicken" that aren't herbs. Given the whole point of Herbadex is
+    // giving people trustworthy dosing/safety info, a plausible-sounding
+    // fake profile for a non-herb is worse than no result at all. One cheap
+    // Haiku call up front to gate that before it ever reaches the generator.
+    try {
+      const check = await anthropic.messages.create({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 10,
+        messages: [{
+          role: 'user',
+          content: `Is "${name}" primarily known and used as a medicinal herb, culinary herb/spice, or traditional herbal remedy plant (examples: ashwagandha, chamomile, turmeric, echinacea, ginger, rosemary)?
+Answer "no" if it is mainly a staple food eaten as a vegetable, fruit, grain, meat, or everyday produce item rather than for herbal/medicinal use (examples: cabbage, potato, chicken, apple, rice, lettuce) — even if it has a minor folk remedy use.
+Answer ONLY "yes" or "no", nothing else.`
+        }]
+      });
+      const verdictBlock = check.content.find(b => b.type === 'text');
+      const verdict = (verdictBlock && verdictBlock.text || '').trim().toLowerCase();
+      if (verdict.startsWith('no')) {
+        return {
+          statusCode: 400,
+          body: JSON.stringify({
+            error: 'not_an_herb',
+            message: `"${herbName.trim()}" doesn't look like a recognized herb, spice, or traditional herbal remedy plant — it reads more like a staple food item. Herbadex only generates profiles for herbal/medicinal plants. If this looks wrong, try the plant's common herbal name.`
+          })
+        };
+      }
+      // If the check itself errors or returns something unparseable, we
+      // fail open (proceed to generation) rather than blocking a real herb
+      // search because of a flaky classification call.
+    } catch (validationErr) {
+      console.error('Herb validation check failed, proceeding anyway:', validationErr.message);
+    }
+
     const userMsg = buildUserMessage(name, excludedHerb, issues);
     const herb = await requestProfile(anthropic, name, userMsg);
 
