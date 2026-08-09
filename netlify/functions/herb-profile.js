@@ -1,5 +1,6 @@
 const Anthropic = require('@anthropic-ai/sdk');
 const { createClient } = require('@supabase/supabase-js');
+const { findMissing, deriveFunctionalOverview } = require('./profile-validation');
 
 // ── SINGLE-CALL PROFILE (replaces the old Stage 1 / Stage 2 split) ──
 // The two-stage design existed to show something fast while a slower
@@ -43,47 +44,15 @@ Provide a complete, rich herb profile. Return ONLY valid JSON, no markdown fence
 Limits: compounds max 4, herbalActions max 4, bodyEffects max 4, interactions max 3, timeline max 3, forumSeed exactly 2.
 Return ONLY the JSON object. No other text.`;
 
-// herbalActions/compounds/bodyEffects have no fallback now that there's
-// no Stage 1 — if they're empty here, they're empty everywhere. Same for
-// spiritualHistory/modernUse, which were always Stage-2-only content.
-// functionalOverview is NOT in this list, even though it's a real field —
-// it overlaps enough with summary/modernUse that the model sometimes
-// treats it as redundant and skips it. Rather than spend a retry chasing
-// a field we can reliably derive, deriveFunctionalOverview() below builds
-// one from modernUse (or summary) whenever it comes back empty.
-const REQUIRED_TEXT = ['name', 'latin', 'category', 'summary', 'safetyLevel'];
-const REQUIRED_SECTIONS = ['herbalActions', 'compounds', 'bodyEffects'];
-const REQUIRED_TEXT_SECTIONS = {
-  spiritualHistory: h => h.spiritualHistory && h.spiritualHistory.overview && h.spiritualHistory.overview.trim(),
-  modernUse: h => h.modernUse && h.modernUse.trim()
-};
+// Field-completeness rules (REQUIRED_TEXT, REQUIRED_SECTIONS, findMissing,
+// deriveFunctionalOverview) now live in ./profile-validation.js — pulled out
+// so that logic has zero dependencies and can be unit-tested directly with
+// plain node, without needing the Anthropic/Supabase SDKs or live API keys.
+
 // Capped low (unlike the untimed browser tool's 3 attempts) because this
 // whole call has to finish inside one synchronous request/response —
 // every retry adds its full generation time to that same window.
 const MAX_ATTEMPTS = 2;
-
-function findMissing(h) {
-  const missing = [];
-  REQUIRED_TEXT.forEach(f => { if (!h[f] || !String(h[f]).trim()) missing.push(f); });
-  REQUIRED_SECTIONS.forEach(f => { if (!Array.isArray(h[f]) || h[f].length === 0) missing.push(f); });
-  Object.entries(REQUIRED_TEXT_SECTIONS).forEach(([f, check]) => { if (!check(h)) missing.push(f); });
-  if (!h.preparation || Object.values(h.preparation).every(v => !v)) missing.push('preparation');
-  return missing;
-}
-
-// If functionalOverview came back empty, build a serviceable one instead
-// of showing "not recorded" — modernUse's opening is the closest existing
-// content to what functionalOverview is meant to say, with summary as a
-// second fallback if modernUse is somehow also missing.
-function deriveFunctionalOverview(h) {
-  if (h.functionalOverview && h.functionalOverview.trim()) return;
-  if (h.modernUse && h.modernUse.trim()) {
-    const sentences = h.modernUse.trim().split(/(?<=[.!?])\s+/).filter(Boolean);
-    h.functionalOverview = sentences.slice(0, 2).join(' ');
-  } else if (h.summary && h.summary.trim()) {
-    h.functionalOverview = h.summary.trim();
-  }
-}
 
 function extractJson(text) {
   const stripped = text.trim()
