@@ -1,13 +1,3 @@
 [build]
   functions = "netlify/functions"
   publish = "."
-
-# Explicit background-function config. The "-background" filename suffix is
-# Netlify's legacy convention for this and is supposed to still work, but
-# herb-profile-stage2-background.js has been observed stuck in a
-# 'generating' state well past its 15-minute budget — same symptom the
-# original herb-profile-background.js showed since before this file
-# existed. Netlify's docs recommend this explicit form as more reliable
-# than relying on the filename alone.
-[functions."herb-profile-stage2-background"]
-  background = true
