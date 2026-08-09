@@ -2,7 +2,7 @@
 // dependencies — run with: node netlify/functions/profile-validation.test.js
 // (no API keys, no network, no Supabase needed).
 
-const { findMissing } = require('./profile-validation');
+const { findMissing } = require('../netlify/functions/profile-validation');
 
 let passed = 0, failed = 0;
 
