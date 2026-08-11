@@ -581,22 +581,14 @@ function renderProfile(h) {
     `<div class="tl-item"><div class="tl-year">${t.era}</div><div class="tl-text">${t.text}</div></div>`
   ).join('');
 
-  // Compounds
-  const compoundsHTML = F.section(h.compounds, 'compounds', list => list.map(c =>
-    `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--parchment-dark);">
-      <span style="font-size:13px;font-weight:500;color:var(--charcoal);min-width:130px;">${c.name}</span>
-      <div style="flex:1;height:3px;background:var(--parchment-deep);border-radius:2px;overflow:hidden;"><div style="width:${c.strength || 0}%;height:100%;background:var(--gold);border-radius:2px;"></div></div>
-      <span style="font-size:12px;color:var(--charcoal-mid);min-width:150px;text-align:right;">${F.has(c.role) ? c.role : '—'}</span>
-    </div>`
-  ).join(''));
+  // Compounds — deliberately NOT rendered on the normal profile. This is
+  // "compound science" and lives on Plant Intelligence only, which already
+  // covers it in more depth (see the pi-cta block below). Keeping the two
+  // pages from duplicating the same content was Jerome's explicit call.
 
-  // Body effects
-  const bodyHTML = F.section(h.bodyEffects, 'bodyEffects', list => list.map(b =>
-    `<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--parchment-dark);">
-      <strong style="font-size:13px;color:var(--forest);min-width:130px;">${b.system}</strong>
-      <span style="font-size:13px;color:var(--charcoal-mid);flex:1;">${F.has(b.effect) ? b.effect : '—'}</span>
-    </div>`
-  ).join(''));
+  // Body effects — also compound-mechanism content (what the compounds DO),
+  // so it moves out to Plant Intelligence alongside Active compounds, per
+  // Jerome's call. Not rendered on the normal profile.
 
   // Preparation — every format is listed, with a note where no dose is recorded
   const prepLabels = {tea:'Tea',tincture:'Tincture',capsule:'Capsule',topical:'Topical',smoke:'Smoke',traditional:'Traditional'};
@@ -635,16 +627,6 @@ function renderProfile(h) {
         ${F.has(h.rareFact) ? `<p>${h.rareFact}</p>` : F.note('rareFact')}
       </div>
       ${timelineHTML ? `<div class="timeline" style="margin-top:1.5rem;">${timelineHTML}</div>` : `<div style="margin-top:1.5rem;">${F.note('timeline')}</div>`}
-    </div>
-
-    <div class="content-section">
-      <h2><span class="cs-icon">⚗</span>Active compounds</h2>
-      ${compoundsHTML}
-    </div>
-
-    <div class="content-section">
-      <h2><span class="cs-icon">🫀</span>Effects on body systems</h2>
-      ${bodyHTML}
     </div>
 
     <div class="content-section">
