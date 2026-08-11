@@ -159,9 +159,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .profile-compound-row .crole{color:var(--muted);font-size:12px;}
 
 /* EDGE TABS (cross-navigation) */
-.herb-match-pi-tab{position:fixed;right:0;top:45%;transform:translateY(-50%);writing-mode:vertical-lr;background:var(--gold);color:var(--forest);border:none;border-radius:8px 0 0 8px;padding:1rem .5rem;font-family:'DM Sans',sans-serif;font-size:11.5px;font-weight:700;letter-spacing:.04em;cursor:pointer;z-index:150;box-shadow:-3px 0 12px rgba(0,0,0,.25);display:none;}
-.herb-match-pi-tab.show{display:block;}
-.herb-match-pi-tab:hover{background:var(--gold-light);}
 
 .back-to-match-tab{position:fixed;left:0;top:45%;transform:translateY(-50%);writing-mode:vertical-rl;background:var(--gold);color:var(--forest);border:none;border-radius:0 8px 8px 0;padding:1rem .5rem;font-family:'DM Sans',sans-serif;font-size:11.5px;font-weight:700;letter-spacing:.04em;cursor:pointer;z-index:150;box-shadow:3px 0 12px rgba(0,0,0,.25);display:none;}
 .back-to-match-tab.show{display:block;}
@@ -199,7 +196,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   </a>
   <div class="nav-right">
     <a href="supreme.html">Herbadex</a>
-    <a href="phytochemistry.html">Plant Intelligence</a>
     <a href="herb-match.html" class="active">Herb Match</a>
     <a href="herb-planner.html">Herb Planner</a>
   </div>
@@ -260,8 +256,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   </div>
 </div>
 
-<!-- Edge tabs for cross-nav -->
-<button class="herb-match-pi-tab" id="herb-match-pi-tab" onclick="goToPlantIntelligence()">Plant Intelligence →</button>
+<!-- Edge tab for cross-nav -->
 <button class="back-to-match-tab" id="back-to-match-tab" onclick="backToResults()">← Back to Herb Match</button>
 
 <!-- Alternatives Modal -->
@@ -322,11 +317,11 @@ function buildAvoidList(extra) {
   return [...new Set(combined.filter(Boolean))];
 }
 
-// ─── STATE HANDOFF (Plant Intelligence round-trip) ──────
+// ─── STATE PERSISTENCE (survives page refresh) ──────
 // The results grid, selected issues/specifics, and whichever herb profile
-// is open all live in memory — which a full page navigation wipes out. We
-// persist the essentials to sessionStorage so that jumping to Plant
-// Intelligence and coming back lands you exactly where you left off.
+// is open all live in memory — which a full page navigation/refresh wipes
+// out. We persist the essentials to sessionStorage so a refresh lands you
+// back where you left off.
 function persistMatchState() {
   try {
     sessionStorage.setItem('chi_match_state', JSON.stringify({
@@ -335,14 +330,6 @@ function persistMatchState() {
       results: currentResults
     }));
   } catch (e) {}
-}
-
-function goToPlantIntelligence() {
-  if (currentProfile) {
-    sessionStorage.setItem('chi_nav_return', JSON.stringify({ source: 'herb-match', herb: currentProfile }));
-  }
-  persistMatchState();
-  window.location.href = 'phytochemistry.html';
 }
 
 // ─── BUILD PYRAMID ──────────────────────────────────────
@@ -578,7 +565,6 @@ function backToPyramid() {
   document.getElementById('specifics-section').innerHTML = '';
   updateSelectionStatus();
   sessionStorage.removeItem('chi_match_state');
-  sessionStorage.removeItem('chi_nav_return');
 }
 
 // ─── PROFILE VIEWER (real AI call, reuses herb-profile.js) ──
@@ -587,7 +573,6 @@ async function viewProfile(herbName) {
   document.getElementById('results-section').classList.remove('show');
   document.getElementById('profile-section').classList.add('show');
   document.getElementById('back-to-match-tab').classList.add('show');
-  document.getElementById('herb-match-pi-tab').classList.add('show');
 
   document.getElementById('profile-name').textContent = herbName;
   document.getElementById('profile-latin').textContent = '';
@@ -619,7 +604,7 @@ async function viewProfile(herbName) {
     }
   } catch (err) {
     console.error(err);
-    document.getElementById('profile-content').innerHTML = `<div class="results-error"><p>Couldn't load the profile for ${herbName} (${err.message}). You can still add it to your stack, or view it directly in Plant Intelligence.</p></div>`;
+    document.getElementById('profile-content').innerHTML = `<div class="results-error"><p>Couldn't load the profile for ${herbName} (${err.message}). You can still add it to your stack, or try again in a moment.</p></div>`;
   }
 }
 
@@ -835,8 +820,8 @@ function buildHerbadexStyleProfileHtml(h) {
     </div>
 
     <div class="content-section" style="border-top:2px solid var(--gold);padding-top:2rem;margin-top:3rem;">
-      <h2><span class="cs-icon">🧪</span>Compound science — Plant Intelligence</h2>
-      <div style="font-size:12px;color:var(--charcoal-mid);opacity:.7;margin-bottom:1rem;font-style:italic;">Mechanism, evidence, and full herbal-action detail from Plant Intelligence.</div>
+      <h2><span class="cs-icon">🧪</span>Compound science</h2>
+      <div style="font-size:12px;color:var(--charcoal-mid);opacity:.7;margin-bottom:1rem;font-style:italic;">Mechanism, evidence, and full herbal-action detail.</div>
       <div style="margin-bottom:1.5rem;">${piCompoundsHTML}</div>
       <h2 style="margin-top:1.5rem;font-size:19px;"><span class="cs-icon">🧬</span>Herbal actions</h2>
       ${piActionsHTML}
@@ -847,7 +832,6 @@ function backToResults() {
   document.getElementById('results-section').classList.add('show');
   document.getElementById('profile-section').classList.remove('show');
   document.getElementById('back-to-match-tab').classList.remove('show');
-  document.getElementById('herb-match-pi-tab').classList.remove('show');
 }
 
 // ─── ALTERNATIVES (Rejection Flow, real AI call) ────────
@@ -929,8 +913,7 @@ buildPyramid();
 document.getElementById('submit-btn').onclick = submitIssues;
 
 
-// Restore state if we're arriving back from Plant Intelligence (or a page
-// refresh) rather than starting fresh.
+// Restore state on page refresh rather than starting fresh.
 (function restoreOnLoad() {
   try {
     const saved = JSON.parse(sessionStorage.getItem('chi_match_state') || 'null');
