@@ -1,3 +1,5 @@
+const https = require('https');
+const { URLSearchParams } = require('url');
 const Anthropic = require('@anthropic-ai/sdk');
 const { createClient } = require('@supabase/supabase-js');
 const { findMissing, deriveFunctionalOverview } = require('./profile-validation');
@@ -28,6 +30,7 @@ Provide a complete, rich herb profile. Return ONLY valid JSON, no markdown fence
   "name": "common name", "latin": "latin binomial", "category": "primary action category",
   "categoryColor": "#hex", "origin": "native region", "tradition": "primary healing tradition(s)",
   "preparations": ["tea","tincture","capsule"], "safetyLevel": "Generally safe | Use with caution | Consult professional",
+  "botanicalDescription": "physical description for identification: growth habit, height, leaf/flower/fruit appearance, habitat. 2-3 sentences.",
   "summary": "2 sentence overview, warm and plain",
   "functionalOverview": "2-3 sentence in-depth summary of what it does and how people use it",
   "source": "a real, verifiable citation or null if not genuinely confident one exists — never invent one",
@@ -69,6 +72,71 @@ function extractJson(text) {
     }
     throw e;
   }
+}
+
+// ── IMAGES (sourced, never AI-generated) ──
+// A wrong-looking generated plant photo is a misidentification risk, so
+// images come from Wikimedia Commons only, filtered to public-domain/CC
+// licenses. Plants of the World Online (POWO) has no simple public
+// image-search API, so it isn't wired in automatically — imagesNote flags
+// herbs that need a manual POWO check when Wikimedia turns up nothing.
+const WIKIMEDIA_USER_AGENT = 'CHI-Herbadex-Bot/1.0 (collectiveherbalintelligence.com; contact via site owner)';
+const ACCEPTED_LICENSES = ['cc0', 'cc-by', 'cc-by-sa', 'public domain', 'pd'];
+
+function wikimediaSearch(term, maxImages) {
+  return new Promise((resolve, reject) => {
+    const params = new URLSearchParams({
+      action: 'query',
+      generator: 'search',
+      gsrsearch: `${term} filetype:bitmap`,
+      gsrnamespace: '6',
+      gsrlimit: String(maxImages * 3),
+      prop: 'imageinfo',
+      iiprop: 'url|extmetadata',
+      iiurlwidth: '800',
+      format: 'json'
+    });
+    const req = https.get(
+      `https://commons.wikimedia.org/w/api.php?${params.toString()}`,
+      { headers: { 'User-Agent': WIKIMEDIA_USER_AGENT }, timeout: 8000 },
+      (res) => {
+        let body = '';
+        res.on('data', chunk => { body += chunk; });
+        res.on('end', () => {
+          try { resolve(JSON.parse(body)); }
+          catch (e) { reject(e); }
+        });
+      }
+    );
+    req.on('error', reject);
+    req.on('timeout', () => req.destroy(new Error('Wikimedia request timed out')));
+  });
+}
+
+async function fetchHerbImages(latinName, commonName, maxImages = 2) {
+  const results = [];
+  for (const term of [latinName, commonName].filter(Boolean)) {
+    let data;
+    try {
+      data = await wikimediaSearch(term, maxImages);
+    } catch (e) {
+      continue; // network hiccup or nothing found — try the next term
+    }
+    const pages = (data.query && data.query.pages) || {};
+    for (const page of Object.values(pages)) {
+      const info = (page.imageinfo && page.imageinfo[0]) || null;
+      if (!info) continue;
+      const meta = info.extmetadata || {};
+      const licenseShort = ((meta.LicenseShortName && meta.LicenseShortName.value) || '').toLowerCase();
+      if (!ACCEPTED_LICENSES.some(lic => licenseShort.includes(lic))) continue; // skip anything not public-domain/CC
+      const artist = ((meta.Artist && meta.Artist.value) || 'Unknown').replace(/<[^>]+>/g, '').trim();
+      const credit = `${artist} — ${(meta.LicenseShortName && meta.LicenseShortName.value) || 'Unknown license'} — Wikimedia Commons`;
+      results.push({ url: info.url || '', credit });
+      if (results.length >= maxImages) break;
+    }
+    if (results.length) break; // found via Latin name — no need to also try common name
+  }
+  return results;
 }
 
 function buildUserMessage(name, excludedHerb, issues) {
@@ -197,7 +265,24 @@ Answer ONLY "yes" or "no", nothing else.`
           // row doesn't need healing again next time.
           const before = row.data.functionalOverview;
           deriveFunctionalOverview(row.data);
-          if (row.data.functionalOverview !== before) {
+          let healed = row.data.functionalOverview !== before;
+
+          // Same heal-on-read approach for images — older cached rows (from
+          // before the image field existed) get looked up once and persisted,
+          // rather than staying imageless forever. Cheap (no LLM call), so
+          // fine to do inline on a cache hit.
+          if (!Array.isArray(row.data.images)) {
+            try {
+              row.data.images = await fetchHerbImages(row.data.latin, row.data.name);
+              row.data.imagesNote = row.data.images.length ? '' : 'No public-domain image found on Wikimedia Commons — check POWO manually for this herb.';
+            } catch (e) {
+              row.data.images = [];
+              row.data.imagesNote = 'Image lookup failed: ' + e.message;
+            }
+            healed = true;
+          }
+
+          if (healed) {
             supabase.from('herbs').upsert({ name, status: 'complete', data: row.data }).then(
               () => {}, e => console.error('healed-row save failed:', e.message)
             );
@@ -225,6 +310,15 @@ Answer ONLY "yes" or "no", nothing else.`
     }
 
     deriveFunctionalOverview(herb);
+
+    try {
+      herb.images = await fetchHerbImages(herb.latin, herb.name);
+      herb.imagesNote = herb.images.length ? '' : 'No public-domain image found on Wikimedia Commons — check POWO manually for this herb.';
+    } catch (e) {
+      herb.images = [];
+      herb.imagesNote = 'Image lookup failed: ' + e.message;
+    }
+
     herb.generatedAt = new Date().toISOString();
 
     if (supabase) {

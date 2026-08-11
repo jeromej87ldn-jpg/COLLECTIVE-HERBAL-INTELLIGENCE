@@ -42,6 +42,7 @@
     safetyLevel:       'No safety assessment has been recorded for this herb yet. Consult a qualified practitioner before use.',
     preparations:      'No preparation formats have been documented for this herb yet.',
     forumSeed:         'No community reports have been shared for this herb yet.',
+    botanicalDescription: 'No physical description has been recorded for this herb yet.',
     generic:           'This information has not been recorded for this herb yet.'
   };
 
