@@ -76,6 +76,13 @@ function extractJson(text) {
 }
 
 // ── IMAGES (sourced, never AI-generated) ──
+// NOT CURRENTLY CALLED from the handler below — an earlier version awaited
+// this inline on every request (including cache hits), which risked
+// blowing Netlify's function timeout on a handler that's deliberately
+// single-call/synchronous (see note at top of file) and broke profile
+// loading entirely. Left defined here, ready to be wired into a proper
+// non-blocking path (e.g. a separate endpoint the frontend calls after
+// the profile itself has already rendered) rather than inline again.
 // A wrong-looking generated plant photo is a misidentification risk, so
 // images come from Wikimedia Commons only, filtered to public-domain/CC
 // licenses. Plants of the World Online (POWO) has no simple public
@@ -281,20 +288,12 @@ Answer ONLY "yes" or "no", nothing else.`
           deriveFunctionalOverview(row.data);
           let healed = row.data.functionalOverview !== before;
 
-          // Same heal-on-read approach for images — older cached rows (from
-          // before the image field existed) get looked up once and persisted,
-          // rather than staying imageless forever. Cheap (no LLM call), so
-          // fine to do inline on a cache hit.
-          if (!Array.isArray(row.data.images)) {
-            try {
-              row.data.images = await fetchHerbImages(row.data.latin, row.data.name);
-              row.data.imagesNote = row.data.images.length ? '' : 'No public-domain image found on Wikimedia Commons — check POWO manually for this herb.';
-            } catch (e) {
-              row.data.images = [];
-              row.data.imagesNote = 'Image lookup failed: ' + e.message;
-            }
-            healed = true;
-          }
+          // Image healing removed from this synchronous path — an external
+          // Wikimedia call here, on every cache-hit view, risked pushing
+          // requests past Netlify's function timeout (this handler is
+          // deliberately single-call/synchronous; see note at top of file).
+          // Images need a non-blocking approach — see fetchHerbImages below,
+          // currently unused pending that redesign.
 
           if (healed) {
             supabase.from('herbs').upsert({ name, status: 'complete', data: row.data }).then(
@@ -325,13 +324,9 @@ Answer ONLY "yes" or "no", nothing else.`
 
     deriveFunctionalOverview(herb);
 
-    try {
-      herb.images = await fetchHerbImages(herb.latin, herb.name);
-      herb.imagesNote = herb.images.length ? '' : 'No public-domain image found on Wikimedia Commons — check POWO manually for this herb.';
-    } catch (e) {
-      herb.images = [];
-      herb.imagesNote = 'Image lookup failed: ' + e.message;
-    }
+    // Image fetch removed from this synchronous path for the same reason as
+    // the cache-hit path above — see fetchHerbImages, currently unused.
+    herb.images = [];
 
     herb.generatedAt = new Date().toISOString();
 
