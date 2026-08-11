@@ -9,8 +9,11 @@ Output: herbs-complete-2500.csv (can resume if interrupted)
 
 import csv
 import json
+import re
 import time
 import os
+import urllib.request
+import urllib.parse
 from anthropic import Anthropic
 
 # Initialize API client
@@ -23,7 +26,7 @@ RESUME_FILE = "herb-generation-progress.json"
 # CSV headers — must match the structure
 CSV_HEADERS = [
     "herbId", "commonName", "latinName", "family", "traditionalNames",
-    "nativeLocation", "cultivatedLocation", "partsUsed", "types", "history",
+    "nativeLocation", "cultivatedLocation", "partsUsed", "botanicalDescription", "types", "history",
     "benefits", "dosageFormats", "preparation", "timing", "cautions",
     "compoundIds", "compoundClasses", "traditionIds", "sustainabilityStatus",
     "legalStatus", "primaryAbility",
@@ -46,7 +49,9 @@ CSV_HEADERS = [
     "evidenceTitle", "evidenceContent",
     "relatedHerbsCompoundClass", "relatedHerbsType", "relatedHerbsTradition",
     "substituteHerbs", "endangermentStatus", "ethicalSourcingNotes",
-    "drugHerbInteractions"
+    "drugHerbInteractions",
+    # NEW — added for schema v2 (botanical description + sourced images)
+    "imageUrl1", "imageCredit1", "imageUrl2", "imageCredit2", "imageSourceNote"
 ]
 
 HERB_CATEGORIES = [
@@ -84,6 +89,7 @@ Return this exact JSON structure (all fields required, use empty strings "" only
   "nativeLocation": "Where it grows naturally",
   "cultivatedLocation": "Where it's cultivated",
   "partsUsed": "Root | Leaf | Bark",
+  "botanicalDescription": "Physical description for identification: growth habit, height, leaf/flower/fruit appearance, habitat. 2-3 sentences.",
   "types": "Type1 | Type2 | Type3",
   "history": "Historical use paragraph (2-3 sentences)",
   "benefits": "Traditional uses and research (2-3 sentences, MHRA-compliant)",
@@ -140,13 +146,25 @@ Return this exact JSON structure (all fields required, use empty strings "" only
   "drugHerbInteractions": "Known interactions with medications"
 }}
 
-CRITICAL: 
+CRITICAL:
 - Return ONLY valid JSON (no markdown, no text before/after)
 - ALL fields must be present
 - No null values; use "" for unknown
 - Make data realistic and traditional-medicine-grounded
 - Vary compounds and properties between herbs
 - Include cross-references to plausible related herbs
+
+HONESTY ON THIN EVIDENCE — applies especially to safetyContent1-5, pharmacologyContent,
+clinicalContent1-3, traditionContent1-4, sourcingContent1-3, and evidenceContent:
+- Never fill these with generic boilerplate ("consult a doctor", "may interact with medications")
+  when you don't have herb-specific grounding for it.
+- If the evidence for this specific herb is genuinely thin, say so plainly and specifically —
+  e.g. "No documented paediatric dosing data exists for this herb; use is not recommended for
+  children under traditional-use guidance alone" rather than a vague, generic caution.
+- The 5 safety fields (safetyContent1-5) must NEVER be reduced to a single generic line, even
+  when evidence is thin — give the best available traditional/pharmacological reasoning AND
+  name the uncertainty explicitly. They are never left blank.
+- Do not invent citations, named studies, or statistics you cannot ground in real, known research.
 """
 
 def load_progress():
@@ -205,6 +223,72 @@ def generate_herb(herb_spec):
         print(f"Response: {response_text[:200]}")
         return None
 
+WIKIMEDIA_USER_AGENT = "CHI-Herbadex-Bot/1.0 (collectiveherbalintelligence project; contact via project owner)"
+ACCEPTED_LICENSES = ("cc0", "cc-by", "cc-by-sa", "public domain", "pd")
+
+def fetch_herb_images(latin_name, common_name, max_images=2):
+    """
+    Look up up to `max_images` public-domain/CC-licensed images for a herb from
+    Wikimedia Commons (searches by Latin name first, falls back to common name).
+    No AI-generated images — sourced only, per the schema v2 decision.
+
+    Returns (images, source_note):
+      images      -> list of up to max_images {"url": ..., "credit": ...} dicts
+      source_note -> "" if images were found, otherwise an explanation
+
+    NOTE: Plants of the World Online (POWO) doesn't expose a simple public
+    image-search API, so it isn't wired in here automatically. When this
+    function finds nothing, imageSourceNote flags exactly which herbs need
+    a manual POWO check.
+    """
+    def _search(term):
+        params = {
+            "action": "query",
+            "generator": "search",
+            "gsrsearch": f"{term} filetype:bitmap",
+            "gsrnamespace": "6",
+            "gsrlimit": str(max_images * 3),
+            "prop": "imageinfo",
+            "iiprop": "url|extmetadata",
+            "iiurlwidth": "800",
+            "format": "json",
+        }
+        url = "https://commons.wikimedia.org/w/api.php?" + urllib.parse.urlencode(params)
+        req = urllib.request.Request(url, headers={"User-Agent": WIKIMEDIA_USER_AGENT})
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            return json.loads(resp.read().decode("utf-8"))
+
+    results = []
+    for term in (latin_name, common_name):
+        if not term:
+            continue
+        try:
+            data = _search(term)
+        except Exception:
+            continue  # network hiccup or nothing found — try the next term / fall through
+
+        pages = (data.get("query") or {}).get("pages") or {}
+        for page in pages.values():
+            infos = page.get("imageinfo") or []
+            if not infos:
+                continue
+            info = infos[0]
+            meta = info.get("extmetadata") or {}
+            license_short = (meta.get("LicenseShortName", {}).get("value") or "").lower()
+            if not any(lic in license_short for lic in ACCEPTED_LICENSES):
+                continue  # skip anything not public-domain / CC
+            artist = re.sub("<[^<]+?>", "", (meta.get("Artist", {}).get("value") or "Unknown")).strip()
+            credit = f"{artist} — {meta.get('LicenseShortName', {}).get('value', 'Unknown license')} — Wikimedia Commons"
+            results.append({"url": info.get("url", ""), "credit": credit})
+            if len(results) >= max_images:
+                break
+        if results:
+            break  # found via Latin name — no need to also try common name
+
+    if results:
+        return results, ""
+    return [], "No public-domain image found on Wikimedia Commons — check POWO manually for this herb."
+
 def write_csv_header():
     """Initialize CSV file with headers"""
     with open(OUTPUT_FILE, 'w', newline='', encoding='utf-8') as f:
@@ -241,21 +325,32 @@ def main():
             print(f"\n[{idx}/{total}] Generating: {herb_spec['tradition']} herb #{herb_spec['index_in_tradition']}...", end=" ", flush=True)
             
             herb_data = generate_herb(herb_spec)
-            
+
             if herb_data:
+                images, image_note = fetch_herb_images(
+                    herb_data.get("latinName", ""), herb_data.get("commonName", "")
+                )
+                herb_data["imageUrl1"] = images[0]["url"] if len(images) > 0 else ""
+                herb_data["imageCredit1"] = images[0]["credit"] if len(images) > 0 else ""
+                herb_data["imageUrl2"] = images[1]["url"] if len(images) > 1 else ""
+                herb_data["imageCredit2"] = images[1]["credit"] if len(images) > 1 else ""
+                herb_data["imageSourceNote"] = image_note
+
                 append_herb_to_csv(herb_data)
-                print("✓")
+                print("✓" if not image_note else "✓ (no image — flagged for manual POWO check)")
                 progress["generated_count"] = idx
                 progress["current_herb"] = herb_spec['id']
             else:
                 print("✗ (parse error, skipping)")
-            
+
             # Save progress every 10 herbs
             if idx % 10 == 0:
                 save_progress(progress)
                 print(f"   💾 Progress saved ({idx}/{total})")
-            
+
             # Rate limiting: 1 second between requests (adjust if needed)
+            # Wikimedia's own API is called once more per herb inside the loop above —
+            # this pause also keeps that request rate polite.
             time.sleep(1)
         
         except Exception as e:
