@@ -45,6 +45,7 @@ Provide a complete, rich herb profile. Return ONLY valid JSON, no markdown fence
   "forumSeed": [{"user":"Name","initials":"XX","rating":5,"comment":"realistic experience"},{"user":"Name","initials":"XX","rating":4,"comment":"realistic experience"}]
 }
 Limits: compounds max 4, herbalActions max 4, bodyEffects max 4, interactions max 3, timeline max 3, forumSeed exactly 2.
+Every compound you list must include a real, specific mechanism — 1-2 sentences on how it actually works, not a placeholder or generic line. If you aren't confident enough to write a specific mechanism for a compound, leave that compound out entirely rather than listing it with a vague or missing mechanism.
 Return ONLY the JSON object. No other text.`;
 
 // Field-completeness rules (REQUIRED_TEXT, REQUIRED_SECTIONS, findMissing,
@@ -81,7 +82,16 @@ function extractJson(text) {
 // image-search API, so it isn't wired in automatically — imagesNote flags
 // herbs that need a manual POWO check when Wikimedia turns up nothing.
 const WIKIMEDIA_USER_AGENT = 'CHI-Herbadex-Bot/1.0 (collectiveherbalintelligence.com; contact via site owner)';
-const ACCEPTED_LICENSES = ['cc0', 'cc-by', 'cc-by-sa', 'public domain', 'pd'];
+// Wikimedia's real LicenseShortName values are space-separated — "CC BY-SA
+// 4.0", "CC BY 3.0", "Public domain" — not hyphenated "CC-BY-SA" the way an
+// earlier version of this list assumed. That mismatch silently rejected
+// almost every real CC-licensed image. Matching is now done against a
+// space/hyphen-stripped version of the license string so format
+// variations ("CC BY-SA", "CC-BY-SA", "cc by sa") all match the same way.
+const ACCEPTED_LICENSES = ['cc0', 'ccby', 'ccbysa', 'publicdomain', 'pdself', 'pd'];
+function normalizeLicense(s) {
+  return (s || '').toLowerCase().replace(/[\s-]+/g, '');
+}
 
 function wikimediaSearch(term, maxImages) {
   return new Promise((resolve, reject) => {
@@ -113,7 +123,7 @@ function wikimediaSearch(term, maxImages) {
   });
 }
 
-async function fetchHerbImages(latinName, commonName, maxImages = 2) {
+async function fetchHerbImages(latinName, commonName, maxImages = 1) {
   const results = [];
   for (const term of [latinName, commonName].filter(Boolean)) {
     let data;
@@ -127,11 +137,15 @@ async function fetchHerbImages(latinName, commonName, maxImages = 2) {
       const info = (page.imageinfo && page.imageinfo[0]) || null;
       if (!info) continue;
       const meta = info.extmetadata || {};
-      const licenseShort = ((meta.LicenseShortName && meta.LicenseShortName.value) || '').toLowerCase();
-      if (!ACCEPTED_LICENSES.some(lic => licenseShort.includes(lic))) continue; // skip anything not public-domain/CC
+      const licenseShort = (meta.LicenseShortName && meta.LicenseShortName.value) || '';
+      if (!ACCEPTED_LICENSES.some(lic => normalizeLicense(licenseShort).includes(lic))) continue; // skip anything not public-domain/CC
       const artist = ((meta.Artist && meta.Artist.value) || 'Unknown').replace(/<[^>]+>/g, '').trim();
-      const credit = `${artist} — ${(meta.LicenseShortName && meta.LicenseShortName.value) || 'Unknown license'} — Wikimedia Commons`;
-      results.push({ url: info.url || '', credit });
+      const credit = `${artist} — ${licenseShort || 'Unknown license'} — Wikimedia Commons`;
+      // thumburl is the properly-sized (800px-wide) rendition requested via
+      // iiurlwidth; info.url is the raw original file, which can be huge
+      // and slow to load. Fall back to the original only if no thumbnail
+      // was generated (e.g. the source file is already small).
+      results.push({ url: info.thumburl || info.url || '', credit });
       if (results.length >= maxImages) break;
     }
     if (results.length) break; // found via Latin name — no need to also try common name
