@@ -685,7 +685,13 @@ function renderProfile(h) {
   if (F.has(h.images) && h.images[0] && h.images[0].url) {
     imgEl.innerHTML = `<div class="ph-image"><img src="${h.images[0].url}" alt="${h.name}" loading="lazy"></div><div class="ph-image-credit">${h.images[0].credit || ''}</div>`;
   } else {
-    imgEl.innerHTML = `<div class="ph-image-empty">No sourced image yet</div>`;
+    imgEl.innerHTML = `<div class="ph-image-empty">
+      <div style="margin-bottom:1rem;font-size:12px;color:rgba(245,240,232,.5);">No image yet</div>
+      <label style="cursor:pointer;display:inline-block;padding:0.5rem 1rem;background:rgba(200,149,42,.15);border:1px solid rgba(200,149,42,.3);border-radius:4px;font-size:12px;color:var(--gold);transition:all 0.2s;">
+        Upload Image
+        <input type="file" accept="image/*" style="display:none;" onchange="handleImageUpload(event, '${h.name}')">
+      </label>
+    </div>`;
   }
 
   document.getElementById('profile-bc-name').textContent = h.name;
@@ -886,6 +892,25 @@ function renderProfile(h) {
 
   document.getElementById('profile-loading').style.display = 'none';
   document.getElementById('profile-content').style.display = 'block';
+}
+
+function handleImageUpload(event, herbName) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const imgEl = document.getElementById('ph-image');
+    if (imgEl) {
+      imgEl.innerHTML = `
+        <div class="ph-image">
+          <img src="${e.target.result}" alt="${herbName}" style="width:100%;height:160px;object-fit:cover;display:block;">
+        </div>
+        <div class="ph-image-credit" style="font-size:9.5px;color:rgba(245,240,232,.4);padding:0.35rem 0.1rem 0;line-height:1.4;">Uploaded by community</div>
+      `;
+    }
+  };
+  reader.readAsDataURL(file);
 }
 
 function hoverStars(n) {
