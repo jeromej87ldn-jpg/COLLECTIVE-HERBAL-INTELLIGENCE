@@ -30,13 +30,12 @@ Provide a complete, rich herb profile. Return ONLY valid JSON, no markdown fence
   "name": "common name", "latin": "latin binomial", "category": "primary action category",
   "categoryColor": "#hex", "origin": "native region", "tradition": "primary healing tradition(s)",
   "preparations": ["tea","tincture","capsule"], "safetyLevel": "Generally safe | Use with caution | Consult professional",
-  "botanicalDescription": "physical description for identification: growth habit, height, leaf/flower/fruit appearance, habitat. 2-3 sentences.",
   "summary": "2 sentence overview, warm and plain",
   "functionalOverview": "2-3 sentence in-depth summary of what it does and how people use it",
   "source": "a real, verifiable citation or null if not genuinely confident one exists — never invent one",
   "spiritualHistory": { "overview": "3-4 sentence paragraph on cultural/spiritual significance", "timeline": [{"era":"period or culture","text":"one sentence"}] },
   "modernUse": "1-2 paragraph(s) on current research and modern applications",
-  "compounds": [{"name":"compound","class":"Flavonoid | Alkaloid | Terpenoid | Saponin | Glycoside | Tannin | Polysaccharide | Phenolic acid","role":"short phrase","strength":0-100,"mechanism":"1-2 sentences","evidence":"evidence or traditional note"}],
+  "compounds": [{"name":"compound name (e.g. baicalein, pabloside)","class":"Flavonoid | Alkaloid | Terpenoid | Saponin | Glycoside | Tannin | Polysaccharide | Phenolic acid","role":"plain English explanation of what it does (e.g. 'supports calming and anti-inflammatory effects')","strength":0-100,"mechanism":"1-2 sentences on HOW it works in the body (e.g. 'acts on GABA receptors to reduce nervous system activation')","evidence":"scientific evidence, traditional use records, or research studies backing this compound"}],
   "herbalActions": [{"name":"action name","system":"body system","description":"1-2 sentences","compounds":["compound name"]}],
   "bodyEffects": [{"system":"body system","effect":"short phrase"}],
   "preparation": {"tea":"or null","tincture":"or null","capsule":"or null","topical":"or null","smoke":"or null","traditional":"or null"},
@@ -45,7 +44,7 @@ Provide a complete, rich herb profile. Return ONLY valid JSON, no markdown fence
   "forumSeed": [{"user":"Name","initials":"XX","rating":5,"comment":"realistic experience"},{"user":"Name","initials":"XX","rating":4,"comment":"realistic experience"}]
 }
 Limits: compounds max 4, herbalActions max 4, bodyEffects max 4, interactions max 3, timeline max 3, forumSeed exactly 2.
-Every compound you list must include a real, specific mechanism — 1-2 sentences on how it actually works, not a placeholder or generic line. If you aren't confident enough to write a specific mechanism for a compound, leave that compound out entirely rather than listing it with a vague or missing mechanism.
+CRITICAL: Every compound MUST have ALL fields filled in — name, class, role (plain English), strength (0-100), mechanism (how it works), and evidence. Never leave fields empty or use placeholder text.
 Return ONLY the JSON object. No other text.`;
 
 // Field-completeness rules (REQUIRED_TEXT, REQUIRED_SECTIONS, findMissing,
