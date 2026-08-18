@@ -3,69 +3,6 @@ const { URLSearchParams } = require('url');
 const Anthropic = require('@anthropic-ai/sdk');
 const { createClient } = require('@supabase/supabase-js');
 const { findMissing, deriveFunctionalOverview } = require('./profile-validation');
-// ── WIKIMEDIA IMAGE FETCHING ──
-const WIKIMEDIA_USER_AGENT = 'CHI-Herbadex-Bot/1.0 (collectiveherbalintelligence.com)';
-const ACCEPTED_LICENSES = ['cc0', 'ccby', 'ccbysa', 'publicdomain', 'pdself', 'pd'];
-
-function normalizeLicense(s) {
-  return (s || '').toLowerCase().replace(/[\s-]+/g, '');
-}
-
-function wikimediaSearch(term, maxImages) {
-  return new Promise((resolve, reject) => {
-    const params = new URLSearchParams({
-      action: 'query',
-      generator: 'search',
-      gsrsearch: `${term} filetype:bitmap`,
-      gsrnamespace: '6',
-      gsrlimit: String(maxImages * 3),
-      prop: 'imageinfo',
-      iiprop: 'url|extmetadata',
-      iiurlwidth: '800',
-      format: 'json'
-    });
-    const req = https.get(
-      `https://commons.wikimedia.org/w/api.php?${params.toString()}`,
-      { headers: { 'User-Agent': WIKIMEDIA_USER_AGENT }, timeout: 5000 },
-      (res) => {
-        let body = '';
-        res.on('data', chunk => { body += chunk; });
-        res.on('end', () => {
-          try { resolve(JSON.parse(body)); }
-          catch (e) { reject(e); }
-        });
-      }
-    );
-    req.on('error', reject);
-    req.on('timeout', () => req.destroy(new Error('Wikimedia timeout')));
-  });
-}
-
-async function fetchHerbImages(latinName, commonName, maxImages = 1) {
-  const results = [];
-  for (const term of [latinName, commonName].filter(Boolean)) {
-    let data;
-    try {
-      data = await wikimediaSearch(term, maxImages);
-    } catch (e) {
-      continue;
-    }
-    const pages = (data.query && data.query.pages) || {};
-    for (const page of Object.values(pages)) {
-      const info = (page.imageinfo && page.imageinfo[0]) || null;
-      if (!info) continue;
-      const meta = info.extmetadata || {};
-      const licenseShort = (meta.LicenseShortName && meta.LicenseShortName.value) || '';
-      if (!ACCEPTED_LICENSES.some(lic => normalizeLicense(licenseShort).includes(lic))) continue;
-      const artist = ((meta.Artist && meta.Artist.value) || 'Unknown').replace(/<[^>]+>/g, '').trim();
-      const credit = `${artist} — ${licenseShort || 'Unknown license'} — Wikimedia Commons`;
-      results.push({ url: info.thumburl || info.url || '', credit });
-      if (results.length >= maxImages) break;
-    }
-    if (results.length) break;
-  }
-  return results;
-}
 // ── SINGLE-CALL PROFILE (replaces the old Stage 1 / Stage 2 split) ──
 // The two-stage design existed to show something fast while a slower
 // Sonnet call filled in the rich content in the background — but the
@@ -100,7 +37,7 @@ Provide a complete, rich herb profile. Return ONLY valid JSON, no markdown fence
   "compounds": [{"name":"compound name (e.g. baicalein, pabloside)","class":"Flavonoid | Alkaloid | Terpenoid | Saponin | Glycoside | Tannin | Polysaccharide | Phenolic acid","role":"plain English explanation of what it does (e.g. 'supports calming and anti-inflammatory effects')","strength":0-100,"mechanism":"1-2 sentences on HOW it works in the body (e.g. 'acts on GABA receptors to reduce nervous system activation')","evidence":"scientific evidence, traditional use records, or research studies backing this compound"}],
   "herbalActions": [{"name":"action name","system":"body system","description":"1-2 sentences","compounds":["compound name"]}],
   "bodyEffects": [{"system":"body system","effect":"short phrase"}],
-  "preparation": {"tea":"or null","tincture":"or null","capsule":"or null","topical":"or null","smoke":"or null","traditional":"or null"},
+  "preparation": {"tea":"or null","tincture":"or null","capsule":"or null","topical":"or null","traditional":"or null"},
   "rareFact": "one surprising fact, one sentence",
   "interactions": ["known interaction"],
   "forumSeed": [{"user":"Name","initials":"XX","rating":5,"comment":"realistic experience"},{"user":"Name","initials":"XX","rating":4,"comment":"realistic experience"}]
