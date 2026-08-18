@@ -403,21 +403,32 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <p>There's no wrong answer here — just pick whatever's been on your mind lately. We'll ask a couple of gentle follow-up questions, then bring you a real spread of herbs to consider, not just the usual suspects.</p>
   </div>
 
-  <!-- PYRAMID/TREE ISSUES -->
-  <div class="pyramid-section" id="pyramid-section">
-    <div class="pyramid-title">What's been on your mind lately?</div>
-    <div class="pyramid-intro">Choose up to 3 — whatever feels most present for you right now. Once you pick one, we'll ask a couple more specific questions about it.</div>
+  <!-- PAGE 1: INITIAL SELECTION -->
+  <div class="pyramid-section" id="pyramid-section-page1">
+    <div class="pyramid-title">What have you been struggling with lately?</div>
+    <div class="pyramid-intro">Choose up to 5 — whatever feels most present for you right now.</div>
 
     <div id="issues-container"></div>
 
-    <div class="specifics-section" id="specifics-section"></div>
-
     <div class="selection-status">
       <p>You've chosen:</p>
-      <div class="count" id="selection-count">0/3</div>
+      <div class="count" id="selection-count">0/5</div>
     </div>
 
-    <button class="submit-btn" id="submit-btn" disabled>See what might help</button>
+    <button class="submit-btn" id="submit-btn-page1" disabled>Next →</button>
+  </div>
+
+  <!-- PAGE 2: DETAILED QUESTIONS -->
+  <div class="pyramid-section" id="pyramid-section-page2" style="display:none;">
+    <div class="pyramid-title">Let's get more specific</div>
+    <div class="pyramid-intro">For each concern you picked, tell us more (optional — you can skip any).</div>
+
+    <div class="specifics-section" id="specifics-section"></div>
+
+    <div style="display:flex;gap:1rem;justify-content:center;margin-top:2rem;">
+      <button class="submit-btn" id="back-to-page1" style="background:transparent;border:1px solid var(--gold);color:var(--gold-light);">← Back</button>
+      <button class="submit-btn" id="submit-btn-page2">See what might help</button>
+    </div>
   </div>
 
   <!-- RESULTS -->
@@ -492,6 +503,7 @@ let selectedSpecifics = {};   // { issue: [specific, specific, ...] }
 let specificsCache = {};      // { issue: [specific, specific, ...] | 'loading' | 'error' }
 let currentResults = [];
 let currentProfile = null;
+let matchPageState = 'page1';  // 'page1' or 'page2'
 
 // ─── OWNED / SEEN HERBS (used to widen variety) ─────────
 function getOwnedHerbs() {
@@ -553,17 +565,17 @@ function buildPyramid() {
       chip.onclick = () => {
         const isPicked = chip.classList.contains('picked');
         if (!isPicked) {
-          if (selectedIssues.length >= 3) return;
+          if (selectedIssues.length >= 5) return;
           selectedIssues.push(issue);
           chip.classList.add('picked');
-          ensureSpecifics(issue);
+          if (matchPageState === 'page2') ensureSpecifics(issue);
         } else {
           selectedIssues = selectedIssues.filter(i => i !== issue);
           delete selectedSpecifics[issue];
           chip.classList.remove('picked');
         }
         updateSelectionStatus();
-        renderSpecificsSection();
+        if (matchPageState === 'page2') renderSpecificsSection();
       };
 
       gridDiv.appendChild(chip);
@@ -577,8 +589,29 @@ function buildPyramid() {
 function slug(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, '-'); }
 
 function updateSelectionStatus() {
-  document.getElementById('selection-count').textContent = `${selectedIssues.length}/3`;
-  document.getElementById('submit-btn').disabled = selectedIssues.length === 0;
+  if (matchPageState === 'page1') {
+    document.getElementById('selection-count').textContent = `${selectedIssues.length}/5`;
+    document.getElementById('submit-btn-page1').disabled = selectedIssues.length === 0;
+  }
+}
+
+function goToPage2() {
+  if (selectedIssues.length === 0) return;
+  matchPageState = 'page2';
+  document.getElementById('pyramid-section-page1').style.display = 'none';
+  document.getElementById('pyramid-section-page2').style.display = 'block';
+
+  // Load specifics for all selected issues
+  selectedIssues.forEach(issue => ensureSpecifics(issue));
+  renderSpecificsSection();
+  window.scrollTo(0, 0);
+}
+
+function backToPage1() {
+  matchPageState = 'page1';
+  document.getElementById('pyramid-section-page1').style.display = 'block';
+  document.getElementById('pyramid-section-page2').style.display = 'none';
+  window.scrollTo(0, 0);
 }
 
 // ─── SECOND TIER: GET MORE SPECIFIC ─────────────────────
@@ -749,7 +782,9 @@ function updateResultsGrid() {
 }
 
 function backToPyramid() {
-  document.getElementById('pyramid-section').style.display = 'block';
+  matchPageState = 'page1';
+  document.getElementById('pyramid-section-page1').style.display = 'block';
+  document.getElementById('pyramid-section-page2').style.display = 'none';
   document.getElementById('results-section').classList.remove('show');
   document.getElementById('profile-section').classList.remove('show');
   document.getElementById('back-to-match-tab').classList.remove('show');
@@ -1105,7 +1140,9 @@ function addToStack() {
 
 // ─── INIT ───────────────────────────────────────────────
 buildPyramid();
-document.getElementById('submit-btn').onclick = submitIssues;
+document.getElementById('submit-btn-page1').onclick = goToPage2;
+document.getElementById('submit-btn-page2').onclick = submitIssues;
+document.getElementById('back-to-page1').onclick = backToPage1;
 
 
 // Restore state on page refresh rather than starting fresh.

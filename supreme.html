@@ -99,14 +99,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ch
 
 .profile-hero{background:var(--forest);padding:3.5rem 3rem;position:relative;overflow:hidden;}
 .profile-hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 80% at 85% 50%,rgba(74,140,101,.1) 0%,transparent 65%);pointer-events:none;}
-.ph-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1;}
+.ph-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1;display:grid;grid-template-columns:1fr auto;gap:3rem;align-items:start;}
 .ph-cat{display:inline-flex;align-items:center;gap:7px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:5px 14px;border-radius:2px;margin-bottom:1rem;border:1px solid;}
 .ph-name{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,5vw,62px);font-weight:300;line-height:1.06;color:var(--parchment);margin-bottom:.4rem;}
 .ph-latin{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:rgba(245,240,232,.42);margin-bottom:1rem;}
 .ph-origin{font-size:13px;color:rgba(245,240,232,.5);display:flex;align-items:center;gap:7px;}
 .ph-origin::before{content:'◦';color:var(--gold);}
-.ph-ticker{position:relative;z-index:1;margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.08);overflow:hidden;max-width:1100px;margin-left:auto;margin-right:auto;}
+.ph-aside{min-width:200px;}
+.ph-aside-card{background:transparent;border:none;padding:0;margin-bottom:1.25rem;overflow:hidden;height:24px;display:flex;align-items:center;}
+.ph-image{width:100%;border-radius:6px;overflow:hidden;margin-bottom:.85rem;border:1px solid rgba(255,255,255,.1);}
+.ph-image img{width:100%;height:160px;object-fit:cover;display:block;}
+.ph-image-credit{font-size:9.5px;color:rgba(245,240,232,.4);padding:.35rem .1rem 0;line-height:1.4;}
+.ph-image-empty{font-size:11px;color:rgba(245,240,232,.35);font-style:italic;padding:.9rem;text-align:center;background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.12);border-radius:6px;margin-bottom:.85rem;}
 .ph-row{display:flex;align-items:center;padding:0;border:none;font-size:13px;animation:scroll-metadata 20s linear infinite;white-space:nowrap;gap:2rem;}
+.ph-row:last-child{border-bottom:none;}
 .ph-key{display:none;}
 .ph-val{color:rgba(245,240,232,.65);font-weight:400;text-align:left;}
 @keyframes scroll-metadata{0%{transform:translateX(100%);}100%{transform:translateX(-100%);}}
@@ -205,6 +211,7 @@ footer{background:var(--night);padding:3rem 0 2rem;border-top:1px solid rgba(200
   .rankings-section{padding:0 1rem 3rem;}
   .rankings-grid{grid-template-columns:repeat(2,1fr);}
   .profile-hero{padding:2.5rem 1rem;}
+  .ph-inner{grid-template-columns:1fr;}.ph-aside{min-width:0;}
   .profile-body{grid-template-columns:1fr;padding:1.5rem 1rem;}
   .profile-nav{padding:1rem;flex-wrap:wrap;gap:.75rem;}
   .footer-inner{flex-direction:column;padding:0 1rem;}
@@ -571,9 +578,12 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
           <div class="ph-latin" id="ph-latin">—</div>
           <div class="ph-origin" id="ph-origin">—</div>
         </div>
-      </div>
-      <div class="ph-ticker">
-        <div class="ph-row"><span class="ph-key">Profile</span><span class="ph-val"><span id="ph-category">—</span> · <span id="ph-tradition">—</span> · <span id="ph-preps">—</span> · <span id="ph-safety">—</span></span></div>
+        <div class="ph-aside">
+          <div id="ph-image"></div>
+          <div class="ph-aside-card">
+<div class="ph-row"><span class="ph-key">Profile</span><span class="ph-val"><span id="ph-category">—</span> · <span id="ph-tradition">—</span> · <span id="ph-preps">—</span> · <span id="ph-safety">—</span></span></div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="profile-body">
@@ -864,6 +874,15 @@ function renderProfile(h) {
   document.getElementById('ph-preps').textContent = F.has(h.preparations) ? h.preparations.join(', ') : F.message('preparations');
   document.getElementById('ph-safety').textContent = F.text(h.safetyLevel, 'safetyLevel');
 
+  // Image — sourced (Wikimedia Commons), never AI-generated. Herbs without a
+  // public-domain match yet show a plain placeholder, not a broken image.
+  const imgEl = document.getElementById('ph-image');
+  if (F.has(h.images) && h.images[0] && h.images[0].url) {
+    imgEl.innerHTML = `<div class="ph-image"><img src="${h.images[0].url}" alt="${h.name}" loading="lazy"></div><div class="ph-image-credit">${h.images[0].credit || ''}</div>`;
+  } else {
+    imgEl.innerHTML = `<div class="ph-image-empty">No sourced image yet</div>`;
+  }
+
   document.getElementById('profile-bc-name').textContent = h.name;
   document.getElementById('bc-current').textContent = h.name;
 
@@ -949,7 +968,7 @@ function renderProfile(h) {
     </div>`).join('')}</div>`);
 
   // Preparation — every format is listed, with a note where no dose is recorded
-  const prepLabels = {tea:'Tea',tincture:'Tincture',capsule:'Capsule',topical:'Topical',traditional:'Traditional'};
+  const prepLabels = {tea:'Tea',tincture:'Tincture',capsule:'Capsule',topical:'Topical',smoke:'Smoke',traditional:'Traditional'};
   const prepData = h.preparation || {};
   const prepHTML = Object.keys(prepLabels).map(k => {
     const v = prepData[k];
@@ -966,6 +985,11 @@ function renderProfile(h) {
     <div style="background:rgba(200,149,42,.07);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
       <div style="font-size:14.5px;line-height:1.8;color:var(--charcoal);margin-bottom:1rem;${F.has(h.functionalOverview) ? '' : 'opacity:.62;font-style:italic;'}">${F.text(h.functionalOverview, 'functionalOverview')}</div>
       <div style="font-size:11.5px;color:var(--charcoal-mid);border-top:1px solid rgba(200,149,42,.2);padding-top:.75rem;"><span style="text-transform:uppercase;letter-spacing:.08em;color:var(--gold);font-weight:600;">Source</span><span style="margin-left:.5rem;${F.has(h.source) ? '' : 'opacity:.62;font-style:italic;'}">${F.text(h.source, 'source')}</span></div>
+    </div>
+
+    <div class="content-section">
+      <h2><span class="cs-icon">🌱</span>Description</h2>
+      ${F.section(h.botanicalDescription, 'botanicalDescription', v => `<p>${v}</p>`)}
     </div>
 
     <div class="content-section">
@@ -1112,6 +1136,34 @@ function closeProfile() {
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
+// Image integration from Unsplash — non-destructive, gracefully fails
+async function fetchHerbImage(herbName) {
+  try {
+    const imgEl = document.getElementById('ph-image');
+    if (!imgEl) return; // Element must exist
+
+    // Unsplash API (free tier: 50 requests/hour, no key needed for basic search)
+    const query = encodeURIComponent(herbName + ' plant');
+    const res = await fetch(`https://api.unsplash.com/search/photos?query=${query}&per_page=1&orientation=landscape&client_id=xFp5eWKU1LIUPRNxZ1W2BuqNlLmNsmKWHPYeKfSa5ZQ`);
+
+    if (!res.ok) return; // Silent fail on API error
+
+    const data = await res.json();
+    if (!data.results || !data.results[0]) return; // No image found
+
+    const img = data.results[0];
+    const credit = img.user ? `© ${img.user.name} / Unsplash` : '© Unsplash';
+
+    // Only update if we haven't already rendered an image from API
+    const existingImg = imgEl.querySelector('img');
+    if (!existingImg) {
+      imgEl.innerHTML = `<div class="ph-image"><img src="${img.urls.regular}" alt="${herbName}" loading="lazy" style="max-height:180px;object-fit:cover;"></div><div class="ph-image-credit">${credit}</div>`;
+    }
+  } catch (e) {
+    // Silent fail — no console spam, profile still renders fine
+  }
+}
+
 // Deep link — open a specific herb directly from supreme.html?herb=name
 (function openHerbFromURL(){
   const herb = new URLSearchParams(window.location.search).get('herb');
@@ -1121,6 +1173,15 @@ function closeProfile() {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go);
   else go();
 })();
+
+// Fetch herb image after profile renders
+const originalRenderProfile = window.renderProfile;
+window.renderProfile = function(h) {
+  originalRenderProfile.call(this, h);
+  if (h && h.name) {
+    fetchHerbImage(h.name);
+  }
+};
 
 </script>
 <!-- Shared CHI glossary: auto-tags known terms in the herb profile and shows definition tooltips on hover -->
