@@ -172,13 +172,37 @@
   }
 
   function positionTip(e){
-    const pad = 14, tw = 300, th = 160;
+    const pad = 12;
+    const rect = tip.getBoundingClientRect();
+    const tw = rect.width || 320;
+    const th = rect.height || 180;
+
     let x = e.clientX + pad;
     let y = e.clientY + pad;
-    if(x + tw > window.innerWidth) x = e.clientX - tw - pad;
-    if(y + th > window.innerHeight) y = e.clientY - th - pad;
-    tip.style.left = x + 'px';
-    tip.style.top = y + 'px';
+
+    // Keep tooltip within screen bounds with padding
+    const minPad = 12;
+    const maxLeft = window.innerWidth - tw - minPad;
+    const maxTop = window.innerHeight - th - minPad;
+
+    // Horizontal positioning - prefer right, fallback to left
+    if(x + tw > window.innerWidth) {
+      x = e.clientX - tw - pad;
+    }
+    if(x < minPad) {
+      x = minPad;
+    }
+
+    // Vertical positioning - prefer below, fallback to above
+    if(y + th > window.innerHeight) {
+      y = e.clientY - th - pad;
+    }
+    if(y < minPad) {
+      y = minPad;
+    }
+
+    tip.style.left = Math.max(minPad, Math.min(x, maxLeft)) + 'px';
+    tip.style.top = Math.max(minPad, Math.min(y, maxTop)) + 'px';
   }
 
   document.addEventListener('mouseover', function(e){
