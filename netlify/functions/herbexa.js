@@ -1,7 +1,7 @@
 // netlify/functions/herbexa.js
 
 const CLAUDE_API_URL = "https://api.anthropic.com/v1/messages";
-const CLAUDE_MODEL = "claude-3-5-sonnet-20241022";
+const CLAUDE_MODEL = "claude-3-opus-20250219";
 
 const HERBEXA_SYSTEM_PROMPT = `You are Herbexa, an educational herbal intelligence chatbot for C.H.I (Collective Herbal Intelligence). Your role is to guide users through herbal wisdom with accuracy, safety, and warmth.
 
