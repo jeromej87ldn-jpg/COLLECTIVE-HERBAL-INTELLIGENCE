@@ -1,5 +1,5 @@
-// herbexa-widget.js
-// Floating chatbot widget for Herbadex pages
+// herbexa-widget-local.js
+// Floating chatbot widget using local knowledge base (no API calls)
 
 class HerbexaWidget {
   constructor() {
@@ -7,9 +7,8 @@ class HerbexaWidget {
     this.messages = [];
     this.sessionId = `session_${Date.now()}`;
     this.exchangeCount = 0;
-    this.maxExchanges = 10;
+    this.maxExchanges = 15;
     this.lessTehnical = false;
-    this.apiEndpoint = "/.netlify/functions/herbexa";
     this.init();
   }
 
@@ -20,7 +19,6 @@ class HerbexaWidget {
   }
 
   createWidget() {
-    // Container
     const container = document.createElement("div");
     container.id = "herbexa-widget";
     container.innerHTML = `
@@ -152,9 +150,10 @@ class HerbexaWidget {
           padding: 12px 16px;
           border-radius: 12px;
           font-size: 14px;
-          line-height: 1.5;
+          line-height: 1.6;
           max-width: 85%;
           word-wrap: break-word;
+          white-space: pre-wrap;
         }
 
         .herbexa-text.user {
@@ -287,7 +286,6 @@ class HerbexaWidget {
           text-align: center;
         }
 
-        /* Responsive */
         @media (max-width: 480px) {
           .herbexa-chat {
             width: calc(100vw - 40px);
@@ -315,7 +313,7 @@ class HerbexaWidget {
         <div class="herbexa-body" id="herbexa-body">
           <div class="herbexa-message bot">
             <div class="herbexa-text bot">
-              Hi! I'm Herbexa, your herbal guide. Ask me about herbs, wellness, preparations, or combinations. How can I help?
+              Hi! I'm Herbexa, your herbal guide. Ask me about herbs, wellness concerns, preparation methods, or how to get started. What's on your mind?
             </div>
           </div>
         </div>
@@ -324,7 +322,7 @@ class HerbexaWidget {
           <div class="herbexa-options">
             <label class="herbexa-toggle">
               <input type="checkbox" id="herbexa-less-tech" />
-              Less technical
+              Simpler language
             </label>
           </div>
           <div class="herbexa-input-row">
@@ -397,7 +395,7 @@ class HerbexaWidget {
     btn.classList.remove("active");
   }
 
-  async sendMessage() {
+  sendMessage() {
     const input = document.getElementById("herbexa-input");
     const message = input.value.trim();
 
@@ -407,7 +405,7 @@ class HerbexaWidget {
     if (this.exchangeCount >= this.maxExchanges) {
       this.addMessage(
         "bot",
-        "You've reached the conversation limit for this session. Start fresh for better answers!"
+        "You've reached the conversation limit for this session. Start fresh for more! 🌿"
       );
       input.disabled = true;
       document.getElementById("herbexa-send").disabled = true;
@@ -420,43 +418,22 @@ class HerbexaWidget {
     input.style.height = "auto";
     this.exchangeCount++;
 
-    // Show loading state
-    const loadingId = this.showLoading();
-
-    try {
-      // Call backend
-      const response = await fetch(this.apiEndpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: this.messages,
-          lessTehnical: this.lessTehnical,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
+    // Get response from knowledge base
+    setTimeout(() => {
+      if (window.HERBEXA_ENGINE) {
+        const response = window.HERBEXA_ENGINE.getResponse(message, this.lessTehnical);
+        this.addMessage("bot", response);
+        this.updateStatus();
+      } else {
+        this.addMessage(
+          "bot",
+          "I'm having trouble loading my knowledge base. Please refresh the page and try again."
+        );
       }
-
-      const data = await response.json();
-      this.removeLoading(loadingId);
-      this.addMessage("bot", data.message);
-
-      // Update status
-      this.updateStatus();
-    } catch (error) {
-      this.removeLoading(loadingId);
-      this.addMessage(
-        "bot",
-        "Sorry, I couldn't process that. Try again or browse our [Herb Profiles] for direct answers."
-      );
-      console.error("Herbexa error:", error);
-    }
+    }, 300); // Slight delay for natural feel
   }
 
   addMessage(role, content) {
-    this.messages.push({ role: role === "user" ? "user" : "assistant", content });
-
     const body = document.getElementById("herbexa-body");
     const messageDiv = document.createElement("div");
     messageDiv.className = `herbexa-message ${role}`;
@@ -479,36 +456,17 @@ class HerbexaWidget {
       })
       .replace(/\[Herb Match\]/g, '<a href="/herb-match.html">[Herb Match]</a>')
       .replace(/\[Herb Profiles\]/g, '<a href="/glossary.html">[Herb Profiles]</a>')
+      .replace(/\[Browse Profiles\]/g, '<a href="/glossary.html">[Browse Profiles]</a>')
       .replace(/\[Herbal Planner\]/g, '<a href="/garden.html">[Herbal Planner]</a>')
-      .replace(/\[Resources\]/g, '<a href="/resources.html">[Resources]</a>');
-  }
-
-  showLoading() {
-    const body = document.getElementById("herbexa-body");
-    const loadingDiv = document.createElement("div");
-    loadingDiv.className = "herbexa-message bot";
-    loadingDiv.innerHTML = `
-      <div class="herbexa-loading">
-        <div class="herbexa-dot"></div>
-        <div class="herbexa-dot"></div>
-        <div class="herbexa-dot"></div>
-      </div>
-    `;
-    loadingDiv.id = `loading-${Date.now()}`;
-    body.appendChild(loadingDiv);
-    body.scrollTop = body.scrollHeight;
-    return loadingDiv.id;
-  }
-
-  removeLoading(loadingId) {
-    const loading = document.getElementById(loadingId);
-    if (loading) loading.remove();
+      .replace(/\[Browse Resources\]/g, '<a href="/resources.html">[Browse Resources]</a>')
+      .replace(/\[Contact Us\]/g, '<a href="/contact.html">[Contact Us]</a>')
+      .replace(/\[Try Herb Match\]/g, '<a href="/herb-match.html">[Try Herb Match]</a>');
   }
 
   updateStatus() {
     const remaining = this.maxExchanges - this.exchangeCount;
     const statusEl = document.getElementById("herbexa-status");
-    if (remaining <= 2) {
+    if (remaining <= 3) {
       statusEl.textContent = `${remaining} message${remaining === 1 ? "" : "s"} left this session`;
     } else {
       statusEl.textContent = "";
@@ -522,7 +480,7 @@ class HerbexaWidget {
   }
 }
 
-// Initialize when DOM is ready
+// Initialize when DOM ready
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", () => {
     new HerbexaWidget();
