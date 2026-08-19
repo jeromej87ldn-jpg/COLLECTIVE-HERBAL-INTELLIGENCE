@@ -700,7 +700,8 @@ function submitIssues() {
 
 // ─── FIND MATCHING HERBS (real AI call) ─────────────────
 async function findMatchingHerbs(issues) {
-  document.getElementById('pyramid-section').style.display = 'none';
+  document.getElementById('pyramid-section-page1').style.display = 'none';
+  document.getElementById('pyramid-section-page2').style.display = 'none';
   document.getElementById('results-section').classList.add('show');
   document.getElementById('results-description').textContent = `Herbs matching: ${issues.join(', ')}`;
   document.getElementById('results-loading').style.display = 'block';
@@ -1153,7 +1154,8 @@ document.getElementById('back-to-page1').onclick = backToPage1;
       selectedIssues = saved.issues || [];
       selectedSpecifics = saved.specifics || {};
       currentResults = saved.results;
-      document.getElementById('pyramid-section').style.display = 'none';
+      document.getElementById('pyramid-section-page1').style.display = 'none';
+      document.getElementById('pyramid-section-page2').style.display = 'none';
       document.getElementById('results-section').classList.add('show');
       document.getElementById('results-description').textContent = selectedIssues.length ? `Herbs matching: ${selectedIssues.join(', ')}` : '';
       document.getElementById('results-loading').style.display = 'none';
