@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Photo Review — C.H.I</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#1a3a2a;--forest-mid:#2d5c42;--forest-light:#4a8c65;
+  --gold:#c8952a;--gold-light:#e8b84b;--night:#0c1a10;
+  --parchment:#f5f0e8;--muted:rgba(245,240,232,0.5);
+  --card:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.08);
+  --text:#f5f0e8;--danger:#c4522a;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--night);color:var(--text);min-height:100vh;padding:2rem 1.5rem;}
+h1{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:28px;margin-bottom:1.5rem;color:var(--gold-light);}
+.wrap{max-width:900px;margin:0 auto;}
+
+#gate{max-width:360px;margin:4rem auto;text-align:center;}
+#gate input{width:100%;padding:.8rem 1rem;border-radius:6px;border:1px solid var(--card-border);background:var(--card);color:var(--text);font-size:15px;margin-bottom:.75rem;}
+#gate button{width:100%;padding:.8rem 1rem;border-radius:6px;border:none;background:var(--gold);color:var(--forest);font-weight:600;font-size:14px;cursor:pointer;}
+#gate button:hover{background:var(--gold-light);}
+#gate-error{color:var(--danger);font-size:13px;margin-top:.75rem;min-height:1.2em;}
+
+#panel{display:none;}
+.status-line{color:var(--muted);font-size:13.5px;margin-bottom:1.5rem;}
+.pending-list{display:flex;flex-direction:column;gap:1rem;}
+.pcard{display:flex;gap:1.25rem;background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:1rem;}
+.pcard img{width:140px;height:140px;object-fit:cover;border-radius:6px;flex-shrink:0;background:#111;}
+.pcard-body{flex:1;min-width:0;}
+.pcard-herb{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold-light);text-transform:capitalize;}
+.pcard-meta{font-size:12px;color:var(--muted);margin:.25rem 0 .6rem;}
+.pcard-note{font-size:13.5px;color:var(--text);opacity:.85;line-height:1.5;margin-bottom:.75rem;}
+.pcard-actions{display:flex;gap:.6rem;}
+.pcard-actions button{padding:.5rem 1.1rem;border-radius:6px;border:none;font-size:13px;font-weight:600;cursor:pointer;}
+.btn-approve{background:var(--forest-light);color:#fff;}
+.btn-approve:hover{background:#5aa478;}
+.btn-reject{background:transparent;border:1px solid var(--danger)!important;color:var(--danger);}
+.btn-reject:hover{background:rgba(196,82,42,.1);}
+.empty{color:var(--muted);font-style:italic;text-align:center;padding:3rem 0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div id="gate">
+    <h1>Photo Review</h1>
+    <input type="password" id="passcode-input" placeholder="Passcode" autocomplete="off">
+    <button onclick="unlock()">Unlock</button>
+    <div id="gate-error"></div>
+  </div>
+
+  <div id="panel">
+    <h1>Pending community photos</h1>
+    <div class="status-line" id="status-line">Loading…</div>
+    <div class="pending-list" id="pending-list"></div>
+  </div>
+
+</div>
+
+<script>
+let PASSCODE = '';
+
+function unlock(){
+  const val = document.getElementById('passcode-input').value.trim();
+  if(!val){ return; }
+  PASSCODE = val;
+  loadPending();
+}
+
+document.getElementById('passcode-input').addEventListener('keydown', e => {
+  if(e.key === 'Enter') unlock();
+});
+
+async function loadPending(){
+  document.getElementById('gate-error').textContent = '';
+  try {
+    const res = await fetch('/.netlify/functions/community-photos-admin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ passcode: PASSCODE, action: 'list' })
+    });
+    if (res.status === 401) {
+      document.getElementById('gate-error').textContent = 'Incorrect passcode.';
+      return;
+    }
+    if (!res.ok) {
+      document.getElementById('gate-error').textContent = 'Something went wrong loading photos.';
+      return;
+    }
+    const data = await res.json();
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('panel').style.display = 'block';
+    renderPending(data.photos || []);
+  } catch (e) {
+    document.getElementById('gate-error').textContent = 'Could not reach the server.';
+  }
+}
+
+function renderPending(photos){
+  const list = document.getElementById('pending-list');
+  document.getElementById('status-line').textContent =
+    photos.length ? `${photos.length} awaiting review` : '';
+
+  if (!photos.length) {
+    list.innerHTML = '<div class="empty">Nothing waiting for review.</div>';
+    return;
+  }
+
+  list.innerHTML = photos.map(p => `
+    <div class="pcard" id="pcard-${p.id}">
+      <img src="${p.image_url}" alt="${p.herb_name}" loading="lazy">
+      <div class="pcard-body">
+        <div class="pcard-herb">${p.herb_name}</div>
+        <div class="pcard-meta">${p.part ? p.part + ' · ' : ''}by ${p.credit} · ${new Date(p.created_at).toLocaleDateString()}</div>
+        ${p.note ? `<div class="pcard-note">${p.note}</div>` : ''}
+        <div class="pcard-actions">
+          <button class="btn-approve" onclick="moderate('${p.id}','approve')">Approve</button>
+          <button class="btn-reject" onclick="moderate('${p.id}','reject')">Reject</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+async function moderate(photoId, action){
+  const card = document.getElementById('pcard-' + photoId);
+  if (card) card.style.opacity = '.4';
+  try {
+    const res = await fetch('/.netlify/functions/community-photos-admin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ passcode: PASSCODE, action, photoId })
+    });
+    if (!res.ok) { if (card) card.style.opacity = '1'; return; }
+    if (card) card.remove();
+    const remaining = document.querySelectorAll('.pcard').length;
+    document.getElementById('status-line').textContent = remaining ? `${remaining} awaiting review` : '';
+    if (!remaining) document.getElementById('pending-list').innerHTML = '<div class="empty">Nothing waiting for review.</div>';
+  } catch (e) {
+    if (card) card.style.opacity = '1';
+  }
+}
+</script>
+</body>
+</html>

@@ -973,7 +973,7 @@ function renderProfile(h) {
     </div>`).join('')}</div>`);
 
   // Preparation — every format is listed, with a note where no dose is recorded
-  const prepLabels = {tea:'Tea',tincture:'Tincture',capsule:'Capsule',topical:'Topical',smoke:'Smoke',traditional:'Traditional'};
+  const prepLabels = {tea:'Tea',tincture:'Tincture',capsule:'Capsule',topical:'Topical',traditional:'Traditional'};
   const prepData = h.preparation || {};
   const prepHTML = Object.keys(prepLabels).map(k => {
     const v = prepData[k];
@@ -990,11 +990,6 @@ function renderProfile(h) {
     <div style="background:rgba(200,149,42,.07);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
       <div style="font-size:14.5px;line-height:1.8;color:var(--charcoal);margin-bottom:1rem;${F.has(h.functionalOverview) ? '' : 'opacity:.62;font-style:italic;'}">${F.text(h.functionalOverview, 'functionalOverview')}</div>
       <div style="font-size:11.5px;color:var(--charcoal-mid);border-top:1px solid rgba(200,149,42,.2);padding-top:.75rem;"><span style="text-transform:uppercase;letter-spacing:.08em;color:var(--gold);font-weight:600;">Source</span><span style="margin-left:.5rem;${F.has(h.source) ? '' : 'opacity:.62;font-style:italic;'}">${F.text(h.source, 'source')}</span></div>
-    </div>
-
-    <div class="content-section">
-      <h2><span class="cs-icon">🌱</span>Description</h2>
-      ${F.section(h.botanicalDescription, 'botanicalDescription', v => `<p>${v}</p>`)}
     </div>
 
     <div class="content-section">
@@ -1024,6 +1019,12 @@ function renderProfile(h) {
           ? h.interactions.map(i=>`<div style="font-size:14px;color:var(--charcoal-mid);padding:6px 0;border-bottom:1px solid rgba(196,82,42,.08);display:flex;gap:8px;"><span style="color:#c4522a;font-weight:700;font-size:12px;margin-top:2px;">!</span>${i}</div>`).join('')
           : `<div style="font-size:13px;color:var(--charcoal-mid);line-height:1.7;opacity:.72;font-style:italic;">${F.message('interactions')}</div>`}
       </div>
+    </div>
+
+    <div class="content-section" id="community-photos-block" style="display:none;">
+      <h2><span class="cs-icon">📸</span>Community photos</h2>
+      <div style="font-size:12px;color:var(--charcoal-mid);opacity:.7;margin-bottom:.85rem;">Shared by C.H.I members — kept separate from the sourced image above.</div>
+      <div id="community-photos-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:.6rem;"></div>
     </div>
 
     <div class="sci-boundary">
@@ -1264,12 +1265,40 @@ async function fetchHerbImage(herbName, latinName) {
   else go();
 })();
 
+// Community-submitted photos — separate from the sourced/licensed slideshow
+// above by design (approved-only, and never mixed into that image set), so
+// a member's photo can never look like the site's own identification of the
+// plant. The section is hidden entirely (not "no info yet") when a herb has
+// no approved community photos, since most herbs simply won't have any.
+async function renderCommunityPhotos(herbName) {
+  const block = document.getElementById('community-photos-block');
+  const grid = document.getElementById('community-photos-grid');
+  if (!block || !grid) return;
+  block.style.display = 'none';
+  grid.innerHTML = '';
+  try {
+    const res = await fetch('/.netlify/functions/community-photos?herb=' + encodeURIComponent((herbName || '').toLowerCase().trim()));
+    if (!res.ok) return;
+    const data = await res.json();
+    const photos = data.photos || [];
+    if (!photos.length) return;
+    grid.innerHTML = photos.map(p => `
+      <div title="${(p.credit || 'Community').replace(/"/g, '&quot;')}" style="border-radius:6px;overflow:hidden;aspect-ratio:1;border:1px solid var(--parchment-deep);">
+        <img src="${p.image_url}" alt="${herbName} — community photo" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
+      </div>`).join('');
+    block.style.display = '';
+  } catch (e) {
+    // Silent fail — section just stays hidden
+  }
+}
+
 // Fetch herb image after profile renders
 const originalRenderProfile = window.renderProfile;
 window.renderProfile = function(h) {
   originalRenderProfile.call(this, h);
   if (h && h.name) {
     fetchHerbImage(h.name, h.latin);
+    renderCommunityPhotos(h.name);
   }
 };
 

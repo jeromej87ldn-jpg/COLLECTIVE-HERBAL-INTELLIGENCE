@@ -710,7 +710,7 @@ function closeUpload(){
 function handleGardenImage(input){
   const file = input.files[0];
   if(!file) return;
-  if(file.size > 12*1024*1024){ alert('Image must be under 12MB.'); return; }
+  if(file.size > 4*1024*1024){ alert('Image must be under 4MB.'); return; }
   const reader = new FileReader();
   reader.onload = e=>{
     uploadImg = e.target.result;
@@ -722,41 +722,36 @@ function handleGardenImage(input){
   reader.readAsDataURL(file);
 }
 
-function submitPhoto(){
+async function submitPhoto(){
   const herb = document.getElementById('upload-herb').value.trim() || 'Unknown';
   const part = document.getElementById('upload-part').value;
   const note = document.getElementById('upload-note').value.trim();
 
-  const isFounder = FOUNDERS.length < 100 && !FOUNDERS.find(f=>f.name===ME);
-  if(isFounder) FOUNDERS.push({name:ME, color:'#c8952a', count:1});
-  else {
-    const existing = FOUNDERS.find(f=>f.name===ME);
-    if(existing) existing.count++;
-  }
+  if(!uploadImg){ alert('Please choose a photo first.'); return; }
 
-  const newPhoto = {
-    id: PHOTOS.length + 1,
-    herb,
-    latin: null,
-    part,
-    contributor: ME,
-    badge: FOUNDERS.find(f=>f.name===ME) ? 'founder' : null,
-    note: note || null,
-    img: uploadImg || PLACEHOLDER,
-    loves: 0,
-    loved: false,
-    identified: herb.toLowerCase() !== 'unknown' && herb !== '',
-    ts: Date.now(),
-  };
+  const submitBtn = document.querySelector('.btn-submit');
+  const originalLabel = submitBtn ? submitBtn.textContent : '';
+  if(submitBtn){ submitBtn.disabled = true; submitBtn.textContent = 'Submitting…'; }
 
-  PHOTOS.unshift(newPhoto);
-  closeUpload();
-  renderStats();
-  renderFounders();
-  renderGallery();
+  try {
+    const res = await fetch('/.netlify/functions/upload-community-photo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ herbName: herb, imageData: uploadImg, part, note, contributorName: ME })
+    });
+    const data = await res.json().catch(()=>({}));
 
-  if(isFounder){
-    setTimeout(()=>alert(`🌱 Welcome, Garden Founder! Your contribution is now live. The Garden Founder badge has been added to your profile.`), 300);
+    if(!res.ok){
+      alert('Sorry, that photo couldn\'t be submitted: ' + (data.error || 'unknown error') + '. Please try again.');
+      return;
+    }
+
+    closeUpload();
+    setTimeout(()=>alert('🌱 Thanks! Your photo has been submitted for review and will appear in the garden once approved.'), 300);
+  } catch(e){
+    alert('Sorry, that photo couldn\'t be submitted — please check your connection and try again.');
+  } finally {
+    if(submitBtn){ submitBtn.disabled = false; submitBtn.textContent = originalLabel; }
   }
 }
 
@@ -768,11 +763,51 @@ dropZone.addEventListener('dragover', e=>{ e.preventDefault(); dropZone.classLis
 dropZone.addEventListener('dragleave', ()=>dropZone.classList.remove('dragover'));
 dropZone.addEventListener('drop', e=>{ e.preventDefault(); dropZone.classList.remove('dragover'); const f=e.dataTransfer.files[0]; if(f&&f.type.startsWith('image/')){const inp=document.getElementById('garden-file');const dt=new DataTransfer();dt.items.add(f);inp.files=dt.files;handleGardenImage(inp);openUpload();}});
 
+// ── REAL COMMUNITY PHOTOS ───────────────────────────────────────────
+// Fetches approved uploads (see upload-community-photo.js /
+// community-photos-admin.js) and folds them into the existing gallery
+// display. Runs after the placeholder photos have already rendered, and
+// fails silently — a fetch problem here should never break the page, it
+// should just mean the gallery shows only the existing display photos.
+let nextPhotoId = PHOTOS.length + 1;
+async function loadCommunityPhotos(){
+  try {
+    const res = await fetch('/.netlify/functions/community-photos');
+    if(!res.ok) return;
+    const data = await res.json();
+    const approved = data.photos || [];
+    if(!approved.length) return;
+
+    approved.forEach(p => {
+      PHOTOS.unshift({
+        id: nextPhotoId++,
+        herb: p.herb_name.charAt(0).toUpperCase() + p.herb_name.slice(1),
+        latin: null,
+        part: p.part || 'whole',
+        contributor: p.credit || 'Anonymous',
+        badge: null,
+        note: p.note || null,
+        img: p.image_url,
+        loves: 0,
+        loved: false,
+        identified: true,
+        ts: new Date(p.created_at).getTime() || Date.now(),
+      });
+    });
+
+    renderStats();
+    renderGallery();
+  } catch(e) {
+    // Silent fail — gallery already shows fine without these
+  }
+}
+
 // ── INIT ─────────────────────────────────────────────────────────
 buildFilters();
 renderStats();
 renderFounders();
 renderGallery();
+loadCommunityPhotos();
 </script>
 <!-- Shared C.H.I glossary — auto-tags known terms (tincture, capsule, infusion,
      adaptogen, etc) anywhere in the page text with a hover definition. -->
