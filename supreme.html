@@ -1136,28 +1136,69 @@ function closeProfile() {
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// Image integration from Unsplash — non-destructive, gracefully fails
-async function fetchHerbImage(herbName) {
+// Image sourcing, in order of preference:
+//  1. herb-images.js (Wikimedia Commons, real open license, credited) —
+//     the safer source, but limited to WIKIMEDIA_TEST_HERBS for now so we
+//     can confirm it behaves before switching every herb over to it.
+//  2. Unsplash — the existing fallback, unchanged from before.
+// Both run AFTER the profile has already rendered (see the
+// window.renderProfile override below) and both fail silently, so a slow
+// or broken image lookup can never stall or break the profile itself —
+// that decoupling is what makes this safe to try again.
+//
+// TEST ROLLOUT: once you've confirmed Wikimedia images look right for the
+// herb(s) below, add more herb names (lowercase) here, or delete the
+// isTestHerb check entirely to enable it for every herb.
+const WIKIMEDIA_TEST_HERBS = ['neem'];
+
+async function fetchWikimediaImage(herbName, latinName) {
+  const res = await fetch('/.netlify/functions/herb-images', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ herbName, latinName })
+  });
+  if (!res.ok) return null;
+  const data = await res.json();
+  const img = data.images && data.images[0];
+  if (!img || !img.url) return null;
+  return { url: img.url, credit: img.credit || 'Wikimedia Commons' };
+}
+
+async function fetchUnsplashImage(herbName) {
+  // Unsplash API (free tier: 50 requests/hour, no key needed for basic search)
+  const query = encodeURIComponent(herbName + ' plant');
+  const res = await fetch(`https://api.unsplash.com/search/photos?query=${query}&per_page=1&orientation=landscape&client_id=xFp5eWKU1LIUPRNxZ1W2BuqNlLmNsmKWHPYeKfSa5ZQ`);
+  if (!res.ok) return null;
+  const data = await res.json();
+  const img = data.results && data.results[0];
+  if (!img) return null;
+  const credit = img.user ? `© ${img.user.name} / Unsplash` : '© Unsplash';
+  return { url: img.urls.regular, credit };
+}
+
+async function fetchHerbImage(herbName, latinName) {
   try {
     const imgEl = document.getElementById('ph-image');
     if (!imgEl) return; // Element must exist
 
-    // Unsplash API (free tier: 50 requests/hour, no key needed for basic search)
-    const query = encodeURIComponent(herbName + ' plant');
-    const res = await fetch(`https://api.unsplash.com/search/photos?query=${query}&per_page=1&orientation=landscape&client_id=xFp5eWKU1LIUPRNxZ1W2BuqNlLmNsmKWHPYeKfSa5ZQ`);
+    const isTestHerb = WIKIMEDIA_TEST_HERBS.includes((herbName || '').toLowerCase().trim());
+    let result = null;
 
-    if (!res.ok) return; // Silent fail on API error
+    if (isTestHerb) {
+      try { result = await fetchWikimediaImage(herbName, latinName); }
+      catch (e) { /* Wikimedia lookup failed — fall through to Unsplash below */ }
+    }
 
-    const data = await res.json();
-    if (!data.results || !data.results[0]) return; // No image found
+    if (!result) {
+      result = await fetchUnsplashImage(herbName);
+    }
 
-    const img = data.results[0];
-    const credit = img.user ? `© ${img.user.name} / Unsplash` : '© Unsplash';
+    if (!result) return; // No image found from either source
 
-    // Only update if we haven't already rendered an image from API
+    // Only update if we haven't already rendered an image
     const existingImg = imgEl.querySelector('img');
     if (!existingImg) {
-      imgEl.innerHTML = `<div class="ph-image"><img src="${img.urls.regular}" alt="${herbName}" loading="lazy" style="max-height:180px;object-fit:cover;"></div><div class="ph-image-credit">${credit}</div>`;
+      imgEl.innerHTML = `<div class="ph-image"><img src="${result.url}" alt="${herbName}" loading="lazy" style="max-height:180px;object-fit:cover;"></div><div class="ph-image-credit">${result.credit}</div>`;
     }
   } catch (e) {
     // Silent fail — no console spam, profile still renders fine
@@ -1179,7 +1220,7 @@ const originalRenderProfile = window.renderProfile;
 window.renderProfile = function(h) {
   originalRenderProfile.call(this, h);
   if (h && h.name) {
-    fetchHerbImage(h.name);
+    fetchHerbImage(h.name, h.latin);
   }
 };
 
