@@ -1136,20 +1136,14 @@ function closeProfile() {
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// Image sourcing, in order of preference:
+// Image sourcing, in order of preference, for EVERY herb:
 //  1. herb-images.js (Wikimedia Commons, real open license, credited) —
-//     the safer source, but limited to WIKIMEDIA_TEST_HERBS for now so we
-//     can confirm it behaves before switching every herb over to it.
-//  2. Unsplash — the existing fallback, unchanged from before.
+//     confirmed working on neem, now enabled for all herbs.
+//  2. Unsplash — the existing fallback, unchanged from before, used only
+//     when Wikimedia has no licensed image for that herb.
 // Both run AFTER the profile has already rendered (see the
 // window.renderProfile override below) and both fail silently, so a slow
-// or broken image lookup can never stall or break the profile itself —
-// that decoupling is what makes this safe to try again.
-//
-// TEST ROLLOUT: once you've confirmed Wikimedia images look right for the
-// herb(s) below, add more herb names (lowercase) here, or delete the
-// isTestHerb check entirely to enable it for every herb.
-const WIKIMEDIA_TEST_HERBS = ['neem'];
+// or broken image lookup can never stall or break the profile itself.
 
 async function fetchWikimediaImage(herbName, latinName) {
   const res = await fetch('/.netlify/functions/herb-images', {
@@ -1181,13 +1175,10 @@ async function fetchHerbImage(herbName, latinName) {
     const imgEl = document.getElementById('ph-image');
     if (!imgEl) return; // Element must exist
 
-    const isTestHerb = WIKIMEDIA_TEST_HERBS.includes((herbName || '').toLowerCase().trim());
     let result = null;
 
-    if (isTestHerb) {
-      try { result = await fetchWikimediaImage(herbName, latinName); }
-      catch (e) { /* Wikimedia lookup failed — fall through to Unsplash below */ }
-    }
+    try { result = await fetchWikimediaImage(herbName, latinName); }
+    catch (e) { /* Wikimedia lookup failed — fall through to Unsplash below */ }
 
     if (!result) {
       result = await fetchUnsplashImage(herbName);
