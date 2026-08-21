@@ -51,10 +51,15 @@ Return ONLY the JSON object. No other text.`;
 // so that logic has zero dependencies and can be unit-tested directly with
 // plain node, without needing the Anthropic/Supabase SDKs or live API keys.
 
-// Capped low (unlike the untimed browser tool's 3 attempts) because this
-// whole call has to finish inside one synchronous request/response —
-// every retry adds its full generation time to that same window.
-const MAX_ATTEMPTS = 2;
+// Single attempt: this whole call has to finish inside one synchronous
+// request/response, and a second full Sonnet call stacked onto the first
+// is the other place (besides the now-removed always-on validation call)
+// where a first-time generation could run past Netlify's function time
+// limit. A profile that comes back with a gap isn't stuck — the heal-on-read
+// path above already re-generates it the next time anyone views it, so this
+// just moves the retry from "inside the same slow request" to "on the next,
+// separate, fast-enough request."
+const MAX_ATTEMPTS = 1;
 
 function extractJson(text) {
   const stripped = text.trim()
@@ -220,17 +225,98 @@ exports.handler = async (event) => {
     }
     const anthropic = new Anthropic({ apiKey });
 
-    // ── 1. VALIDATE IT'S ACTUALLY AN HERB ────────────────────────────
-    // This runs BEFORE the cache check, on every request, not just fresh
-    // generations. That's deliberate: rows generated before this gate
-    // existed (e.g. "cabbage") are already sitting in the cache as
-    // fully-formed fake profiles, and a cache-hit path that skips
-    // validation would keep serving them forever. Running the gate first
-    // means a bad legacy row gets caught — and deleted — the next time
-    // anyone searches it, instead of needing a manual database fix.
-    // Cost/latency trade-off: one extra cheap Haiku call on every search,
-    // including hits for real cached herbs. Worth it for a tool whose
-    // whole premise is trustworthy dosing/safety info.
+    // ── 1. CACHE CHECK (moved ahead of validation) ────────────────────
+    // Checking the cache first means a repeat view of an already-good herb
+    // costs one fast Supabase read and NOTHING else — no Haiku call, no
+    // Sonnet call. That's the overwhelming majority of requests (anyone
+    // re-opening a herb someone already generated), so this is the single
+    // biggest lever for staying comfortably under Netlify's function time
+    // limit. Previously validation ran on every request, including cache
+    // hits, which stacked an extra API round-trip onto even the fastest
+    // path and made an otherwise-instant cached view vulnerable to the
+    // same timeout risk as a fresh generation.
+    let cachedRow = null;
+    if (supabase) {
+      try {
+        const { data: row } = await supabase
+          .from('herbs')
+          .select('data, status')
+          .eq('name', name)
+          .maybeSingle();
+        cachedRow = row;
+      } catch (cacheErr) {
+        console.error('Supabase read failed:', cacheErr.message);
+      }
+    }
+
+    if (cachedRow && cachedRow.status === 'complete' && cachedRow.data && cachedRow.data.name) {
+      // Heal-on-read: older cached rows (generated before this fallback
+      // existed) can still be missing functionalOverview. Patch it here
+      // too, not just on fresh generations, and persist the fix so this
+      // row doesn't need healing again next time.
+      const before = cachedRow.data.functionalOverview;
+      deriveFunctionalOverview(cachedRow.data);
+      let healed = cachedRow.data.functionalOverview !== before;
+
+      // Heal-on-read, part 2: a row cached before the retry-until-filled
+      // generation logic existed — or one that still fell short after
+      // MAX_ATTEMPTS — can be stuck serving an incomplete profile (e.g.
+      // empty herbalActions) forever, since a cache hit never used to
+      // re-check for gaps. If a REQUIRED section is still genuinely
+      // empty, do one synchronous regeneration attempt — the same call
+      // a brand-new herb gets — and replace the cached row if it comes
+      // back more complete. This only costs an extra Sonnet call the
+      // first time a broken herb is viewed after this deploy; every
+      // view after that is a normal fast cache hit again. Wrapped in
+      // try/catch so a failed repair just falls back to serving the
+      // existing (still incomplete, but present) cached data.
+      const stillMissing = findMissing(cachedRow.data);
+      const criticalGap = stillMissing.some(f => REQUIRED_SECTIONS.includes(f));
+      if (criticalGap) {
+        try {
+          const repaired = await requestProfile(anthropic, name, buildUserMessage(name));
+          if (!repaired.error) {
+            deriveFunctionalOverview(repaired);
+            repaired.images = cachedRow.data.images || [];
+            repaired.generatedAt = new Date().toISOString();
+            cachedRow.data = repaired;
+            healed = true;
+          }
+        } catch (repairErr) {
+          console.error('Repair generation failed, serving existing cached data:', repairErr.message);
+        }
+      }
+
+      // Image healing removed from this synchronous path — an external
+      // Wikimedia call here, on every cache-hit view, risked pushing
+      // requests past Netlify's function timeout (this handler is
+      // deliberately single-call/synchronous; see note at top of file).
+      // Images need a non-blocking approach — see fetchHerbImages below,
+      // currently unused pending that redesign.
+
+      if (healed) {
+        supabase.from('herbs').upsert({ name, status: 'complete', data: cachedRow.data }).then(
+          () => {}, e => console.error('healed-row save failed:', e.message)
+        );
+      }
+      return {
+        statusCode: 200,
+        headers: { 'Content-Type': 'application/json', 'X-Cache': healed ? 'repaired' : 'hit' },
+        body: JSON.stringify(cachedRow.data)
+      };
+    }
+    // No more 'generating' status to check for — a request either hasn't
+    // started, is running right now (this same call), or is done. Nothing
+    // gets left in limbo between requests anymore.
+
+    // ── 2. VALIDATE IT'S ACTUALLY AN HERB ─────────────────────────────
+    // Only reached on a genuine cache miss now — no point spending a Haiku
+    // call re-validating something already confirmed good and sitting in
+    // the cache (see reordering note above). This still catches legacy bad
+    // rows (e.g. "cabbage") the moment anyone re-searches them, since the
+    // cache-hit branch above only returns early for status:'complete' —
+    // anything else falls through to here and gets checked before a Sonnet
+    // call would ever be spent generating a fake profile for it.
     try {
       const check = await anthropic.messages.create({
         model: 'claude-haiku-4-5-20251001',
@@ -266,79 +352,6 @@ Answer ONLY "yes" or "no", nothing else.`
       // because of a flaky classification call.
     } catch (validationErr) {
       console.error('Herb validation check failed, proceeding anyway:', validationErr.message);
-    }
-
-    // ── 2. CACHE CHECK ────────────────────────────────────────────────
-    if (supabase) {
-      try {
-        const { data: row } = await supabase
-          .from('herbs')
-          .select('data, status')
-          .eq('name', name)
-          .maybeSingle();
-
-        if (row && row.status === 'complete' && row.data && row.data.name) {
-          // Heal-on-read: older cached rows (generated before this fallback
-          // existed) can still be missing functionalOverview. Patch it here
-          // too, not just on fresh generations, and persist the fix so this
-          // row doesn't need healing again next time.
-          const before = row.data.functionalOverview;
-          deriveFunctionalOverview(row.data);
-          let healed = row.data.functionalOverview !== before;
-
-          // Heal-on-read, part 2: a row cached before the retry-until-filled
-          // generation logic existed — or one that still fell short after
-          // MAX_ATTEMPTS — can be stuck serving an incomplete profile (e.g.
-          // empty herbalActions) forever, since a cache hit never used to
-          // re-check for gaps. If a REQUIRED section is still genuinely
-          // empty, do one synchronous regeneration attempt — the same call
-          // a brand-new herb gets — and replace the cached row if it comes
-          // back more complete. This only costs an extra Sonnet call the
-          // first time a broken herb is viewed after this deploy; every
-          // view after that is a normal fast cache hit again. Wrapped in
-          // try/catch so a failed repair just falls back to serving the
-          // existing (still incomplete, but present) cached data.
-          const stillMissing = findMissing(row.data);
-          const criticalGap = stillMissing.some(f => REQUIRED_SECTIONS.includes(f));
-          if (criticalGap) {
-            try {
-              const repaired = await requestProfile(anthropic, name, buildUserMessage(name));
-              if (!repaired.error) {
-                deriveFunctionalOverview(repaired);
-                repaired.images = row.data.images || [];
-                repaired.generatedAt = new Date().toISOString();
-                row.data = repaired;
-                healed = true;
-              }
-            } catch (repairErr) {
-              console.error('Repair generation failed, serving existing cached data:', repairErr.message);
-            }
-          }
-
-          // Image healing removed from this synchronous path — an external
-          // Wikimedia call here, on every cache-hit view, risked pushing
-          // requests past Netlify's function timeout (this handler is
-          // deliberately single-call/synchronous; see note at top of file).
-          // Images need a non-blocking approach — see fetchHerbImages below,
-          // currently unused pending that redesign.
-
-          if (healed) {
-            supabase.from('herbs').upsert({ name, status: 'complete', data: row.data }).then(
-              () => {}, e => console.error('healed-row save failed:', e.message)
-            );
-          }
-          return {
-            statusCode: 200,
-            headers: { 'Content-Type': 'application/json', 'X-Cache': healed ? 'repaired' : 'hit' },
-            body: JSON.stringify(row.data)
-          };
-        }
-        // No more 'generating' status to check for — a request either
-        // hasn't started, is running right now (this same call), or is
-        // done. Nothing gets left in limbo between requests anymore.
-      } catch (cacheErr) {
-        console.error('Supabase read failed:', cacheErr.message);
-      }
     }
 
     // ── 3. GENERATE (single synchronous call — no background dispatch) ──
