@@ -397,6 +397,39 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     width: 240px;
   }
 }
+
+/* ─── UPLOAD MODAL ─── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:center;justify-content:center;}
+.modal-overlay.show{display:flex;}
+.modal{background:var(--parchment);border-radius:10px;max-width:500px;width:90%;max-height:85vh;overflow-y:auto;box-shadow:0 10px 40px rgba(0,0,0,.3);}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:1.5rem;border-bottom:1px solid var(--parchment-deep);}
+.modal-head h3{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--charcoal);margin:0;}
+.modal-close{background:none;border:none;font-size:28px;color:var(--charcoal-mid);cursor:pointer;padding:0;width:32px;height:32px;display:flex;align-items:center;justify-content:center;}
+.modal-close:hover{color:var(--charcoal);}
+.modal-body{padding:1.5rem;}
+.modal-rules{background:rgba(200,149,42,.08);border-left:3px solid var(--gold);padding:1rem;border-radius:4px;margin-bottom:1.5rem;}
+.modal-rules p{font-size:13px;color:var(--charcoal-mid);line-height:1.6;margin:0;}
+.modal-rules strong{color:var(--charcoal);}
+.mfield{margin-bottom:1.25rem;}
+.mfield label{display:block;font-size:12px;font-weight:600;text-transform:uppercase;color:var(--charcoal);margin-bottom:.4rem;letter-spacing:.05em;}
+.mfield input,.mfield select,.mfield textarea{width:100%;background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-radius:6px;padding:.65rem .85rem;font-size:13px;color:var(--charcoal);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;}
+.mfield input:focus,.mfield select:focus,.mfield textarea:focus{border-color:var(--gold);}
+.mfield input::placeholder,.mfield textarea::placeholder{color:var(--charcoal-mid);}
+.img-drop{border:2px dashed var(--parchment-deep);border-radius:8px;padding:2rem 1rem;text-align:center;cursor:pointer;transition:all .2s;background:rgba(200,149,42,.03);}
+.img-drop:hover{border-color:var(--gold);background:rgba(200,149,42,.08);}
+.img-drop p{font-size:12px;color:var(--charcoal-mid);margin:0;}
+.img-drop-preview{width:100%;height:auto;border-radius:6px;display:block !important;margin-top:1rem;}
+.modal-foot{display:flex;gap:.75rem;padding:1.5rem;border-top:1px solid var(--parchment-deep);justify-content:flex-end;}
+.btn-cancel,.btn-submit{padding:.65rem 1.5rem;border-radius:6px;border:none;font-size:12px;font-weight:600;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:.05em;}
+.btn-cancel{background:transparent;border:1px solid var(--parchment-deep);color:var(--charcoal-mid);transition:all .2s;}
+.btn-cancel:hover{border-color:var(--charcoal);color:var(--charcoal);}
+.btn-submit{background:var(--gold);color:var(--forest);transition:background .2s;}
+.btn-submit:hover{background:var(--gold-light);}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;}
+
+/* ─── FALLING LEAVES ─── */
+.leaf-fall{position:fixed;pointer-events:none;font-size:20px;opacity:.1;animation:fall linear forwards;}
+@keyframes fall{from{transform:translateY(-10px) rotateZ(0deg);opacity:.1;}to{transform:translateY(100vh) rotateZ(360deg);opacity:.05;}}
 </style>
 </head>
 <body>
@@ -1027,6 +1060,13 @@ function renderProfile(h) {
       <div id="community-photos-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:.6rem;"></div>
     </div>
 
+    <div style="background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-radius:8px;padding:1.5rem;margin:2rem 0;text-align:center;">
+      <div style="font-size:18px;margin-bottom:.5rem;">📸</div>
+      <h3 style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--charcoal);margin-bottom:.5rem;">Have a photo of this herb?</h3>
+      <p style="font-size:13px;color:var(--charcoal-mid);margin-bottom:1rem;line-height:1.6;">Share your photo to help other users identify and connect with <span id="upload-herb-name">this herb</span>.</p>
+      <button onclick="openProfileUpload()" style="background:var(--gold);color:var(--forest);border:none;padding:.6rem 1.2rem;border-radius:6px;font-weight:500;cursor:pointer;font-size:13px;">Share a photo</button>
+    </div>
+
     <div class="sci-boundary">
       <span class="sci-boundary-label">↓ The compound science, from here down</span>
       <button class="stack-btn${inStack ? ' in-stack' : ''}" id="stack-btn" onclick="toggleStack('${h.name.replace(/'/g,"\\'")}')">${inStack ? '✓ In stack' : '+ Add to stack'}</button>
@@ -1339,6 +1379,134 @@ document.addEventListener('DOMContentLoaded', function() {
     link.addEventListener('click', closeMobileMenu);
   });
 });
+</script>
+
+<!-- UPLOAD MODAL -->
+<div class="modal-overlay" id="upload-modal-profile">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Add a photo to Herbadex</h3>
+      <button class="modal-close" onclick="closeProfileUpload()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-rules">
+        <p><strong>Plants only.</strong> Living or recently harvested plant matter — leaves, stems, roots, flowers, whole plants. No capsules, powders, packaging or non-plant subjects.</p>
+      </div>
+      <div class="mfield">
+        <label>Photo</label>
+        <div class="img-drop" id="img-drop-profile" onclick="document.getElementById('profile-file').click()">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="opacity:.35;margin:0 auto"><rect x="3" y="5" width="22" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="12" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M3 20l6-5 4 4 3-3 6 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p>Click to upload · JPG, PNG, WebP, GIF · Max 4MB</p>
+          <img class="img-drop-preview" id="upload-preview-profile" style="display:none">
+        </div>
+        <input type="file" id="profile-file" accept="image/*" onchange="handleProfileImage(this)">
+      </div>
+      <div class="mfield">
+        <label>Herb name</label>
+        <input type="text" id="upload-herb-input" placeholder="This herb" readonly style="background:rgba(200,149,42,.08);cursor:not-allowed;">
+      </div>
+      <div class="mfield">
+        <label>Part of plant</label>
+        <select id="upload-part-input">
+          <option value="">Select...</option>
+          <option value="whole">Whole plant</option>
+          <option value="leaf">Leaf / leaves</option>
+          <option value="stem">Stem / twig</option>
+          <option value="root">Root</option>
+          <option value="flower">Flower</option>
+          <option value="seed">Seed / berry</option>
+          <option value="bark">Bark</option>
+        </select>
+      </div>
+      <div class="mfield">
+        <label>Note (optional)</label>
+        <textarea id="upload-note-input" placeholder="Where did you grow or find this? Anything interesting about it?" rows="2" style="resize:none;line-height:1.6"></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeProfileUpload()">Cancel</button>
+      <button class="btn-submit" onclick="submitProfilePhoto()">Add photo</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let profileUploadImg = null;
+const ME_PROFILE = localStorage.getItem('chi_display_name') || 'Anonymous';
+
+function openProfileUpload() {
+  const herbName = document.querySelector('.ph-name');
+  if (herbName) {
+    document.getElementById('upload-herb-input').value = herbName.textContent.trim();
+    document.getElementById('upload-herb-name').textContent = herbName.textContent.trim();
+  }
+  profileUploadImg = null;
+  document.getElementById('upload-preview-profile').style.display = 'none';
+  document.getElementById('upload-part-input').value = '';
+  document.getElementById('upload-note-input').value = '';
+  document.getElementById('upload-modal-profile').classList.add('show');
+}
+
+function closeProfileUpload() {
+  document.getElementById('upload-modal-profile').classList.remove('show');
+  profileUploadImg = null;
+}
+
+function handleProfileImage(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 4 * 1024 * 1024) { alert('File exceeds 4MB limit'); input.value=''; return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    profileUploadImg = e.target.result;
+    document.getElementById('upload-preview-profile').src = profileUploadImg;
+    document.getElementById('upload-preview-profile').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function submitProfilePhoto() {
+  if (!profileUploadImg) { alert('Please choose a photo first.'); return; }
+  const herbName = document.getElementById('upload-herb-input').value.trim() || 'Unknown';
+  const part = document.getElementById('upload-part-input').value;
+  const note = document.getElementById('upload-note-input').value.trim();
+  const btn = event.target;
+  const orig = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Uploading…';
+  try {
+    const res = await fetch('/.netlify/functions/upload-community-photo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ herbName, imageData: profileUploadImg, part, note, contributorName: ME_PROFILE })
+    });
+    const data = await res.json().catch(()=>({}));
+    if(!res.ok) { alert('Could not upload: ' + (data.error || 'unknown error')); return; }
+    closeProfileUpload();
+    setTimeout(()=>alert('🌱 Thanks! Your photo has been submitted for review.'), 300);
+  } catch(e) {
+    alert('Could not upload — please check your connection and try again.');
+  } finally {
+    btn.disabled = false; btn.textContent = orig;
+  }
+}
+
+// ─── FALLING LEAVES ANIMATION ───
+function startFallingLeaves() {
+  const leaves = ['🍂', '🍃', '🌿', '🌱'];
+  setInterval(() => {
+    const leaf = document.createElement('div');
+    leaf.className = 'leaf-fall';
+    leaf.textContent = leaves[Math.floor(Math.random() * leaves.length)];
+    leaf.style.left = Math.random() * 100 + '%';
+    leaf.style.animationDuration = (3 + Math.random() * 4) + 's';
+    leaf.style.color = '#1a3a2a';
+    document.body.appendChild(leaf);
+    setTimeout(() => leaf.remove(), 7000);
+  }, 400);
+}
+
+// Start falling leaves on page load
+document.addEventListener('DOMContentLoaded', startFallingLeaves);
 </script>
 
     <script src="herbexa-knowledge-base.js"></script>
