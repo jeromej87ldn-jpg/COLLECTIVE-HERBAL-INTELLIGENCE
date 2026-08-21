@@ -1,310 +1,107 @@
-// Herbexa Knowledge Base
-// Curated herb responses - no API calls needed
+// netlify/functions/herbexa.js
+// Herbexa chatbot backend — live Claude API, so it can handle personalized
+// and follow-up questions the static herb-profile pages can't (safety in
+// pregnancy, combining herbs, dosing for a child, etc). Uses the SAME
+// ANTHROPIC_API_KEY and SDK pattern as herb-profile.js, which is already
+// working in production — this function just fixes the earlier bug (a
+// dead model name) and gives it a tighter, on-topic system prompt.
 //
-// v2 update: added direct herb-name recognition (HERB_FACTS) so a question
-// like "what is neem" answers about Neem itself, not a loosely-matched
-// wellness topic. Also tightened scoreMatch() so short common words
-// (is, it, of...) can no longer trigger false topic matches. Existing
-// topic category responses below are unchanged.
+// Model: claude-haiku-4-5-20251001 — same model herb-profile.js already
+// uses for its cheap validation call. Haiku keeps per-message cost low,
+// which matters since this runs on every chat message, not once per herb.
 
-// ─── DIRECT HERB LOOKUP ──────────────────────────────────────────
-// Checked BEFORE topic-category matching. If the question names a herb we
-// know, answer about that herb specifically and link straight to its
-// profile. Key = herb name as it should display (also used to build the
-// profile link, same convention as elsewhere: lowercase, spaces -> hyphens).
-const HERB_FACTS = {
-  "passionflower": { latin: "Passiflora incarnata", blurb: "a flowering vine traditionally used to ease restlessness and support relaxation, often taken as tea before bed." },
-  "valerian": { latin: "Valeriana officinalis", blurb: "a root herb with a long history of traditional use for promoting calm and supporting restful sleep." },
-  "chamomile": { latin: "Matricaria chamomilla", blurb: "a gentle daisy-like flower, one of the most widely used herbs for soothing the mind and easing occasional stomach upset." },
-  "lavender": { latin: "Lavandula angustifolia", blurb: "an aromatic flowering herb valued both for its calming scent and, taken as tea, its traditional use for relaxation." },
-  "ginkgo biloba": { latin: "Ginkgo biloba", blurb: "one of the oldest living tree species; its leaves are widely studied for supporting circulation and mental clarity." },
-  "rosemary": { latin: "Salvia rosmarinus", blurb: "a fragrant Mediterranean herb traditionally associated with memory and focus, used both in cooking and as tea." },
-  "gotu kola": { latin: "Centella asiatica", blurb: "a low-growing herb from Ayurvedic and Traditional Chinese Medicine, traditionally regarded as a tonic for mental clarity and healthy skin." },
-  "lion's mane": { latin: "Hericium erinaceus", blurb: "a shaggy white medicinal mushroom drawing modern research interest for cognitive and nerve support." },
-  "ginger": { latin: "Zingiber officinale", blurb: "a warming root long used to ease nausea and support healthy digestion." },
-  "peppermint": { latin: "Mentha piperita", blurb: "a cooling mint traditionally used to soothe the digestive tract and ease bloating." },
-  "fennel": { latin: "Foeniculum vulgare", blurb: "an aromatic seed herb traditionally chewed or steeped to ease gas and support digestive comfort." },
-  "slippery elm": { latin: "Ulmus rubra", blurb: "an inner-bark herb that forms a soothing mucilage, traditionally used to calm the digestive lining." },
-  "licorice": { latin: "Glycyrrhiza glabra", blurb: "a sweet root traditionally used to support digestive comfort; not recommended long-term or alongside blood pressure medication." },
-  "elderberry": { latin: "Sambucus nigra", blurb: "a dark purple berry popular during cold season, traditionally used to support the immune system." },
-  "echinacea": { latin: "Echinacea purpurea", blurb: "a prairie flower widely used at the first sign of a cold to support immune response." },
-  "astragalus": { latin: "Astragalus membranaceus", blurb: "a root from Traditional Chinese Medicine, traditionally taken as a preventive tonic for resilience and immune support." },
-  "reishi": { latin: "Ganoderma lucidum", blurb: "a woody medicinal mushroom known in East Asian tradition as the “mushroom of immortality,” valued for overall resilience." },
-  "rose hips": { latin: "Rosa canina", blurb: "the fruit of the wild rose, naturally rich in vitamin C and traditionally used to support seasonal wellness." },
-  "ashwagandha": { latin: "Withania somnifera", blurb: "an adaptogenic root from Ayurveda, widely used to support the body's response to stress." },
-  "rhodiola": { latin: "Rhodiola rosea", blurb: "an adaptogenic root from cold mountain regions, traditionally used to support energy and resilience under stress." },
-  "lemon balm": { latin: "Melissa officinalis", blurb: "a gentle, lemon-scented mint traditionally used to ease nervous tension and support calm." },
-  "skullcap": { latin: "Scutellaria lateriflora", blurb: "a nervine herb traditionally used to ease tension and support a settled nervous system." },
-  "ginseng": { latin: "Panax ginseng", blurb: "a root revered in Asian and North American herbal traditions for supporting energy, stamina, and vitality." },
-  "maca": { latin: "Lepidium meyenii", blurb: "a Peruvian root vegetable traditionally used to support energy, stamina, and vitality." },
-  "cordyceps": { latin: "Cordyceps militaris", blurb: "a medicinal mushroom traditionally used, especially by athletes, to support energy and stamina." },
-  "siberian ginseng": { latin: "Eleutherococcus senticosus", blurb: "a gentler relative of true ginseng, traditionally used to support endurance without overstimulation." },
-  "turmeric": { latin: "Curcuma longa", blurb: "a golden root well known for curcumin, widely studied for its support of the body's inflammatory response." },
-  "boswellia": { latin: "Boswellia serrata", blurb: "also known as frankincense, a resin traditionally used to support joint comfort." },
-  "willow bark": { latin: "Salix alba", blurb: "the traditional source of salicin, long used to ease discomfort before aspirin was developed." },
-  "nettle": { latin: "Urtica dioica", blurb: "a mineral-rich leaf herb from European tradition, used for overall vitality and joint and skin health." },
-  "burdock root": { latin: "Arctium lappa", blurb: "a root traditionally used to support skin health and gentle detoxification from within." },
-  "red clover": { latin: "Trifolium pratense", blurb: "a flowering herb containing phytoestrogens, traditionally used for skin clarity and hormonal balance." },
-  "calendula": { latin: "Calendula officinalis", blurb: "a bright marigold flower, one of the most trusted topical herbs for soothing irritated skin." },
-  "tribulus": { latin: "Tribulus terrestris", blurb: "a fruiting plant traditionally used to support desire and satisfaction in intimate wellness." },
-  "damiana": { latin: "Turnera diffusa", blurb: "a Central American leaf herb with a long traditional reputation as an aphrodisiac and mood lifter." },
-  "cacao": { latin: "Theobroma cacao", blurb: "the source of chocolate, valued both for enjoyment and its traditional association with circulation and mood." },
-  "vitex": { latin: "Vitex agnus-castus", blurb: "also called chasteberry, a berry traditionally used to support hormonal balance, especially around the menstrual cycle." },
-  "dong quai": { latin: "Angelica sinensis", blurb: "a root central to Traditional Chinese Medicine, traditionally used to support menstrual comfort and women's wellness." },
-  "black cohosh": { latin: "Actaea racemosa", blurb: "a North American root traditionally used to support women through hormonal transitions." },
-  "raspberry leaf": { latin: "Rubus idaeus", blurb: "a nourishing leaf herb traditionally used to support the reproductive system, especially in the lead-up to childbirth." },
-  "neem": { latin: "Azadirachta indica", blurb: "a tree native to the Indian subcontinent, central to Ayurvedic tradition; its leaves and oil are traditionally used topically for skin support and are prized for their bitter, purifying qualities." },
-  "garlic": { latin: "Allium sativum", blurb: "a pungent bulb used as food and medicine for centuries, traditionally valued for cardiovascular and immune support." },
-  "milk thistle": { latin: "Silybum marianum", blurb: "a spiny plant whose seeds contain silymarin, traditionally used to support liver health." },
-  "aloe vera": { latin: "Aloe barbadensis miller", blurb: "a succulent whose gel is widely used topically to soothe skin, and occasionally taken internally in small amounts for digestive comfort." },
-  "holy basil": { latin: "Ocimum sanctum", blurb: "also called tulsi, a sacred plant in Ayurveda traditionally used as an adaptogen to support stress resilience and respiratory health." },
-  "tulsi": { latin: "Ocimum sanctum", blurb: "also called holy basil, a sacred plant in Ayurveda traditionally used as an adaptogen to support stress resilience and respiratory health." },
-  "hibiscus": { latin: "Hibiscus sabdariffa", blurb: "a tart flower commonly brewed as tea, traditionally used to support blood pressure already within a normal range." },
-  "dandelion": { latin: "Taraxacum officinale", blurb: "a common “weed” with edible leaves and root, traditionally used to support liver and digestive function." },
-  "cinnamon": { latin: "Cinnamomum verum", blurb: "a warming spice bark traditionally used to support healthy blood sugar balance and digestion." }
-};
+const Anthropic = require('@anthropic-ai/sdk');
 
-const HERB_FACT_SUGGESTIONS = [
-  "Would you like to add this to your Stack?",
-  "See the full profile for preparation methods, safety notes, and research.",
-  "Track this in your Herbal Planner to see how it works for you."
-];
+const MODEL = 'claude-haiku-4-5-20251001';
+const MAX_TOKENS = 400;
 
-// Finds the best (longest) herb-name match contained in the query.
-// Longest-match-wins so "red clover" beats a shorter accidental overlap.
-function findHerbMatch(userQuery) {
-  const q = userQuery.toLowerCase().replace(/['’]/g, "");
-  let bestKey = null;
-  let bestLen = 0;
-  Object.keys(HERB_FACTS).forEach(key => {
-    const normKey = key.replace(/['’]/g, "");
-    if (q.includes(normKey) && normKey.length > bestLen) {
-      bestKey = key;
-      bestLen = normKey.length;
-    }
-  });
-  return bestKey;
-}
+const SYSTEM_PROMPT = `You are Herbexa, the CHI platform's herbal guide chatbot. You help people understand herbs and body-related wellness topics beyond what's already written on a herb's static profile page.
 
-function formatHerbName(key) {
-  return key.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
-}
+STAY ON TOPIC: Only answer questions about herbs, plant remedies, wellness topics connected to the body (sleep, digestion, stress, skin, hormones, immunity, energy, etc.), or how to use the CHI platform. If a question is unrelated, politely redirect: "That's outside what I can help with here — I'm focused on herbs and wellness. Try browsing [Herb Profiles] or [Herb Match]."
 
-function getHerbFactResponse(herbKey, lessTehnical) {
-  const fact = HERB_FACTS[herbKey];
-  const displayName = formatHerbName(herbKey);
-  let message = `**${displayName}** (*${fact.latin}*) is ${fact.blurb}\n\n[${displayName} Profile]`;
+ANSWER THE ACTUAL QUESTION FIRST: If someone names a specific herb, your answer must be about THAT herb, not a list of other herbs. If they ask a follow-up or personalized question (safety while pregnant, combining with another herb, use for a child, interaction with a medication), answer that specific question directly and practically. Only mention other herbs briefly at the end, as an optional suggestion — never as the main content.
 
-  if (lessTehnical) {
-    message = message
-      .replace(/\s*\(\*.*?\*\)/g, "") // drop the latin binomial
-      .replace(/curcumin|phytochemical|phytoestrogen|alkaloid|mucilage|silymarin|salicin/g, "compound")
-      .replace(/adaptogenic|adaptogen/g, "balancing");
+DON'T DUPLICATE THE PROFILE PAGE: Every herb already has a full profile with origin, tradition, safety level, active compounds, mechanisms, body effects, preparation methods, and research — don't re-explain all of that. Keep your answer focused and short (2–5 sentences typically), then point to [Herb Name Profile] for the deep dive. Your job is what the profile CAN'T do: reasoning about a specific question or situation.
+
+LANGUAGE RULES: Never claim an herb cures, treats, or prevents disease. Use "traditionally used for," "may support," "some people use X for." No profanity. If asked about aphrodisiac properties, discuss it plainly as "libido" or "vitality support," not explicit language.
+
+SAFETY: For pregnancy, nursing, children, or medication-interaction questions, give a genuinely helpful, specific answer where the general herbal literature supports one, but always close with a clear nudge to confirm with a doctor, midwife, or pharmacist before use — especially for anything beyond occasional culinary use. Never state a personal medical situation is "safe" in absolute terms.
+
+LINKS: When you reference a herb by name, wrap it as [Herb Name Profile] (e.g. [Neem Profile]) so it becomes a clickable link — use the herb's common name exactly. Other useful links when relevant: [Herb Match], [Herbal Planner], [Browse Profiles], [Browse Resources], [Contact Us].
+
+LENGTH: Keep answers concise — aim for under 120 words unless the person clearly wants more detail. No long lists unless asked.
+
+TONE: Warm, knowledgeable, conversational — like a friend who happens to know herbalism, not a search engine or legal disclaimer generator.`;
+
+const LESS_TECHNICAL_ADDENDUM = `
+
+LESS TECHNICAL MODE: The user has asked for simpler language. Avoid scientific compound names, mechanisms, and Latin binomials. Use plain, everyday words while staying accurate.`;
+
+exports.handler = async (event) => {
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
   }
 
-  const suggestion = HERB_FACT_SUGGESTIONS[Math.floor(Math.random() * HERB_FACT_SUGGESTIONS.length)];
-  message += "\n\n" + suggestion;
-  return message;
-}
-
-const HERBEXA_KB = {
-  // Sleep & Rest
-  "sleep|insomnia|rest|tired": {
-    response: "For sleep support, several herbs may help. **Passionflower** and **Valerian** are traditionally used to promote relaxation. **Chamomile** is gentler and beloved for bedtime tea. **Lavender** combines calming aromatics with mild sedative properties. Start with one herb to see what works for your body. [Passionflower Profile] [Valerian Profile] [Chamomile Profile]",
-    links: ["Passionflower", "Valerian", "Chamomile"],
-    suggestions: ["Would you like to add one of these to your Stack?", "Track your sleep patterns in your Herbal Planner"]
-  },
-
-  // Focus & Mental Clarity
-  "focus|concentration|mental|clarity|brain": {
-    response: "For mental clarity, **Ginkgo Biloba** is well-researched for cognitive support. **Rosemary** has both aromatic and traditional benefits for focus. **Gotu Kola** is used in traditional medicine as a brain tonic. **Lion's Mane** (a mushroom) is gaining research attention for cognitive function. These work best consistently over time. [Ginkgo Profile] [Rosemary Profile] [Gotu Kola Profile]",
-    links: ["Ginkgo Biloba", "Rosemary", "Gotu Kola", "Lion's Mane"],
-    suggestions: ["Would you like to create a focus blend in your Planner?"]
-  },
-
-  // Digestion & Gut Health
-  "digestion|stomach|bloating|gas|gut|intestinal": {
-    response: "For digestive support, **Ginger** is time-tested for nausea and motility. **Peppermint** soothes the digestive tract and may ease bloating. **Fennel** addresses gas and cramping. **Slippery Elm** supports digestive lining. **Licorice** aids overall digestive comfort (avoid if on blood pressure meds). Sip these as tea 20 minutes before meals. [Ginger Profile] [Peppermint Profile] [Fennel Profile]",
-    links: ["Ginger", "Peppermint", "Fennel", "Slippery Elm", "Licorice"],
-    suggestions: ["Have you tried these as a tea before meals?"]
-  },
-
-  // Immunity & Seasonal Wellness
-  "immune|immunity|cold|flu|virus|season": {
-    response: "For immune support, **Elderberry** is popular during cold season. **Echinacea** may support immune response when taken early. **Astragalus** is traditionally used as a preventive tonic. **Reishi** (mushroom) supports overall resilience. **Vitamin C-rich herbs** like Rose Hips complement these. Start in fall to build resilience before winter. [Elderberry Profile] [Echinacea Profile] [Astragalus Profile]",
-    links: ["Elderberry", "Echinacea", "Astragalus", "Reishi", "Rose Hips"],
-    suggestions: ["Consider a seasonal immunity stack in your Planner"]
-  },
-
-  // Stress & Anxiety
-  "stress|anxiety|calm|nervous|worried": {
-    response: "For calming support, **Ashwagandha** is an adaptogen that may reduce stress perception. **Rhodiola** supports resilience during challenging times. **Lemon Balm** is gentle and pleasant. **Skullcap** and **Passionflower** support nervous system ease. **Lavender** works both internally (tea) and aromatically. Choose one to start—adaptogens work best over time. [Ashwagandha Profile] [Rhodiola Profile] [Lemon Balm Profile]",
-    links: ["Ashwagandha", "Rhodiola", "Lemon Balm", "Skullcap", "Passionflower", "Lavender"],
-    suggestions: ["Track your stress levels alongside herb use in your Planner"]
-  },
-
-  // Energy & Vitality
-  "energy|tired|fatigue|stamina|vigor": {
-    response: "For sustained energy, **Ginseng** (Asian or American) supports endurance and resilience. **Rhodiola** combats fatigue without overstimulation. **Maca** traditionally supports vitality and stamina. **Cordyceps** (mushroom) is used by athletes for energy. **Siberian Ginseng** is gentler than Asian varieties. These work best as consistent tonics, not quick fixes. [Ginseng Profile] [Rhodiola Profile] [Maca Profile]",
-    links: ["Ginseng", "Rhodiola", "Maca", "Cordyceps", "Siberian Ginseng"],
-    suggestions: ["Would you like to create an energy stack?"]
-  },
-
-  // Inflammation & Pain
-  "inflammation|pain|sore|ache|joint": {
-    response: "For inflammation support, **Turmeric** (curcumin) is well-researched. **Ginger** complements turmeric's action. **Boswellia** (frankincense) supports joint comfort. **Willow Bark** has traditional pain-easing properties. **Nettle** provides minerals that support joint health. Always take turmeric with black pepper (piperine) for better absorption. [Turmeric Profile] [Ginger Profile] [Boswellia Profile]",
-    links: ["Turmeric", "Ginger", "Boswellia", "Willow Bark", "Nettle"],
-    suggestions: ["Combine turmeric + black pepper for maximum benefit"]
-  },
-
-  // Skin Health
-  "skin|complexion|acne|eczema|rash|dermatitis": {
-    response: "For skin wellness, **Burdock Root** supports skin health from within. **Red Clover** is traditionally used for skin clarity. **Calendula** (topical) soothes irritated skin. **Nettle** provides minerals for skin vitality. **Turmeric** supports skin inflammation. Work from inside (tea/tincture) and outside (salve) for best results. Consistency over weeks matters more than immediate results. [Burdock Profile] [Red Clover Profile] [Calendula Profile]",
-    links: ["Burdock Root", "Red Clover", "Calendula", "Nettle", "Turmeric"],
-    suggestions: ["Create a skin-wellness routine—track it in your Planner"]
-  },
-
-  // Libido & Vitality
-  "libido|intimate|vitality|aphrodisiac|desire": {
-    response: "For intimate wellness, **Maca** is traditionally used to support vitality and arousal. **Tribulus** may support desire and satisfaction. **Damiana** has aphrodisiac history. **Ginseng** supports sexual function and energy. **Cacao** combines enjoyment with blood-flow benefits. These work best alongside stress reduction and good circulation—use your Herb Match to explore stress herbs too. [Maca Profile] [Tribulus Profile] [Damiana Profile] [Ginseng Profile]",
-    links: ["Maca", "Tribulus", "Damiana", "Ginseng", "Cacao"],
-    suggestions: ["Combine intimate wellness herbs with stress-reduction herbs for best results"]
-  },
-
-  // Hormonal Balance
-  "hormone|hormonal|cycle|period|menstrual": {
-    response: "For hormonal wellness, **Vitex (Chasteberry)** supports hormonal balance. **Red Clover** contains phytoestrogens and supports cycle wellness. **Dong Quai** is traditionally used for menstrual comfort. **Black Cohosh** supports hormone transitions. **Raspberry Leaf** nourishes the reproductive system. These are best as consistent tonics over 2-3 months. Consider working with an herbalist for personalized blends. [Vitex Profile] [Red Clover Profile] [Dong Quai Profile]",
-    links: ["Vitex", "Red Clover", "Dong Quai", "Black Cohosh", "Raspberry Leaf"],
-    suggestions: ["Track your cycle alongside herb use in your Planner"]
-  },
-
-  // Preparation Methods
-  "tea|tincture|capsule|extract|preparation|how to use": {
-    response: "Herbs can be used many ways:\n\n**Tea (Infusion):** Steep dried herb in hot water 5-10 minutes. Best for leaves and flowers. Gentle and enjoyable.\n\n**Decoction:** Simmer roots/bark 15-30 minutes. Releases more compounds from dense plant material.\n\n**Tincture:** Alcohol extract. Potent and shelf-stable. Use 1 dropperful in water.\n\n**Capsules:** Convenient for travel. Less flavorful.\n\n**Fresh:** Best but seasonal. Stronger than dried.\n\nStart with tea—it's gentlest and teaches your body. Each herb responds best to one method. Check individual [Herb Profiles] for specifics.",
-    links: [],
-    suggestions: ["Which preparation method appeals to you most?"]
-  },
-
-  // Herb Combinations
-  "combination|blend|together|synergy": {
-    response: "Many herbs work synergistically:\n\n**Sleep Blend:** Passionflower + Valerian + Lavender\n**Focus Blend:** Ginkgo + Rosemary + Gotu Kola\n**Inflammation Blend:** Turmeric + Ginger + Black Pepper\n**Stress Blend:** Ashwagandha + Rhodiola + Lemon Balm\n**Immunity Blend:** Elderberry + Echinacea + Astragalus\n\nCombinations are more powerful than single herbs. Your Herbal Planner lets you build and track custom blends. Start with 2-3 herbs, not 5+. [Browse Profiles] to explore which herbs call to you.",
-    links: [],
-    suggestions: ["Use your Herbal Planner to create a personalized blend"]
-  },
-
-  // Safety & Interactions
-  "pregnant|nursing|medication|drug|interaction|safety|contraindication": {
-    response: "⚠️ **Safety First:**\n\n**Pregnancy/Nursing:** Many herbs aren't studied in pregnancy. Consult your midwife or OB before using. Avoid: Vitex, Dong Quai, Pennyroyal, Rue, Motherwort (unless directed by provider).\n\n**Medications:** Some herbs interact with prescriptions. **Critical:** Turmeric thins blood (avoid with warfarin). St. John's Wort reduces birth control effectiveness. Ginseng may affect blood sugar meds.\n\n**Rule of Thumb:** Tell your doctor AND your herbalist what you're taking.\n\nC.H.I is educational, not medical advice. When in doubt, consult your healthcare provider. Check individual [Herb Profiles] for contraindications.",
-    links: [],
-    suggestions: ["Always disclose herb use to your doctor"]
-  },
-
-  // Getting Started
-  "start|beginner|new|first time|where to begin": {
-    response: "Welcome to herbalism! Here's how to start:\n\n**1. Define Your Goal:** What wellness area calls to you? Sleep, focus, stress, energy?\n\n**2. Try Herb Match:** Answer 5 questions about your concerns. We'll suggest herbs tailored to you. [Try Herb Match]\n\n**3. Explore One Herb:** Start with ONE herb as tea. Spend 2-4 weeks with it. Notice how your body responds.\n\n**4. Read Profiles:** Each herb has a full profile here—safety info, preparation, research, sourcing.\n\n**5. Track Your Journey:** Use your Herbal Planner to log which herbs you try and how they make you feel.\n\nHerbalism is about listening to your body. Start slow, notice patterns, adjust. [Browse Profiles] to explore.",
-    links: [],
-    suggestions: ["Try Herb Match to get personalized recommendations"]
-  },
-
-  // Sourcing & Quality
-  "quality|source|where to buy|organic|supplier": {
-    response: "Quality matters in herbalism. Here's what to look for:\n\n**Organic Certification:** Ensures no pesticide residues.\n\n**Reputable Suppliers:** Buy from established herbal companies. Check reviews and certifications.\n\n**Wildcrafted:** Some herbs are sustainably harvested wild. Ask suppliers if plants are endangered.\n\n**Freshness:** Dried herbs should smell vibrant, not musty. Buy from suppliers with high turnover.\n\n**Know the Botanical Name:** 'Ginseng' can mean 3 different plants. Confirm species with your supplier.\n\nYour Herbal Planner can track which suppliers you trust. We'll have resources for ethical sourcing coming soon. [Browse Resources] for current recommendations.",
-    links: [],
-    suggestions: ["Invest in quality herbs—they're more potent and safer"]
-  },
-
-  // Business & Resources
-  "business|resources|herbal business|start selling|become herbalist": {
-    response: "Interested in herbalism as a profession or side business? Great!\n\nC.H.I has a **Resources section** dedicated to this:\n- How to source wholesale herbs\n- Creating herbal blends for others\n- Regulatory requirements (FDA, labeling)\n- Building an herbal practice\n- Connecting with suppliers\n- Educational pathways (certifications, apprenticeships)\n\nWe also feature herbalists and small suppliers who use our platform. [Browse Resources] to explore business paths, or [Contact Us] if you're interested in being featured.\n\nRemember: Different regions have different regulations. Always research your area's guidelines.",
-    links: [],
-    suggestions: ["Check our Resources page for herbal business guidance"]
-  },
-
-  // Default response for questions we don't have specific answers for
-  "default": {
-    response: "Great question! I'm still learning about all of herbalism's depths. Here's what I suggest:\n\n1. **Browse our [Herb Profiles]** — explore herbs by name, wellness area, or preparation method.\n2. **Try Herb Match** — answer a few questions and we'll suggest relevant herbs.\n3. **Search our Glossary** — learn about plant compounds, herbalism terms, and concepts.\n4. **Read our Resources** — guides on getting started, safety, sourcing, and building an herbal practice.\n\nIf you're looking for a specific herb or wellness concern, try searching those keywords in Herb Match or our profiles. What aspect of herbalism interests you most?",
-    links: [],
-    suggestions: ["Explore Herb Match or browse all Herb Profiles"]
+  let body;
+  try {
+    body = JSON.parse(event.body || '{}');
+  } catch (e) {
+    return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON body' }) };
   }
-};
 
-// Scoring function: How well does a query match a category?
-// v2: ignores words shorter than 3 letters entirely, and only allows a
-// substring match (vs. an exact match) when BOTH sides are 4+ letters.
-// This stops noise words like "is", "it", "of" from matching inside
-// unrelated keywords (e.g. "is" inside "dermatitis").
-function scoreMatch(userQuery, categoryKeywords) {
-  const queryWords = userQuery.toLowerCase().split(/\s+/).filter(w => w.length >= 3);
-  const keywords = categoryKeywords.toLowerCase().split("|");
+  const { messages, lessTehnical } = body;
+  if (!messages || !Array.isArray(messages) || messages.length === 0) {
+    return { statusCode: 400, body: JSON.stringify({ error: 'messages array is required' }) };
+  }
 
-  let matches = 0;
-  keywords.forEach(keyword => {
-    queryWords.forEach(word => {
-      if (word === keyword) {
-        matches += 2;
-      } else if (word.length >= 4 && keyword.length >= 4 && (word.includes(keyword) || keyword.includes(word))) {
-        matches += 1;
-      }
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    return { statusCode: 500, body: JSON.stringify({ error: 'Server is missing ANTHROPIC_API_KEY' }) };
+  }
+
+  const anthropic = new Anthropic({ apiKey });
+  const system = SYSTEM_PROMPT + (lessTehnical ? LESS_TECHNICAL_ADDENDUM : '');
+
+  try {
+    const message = await anthropic.messages.create({
+      model: MODEL,
+      max_tokens: MAX_TOKENS,
+      system,
+      messages: messages.map(m => ({
+        role: m.role === 'user' ? 'user' : 'assistant',
+        content: m.content
+      }))
     });
-  });
 
-  return matches;
-}
-
-// Get response based on user query
-function getHerbexaResponse(userQuery, lessTehnical = false) {
-  if (!userQuery || userQuery.trim().length === 0) {
-    return "Ask me anything about herbs! What wellness area interests you? Sleep, focus, digestion, immunity, stress, energy, or something else?";
-  }
-
-  // 1) Does the question name a specific herb we know? Answer directly.
-  const herbKey = findHerbMatch(userQuery);
-  if (herbKey) {
-    return getHerbFactResponse(herbKey, lessTehnical);
-  }
-
-  // 2) Otherwise, fall back to wellness-topic matching.
-  let bestScore = 0;
-  let bestKey = "default";
-
-  Object.keys(HERBEXA_KB).forEach(key => {
-    if (key !== "default") {
-      const score = scoreMatch(userQuery, key);
-      if (score > bestScore) {
-        bestScore = score;
-        bestKey = key;
-      }
+    const textBlock = message.content.find(block => block.type === 'text');
+    if (!textBlock || !textBlock.text) {
+      return { statusCode: 500, body: JSON.stringify({ error: 'No text in model response' }) };
     }
-  });
 
-  if (bestScore === 0) {
-    bestKey = "default";
+    return {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      },
+      body: JSON.stringify({
+        message: textBlock.text,
+        stop_reason: message.stop_reason
+      })
+    };
+  } catch (error) {
+    console.error('Herbexa handler error:', error);
+
+    const status = error.status || 500;
+    if (status === 401) {
+      return { statusCode: 401, body: JSON.stringify({ error: 'Invalid API key' }) };
+    }
+    if (status === 429) {
+      return { statusCode: 429, body: JSON.stringify({ error: 'Rate limited, try again shortly' }) };
+    }
+    return {
+      statusCode: status,
+      body: JSON.stringify({ error: 'Claude API error', details: error.message || 'Unknown error' })
+    };
   }
-
-  const response = HERBEXA_KB[bestKey];
-  let message = response.response;
-
-  // Simplify if less technical mode
-  if (lessTehnical) {
-    message = message
-      .replace(/curcumin|phytochemical|phytoestrogen|alkaloid/g, "compound")
-      .replace(/bioavailable|absorption/g, "your body can use it")
-      .replace(/NF-κB|COX-2|pathway/g, "")
-      .replace(/\(.*?\)/g, ""); // Remove parenthetical explanations
-  }
-
-  // Add random suggestion
-  if (response.suggestions && response.suggestions.length > 0) {
-    const suggestion = response.suggestions[Math.floor(Math.random() * response.suggestions.length)];
-    message += "\n\n" + suggestion;
-  }
-
-  return message;
-}
-
-// Export for use in widget
-window.HERBEXA_ENGINE = {
-  getResponse: getHerbexaResponse,
-  kb: HERBEXA_KB,
-  herbFacts: HERB_FACTS
 };

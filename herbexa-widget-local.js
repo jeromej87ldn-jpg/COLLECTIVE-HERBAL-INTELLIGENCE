@@ -1,5 +1,9 @@
 // herbexa-widget-local.js
-// Floating chatbot widget using local knowledge base (no API calls)
+// Floating chatbot widget. v2: now calls the live Herbexa Netlify function
+// (Claude API, fixed model) so it can handle personalized/follow-up
+// questions the static local knowledge base can't. Falls back to the local
+// knowledge base (herbexa-knowledge-base.js, loaded before this file) if
+// the API call fails for any reason — so the bot never goes silent.
 
 class HerbexaWidget {
   constructor() {
@@ -9,6 +13,7 @@ class HerbexaWidget {
     this.exchangeCount = 0;
     this.maxExchanges = 15;
     this.lessTehnical = false;
+    this.apiEndpoint = "/.netlify/functions/herbexa";
     this.init();
   }
 
@@ -183,6 +188,7 @@ class HerbexaWidget {
           display: flex;
           gap: 4px;
           align-items: center;
+          padding: 12px 16px;
         }
 
         .herbexa-dot {
@@ -395,7 +401,7 @@ class HerbexaWidget {
     btn.classList.remove("active");
   }
 
-  sendMessage() {
+  async sendMessage() {
     const input = document.getElementById("herbexa-input");
     const message = input.value.trim();
 
@@ -414,23 +420,49 @@ class HerbexaWidget {
 
     // Add user message
     this.addMessage("user", message);
+    this.messages.push({ role: "user", content: message });
     input.value = "";
     input.style.height = "auto";
     this.exchangeCount++;
 
-    // Get response from knowledge base
-    setTimeout(() => {
+    const loadingId = this.showLoading();
+
+    try {
+      const response = await fetch(this.apiEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: this.messages,
+          lessTehnical: this.lessTehnical,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      this.removeLoading(loadingId);
+      this.addMessage("bot", data.message);
+      this.messages.push({ role: "assistant", content: data.message });
+      this.updateStatus();
+    } catch (error) {
+      console.error("Herbexa API error, falling back to local knowledge base:", error);
+      this.removeLoading(loadingId);
+
+      // Graceful degrade: use the local static knowledge base rather than
+      // going silent if the live API is unreachable for any reason.
       if (window.HERBEXA_ENGINE) {
-        const response = window.HERBEXA_ENGINE.getResponse(message, this.lessTehnical);
-        this.addMessage("bot", response);
+        const fallback = window.HERBEXA_ENGINE.getResponse(message, this.lessTehnical);
+        this.addMessage("bot", fallback);
         this.updateStatus();
       } else {
         this.addMessage(
           "bot",
-          "I'm having trouble loading my knowledge base. Please refresh the page and try again."
+          "Sorry, I couldn't process that. Try again or browse our [Herb Profiles] for direct answers."
         );
       }
-    }, 300); // Slight delay for natural feel
+    }
   }
 
   addMessage(role, content) {
@@ -461,6 +493,28 @@ class HerbexaWidget {
       .replace(/\[Browse Resources\]/g, '<a href="/resources.html">[Browse Resources]</a>')
       .replace(/\[Contact Us\]/g, '<a href="/contact.html">[Contact Us]</a>')
       .replace(/\[Try Herb Match\]/g, '<a href="/herb-match.html">[Try Herb Match]</a>');
+  }
+
+  showLoading() {
+    const body = document.getElementById("herbexa-body");
+    const loadingDiv = document.createElement("div");
+    loadingDiv.className = "herbexa-message bot";
+    loadingDiv.innerHTML = `
+      <div class="herbexa-loading">
+        <div class="herbexa-dot"></div>
+        <div class="herbexa-dot"></div>
+        <div class="herbexa-dot"></div>
+      </div>
+    `;
+    loadingDiv.id = `loading-${Date.now()}`;
+    body.appendChild(loadingDiv);
+    body.scrollTop = body.scrollHeight;
+    return loadingDiv.id;
+  }
+
+  removeLoading(loadingId) {
+    const loading = document.getElementById(loadingId);
+    if (loading) loading.remove();
   }
 
   updateStatus() {
