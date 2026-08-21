@@ -426,10 +426,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .btn-submit{background:var(--gold);color:var(--forest);transition:background .2s;}
 .btn-submit:hover{background:var(--gold-light);}
 .btn-submit:disabled{opacity:.5;cursor:not-allowed;}
-
-/* ─── FALLING LEAVES ─── */
-.leaf-fall{position:fixed;pointer-events:none;font-size:20px;opacity:.1;animation:fall linear forwards;}
-@keyframes fall{from{transform:translateY(-10px) rotateZ(0deg);opacity:.1;}to{transform:translateY(100vh) rotateZ(360deg);opacity:.05;}}
 </style>
 </head>
 <body>
@@ -1490,23 +1486,6 @@ async function submitProfilePhoto() {
   }
 }
 
-// ─── FALLING LEAVES ANIMATION ───
-function startFallingLeaves() {
-  const leaves = ['🍂', '🍃', '🌿', '🌱'];
-  setInterval(() => {
-    const leaf = document.createElement('div');
-    leaf.className = 'leaf-fall';
-    leaf.textContent = leaves[Math.floor(Math.random() * leaves.length)];
-    leaf.style.left = Math.random() * 100 + '%';
-    leaf.style.animationDuration = (3 + Math.random() * 4) + 's';
-    leaf.style.color = '#1a3a2a';
-    document.body.appendChild(leaf);
-    setTimeout(() => leaf.remove(), 7000);
-  }, 400);
-}
-
-// Start falling leaves on page load
-document.addEventListener('DOMContentLoaded', startFallingLeaves);
 </script>
 
     <script src="herbexa-knowledge-base.js"></script>
