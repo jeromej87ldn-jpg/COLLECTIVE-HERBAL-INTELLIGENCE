@@ -1,768 +1,383 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Glossary — C.H.I</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
-<style>
-:root{
-  --forest:#1a3a2a;--forest-mid:#2d5c42;--forest-light:#4a8c65;
-  --parchment:#f5f0e8;--gold:#c8952a;--gold-light:#e8b84b;--night:#0c1a10;
-  --bg:#0c1a10;--header:#1a3a2a;--card:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.08);
-  --text:#f5f0e8;--muted:rgba(245,240,232,0.52);--accent:#c8952a;
-  --tag-bg:rgba(74,140,101,0.15);--tag-border:rgba(74,140,101,0.3);--tag-text:#7acca0;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;
-  background-image:radial-gradient(ellipse 80% 50% at 50% -5%,rgba(74,140,101,0.12),transparent 60%);}
-nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:var(--header);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:50;}
-.nav-logo{text-decoration:none;display:flex;flex-direction:column;}
-.nav-chi{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-light);letter-spacing:.1em;}
-.nav-full{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.5);}
-.nav-right{display:flex;align-items:center;gap:1.5rem;}
-.nav-right a{color:rgba(245,240,232,.6);text-decoration:none;font-size:13px;transition:color .2s;}
-.nav-right a:hover,.nav-right a.active{color:var(--gold-light);}
-.nav-join{background:var(--gold);color:var(--forest)!important;padding:.5rem 1rem;border-radius:4px;font-weight:500;}
-@media(max-width:760px){.nav-right a:not(.nav-join){display:none;}}
+// ── CHI SHARED GLOSSARY (portable) ───────────────────────────────
+// Auto-tags known terms in page text and shows a definition tooltip on
+// hover. Extracted from phytochemistry.html so multiple pages share one
+// copy of the definitions.
+(function(){
+  if(window.__chiGlossaryLoaded) return;          // guard against double-include
+  window.__chiGlossaryLoaded = true;
 
-.wrap{max-width:820px;margin:0 auto;padding:3rem 1.5rem 5rem;}
-.page-h{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:500;line-height:1.05;}
-.page-sub{font-size:15px;color:var(--muted);line-height:1.7;margin-top:.5rem;max-width:60ch;}
+  // Injected styles — literal colors so the tooltip looks identical on any
+  // page regardless of that page's own CSS variables.
+  (function(){
+    var css = `
+.chi-term{border-bottom:1px dashed rgba(200,149,42,.45);cursor:help;transition:border-color .15s;}
+.chi-term:hover{border-bottom-color:rgba(200,149,42,.9);}
+.chi-tooltip{position:fixed;z-index:2000;background:#1a3a2a;border:1px solid rgba(200,149,42,.35);border-radius:8px;padding:.85rem 1.1rem;max-width:320px;min-width:200px;box-shadow:0 8px 28px rgba(0,0,0,.55);pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .18s,transform .18s;}
+.chi-tooltip.show{opacity:1;transform:translateY(0);}
+.chi-tooltip-term{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:500;color:#e8b84b;margin-bottom:.3rem;}
+.chi-tooltip-def{font-size:12.5px;color:rgba(245,240,232,.82);line-height:1.62;}
+.chi-tooltip-herbs{margin-top:.55rem;padding-top:.5rem;border-top:1px solid rgba(255,255,255,.08);}
+.chi-tooltip-herbs-label{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:rgba(245,240,232,.3);margin-bottom:.35rem;}
+.chi-tooltip-herb-pills{display:flex;flex-wrap:wrap;gap:.3rem;}
+.chi-tooltip-herb-pill{font-size:11px;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(245,240,232,.6);}
+.chi-tooltip-herb-pill.in-stack{background:rgba(200,149,42,.18);border-color:rgba(200,149,42,.4);color:#e8b84b;font-weight:500;}
+.chi-tooltip-footer{font-size:10.5px;color:rgba(245,240,232,.28);margin-top:.45rem;display:flex;align-items:center;gap:5px;}
+`;
+    var style = document.createElement('style');
+    style.textContent = css;
+    (document.head || document.documentElement).appendChild(style);
+  })();
 
-.search-box{position:relative;margin:1.75rem 0 1rem;}
-.search-box input{width:100%;background:var(--card);border:1px solid var(--card-border);border-radius:10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;padding:.9rem 1rem .9rem 2.6rem;outline:none;}
-.search-box input:focus{border-color:var(--gold);}
-.search-box svg{position:absolute;left:.95rem;top:50%;transform:translateY(-50%);color:var(--muted);}
-.count-line{font-size:12.5px;color:var(--muted);margin-bottom:1rem;}
+  const DEFS = {
+    'adaptogen': {l:'Adaptogen',d:'A herb that helps the body resist physical and mental stress without causing harm. Works by modulating the HPA axis — your central stress system. Examples: ashwagandha, rhodiola, shilajit.'},
+  'adaptogenic': {l:'Adaptogenic',d:'Having the properties of an adaptogen — helping the body resist stress and return to balance without overstimulating any one system.'},
+  'nervine': {l:'Nervine',d:'A herb that supports and nourishes the nervous system. Nervine tonics (oat straw) rebuild; nervine relaxants (passionflower, lemon balm) calm; nervine stimulants (rosemary) activate.'},
+  'nootropic': {l:'Nootropic',d:"A substance that enhances cognitive function — memory, focus, creativity — without significant side effects. Lion's mane and lemon balm are herbal nootropics."},
+  'carminative': {l:'Carminative',d:'A herb that relieves intestinal gas and gut spasm, typically through volatile oils that relax smooth muscle in the gut wall. Examples: fennel, peppermint, clove, ginger.'},
+  'demulcent': {l:'Demulcent',d:'A herb that soothes irritated or inflamed mucous membranes by forming a protective coating. Marshmallow root and slippery elm are classic demulcents.'},
+  'expectorant': {l:'Expectorant',d:"A herb that helps clear mucus from the lungs and airways. Stimulating expectorants (thyme) increase secretion; relaxing expectorants (mullein, marshmallow) thin mucus so it's easier to clear."},
+  'diuretic': {l:'Diuretic',d:'Increases urine production. Most herbal diuretics (dandelion, nettle) are aquaretics — they increase water output without depleting potassium, unlike pharmaceutical loop diuretics.'},
+  'aquaretic': {l:'Aquaretic',d:'A type of diuretic that increases water excretion without significant electrolyte loss. Safer for long-term use than pharmaceutical diuretics. Dandelion leaf is a well-known aquaretic.'},
+  'hepatoprotective': {l:'Hepatoprotective',d:'Protects liver cells from damage. Silymarin in milk thistle is the most clinically validated hepatoprotective compound — used in emergency medicine for toxic liver injury.'},
+  'cholagogue': {l:'Cholagogue',d:'A herb that stimulates the gallbladder to release stored bile — aiding fat digestion and liver detoxification. Dandelion root is a well-known cholagogue.'},
+  'choleretic': {l:'Choleretic',d:'Stimulates the liver to produce more bile. Distinct from a cholagogue (which releases stored bile). Dandelion root and milk thistle do both.'},
+  'vulnerary': {l:'Vulnerary',d:'A herb that promotes wound healing and tissue repair, typically by stimulating collagen synthesis. Calendula is the most evidenced vulnerary herb.'},
+  'emmenagogue': {l:'Emmenagogue',d:'Stimulates or regulates menstrual flow by acting on uterine smooth muscle. Mugwort is the most documented Western example. Contraindicated in pregnancy.'},
+  'diaphoretic': {l:'Diaphoretic',d:'Promotes sweating, traditionally used to break fevers. Hot diaphoretics (ginger, elderflower) increase circulation; cool diaphoretics (hibiscus, peppermint) lower temperature.'},
+  'styptic': {l:'Styptic',d:'Stops external bleeding when applied topically. Tannin-rich herbs (yarrow, raspberry leaf) precipitate proteins on wound surfaces and contract blood vessels.'},
+  'antispasmodic': {l:'Antispasmodic',d:'Relaxes muscle spasm — either in the digestive tract or skeletal muscle. Works mainly by blocking calcium channels in smooth muscle.'},
+  'anxiolytic': {l:'Anxiolytic',d:'Reduces anxiety without necessarily causing sedation. Ashwagandha, passionflower and lemon balm have anxiolytic action at lower doses before becoming sedative at higher doses.'},
+  'hypnotic': {l:'Hypnotic',d:'Promotes sleep — stronger in effect than a simple relaxant. Valerian, hops and high-dose passionflower are hypnotics.'},
+  'sedative': {l:'Sedative',d:'Calms the nervous system and reduces excitability. Milder than a hypnotic. Passionflower and lemon balm are sedatives at standard doses.'},
+  'immunomodulator': {l:'Immunomodulator',d:'Normalises immune function — can stimulate an underactive immune system or calm an overactive one. Different from a simple immune stimulant. Nigella and medicinal mushrooms are immunomodulators.'},
+  'antiviral': {l:'Antiviral',d:'Inhibits viral replication or entry. Oleuropein in olive leaf prevents viral entry by binding to viral envelope proteins before they can attach to host cells.'},
+  'antimicrobial': {l:'Antimicrobial',d:'Active against bacteria, fungi or viruses. Thymoquinone in nigella is broadly antimicrobial — it disrupts microbial cell membrane integrity.'},
+  'lymphagogue': {l:'Lymphagogue',d:'Stimulates lymphatic circulation and clears lymphatic congestion. Calendula and cleavers are lymphagogues — supporting immune cell movement and tissue drainage.'},
+  'trophorestorative': {l:'Trophorestorative',d:"Restores and rebuilds the function of a specific organ or system over time through regular use. Milk thistle is trophorestorative for the liver; lion's mane for the nervous system."},
+  'alterative': {l:'Alterative',d:'Gradually improves metabolism and nutrition, traditionally said to "alter" the body towards better health. Cleavers, nettle and burdock are classic alteratives.'},
+  'bitter tonic': {l:'Bitter tonic',d:'A herb that stimulates digestion through bitter taste receptors (TAS2R) on the tongue. Must be tasted to work — capsules bypass the mechanism. Dandelion, mugwort and gentian are bitter tonics.'},
+  // Singular and plural keys point at one shared definition so the tagger
+  // matches either form without maintaining two copies that can drift.
+  'flavonoid': {l:'Flavonoid',d:'The largest class of plant polyphenols — over 6,000 known. Includes quercetin, apigenin, luteolin and kaempferol. Broadly anti-inflammatory, antioxidant and cardioprotective; found in almost every herb.'},
+  'alkaloid': {l:'Alkaloid',d:'Nitrogen-containing plant compounds — often bitter and pharmacologically potent. Include berberine (barberry), caffeine (green tea) and morphine; the basis of many plant-derived pharmaceuticals. Work on specific receptors with clear dose-dependence.'},
+  'tannin': {l:'Tannin',d:'Polyphenols that bind and precipitate proteins, creating an astringent sensation that contracts tissue. Protect wound surfaces, reduce inflammation and have antimicrobial properties. High in raspberry leaf, oak bark, green tea and witch hazel.'},
+  'saponin': {l:'Saponin',d:'Soap-like plant compounds that foam in water. Improve cell membrane permeability (enhancing absorption of other compounds), support immune function and lower cholesterol. Found in ashwagandha, liquorice and many herbs.'},
+  'terpenoid': {l:'Terpenoid',d:'The largest class of plant compounds — built from five-carbon isoprene units. Includes essential oil components (monoterpenes), withanolides (diterpenes), silymarin (triterpenoid) and carotenoids.'},
+  'terpenoids': {l:'Terpenoids',d:"The most diverse class of plant compounds. Responsible for most herbal scents (monoterpenes) and many therapeutic actions. Includes everything from lemon balm's citral to ashwagandha's withanolides."},
+  'polysaccharide': {l:'Polysaccharide',d:"Long-chain sugars found in medicinal mushrooms and herbs. Beta-glucans in lion's mane activate immune surveillance; arabinogalactans in marshmallow coat and protect gut mucosa."},
+  'polysaccharides': {l:'Polysaccharides',d:'Complex carbohydrate chains with significant immune-modulating and protective effects. Beta-glucans (mushrooms), arabinogalactans (marshmallow) and inulin (dandelion) are key examples.'},
+  'phenolic acid': {l:'Phenolic acid',d:'Simple polyphenols including rosmarinic acid (lemon balm), chlorogenic acid (dandelion) and caffeic acid (nettle). Anti-inflammatory, antioxidant and often involved in enzyme inhibition.'},
+  'phenolic acids': {l:'Phenolic acids',d:'Simple polyphenolic compounds with antioxidant and anti-inflammatory properties. Rosmarinic acid in lemon balm inhibits both AChE and GABA-T — making it uniquely cognitive and calming.'},
+  'iridoid': {l:'Iridoid',d:'A type of terpenoid found in olives, valerian and plantain — often bitter and anti-inflammatory. Oleuropein (olive leaf) is an iridoid glycoside.'},
+  'iridoids': {l:'Iridoids',d:'Bitter terpenoid compounds found in olive leaf (oleuropein), valerian and plantain. Among the most studied natural anti-inflammatory and antimicrobial compound classes.'},
+  'withanolide': {l:'Withanolide',d:'Steroidal lactone compounds unique to ashwagandha (Withania somnifera). Structurally similar to human steroid hormones — modulate glucocorticoid receptors, reduce cortisol, and support testosterone.'},
+  'withanolides': {l:'Withanolides',d:'The primary bioactive compounds in ashwagandha. Reduce cortisol by up to 27% in double-blind trials by modulating the HPA axis. Also support testosterone and thyroid function.'},
+  'glycoside': {l:'Glycoside',d:'A compound consisting of a sugar molecule attached to an active compound (aglycone). The sugar improves solubility and stability; digestive enzymes split it, releasing the active aglycone.'},
+  'glycosides': {l:'Glycosides',d:"Compounds where a sugar is bonded to an active molecule. The sugar acts as a delivery vehicle — gut bacteria or digestive enzymes release the active aglycone where it's needed."},
+  'bioavailability': {l:'Bioavailability',d:'The proportion of a compound that actually reaches systemic circulation after ingestion. Fat-soluble compounds need dietary fat to absorb. Piperine in black pepper increases curcumin bioavailability by 2,000%.'},
+  'hpa axis': {l:'HPA Axis',d:"Hypothalamic-Pituitary-Adrenal axis — your body's central stress response system. Chronic activation keeps cortisol elevated, impairing sleep, immunity and cognition. Adaptogens specifically modulate this system."},
+  'nf-κb': {l:'NF-κB',d:'A key molecular switch controlling inflammation genes. When activated it triggers cytokine production. Ashwagandha withanolides, olive leaf oleuropein and nigella thymoquinone all inhibit NF-κB.'},
+  'nrf2': {l:'Nrf2',d:"A master regulator of cellular antioxidant defence. When activated by sulforaphane, quercetin or thymoquinone, it switches on genes producing SOD, catalase and glutathione — your body's own antioxidant enzymes."},
+  'gaba': {l:'GABA',d:"Gamma-aminobutyric acid — your brain's primary inhibitory neurotransmitter. Low GABA = anxiety and poor sleep. Passionflower's apigenin binds GABA-A receptors; lemon balm's rosmarinic acid slows GABA breakdown."},
+  'cox-2': {l:'COX-2',d:'Cyclooxygenase-2 — the enzyme that produces inflammatory prostaglandins. NSAIDs like ibuprofen block it. Many herbs (quercetin, oleuropein, thymoquinone) also inhibit COX-2 without the gut side effects.'},
+  'cox': {l:'COX (COX-1/COX-2)',d:'Cyclooxygenase enzymes that produce prostaglandins — chemical messengers of pain and inflammation. Many anti-inflammatory herbs inhibit COX. COX-2-specific inhibitors cause less gut damage than COX-1 inhibitors.'},
+  'apoptosis': {l:'Apoptosis',d:"Programmed cell death — the body's controlled process for removing damaged cells. Some plant compounds are studied because they trigger apoptosis in cancer cells while leaving healthy cells unaffected."},
+  'ngf': {l:'NGF (Nerve Growth Factor)',d:"A protein that supports the survival and growth of nerve cells. Hericenones and erinacines from lion's mane mushroom are the only known dietary compounds that directly stimulate NGF synthesis in the brain."},
+  'bdnf': {l:'BDNF',d:"Brain-Derived Neurotrophic Factor — a protein that supports brain cell growth, learning and memory. Lion's mane erinacines stimulate BDNF production in the hippocampus."},
+  'ampk': {l:'AMPK',d:'A master metabolic switch in every cell. When activated it increases glucose uptake, burns fat and reduces inflammation. Berberine and chlorogenic acid activate AMPK via the same pathway as metformin.'},
+  'silymarin': {l:'Silymarin',d:'The active complex in milk thistle — a mixture of flavonolignans. One of the most clinically validated hepatoprotective compounds; used in emergency medicine for death cap mushroom poisoning.'},
+  'oleuropein': {l:'Oleuropein',d:'The primary bioactive compound in olive leaf. Has antimicrobial, antiviral, antihypertensive and antioxidant actions. Prevents viral entry by binding to viral capsid proteins before they reach host cells.'},
+  'thymoquinone': {l:'Thymoquinone',d:'Primary bioactive in nigella (black seed). Simultaneously inhibits COX-1/2, 5-LOX and NF-κB — a rare triple anti-inflammatory mechanism. Also disrupts microbial membranes and modulates Th1/Th2 immune balance.'},
+  'rosmarinic acid': {l:'Rosmarinic acid',d:'A phenolic acid in lemon balm, rosemary and sage. Inhibits acetylcholinesterase (improving focus) and GABA transaminase (promoting calm) simultaneously — making it uniquely both cognitive and anxiolytic.'},
+  'beta-glucan': {l:'Beta-glucan',d:"A type of polysaccharide found in medicinal mushrooms. Binds to Dectin-1 receptors on immune cells, activating the body's innate immune response — the same alert system normally triggered by fungal pathogens."},
+  'beta-glucans': {l:'Beta-glucans',d:"Polysaccharides in medicinal mushrooms (lion's mane, reishi, turkey tail) that activate macrophage and NK cell immune surveillance via Dectin-1 receptor binding."},
+  'mitophagy': {l:'Mitophagy',d:'A cellular cleaning process where damaged mitochondria are broken down and recycled. Urolithin A — produced from ellagic acid in raspberry leaf — activates mitophagy and is one of the most studied anti-aging compounds.'},
+  'senolytic': {l:'Senolytic',d:'Clears senescent cells — old, damaged cells that have stopped dividing but release inflammatory signals that accelerate aging. Fisetin (strawberry) is one of the most studied natural senolytics.'},
+  'phytoestrogen': {l:'Phytoestrogen',d:'A plant compound that weakly mimics oestrogen. Isoflavones (red clover) and lignans (flaxseed) are phytoestrogens. Effects can be oestrogenic or anti-oestrogenic depending on hormonal context.'},
+  'nervous system': {l:'Nervous System',d:'Controls all body functions through electrical signals. Includes brain, spinal cord and peripheral nerves. Nervines calm it; adaptogens regulate its stress response; nootropics improve its efficiency.'},
+  'immune system': {l:'Immune System',d:"The body's defence network. Overactivation causes allergies and autoimmunity; underactivation causes frequent illness. Immunomodulators like nigella normalise rather than simply stimulate it."},
+  'digestive system': {l:'Digestive System',d:'Breaks down food across 9 metres of gut. Bitter herbs stimulate it via TAS2R receptors; demulcents soothe it; prebiotics feed its microbiome; bitters must be tasted to work.'},
+  'cardiovascular': {l:'Cardiovascular System',d:'Heart and blood vessels. Herbs support it via blood pressure regulation (olive leaf ACE inhibition), vessel wall integrity (proanthocyanidins) and anti-inflammatory action (quercetin).'},
+  'endocrine': {l:'Endocrine System',d:'Hormone-producing glands — adrenals, thyroid, pancreas, gonads. Controls metabolism, stress and reproduction. Adaptogens specifically target the HPA axis (stress hormones) within this system.'},
+  'respiratory': {l:'Respiratory System',d:'Lungs and airways. Expectorants clear mucus; antispasmodics relax bronchial spasm; demulcents soothe irritated mucosa; antimicrobials address infection.'},
+  'hepatic': {l:'Hepatic / Liver',d:'The liver has 500+ functions — detoxification, bile production, hormone processing. Hepatoprotective herbs protect liver cells; choleretics stimulate bile; cholagogues release stored bile.'},
+  'lymphatic': {l:'Lymphatic System',d:'Vessels and nodes draining fluid from tissues and hosting immune cells. Lymphagogue herbs (calendula, cleavers) stimulate lymph flow and clear congestion.'},
+  'antioxidant': {l:'Antioxidant',d:'Neutralises free radicals — reactive molecules that damage cells and accelerate ageing. Quercetin, vitamin C and rosmarinic acid are potent antioxidants. Your body also makes its own via Nrf2 activation.'},
+  'bioactive': {l:'Bioactive',d:'A compound that has a measurable biological effect in the body — it works. Not all compounds in an herb are bioactive; many are just bulk. Quercetin and oleuropein are bioactive; cellulose is not.'},
+  'polyphenol': {l:'Polyphenol',d:'A plant compound with multiple phenolic rings — potent antioxidants and anti-inflammatories. Includes flavonoids, tannins and phenolic acids. Responsible for most herbal benefits.'},
+  'anti-inflammatory': {l:'Anti-inflammatory',d:'Reduces inflammation by inhibiting cytokines or inflammatory enzymes (COX, 5-LOX, NF-κB). Quercetin, thymoquinone and oleuropein are multi-pathway anti-inflammatories.'},
+  'adaptogen': {l:'Adaptogen',d:'An herb that helps the body adapt to stress and restore balance. Works specifically on the HPA axis (cortisol). Ashwagandha and reishi are classic adaptogens — non-toxic, non-habit-forming.'},
+  'mechanism': {l:'Mechanism of Action',d:"How a compound produces its effect. Rather than 'lowers inflammation,' it might be 'inhibits NF-κB pathway' or 'blocks COX-2 enzyme.' Understanding mechanism explains why a herb works and when it might fail."},
+  'receptor': {l:'Receptor',d:'A protein on a cell that catches and responds to chemical messengers. GABA receptors bind calming neurotransmitters; benzodiazepine site on GABA-A is where anxiety drugs (and passionflower) bind.'},
+  'enzyme': {l:'Enzyme',d:'A protein that speeds up chemical reactions. Cholinesterase breaks down acetylcholine; COX-2 produces prostaglandins (pain); AChE breakdown slows cognition. Many herbs work by inhibiting enzymes.'},
+  'synergistic': {l:'Synergistic',d:'When two compounds work better together than separately. Piperine enhances curcumin absorption 2,000x. Herbal synergy is often why whole-plant extracts work better than isolated compounds.'},
+  'constituent': {l:'Constituent',d:'A component or ingredient in an herb. Milk thistle has 200+ constituents, but silymarin is the key therapeutic one. Not all constituents are active — bulk includes fibre and minerals.'},
+  'tincture': {l:'Tincture',d:'An alcohol (usually 1:5 ratio) or glycerin extract of an herb. Preserves volatile oils and alkaloids better than water. Faster-acting than dried herb infusions; more concentrated.'},
+  'decoction': {l:'Decoction',d:'A water extraction made by simmering roots, bark or seeds for 15-30 minutes. Extracts harder plant material and minerals. Use for woody herbs (hawthorn, liquorice root). Not for delicate leaves.'},
+  'infusion': {l:'Infusion',d:'A water extraction made by steeping dried leaves in hot water for 5-10 minutes — like tea. Gentler than decoction. Best for leaves and flowers. Does not preserve volatile oils well.'},
+  'capsule': {l:'Capsule',d:'Ground or powdered herb sealed inside a gelatin or plant-based shell. Masks taste entirely — which matters for bitters, since their digestive effect is partly triggered by the taste itself. Convenient and precisely dosed, but slower-acting than a tincture.'},
+  'bioavailability': {l:'Bioavailability (improved)',d:'How much of an ingested compound actually reaches your bloodstream. Fat-soluble vitamins need dietary fat; piperine (black pepper) increases curcumin absorption 2,000-fold. Preparation method matters enormously.'},
+  'rct': {l:'RCT (Randomized Controlled Trial)',d:'A double-blind study comparing an herb to placebo on randomly assigned groups. The gold standard for evidence. Many herbs have RCT data — ashwagandha, passionflower and olive leaf are well-studied.'},
+  'in vitro': {l:'In Vitro',d:'Latin "in glass" — research done in test tubes or petri dishes, not in living organisms. Shows mechanism but does not prove it works in real bodies. Many herbs kill cancer cells in vitro but not in humans.'},
+  'in vivo': {l:'In Vivo',d:'Latin "in living" — research done in living animals or humans. Shows whether something actually works in a real body, not just theoretically. More trustworthy than in vitro, but harder to do.'},
+  'inhibitor': {l:'Inhibitor',d:'A compound that blocks or slows an enzyme or process. COX-2 inhibitors reduce inflammation; AChE inhibitors improve memory by slowing neurotransmitter breakdown.'},
+  'acute': {l:'Acute (vs Chronic)',d:'Short-term, intense condition. Acute diarrhoea vs chronic IBS. Some herbs work acutely (ginger for nausea); others require weeks of use to restore (nettle for nutrition).'},
+  'potentiation': {l:'Potentiation',d:'When one compound enhances the effect of another beyond what either does alone. Piperine potentiates curcumin absorption. Synergy and potentiation make herbal combinations powerful.'},
+  'metabolism': {l:'Metabolism',d:'Chemical processes that break down, store and use food for energy and tissue repair. Herbs affect metabolism through AMPK activation (fat burning), mitochondrial function (energy), or CYP enzyme modulation (detox).'},
+  'half-life': {l:'Half-life',d:'Time for half a dose of a compound to leave your body. Caffeine: 5 hours; curcumin: 6 hours; berberine: 4-6 hours. Matters for dosing frequency and whether it builds up or washes out.'},
+  'synergy': {l:'Synergy',d:'Herbal synergy means combinations work better than single herbs. This is why traditional formulas with 5+ herbs often outperform isolated single compounds. Whole-plant medicine is more than the sum of its parts.'},
 
-.az{position:sticky;top:64px;background:var(--bg);padding:.7rem 0;display:flex;flex-wrap:wrap;gap:.25rem;border-bottom:1px solid var(--card-border);z-index:40;margin-bottom:1rem;}
-.az a{font-size:12.5px;font-weight:500;color:var(--muted);text-decoration:none;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;border-radius:6px;transition:all .15s;}
-.az a:hover{background:var(--card);color:var(--gold-light);}
-.az a.empty{opacity:.25;pointer-events:none;}
+  // Additional compound-related terms
+  'curcumin': {l:'Curcumin',d:'The primary bioactive compound in turmeric root. A polyphenol with potent anti-inflammatory and antioxidant action. Inhibits NF-κB and COX-2 pathways; alone is poorly bioavailable but piperine increases absorption 2,000-fold.'},
+  'quercetin': {l:'Quercetin',d:'A bioflavonoid found in apples, red onions, berries and capers. Stabilizes mast cells (reducing allergic reactions), inhibits histamine release, and activates Nrf2 for antioxidant protection. One of the most studied plant flavonoids.'},
+  'apigenin': {l:'Apigenin',d:'A flavonoid in chamomile, celery and parsley. Binds GABA-A receptors (promoting calm without sedation) and has neuroprotective effects. Studied for anxiety and cognitive support.'},
+  'luteolin': {l:'Luteolin',d:'A flavonoid in oregano, thyme and celery. Inhibits pro-inflammatory cytokines and stabilises mast cells. Crosses the blood-brain barrier and protects against neuroinflammation.'},
+  'berberine': {l:'Berberine',d:'An alkaloid in goldenseal, barberry and Oregon grape root. Activates AMPK (metabolic switch), inhibits bacterial lipopolysaccharides, modulates glucose metabolism and supports cardiovascular health. Potency comparable to some pharmaceuticals.'},
+  'capsaicin': {l:'Capsaicin',d:'The pungent alkaloid in chili peppers. Activates TRPV1 receptors (sensing heat and pain), depletes substance P neuropeptide, and reduces pain signals. Also increases thermogenesis and fat burning.'},
+  'piperine': {l:'Piperine',d:'The alkaloid that makes black pepper pungent. Inhibits CYP3A4 enzymes, dramatically increasing bioavailability of fat-soluble compounds — increases turmeric absorption by 2,000%. Also a thermogenic and anti-inflammatory agent.'},
+  'cinnamaldehyde': {l:'Cinnamaldehyde',d:'The compound giving cinnamon its smell and taste. Modulates TRPV3 ion channels, supports blood glucose regulation and has antimicrobial action. Compounds the warming/circulatory effects of cinnamon.'},
+  'carvacrol': {l:'Carvacrol',d:'Monoterphenol found in oregano and thyme essential oils. Powerful antimicrobial and antispasmodic — disrupts bacterial cell membranes and relaxes smooth muscle. Must be used cautiously due to potency.'},
+  'thymol': {l:'Thymol',d:'Phenolic compound in thyme and oregano essential oils. Antimicrobial, antifungal and expectorant. Works synergistically with carvacrol; together they make thyme essential oil potent for respiratory support.'},
+  'eugenol': {l:'Eugenol',d:'Phenolic compound in clove essential oil and nutmeg. Potent analgesic (numbing pain), antimicrobial, antispasmodic and anti-inflammatory. Used traditionally for dental pain; also supports cardiovascular function.'},
+  'menthol': {l:'Menthol',d:'Monoterpene alcohol in peppermint oil. Activates TRPM8 (cold receptors) creating cooling sensation; relaxes smooth muscle; supports respiratory function and digestion. Also analgesic and antimicrobial.'},
+  'linalool': {l:'Linalool',d:'Monoterpene alcohol in lavender, lemon and basil. Anxiolytic and sedative — modulates GABA and acetylcholine; also anti-inflammatory and antimicrobial. Responsible for lavender\'s calming scent.'},
+  'geraniol': {l:'Geraniol',d:'Monoterpene in rose, lavender and geranium. Has antimicrobial, antitumor and neuroprotective properties. Precursor to rose oxide and other beneficial volatile compounds.'},
+  'limonene': {l:'Limonene',d:'Monoterpene in lemon and citrus oils. Activates Nrf2 for antioxidant protection; supports liver detoxification; enhances absorption of other compounds. Also modulates immune function and has mood-elevating effects.'},
+  'pinene': {l:'Pinene',d:'Monoterpene in pine, rosemary and cannabis oils. Anti-inflammatory, bronchodilator and memory-enhancing — inhibits acetylcholinesterase enzyme. Two forms: α-pinene and β-pinene have different ratios in different plants.'},
+  'farnesol': {l:'Farnesol',d:'Sesquiterpene alcohol found in frankincense and rose. Antimicrobial, anti-inflammatory and neuroprotective. Activates farnesoid X receptor affecting bile acid metabolism and immune homeostasis.'},
+  'cedrol': {l:'Cedrol',d:'Sesquiterpene in cedarwood essential oil. Antimicrobial, calming and grounding. Traditional use in meditation; modern research shows it modulates immune response and nervous system.'},
+  'ursolic acid': {l:'Ursolic Acid',d:'Triterpenoid found in apple peels, rosemary and basil. Activates AMPK (metabolic switch), inhibits NF-κB, promotes myogenesis and supports muscle maintenance. Anti-inflammatory and antitumor properties.'},
+  'oleanolic acid': {l:'Oleanolic Acid',d:'Triterpenoid in olive leaves and garlic. Hepatoprotective, anti-inflammatory and immunomodulating. Inhibits viral protease and enhances interferon production, making it antivirally relevant.'},
+  'carnosic acid': {l:'Carnosic Acid',d:'Diterpene in rosemary. Activates Nrf2 pathway for powerful antioxidant and neuroprotective effects. Also antimicrobial and anti-inflammatory. Converts to carnosol when heated.'},
+  'carnosol': {l:'Carnosol',d:'Oxidized form of carnosic acid, created when rosemary is heated. Potent antioxidant, neuroprotective and anti-inflammatory. More stable than carnosic acid; bioavailable form of rosemary\'s benefits.'},
+  'gingerol': {l:'Gingerol',d:'Pungent compound in fresh ginger root. Inhibits COX-2 and 5-LOX inflammation pathways; activates TRPV1 receptors (thermogenic); supports digestion and reduces nausea. Converts to shogaol when dried/heated.'},
+  'shogaol': {l:'Shogaol',d:'Dehydrated form of gingerol, created when ginger is dried or cooked. More potent than gingerol; thermogenic and immunomodulating. Responsible for the extra "heat" and warming effect of dried ginger.'},
+  'piperamide': {l:'Piperamide',d:'Alkaloid related to piperine, found in black pepper. Enhances nutrient bioavailability and supports thermogenesis. Works synergistically with piperine for metabolic support.'},
+  'sesamin': {l:'Sesamin',d:'Lignan in sesame seeds. Activates PPARα (regulates lipid metabolism), inhibits hepatic fatty acid synthesis and supports liver health. Also neuroprotective and anti-inflammatory.'},
+  'sesamol': {l:'Sesamol',d:'Polyphenol in sesame oil and seeds. Potent antioxidant and hepatoprotective. Inhibits lipid peroxidation and supports antioxidant enzyme production via Nrf2 activation.'},
+  'punicalagin': {l:'Punicalagin',d:'Ellagitannin in pomegranate fruit and rind. Breaks down to urolithin A by gut bacteria — activates mitophagy (cellular cleanup). Antioxidant and cardioprotective; studied for longevity.'},
+  'urolithin a': {l:'Urolithin A',d:'Metabolite of ellagic acid (from pomegranate, raspberry). Activates mitophagy — removes damaged mitochondria and improves cellular energy. One of the most researched anti-aging compounds; enhances strength and endurance.'},
+  'resveratrol': {l:'Resveratrol',d:'Polyphenol in red grapes and berries. Activates sirtuins (aging-regulatory proteins) and AMPK; cardioprotective and neuroprotective. Modulates inflammation genes and supports longevity pathways.'},
+  'anthocyanin': {l:'Anthocyanin',d:'Water-soluble pigment in red, purple and blue plants. Powerful antioxidant and anti-inflammatory; crosses blood-brain barrier. Supports vision, cognition and cardiovascular health; found in blueberry, hawthorn and hibiscus.'},
+  'proanthocyanidin': {l:'Proanthocyanidin',d:'Oligomeric flavonoid in grape seed, pine bark and hawthorn. Powerful vascular strengthener — stabilizes collagen and elastin in blood vessel walls. Supports blood flow and vessel integrity better than single anthocyanins.'},
+  'chlorogenic acid': {l:'Chlorogenic acid',d:'Polyphenol in green coffee beans and dandelion. Inhibits glucose-6-phosphatase (slows glucose absorption), activates AMPK and has hepatoprotective effects. Also a powerful antioxidant and neuroprotective.'},
+  'caffeic acid': {l:'Caffeic Acid',d:'Phenolic acid in many herbs and coffee. Anti-inflammatory via NF-κB inhibition; antimicrobial and neuroprotective. Often found alongside chlorogenic acid in plants.'},
+  'quinic acid': {l:'Quinic Acid',d:'Organic acid in dandelion, chicory and celery. Supports liver detoxification, promotes beneficial gut bacteria and has hepatoprotective properties. A precursor to chlorogenic acid in some plants.'},
+  'catechin': {l:'Catechin',d:'Flavanol in green tea, white tea and cacao. Powerful antioxidant and hepatoprotective. EGCG (a catechin) is the most studied green tea compound for metabolism and cancer prevention.'},
+  'egcg': {l:'EGCG (Epigallocatechin Gallate)',d:'Most abundant and studied catechin in green tea. Activates AMPK and Nrf2 pathways; thermogenic; supports metabolism and cardiovascular health. Bioavailability improved by vitamin C and lemon.'},
+  'theaflavin': {l:'Theaflavin',d:'Oxidized catechin found in black tea (not in green tea). Cardioprotective, anti-inflammatory and supports cholesterol metabolism. Creates black tea\'s dark color and unique benefits.'},
+  'thearubigin': {l:'Thearubigin',d:'Polymer of oxidized catechins in black and oolong tea. Powerful antioxidant and anti-inflammatory; supports cardiovascular and gut health. Responsible for tea\'s astringency and color.'},
+  'ecdysteroid': {l:'Ecdysteroid',d:'Plant-derived compound mimicking insect molting hormones. Found in some herbs (spinach, nettle); supports muscle protein synthesis and anabolic processes without hormonal side effects studied in athletes.'},
+  'steroidal compound': {l:'Steroidal Compound',d:'Plant-derived molecule structurally similar to steroid hormones. Withanolides in ashwagandha and furostanol saponins in fenugreek are examples; modulate hormone receptors without being actual hormones.'},
+  'ginsenoside': {l:'Ginsenoside',d:'Dammarane triterpenoid saponin unique to ginseng (Panax species). Over 40 known types with different ratios in red vs white ginseng. Adaptogens that modulate cortisol; immunomodulating and neuroprotective.'},
+  'eleutherococcus': {l:'Eleutheroside',d:'Adaptogenic lignan and polysaccharide in eleuthero root (Siberian ginseng). Distinct from ginsenosides; enhances stamina and stress resistance. Polysaccharides activate immune function.'},
+  'valepotriate': {l:'Valepotriate',d:'Iridoid ester in valerian root. Rapidly broken down to isovalerates by digestive enzymes; acts on GABA and adenosine receptors for sedative effect. More potent than the parent compounds.'},
+  'acteoside': {l:'Acteoside',d:'Phenylethanoid glycoside in plantain leaf and lemon balm. Neuroprotective, anti-inflammatory and antioxidant. Crosses blood-brain barrier and protects dopamine neurons.'},
+  'verbascoside': {l:'Verbascoside',d:'Phenylethanoid glycoside in mullein, verbena and lemon balm. Anti-inflammatory, antimicrobial and immunomodulating. Inhibits NF-κB activation and pro-inflammatory cytokine production.'},
+  'luteoline': {l:'Luteoline',d:'Bioflavone variant with similar properties to luteolin. Found in several herbs; crosses blood-brain barrier; supports cognitive function and neuroinflammation management.'}
+  };
 
-.letter{margin-bottom:.6rem;scroll-margin-top:120px;}
-.letter-head{display:flex;align-items:center;gap:.8rem;width:100%;background:none;border:none;cursor:pointer;padding:.7rem .2rem;border-bottom:1px solid var(--card-border);text-align:left;}
-.letter-glyph{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;color:var(--gold-light);line-height:1;width:34px;}
-.letter-meta{flex:1;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
-.letter-chev{color:var(--muted);transition:transform .25s;}
-.letter.collapsed .letter-chev{transform:rotate(-90deg);}
-.letter-body{padding-top:.5rem;}
-.letter.collapsed .letter-body{display:none;}
+  // Plural aliases — the word-boundary tagger matches whole words, so the
+  // plural forms need their own keys, but they point at the singular's
+  // single canonical definition rather than duplicating the text.
+  ['flavonoid','alkaloid','tannin','saponin'].forEach(base=>{ DEFS[base+'s'] = DEFS[base]; });
 
-.term{padding:1rem .2rem;border-bottom:1px solid rgba(255,255,255,.05);}
-.term-top{display:flex;align-items:baseline;gap:.7rem;flex-wrap:wrap;}
-.term-name{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:500;color:var(--text);}
-.term-cat{font-size:10px;letter-spacing:.07em;text-transform:uppercase;padding:.2rem .55rem;border-radius:999px;background:var(--tag-bg);border:1px solid var(--tag-border);color:var(--tag-text);}
-.term-def{font-size:14.5px;line-height:1.7;color:rgba(245,240,232,.82);margin-top:.4rem;}
-.no-results{text-align:center;padding:3rem;color:var(--muted);font-style:italic;display:none;}
+  // Create tooltip element
+  const tip = document.createElement('div');
+  tip.className = 'chi-tooltip';
+  tip.innerHTML = '<div class="chi-tooltip-term"></div><div class="chi-tooltip-def"></div><div class="chi-tooltip-herbs" style="display:none"><div class="chi-tooltip-herbs-label">Herb sources</div><div class="chi-tooltip-herb-pills"></div></div><div class="chi-tooltip-footer">📚 CHI Glossary</div>';
+  document.body.appendChild(tip);
 
-/* ════════════════════════════════════════════════════════════════ */
-/* MOBILE RESPONSIVE DESIGN — Hamburger Menu + Sidebar Navigation    */
-/* ════════════════════════════════════════════════════════════════ */
+  let hideTimer;
 
-/* Mobile menu overlay — full screen, dims when menu is open */
-.mobile-menu-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 99;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.mobile-menu-overlay.open {
-  display: block;
-  opacity: 1;
-}
+  function showTip(el, e, centered){
+    const term = el.dataset.term || el.textContent.trim();
+    const def = DEFS[term.toLowerCase()];
+    const herbs = el.dataset.herbs ? el.dataset.herbs.split('|').filter(Boolean) : [];
 
-/* Hamburger button — only visible on mobile */
-.nav-hamburger {
-  display: none;
-  flex-direction: column;
-  gap: 5px;
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 6px;
-  z-index: 101;
-}
-.nav-hamburger span {
-  display: block;
-  width: 24px;
-  height: 2.5px;
-  background: var(--gold-light, #e8b84b);
-  border-radius: 2px;
-  transition: all 0.3s ease;
-}
-.nav-hamburger.open span:nth-child(1) {
-  transform: rotate(45deg) translate(10px, 10px);
-}
-.nav-hamburger.open span:nth-child(2) {
-  opacity: 0;
-}
-.nav-hamburger.open span:nth-child(3) {
-  transform: rotate(-45deg) translate(9px, -9px);
-}
+    // Need either a definition or herb list to show anything
+    if(!def && !herbs.length) return;
 
-/* Mobile sidebar menu */
-.mobile-menu {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 280px;
-  background: var(--forest, #1a3a2a);
-  z-index: 100;
-  overflow-y: auto;
-  transform: translateX(-100%);
-  transition: transform 0.3s ease;
-  border-right: 1px solid rgba(200, 149, 42, 0.2);
-  padding-top: 70px;
-}
-.mobile-menu.open {
-  transform: translateX(0);
-}
+    tip.querySelector('.chi-tooltip-term').textContent = def ? def.l : term;
+    tip.querySelector('.chi-tooltip-def').textContent = def ? def.d : '';
 
-.mobile-menu-section {
-  padding: 1rem 0;
-  border-bottom: 1px solid rgba(200, 149, 42, 0.1);
-}
-.mobile-menu-section:last-child {
-  border-bottom: none;
-}
+    // Herb pills
+    const herbSection = tip.querySelector('.chi-tooltip-herbs');
+    const pillsWrap = tip.querySelector('.chi-tooltip-herb-pills');
+    if(herbs.length){
+      const stack = JSON.parse(localStorage.getItem('chi_phyto_stack')||'[]').map(h=>h.toLowerCase());
+      pillsWrap.innerHTML = herbs.sort().map(h=>{
+        const inStack = stack.some(s=>s.includes(h.toLowerCase())||h.toLowerCase().includes(s));
+        return `<span class="chi-tooltip-herb-pill${inStack?' in-stack':''}">${h}${inStack?' ✓':''}</span>`;
+      }).join('');
+      herbSection.style.display='block';
+    } else {
+      herbSection.style.display='none';
+    }
 
-.mobile-menu-title {
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted, rgba(245, 240, 232, 0.5));
-  padding: 0.5rem 1.1rem;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-}
-
-.mobile-menu a {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  padding: 0.75rem 1.1rem;
-  font-size: 13px;
-  color: rgba(245, 240, 232, 0.7);
-  text-decoration: none;
-  transition: all 0.15s;
-  white-space: nowrap;
-}
-.mobile-menu a:hover {
-  background: rgba(200, 149, 42, 0.08);
-  color: var(--gold-light, #e8b84b);
-}
-.mobile-menu a.active {
-  color: var(--gold-light, #e8b84b);
-}
-
-.mobile-menu-icon {
-  font-size: 14px;
-  width: 18px;
-  text-align: center;
-  flex-shrink: 0;
-}
-
-/* Show hamburger and mobile menu only on tablets and smaller */
-@media (max-width: 768px) {
-  .nav-hamburger {
-    display: flex;
+    clearTimeout(hideTimer);
+    if(centered){ positionTipCenter(); } else { positionTip(e); }
+    tip.classList.add('show');
   }
-  .nav-right > a:not(.nav-cta):not(.nav-inbox) {
-    display: none !important;
+
+  function positionTip(e){
+    // Reset anything the centered (touch) path may have set, so switching
+    // back to a mouse-driven position isn't fighting leftover inline styles.
+    tip.style.transform = '';
+    tip.style.maxWidth = '';
+
+    const pad = 12;
+    const rect = tip.getBoundingClientRect();
+    const tw = rect.width || 320;
+    const th = rect.height || 180;
+
+    let x = e.clientX + pad;
+    let y = e.clientY + pad;
+
+    // Keep tooltip within screen bounds with padding
+    const minPad = 12;
+    const maxLeft = window.innerWidth - tw - minPad;
+    const maxTop = window.innerHeight - th - minPad;
+
+    // Horizontal positioning - prefer right, fallback to left
+    if(x + tw > window.innerWidth) {
+      x = e.clientX - tw - pad;
+    }
+    if(x < minPad) {
+      x = minPad;
+    }
+
+    // Vertical positioning - prefer below, fallback to above
+    if(y + th > window.innerHeight) {
+      y = e.clientY - th - pad;
+    }
+    if(y < minPad) {
+      y = minPad;
+    }
+
+    tip.style.left = Math.max(minPad, Math.min(x, maxLeft)) + 'px';
+    tip.style.top = Math.max(minPad, Math.min(y, maxTop)) + 'px';
   }
-  .nav-dd {
-    display: none !important;
+
+  // Touch/mobile path: center the tooltip in the viewport instead of
+  // anchoring it to a touch point. Touch devices have no cursor position to
+  // anchor to, and anchoring near an edge is exactly what was cropping the
+  // definition off-screen before — centering guarantees it's fully visible.
+  function positionTipCenter(){
+    tip.style.maxWidth = Math.min(340, window.innerWidth - 32) + 'px';
+    tip.style.left = '50%';
+    tip.style.top = '50%';
+    tip.style.transform = 'translate(-50%, -50%)';
   }
-  .mobile-menu {
-    display: block;
-  }
-}
 
-/* Further optimize for phones */
-@media (max-width: 600px) {
-  nav {
-    padding: 0 1.5rem;
-    height: 56px;
-  }
-  .mobile-menu {
-    width: 260px;
-    padding-top: 56px;
-  }
-}
-
-@media (max-width: 480px) {
-  nav {
-    padding: 0 1rem;
-  }
-  .mobile-menu {
-    width: 240px;
-  }
-}
-
-/* ════════════════════════════════════════════════════════════════ */
-/* HAMBURGER-ONLY NAVIGATION — All Devices                          */
-/* ════════════════════════════════════════════════════════════════ */
-
-/* Hide desktop dropdowns — hamburger is primary nav everywhere */
-.nav-right > a:not(.nav-cta):not(.nav-inbox) { display: none !important; }
-.nav-dd { display: none !important; }
-
-/* Hamburger button — visible on all devices */
-.nav-hamburger {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 6px;
-  z-index: 101;
-  margin-right: 1rem;
-}
-.nav-hamburger span {
-  display: block;
-  width: 24px;
-  height: 2.5px;
-  background: var(--gold-light, #e8b84b);
-  border-radius: 2px;
-  transition: all 0.3s ease;
-}
-.nav-hamburger.open span:nth-child(1) {
-  transform: rotate(45deg) translate(10px, 10px);
-}
-.nav-hamburger.open span:nth-child(2) {
-  opacity: 0;
-}
-.nav-hamburger.open span:nth-child(3) {
-  transform: rotate(-45deg) translate(9px, -9px);
-}
-
-/* Mobile menu overlay */
-.mobile-menu-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 99;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.mobile-menu-overlay.open {
-  display: block;
-  opacity: 1;
-}
-
-/* Mobile sidebar menu */
-.mobile-menu {
-  display: block;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 280px;
-  background: var(--forest, #1a3a2a);
-  z-index: 100;
-  overflow-y: auto;
-  transform: translateX(-100%);
-  transition: transform 0.3s ease;
-  border-right: 1px solid rgba(200, 149, 42, 0.2);
-  padding-top: 70px;
-}
-.mobile-menu.open {
-  transform: translateX(0);
-}
-
-.mobile-menu-section {
-  padding: 1rem 0;
-  border-bottom: 1px solid rgba(200, 149, 42, 0.1);
-}
-.mobile-menu-section:last-child {
-  border-bottom: none;
-}
-
-.mobile-menu-title {
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted, rgba(245, 240, 232, 0.5));
-  padding: 0.5rem 1.1rem;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-}
-
-.mobile-menu a {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  padding: 0.75rem 1.1rem;
-  font-size: 13px;
-  color: rgba(245, 240, 232, 0.7);
-  text-decoration: none;
-  transition: all 0.15s;
-  white-space: nowrap;
-}
-.mobile-menu a:hover {
-  background: rgba(200, 149, 42, 0.08);
-  color: var(--gold-light, #e8b84b);
-}
-.mobile-menu a.active {
-  color: var(--gold-light, #e8b84b);
-}
-
-.mobile-menu-icon {
-  font-size: 14px;
-  width: 18px;
-  text-align: center;
-  flex-shrink: 0;
-}
-
-/* Responsive adjustments for smaller screens */
-@media (max-width: 600px) {
-  nav {
-    padding: 0 1.5rem;
-    height: 56px;
-  }
-  .mobile-menu {
-    width: 260px;
-    padding-top: 56px;
-  }
-}
-
-@media (max-width: 480px) {
-  nav {
-    padding: 0 1rem;
-  }
-  .mobile-menu {
-    width: 240px;
-  }
-}
-</style>
-</head>
-<body>
-<nav>
-  
-<!-- Hamburger menu button -->
-<button class="nav-hamburger" id="hamburger-toggle" onclick="toggleMobileMenu()">
-  <span></span>
-  <span></span>
-  <span></span>
-</button>
-
-<!-- Mobile menu overlay -->
-<div class="mobile-menu-overlay" id="mobile-overlay" onclick="closeMobileMenu()"></div>
-
-<!-- Mobile sidebar menu -->
-<div class="mobile-menu" id="mobile-menu">
-  <div class="mobile-menu-section">
-    <div class="mobile-menu-title">Tools</div>
-    <a href="herb-match.html"><span class="mobile-menu-icon">🌿</span>Herb Match</a>
-    <a href="supreme.html"><span class="mobile-menu-icon">📖</span>Herbadex</a>
-    <a href="herb-identifier.html"><span class="mobile-menu-icon">🔍</span>Herb Identifier</a>
-    <a href="herb-planner.html"><span class="mobile-menu-icon">🗓️</span>Herb Planner</a>
-    <a href="resources.html"><span class="mobile-menu-icon">📚</span>Resources</a>
-  </div>
-  <div class="mobile-menu-section">
-    <div class="mobile-menu-title">Community</div>
-    <a href="community.html"><span class="mobile-menu-icon">💬</span>Community Feed</a>
-    <a href="garden.html"><span class="mobile-menu-icon">🌱</span>Herbal Garden</a>
-    <a href="glossary.html"><span class="mobile-menu-icon">📚</span>Glossary</a>
-  </div>
-  <div class="mobile-menu-section">
-    <div class="mobile-menu-title">Account</div>
-    <a href="profile.html"><span class="mobile-menu-icon">🌿</span>My Profile</a>
-    <a href="inbox.html"><span class="mobile-menu-icon">✉️</span>Inbox</a>
-    <a href="join.html"><span class="mobile-menu-icon">➕</span>Join CHI</a>
-  </div>
-  <div class="mobile-menu-section">
-    <div class="mobile-menu-title">Legal</div>
-    <a href="privacy-policy.html"><span class="mobile-menu-icon">🔒</span>Privacy</a>
-    <a href="terms.html"><span class="mobile-menu-icon">📄</span>Terms</a>
-    <a href="disclaimer.html"><span class="mobile-menu-icon">⚠️</span>Disclaimer</a>
-    <a href="index.html" onclick="localStorage.clear()"><span class="mobile-menu-icon">↩</span>Sign Out</a>
-  </div>
-</div>
-
-  
-  
-<!-- Mobile hamburger button -->
-<button class="nav-hamburger" id="hamburger-toggle" onclick="toggleMobileMenu()">
-  <span></span>
-  <span></span>
-  <span></span>
-</button>
-
-<!-- Mobile menu overlay -->
-<div class="mobile-menu-overlay" id="mobile-overlay" onclick="closeMobileMenu()"></div>
-
-<!-- Mobile sidebar menu -->
-<div class="mobile-menu" id="mobile-menu">
-  <div class="mobile-menu-section">
-    <div class="mobile-menu-title">Tools</div>
-    <a href="herb-match.html"><span class="mobile-menu-icon">🌿</span>Herb Match</a>
-    <a href="supreme.html"><span class="mobile-menu-icon">📖</span>Herbadex</a>
-    <a href="herb-identifier.html"><span class="mobile-menu-icon">🔍</span>Herb Identifier</a>
-    <a href="herb-planner.html"><span class="mobile-menu-icon">🗓️</span>Herb Planner</a>
-    <a href="resources.html"><span class="mobile-menu-icon">📚</span>Resources</a>
-  </div>
-  <div class="mobile-menu-section">
-    <div class="mobile-menu-title">Community</div>
-    <a href="community.html"><span class="mobile-menu-icon">💬</span>Community Feed</a>
-    <a href="garden.html"><span class="mobile-menu-icon">🌱</span>Herbal Garden</a>
-    <a href="glossary.html"><span class="mobile-menu-icon">📚</span>Glossary</a>
-  </div>
-  <div class="mobile-menu-section">
-    <div class="mobile-menu-title">Account</div>
-    <a href="profile.html"><span class="mobile-menu-icon">🌿</span>My Profile</a>
-    <a href="inbox.html"><span class="mobile-menu-icon">✉️</span>Inbox</a>
-    <a href="join.html"><span class="mobile-menu-icon">➕</span>Join CHI</a>
-  </div>
-  <div class="mobile-menu-section">
-    <div class="mobile-menu-title">Legal</div>
-    <a href="privacy-policy.html"><span class="mobile-menu-icon">🔒</span>Privacy</a>
-    <a href="terms.html"><span class="mobile-menu-icon">📄</span>Terms</a>
-    <a href="disclaimer.html"><span class="mobile-menu-icon">⚠️</span>Disclaimer</a>
-    <a href="index.html" onclick="localStorage.clear()"><span class="mobile-menu-icon">↩</span>Sign Out</a>
-  </div>
-</div>
-
-  
-  <a href="index.html" class="nav-logo"><span class="nav-chi">C.H.I</span><span class="nav-full">Collective Herbal Intelligence</span></a>
-  <div class="nav-right">
-    <a href="symptom-finder.html">Symptom Finder</a>
-    <a href="supreme.html">Herbadex</a>
-    <a href="community.html">Community</a>
-    <a href="profile.html">Profile</a>
-    <a href="glossary.html" class="active">Glossary</a>
-    <a href="join.html" class="nav-join">Join CHI</a>
-  </div>
-</nav>
-
-<div class="wrap">
-  <div class="page-h">Glossary</div>
-  <div class="page-sub">Every technical, scientific and traditional term used across CHI — explained in plain English. If a word in a herb profile ever goes over your head, it lives here.</div>
-
-  <div class="search-box">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.6"/><path d="M11 11l3 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-    <input id="search" type="text" placeholder="Search a term or definition…" oninput="filterTerms()">
-  </div>
-  <div class="count-line" id="count-line"></div>
-
-  <div class="az" id="az"></div>
-  <div id="glossary"></div>
-  <div class="no-results" id="no-results">No terms match that search.</div>
-</div>
-
-<script>
-const TERMS = [
-  {t:'5-HT1A', c:'Pharmacology', d:'A serotonin receptor subtype in the brain. Partial agonism at this receptor produces anti-anxiety effects without full sedation — the mechanism of several anxiolytic herbs.'},
-  {t:'5-LOX (5-lipoxygenase)', c:'Pharmacology', d:'An enzyme that produces leukotrienes — inflammatory chemicals involved in allergies and asthma. Herbs that inhibit 5-LOX reduce this inflammatory pathway alongside or instead of COX inhibition.'},
-  {t:'ACE inhibitor', c:'Pharmacology', d:'Angiotensin-converting enzyme inhibitor. Blocks a step in the chain that raises blood pressure. Oleuropein in olive leaf works partly through this pathway — the same mechanism as some blood pressure medications.'},
-  {t:'AChE (acetylcholinesterase)', c:'Pharmacology', d:'The enzyme that breaks down acetylcholine in the brain. Inhibiting it increases acetylcholine — improving memory and focus. Rosmarinic acid in lemon balm works this way, the same mechanism as drugs used in early Alzheimer\'s treatment.'},
-  {t:'Aglycone', c:'Chemistry', d:'The active part of a glycoside after the sugar has been removed during digestion. The aglycone is usually the compound that produces the medicinal effect — for example, elenolic acid released from oleuropein.'},
-  {t:'AMPK', c:'Pharmacology', d:'Adenosine monophosphate-activated protein kinase — a master metabolic switch in every cell. When activated it increases glucose uptake, burns fat and reduces inflammation. Berberine and chlorogenic acid activate AMPK through the same pathway as metformin.'},
-  {t:'Anthocyanins', c:'Chemistry', d:'A subgroup of flavonoids responsible for red, purple and blue pigments in plants — hibiscus, elderberry, bilberry. Potent antioxidants with anti-inflammatory and cardiovascular effects.'},
-  {t:'Antispasmodic', c:'Pharmacology', d:'A herb or compound that relaxes muscle spasm — either in the digestive tract or in skeletal muscle. Works mainly by blocking calcium channels in smooth muscle.'},
-  {t:'Anxiolytic', c:'Pharmacology', d:'Something that reduces anxiety without necessarily causing sedation. Many herbs (ashwagandha, passionflower, lemon balm) have anxiolytic action at lower doses before becoming sedative at higher doses.'},
-  {t:'Apoptosis', c:'Pharmacology', d:'Programmed cell death — the body\'s controlled process for removing damaged or unnecessary cells. Several plant compounds are studied because they trigger apoptosis in cancer cells while leaving healthy cells unaffected.'},
-  {t:'Aquaretic', c:'Pharmacology', d:'A type of diuretic that increases water excretion without causing significant loss of electrolytes like potassium or sodium. Most herbal diuretics (dandelion, nettle) are aquaretics — safer for long-term use than pharmaceutical loop diuretics.'},
-  {t:'Arabinogalactans', c:'Chemistry', d:'A type of polysaccharide found in marshmallow, echinacea and other herbs. Forms a protective gel on mucous membranes and activates immune cells in the gut.'},
-  {t:'BBB (blood-brain barrier)', c:'Pharmacology', d:'A protective barrier of specialised cells that controls what can pass from the bloodstream into the brain. Some plant compounds (hericenones, erinacines, rosmarinic acid) can cross it — a requirement for any herb to have direct effects on the brain.'},
-  {t:'BDNF', c:'Pharmacology', d:'Brain-derived neurotrophic factor — a protein that supports the growth and maintenance of brain cells, learning and memory. Lion\'s mane erinacines stimulate BDNF production.'},
-  {t:'Beta-glucans', c:'Chemistry', d:'A type of polysaccharide found in medicinal mushrooms (lion\'s mane, reishi) and oats. They bind to Dectin-1 receptors on immune cells, activating the body\'s innate immune response.'},
-  {t:'Carminative', c:'Pharmacology', d:'A herb that relieves intestinal gas and smooth muscle spasm, typically through volatile oils that relax the gut wall. Fennel, peppermint and clove are carminatives.'},
-  {t:'Carotenoids', c:'Chemistry', d:'Fat-soluble plant pigments — the reds, oranges and yellows of plants. Beta-carotene converts to vitamin A; lutein and zeaxanthin accumulate in the eye. Found in moringa, calendula, dandelion and nettle.'},
-  {t:'CB2 receptor', c:'Pharmacology', d:'A cannabinoid receptor found mainly in immune tissues and the nervous system. Unlike CB1 (which produces the psychoactive effects of cannabis), CB2 activation reduces inflammation without psychoactivity. Beta-caryophyllene in clove and black pepper is the only dietary compound known to directly activate it.'},
-  {t:'Cholagogue', c:'Pharmacology', d:'A herb that stimulates the gallbladder to release stored bile — aiding fat digestion and liver detoxification. Dandelion root is a well-known cholagogue.'},
-  {t:'Choleretic', c:'Pharmacology', d:'A herb that stimulates the liver to produce more bile. Distinct from a cholagogue (which releases stored bile). Dandelion root and milk thistle do both.'},
-  {t:'Cholecystokinin (CCK)', c:'Pharmacology', d:'A hormone released in the gut in response to bitter-tasting compounds. Triggers bile release from the gallbladder and digestive enzyme release from the pancreas — the mechanism behind bitter digestive herbs.'},
-  {t:'COX (COX-1, COX-2)', c:'Pharmacology', d:'Cyclooxygenase enzymes that produce prostaglandins — chemical messengers of inflammation and pain. Ibuprofen and aspirin block COX. Many anti-inflammatory herbs (quercetin, oleuropein, thymoquinone) also inhibit COX, but herbs that hit COX-2 specifically cause less gut damage than those targeting COX-1.'},
-  {t:'CYP3A4', c:'Pharmacology', d:'A liver enzyme responsible for breaking down roughly half of all medications. Herbs like St John\'s Wort strongly induce it (making drugs less effective); piperine from black pepper inhibits it (making drugs and other herbs more potent). Critical for drug-herb interactions.'},
-  {t:'Cytokine', c:'Pharmacology', d:'A signalling protein released by immune cells. Inflammatory cytokines (TNF-α, IL-1β, IL-6) drive inflammation and tissue damage when overproduced. Many herbs work by reducing cytokine levels.'},
-  {t:'Dectin-1', c:'Pharmacology', d:'An immune receptor on macrophages and other white blood cells that recognises beta-glucan structures — normally a signal that a fungal pathogen is present. Medicinal mushroom beta-glucans trigger this receptor to activate the immune system.'},
-  {t:'Demulcent', c:'Pharmacology', d:'A herb that soothes irritated or inflamed mucous membranes — throat, stomach or bowel — by forming a protective coating. Marshmallow and slippery elm are classic demulcents.'},
-  {t:'Diaphoretic', c:'Pharmacology', d:'A herb that promotes sweating, used traditionally to break fevers and help the body eliminate waste through the skin. Hot diaphoretics (ginger, elderflower) increase circulation; cool diaphoretics (hibiscus, peppermint) lower temperature.'},
-  {t:'DHT (dihydrotestosterone)', c:'Pharmacology', d:'A potent androgen hormone converted from testosterone by the enzyme 5-alpha reductase. High DHT is linked to hair loss and benign prostate enlargement. Beta-sitosterol in nettle root and saw palmetto inhibit this conversion.'},
-  {t:'Ellagitannins', c:'Chemistry', d:'A type of hydrolysable tannin that breaks down in the gut to produce ellagic acid, which gut bacteria then convert to urolithins — compounds with anti-aging and anti-inflammatory properties. Found in raspberry leaf and pomegranate.'},
-  {t:'Emmenagogue', c:'Pharmacology', d:'A herb that stimulates or regulates menstrual flow by acting on uterine smooth muscle. Mugwort is the most documented Western example. Important safety note: emmenagogues are contraindicated in pregnancy.'},
-  {t:'Emollient', c:'Pharmacology', d:'A herb that softens and soothes skin or mucous membranes externally. Similar to demulcent (internal) — both work through mucilaginous polysaccharides.'},
-  {t:'Ergosterol', c:'Chemistry', d:'The fungal equivalent of cholesterol — found in fungal cell membranes. Many antifungal compounds (including thymoquinone and oleuropein) work by disrupting ergosterol synthesis, similar to pharmaceutical azole antifungals.'},
-  {t:'Expectorant', c:'Pharmacology', d:'A herb that helps the body clear mucus from the lungs and airways. Stimulating expectorants (thyme, elecampane) increase mucus secretion; relaxing expectorants (mullein, marshmallow) reduce its viscosity, making it easier to clear.'},
-  {t:'Flavonols', c:'Chemistry', d:'A subgroup of flavonoids including quercetin, kaempferol and rutin. Among the most widely distributed plant compounds, with strong antioxidant and anti-inflammatory properties.'},
-  {t:'Flavonolignans', c:'Chemistry', d:'A hybrid compound class — part flavonoid, part lignan. Silymarin from milk thistle is the most important example, responsible for its exceptional liver-protective action.'},
-  {t:'Free radicals / ROS', c:'Chemistry', d:'Unstable molecules with unpaired electrons — reactive oxygen species (ROS) — that damage cells by stealing electrons from proteins, fats and DNA. Antioxidant plant compounds neutralise them.'},
-  {t:'Fulvic acid', c:'Chemistry', d:'A low-molecular-weight organic acid found in soil and concentrated in shilajit. Chelates minerals into more absorbable forms, and participates in mitochondrial electron transport, improving cellular energy production.'},
-  {t:'Glucosinolates', c:'Chemistry', d:'Sulphur-containing compounds found in moringa, broccoli and mustard family plants. Converted by the enzyme myrosinase into isothiocyanates (similar to sulforaphane) — which activate the liver\'s phase II detoxification system and have anticancer properties.'},
-  {t:'Haemostatic', c:'Pharmacology', d:'Something that stops or slows bleeding. Haemostatic herbs (yarrow, raspberry leaf, nettle) work through tannins that precipitate proteins on wound surfaces and vitamin K precursors that support blood clotting.'},
-  {t:'Hepatoprotective', c:'Pharmacology', d:'Protects liver cells from damage. Silymarin in milk thistle is the most studied hepatoprotective plant compound — used clinically for toxic liver injury.'},
-  {t:'Hericenones', c:'Chemistry', d:'Aromatic compounds found in the fruiting body of lion\'s mane mushroom. Cross the blood-brain barrier and stimulate nerve growth factor (NGF) synthesis in the hippocampus, supporting neuroplasticity and memory.'},
-  {t:'Erinacines', c:'Chemistry', d:'Diterpene compounds found in the mycelium (root network) of lion\'s mane mushroom. Cross the blood-brain barrier more efficiently than hericenones and stimulate both NGF and BDNF — making them particularly studied for neurodegeneration prevention.'},
-  {t:'Hypnotic', c:'Pharmacology', d:'A herb or compound that promotes sleep — stronger in effect than a simple relaxant. Valerian, hops and high-dose passionflower are hypnotics.'},
-  {t:'IGF-1', c:'Pharmacology', d:'Insulin-like growth factor 1 — a hormone that promotes cell and tissue growth, particularly in muscle. Ursolic acid (lemon balm, rosemary) activates IGF-1 signalling in skeletal muscle.'},
-  {t:'IL-1β / IL-6', c:'Pharmacology', d:'Interleukin inflammatory cytokines. IL-6 in particular is elevated in chronic inflammation and many diseases. Demulcent herbs (marshmallow, mullein) have been shown to reduce IL-6 in mucosal tissue.'},
-  {t:'Iridoids', c:'Chemistry', d:'A type of terpenoid found in olives, valerian, plantain and many other plants. Often bitter and anti-inflammatory. Oleuropein (olive leaf) is an iridoid glycoside — one of the most studied natural antimicrobials.'},
-  {t:'Isothiocyanates', c:'Chemistry', d:'Sulphur-containing compounds released when glucosinolates are broken down by myrosinase. Sulforaphane (from broccoli) and glucomoringin (from moringa) are isothiocyanates — they strongly activate the liver\'s detox enzymes and have anticancer properties.'},
-  {t:'Leukotrienes', c:'Pharmacology', d:'Inflammatory chemicals produced by the 5-LOX enzyme pathway, involved in asthma, allergies and skin inflammation. Several herbs inhibit 5-LOX to reduce leukotriene production.'},
-  {t:'Lymphagogue', c:'Pharmacology', d:'A herb that stimulates lymphatic circulation and clears lymphatic congestion — supporting immune cell movement and drainage of tissue fluid. Calendula and cleavers are lymphagogues.'},
-  {t:'MAO / MAO-A inhibitor', c:'Pharmacology', d:'Monoamine oxidase is an enzyme that breaks down serotonin, dopamine and noradrenaline. MAO inhibitors increase these neurotransmitters, producing antidepressant effects. Hypericin in St John\'s Wort has mild MAO inhibitory action.'},
-  {t:'Mitophagy', c:'Pharmacology', d:'A cellular cleaning process where damaged mitochondria (energy-producing organelles) are broken down and recycled. Urolithin A — produced from ellagic acid in raspberry leaf — activates mitophagy and is one of the most studied compounds in anti-aging research.'},
-  {t:'Monoterpenes', c:'Chemistry', d:'The smallest terpene molecules (10 carbons), responsible for the scent of most herbs. Menthol (peppermint), thymol (thyme), linalool (lavender) and citral (lemon balm) are monoterpenes. Volatile and easily lost with heat.'},
-  {t:'Mucilage', c:'Chemistry', d:'A thick, slippery polysaccharide produced by some plants — notably marshmallow and mullein — that forms a protective gel when wet. This gel coats and soothes irritated mucous membranes in the gut and lungs.'},
-  {t:'Myrosinase', c:'Chemistry', d:'An enzyme in moringa and brassica plants that converts glucosinolates into active isothiocyanates. Heat destroys myrosinase — which is why raw moringa powder preserves more of its detoxifying potential than heated products.'},
-  {t:'NF-κB', c:'Pharmacology', d:'Nuclear factor kappa B — a key molecular switch that controls inflammation genes. When activated it triggers the production of inflammatory cytokines. Many anti-inflammatory herbs (ashwagandha withanolides, olive leaf oleuropein, nigella thymoquinone) work by blocking NF-κB.'},
-  {t:'NGF (nerve growth factor)', c:'Pharmacology', d:'A protein that supports the survival, development and function of nerve cells. Hericenones and erinacines from lion\'s mane mushroom stimulate NGF production in the brain — making lion\'s mane unique among herbs for nerve regeneration support.'},
-  {t:'NK cells (natural killer cells)', c:'Pharmacology', d:'A type of immune cell that destroys virus-infected cells and cancer cells without needing prior exposure. Beta-glucans in medicinal mushrooms and beta-sitosterol in nettle/moringa activate NK cells.'},
-  {t:'Nrf2 / ARE pathway', c:'Pharmacology', d:'A master regulator of cellular antioxidant defence. When activated by compounds like sulforaphane, quercetin or thymoquinone, Nrf2 switches on genes that produce the body\'s own antioxidant enzymes (SOD, catalase, glutathione peroxidase) — a more powerful protection than dietary antioxidants alone.'},
-  {t:'Oleuropein', c:'Chemistry', d:'The primary bioactive compound in olive leaf — an iridoid glycoside. Converted to elenolic acid (its active aglycone) in the gut. Has antimicrobial, antiviral, antihypertensive and antioxidant actions, and is one of the most clinically studied herbal compounds.'},
-  {t:'Orexin', c:'Pharmacology', d:'A brain peptide that promotes wakefulness and appetite. Some sedative herbs and compounds inhibit orexin signalling as part of their sleep-promoting mechanism.'},
-  {t:'Phytoestrogen', c:'Chemistry', d:'A plant compound that weakly mimics the hormone oestrogen by binding to oestrogen receptors. Isoflavones (red clover) and lignans (flaxseed) are phytoestrogens. Effects can be oestrogenic or anti-oestrogenic depending on context.'},
-  {t:'Proanthocyanidins (OPCs)', c:'Chemistry', d:'Condensed tannins — chains of catechin units. Found in grape seed, pine bark, hibiscus and raspberry leaf. Among the most potent natural vascular protectives, strengthening capillary walls by inhibiting collagenase.'},
-  {t:'Prostaglandins', c:'Pharmacology', d:'Hormone-like chemicals produced via the COX enzyme pathway that mediate inflammation, pain and fever. NSAIDs and COX-inhibiting herbs reduce prostaglandin production.'},
-  {t:'RCT (randomised controlled trial)', c:'General', d:'The gold standard of clinical research — a study where participants are randomly assigned to the herb or a placebo, and neither the participant nor the researcher knows who got which. When CHI mentions RCT evidence, this is what it means.'},
-  {t:'Rosmarinic acid', c:'Chemistry', d:'A phenolic acid found in lemon balm, rosemary and sage. One of the most studied natural compounds for brain health — inhibits AChE (improving acetylcholine), reduces inflammation via COX-2 and 5-LOX inhibition, and has antiviral properties.'},
-  {t:'Senolytic', c:'Pharmacology', d:'A compound that selectively clears senescent cells — old, damaged cells that have stopped dividing but release inflammatory signals that accelerate aging. Fisetin (strawberry) is one of the most studied natural senolytics.'},
-  {t:'Sesquiterpenes', c:'Chemistry', d:'Terpene molecules built from three isoprene units (15 carbons). Larger and less volatile than monoterpenes — responsible for deeper herbal aromas. Beta-caryophyllene (clove, black pepper) is a notable sesquiterpene.'},
-  {t:'Silymarin', c:'Chemistry', d:'The active complex in milk thistle — a mixture of flavonolignans (silybin, silychristin, silydianin). Among the most clinically validated hepatoprotective compounds; used in emergency medicine for amanita (death cap mushroom) poisoning.'},
-  {t:'SIRT1', c:'Pharmacology', d:'Sirtuin 1 — an enzyme linked to longevity and cellular stress resistance. Activated by resveratrol, fisetin and other plant compounds. Often described as a "longevity gene" activator.'},
-  {t:'SOD (superoxide dismutase)', c:'Pharmacology', d:'One of the body\'s primary antioxidant enzymes, converting superoxide radicals into less harmful compounds. Nrf2-activating herbs (sulforaphane, quercetin) upregulate SOD production.'},
-  {t:'STAT3', c:'Pharmacology', d:'A transcription factor involved in cancer cell survival and proliferation. Ursolic acid (lemon balm, rosemary) and several other plant compounds inhibit STAT3, which is why they show anticancer activity in laboratory research.'},
-  {t:'Styptic', c:'Pharmacology', d:'Stops external bleeding when applied topically. Tannin-rich herbs (yarrow, raspberry leaf, witch hazel) are styptics — the tannins precipitate proteins and contract blood vessels on the wound surface.'},
-  {t:'Sulforaphane', c:'Chemistry', d:'An isothiocyanate produced from glucosinolates in broccoli sprouts and moringa. The strongest known natural activator of the Nrf2 antioxidant pathway. Active in human clinical trials for inflammation, neuroprotection and cancer prevention.'},
-  {t:'TAS2R', c:'Pharmacology', d:'Bitter taste receptors found on the tongue and throughout the gut lining. When activated by bitter herbs (dandelion, mugwort, gentian), they trigger the full cephalic-phase digestive response — stomach acid, bile, pancreatic enzymes — simultaneously. Must be tasted to work: capsulated bitter herbs bypass this mechanism.'},
-  {t:'Terpenoids (terpenes)', c:'Chemistry', d:'The largest and most diverse class of plant compounds, built from repeating five-carbon isoprene units. Includes volatile scent compounds (monoterpenes), deeper bioactives (sesqui-, di-, tri-terpenes), and large structural compounds (carotenoids, sterols). Responsible for the smell of most herbs.'},
-  {t:'Th1/Th2 balance', c:'Pharmacology', d:'Two arms of the immune system. Th1 drives cellular immunity (fighting viruses and bacteria); Th2 drives humoral immunity (antibodies). When they become imbalanced, autoimmune conditions or allergies can result. Herbs like nigella (thymoquinone) are studied for normalising this balance.'},
-  {t:'Thymoquinone', c:'Chemistry', d:'The primary bioactive compound in nigella (black seed) — a benzoquinone phenol. One of the most multi-functional natural compounds known: simultaneously inhibits COX-1/2, 5-LOX and NF-κB; disrupts microbial membranes; modulates immune balance. Outperforms standard antifungals against Candida in some laboratory studies.'},
-  {t:'TNF-α', c:'Pharmacology', d:'Tumour necrosis factor alpha — a key pro-inflammatory cytokine. Elevated in chronic inflammation, autoimmune disease and metabolic disorders. Many anti-inflammatory herbs reduce TNF-α production.'},
-  {t:'Triterpenes', c:'Chemistry', d:'Large terpene molecules (30 carbons) found in herb roots, bark and resins. Oleanolic acid, ursolic acid and withanolides are triterpenes. Often anti-inflammatory, hepatoprotective or adaptogenic.'},
-  {t:'Urolithins', c:'Chemistry', d:'Compounds produced when gut bacteria metabolise ellagic acid (from ellagitannins in raspberry leaf and pomegranate). Urolithin A is the most studied form — it activates mitophagy and has significant anti-aging and anti-inflammatory research behind it. Production depends on gut microbiome composition.'},
-  {t:'Vulnerary', c:'Pharmacology', d:'A herb that promotes wound healing and tissue repair, typically by stimulating collagen synthesis and reducing the enzymes that degrade healing tissue. Calendula is the most evidenced vulnerary herb.'},
-  {t:'Adaptogen', c:'Pharmacology', d:'A herb traditionally said to help the body cope with stress and return to balance, supporting energy and resilience rather than targeting a single symptom.'},
-  {t:'Adulterant', c:'Quality', d:'A cheaper, incorrect or contaminating plant or substance mixed into a herb product — by mistake or to cut costs. A key reason quality testing matters.'},
-  {t:'Alkaloids', c:'Chemistry', d:'A large family of nitrogen-containing plant compounds, often biologically active and sometimes potent. Caffeine and morphine are alkaloids.'},
-  {t:'Anti-inflammatory', c:'Pharmacology', d:'Something that may help calm inflammation — the body\u2019s redness, heat and swelling response to injury or stress.'},
-  {t:'Antioxidant', c:'Chemistry', d:'A compound that helps protect cells from damage caused by unstable molecules called free radicals.'},
-  {t:'Autoimmune', c:'Safety', d:'When the immune system mistakenly attacks the body\u2019s own tissues. Relevant because some herbs may stimulate immune activity.'},
-  {t:'Ayurveda', c:'Tradition', d:'A traditional system of medicine from India, over 3,000 years old, based on balancing the body, mind and natural elements.'},
-  {t:'Balya', c:'Ayurveda', d:'An Ayurvedic term for a herb that gives strength and tone to the body.'},
-  {t:'Benzodiazepine', c:'Safety', d:'A class of sedative medicines used for anxiety or sleep. Flagged because some calming herbs may add to their effect.'},
-  {t:'Bioavailability', c:'Pharmacology', d:'How much of a compound your body can actually absorb and use after you take it.'},
-  {t:'Botanical name', c:'Botany', d:'The official two-part Latin name of a plant (e.g. Withania somnifera), used worldwide so there is no confusion between common names. Also called the binomial or Latin name.'},
-  {t:'Churna', c:'Ayurveda', d:'In Ayurveda, a finely ground herbal powder.'},
-  {t:'CNS depressant', c:'Safety', d:'Something that slows down the central nervous system (brain and spinal cord) — for example, causing drowsiness.'},
-  {t:'Constituent', c:'Chemistry', d:'Any individual compound found within a herb. The \u201cactive constituents\u201d are the ones thought to produce its effects.'},
-  {t:'Contraindication', c:'Safety', d:'A reason not to use a herb in a particular situation. \u201cAbsolute\u201d means never; \u201crelative\u201d means use with caution.'},
-  {t:'Convalescence', c:'General', d:'The recovery period after an illness, when gentle restorative herbs are traditionally used.'},
-  {t:'Decoction', c:'Preparation', d:'A preparation made by simmering tougher plant parts — roots or bark — in water to draw out their compounds.'},
-  {t:'Dosha', c:'Ayurveda', d:'In Ayurveda, one of three mind-body energies: Vata, Pitta and Kapha. Balance between them is seen as the basis of health.'},
-  {t:'Drug\u2013herb interaction', c:'Safety', d:'When a herb changes how a medicine works — making it stronger, weaker, or causing unwanted effects.'},
-  {t:'Energetics', c:'Tradition', d:'A traditional way of describing a herb by its qualities — warming or cooling, drying or moistening — rather than by its chemistry.'},
-  {t:'Extract', c:'Preparation', d:'A concentrated form of a herb, where the active parts have been drawn out using water, alcohol or another solvent.'},
-  {t:'Family (plant family)', c:'Botany', d:'A broad botanical grouping of related plants. For example, Solanaceae is the nightshade family.'},
-  {t:'Flavonoids', c:'Chemistry', d:'A widespread group of plant compounds, often antioxidant, responsible for many of the colours found in plants.'},
-  {t:'Functional mushroom', c:'General', d:'A mushroom used for health support rather than as food alone — such as reishi or lion\u2019s mane.'},
-  {t:'GABA / GABAergic', c:'Pharmacology', d:'GABA is a calming chemical messenger in the brain. \u201cGABAergic\u201d describes anything that works through it, often producing a relaxing effect.'},
-  {t:'GDPR (UK GDPR)', c:'Regulatory', d:'The UK\u2019s data-protection law, governing how personal information must be collected, stored and used.'},
-  {t:'Genus', c:'Botany', d:'The first part of a plant\u2019s Latin name — a group of closely related species.'},
-  {t:'Glycosides', c:'Chemistry', d:'Compounds where a sugar is attached to another molecule. The sugar often changes how the compound is absorbed or activated in the body.'},
-  {t:'Glycowithanolides', c:'Chemistry', d:'Withanolides bound to a sugar — a sub-group found in ashwagandha, studied for antioxidant and anti-stress effects.'},
-  {t:'HPA axis', c:'Pharmacology', d:'The hypothalamic\u2013pituitary\u2013adrenal axis: the body\u2019s central stress-response system, which controls hormones such as cortisol.'},
-  {t:'Hyperthyroidism', c:'Safety', d:'An overactive thyroid gland. Relevant because some herbs may further raise thyroid activity.'},
-  {t:'ICO', c:'Regulatory', d:'The Information Commissioner\u2019s Office — the UK regulator for data protection and privacy.'},
-  {t:'Immunomodulator', c:'Pharmacology', d:'Something that adjusts the immune system\u2019s activity — turning it up or down toward balance.'},
-  {t:'Immunosuppressant', c:'Safety', d:'A medicine that deliberately lowers immune activity (for example after a transplant). Flagged alongside immune-stimulating herbs.'},
-  {t:'Indication', c:'Pharmacology', d:'The condition or purpose a herb is traditionally used for.'},
-  {t:'Infusion', c:'Preparation', d:'A preparation made by steeping delicate plant parts — leaves or flowers — in hot water, much like a tea.'},
-  {t:'Ksheerapaka', c:'Ayurveda', d:'An Ayurvedic milk decoction — a herb gently simmered in milk and water.'},
-  {t:'Lactation', c:'Safety', d:'Breastfeeding — a period when herb safety needs particular care.'},
-  {t:'Materia medica', c:'General', d:'The collected body of knowledge about medicinal substances and how they are used.'},
-  {t:'Mechanism of action', c:'Pharmacology', d:'How a herb or compound actually produces its effect in the body, at a biological level.'},
-  {t:'MHRA', c:'Regulatory', d:'The Medicines and Healthcare products Regulatory Agency — the UK body that regulates medicines and sets the rules on what health claims may be made.'},
-  {t:'Monograph', c:'General', d:'A detailed, structured profile of a single herb, covering its identity, uses, dosing and safety.'},
-  {t:'Native', c:'Botany', d:'Growing naturally in a particular region, without having been introduced by humans.'},
-  {t:'Nervine', c:'Pharmacology', d:'A herb that supports the nervous system — often by calming or gently restoring it.'},
-  {t:'Paediatric', c:'Safety', d:'Relating to children, whose dosing and safety considerations differ from adults.'},
-  {t:'Pharmacology', c:'Pharmacology', d:'The science of how substances interact with the body.'},
-  {t:'Phenolic acids', c:'Chemistry', d:'A group of antioxidant plant compounds built around a phenol structure.'},
-  {t:'Phytochemistry', c:'Chemistry', d:'The study of the chemical compounds produced by plants.'},
-  {t:'Phytosterol', c:'Chemistry', d:'A plant version of cholesterol. Some phytosterols are studied for anti-inflammatory effects.'},
-  {t:'Polysaccharides', c:'Chemistry', d:'Large chains of sugar molecules. In herbs and mushrooms they are often linked to immune support.'},
-  {t:'Posology', c:'Pharmacology', d:'The study of dosage — how much of a herb to take, and how often.'},
-  {t:'Qi (Chi)', c:'Tradition', d:'In Traditional Chinese Medicine, the vital life-force energy flowing through the body. It is also the meaning behind the name C.H.I.'},
-  {t:'Rasa', c:'Ayurveda', d:'In Ayurveda, the taste of a herb (such as bitter or sweet), believed to point to its effects.'},
-  {t:'Rasayana', c:'Ayurveda', d:'An Ayurvedic rejuvenating tonic, taken to restore vitality and promote longevity.'},
-  {t:'Relative contraindication', c:'Safety', d:'A situation where a herb may be used, but only with caution and good reason.'},
-  {t:'Saponins', c:'Chemistry', d:'Soapy plant compounds — they foam in water — studied for effects on immunity, cholesterol and inflammation.'},
-  {t:'Sedative', c:'Pharmacology', d:'Something that promotes calm or sleep.'},
-  {t:'Shen', c:'Tradition', d:'In Traditional Chinese Medicine, the \u201cspirit\u201d or mind.'},
-  {t:'Sitoindosides', c:'Chemistry', d:'Specific glycowithanolide compounds in ashwagandha, linked to its anti-stress and antioxidant action.'},
-  {t:'Solanaceae', c:'Botany', d:'The nightshade plant family, which includes tomato, potato, pepper and ashwagandha.'},
-  {t:'Special category data', c:'Regulatory', d:'Under UK GDPR, especially sensitive personal data — including health data — that requires extra protection.'},
-  {t:'Species', c:'Botany', d:'The second part of a Latin name — the specific kind of plant within a genus.'},
-  {t:'Standardisation', c:'Quality', d:'Processing a herbal extract so that every batch contains a guaranteed, consistent amount of a key compound.'},
-  {t:'Steroidal lactone', c:'Chemistry', d:'A compound type combining a steroid-like structure with a lactone ring. Withanolides are steroidal lactones.'},
-  {t:'Tannins', c:'Chemistry', d:'Astringent plant compounds — the \u201cdrying\u201d feel of strong tea or red wine — traditionally used to tone tissues.'},
-  {t:'TCM', c:'Tradition', d:'Traditional Chinese Medicine — an ancient system based on balancing energies such as Qi, Yin and Yang.'},
-  {t:'Terpenoids', c:'Chemistry', d:'A huge, diverse family of plant compounds behind many scents and flavours, and home to many active medicinal molecules.'},
-  {t:'Tincture', c:'Preparation', d:'A liquid herbal extract made by soaking a herb in alcohol (or glycerine) to capture its compounds.'},
-  {t:'Toxicity', c:'Safety', d:'The capacity of a substance to cause harm — usually at higher doses.'},
-  {t:'Trophorestorative', c:'Pharmacology', d:'A herb that slowly nourishes and restores a specific organ or body system back to health.'},
-  {t:'Unani', c:'Tradition', d:'A traditional system of medicine with Greek and Arabic roots, practised across South Asia and the Middle East.'},
-  {t:'Vata / Pitta / Kapha', c:'Ayurveda', d:'The three doshas, or mind-body energies, in Ayurveda. Their balance is seen as the foundation of health.'},
-  {t:'Vipaka', c:'Ayurveda', d:'In Ayurveda, the after-effect of a herb once it has been fully digested.'},
-  {t:'Virya', c:'Ayurveda', d:'In Ayurveda, the heating or cooling potency of a herb.'},
-  {t:'Withanolides', c:'Chemistry', d:'The signature active compounds in ashwagandha — steroidal lactones studied for stress, inflammation and cellular effects.'},
-  {t:'Yin / Yang', c:'Tradition', d:'In Traditional Chinese Medicine, two complementary opposite forces — cool/receptive and warm/active — whose balance underlies health.'},
-];
-
-const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-function firstLetter(t){ const c=t.trim()[0].toUpperCase(); return /[A-Z]/.test(c)?c:'#'; }
-
-function buildAZ(){
-  const have = new Set(TERMS.map(x=>firstLetter(x.t)));
-  document.getElementById('az').innerHTML = LETTERS.map(L=>
-    have.has(L) ? `<a href="#L-${L}">${L}</a>` : `<a class="empty">${L}</a>`
-  ).join('');
-}
-function render(list){
-  const byLetter={};
-  list.forEach(x=>{ const L=firstLetter(x.t); (byLetter[L]=byLetter[L]||[]).push(x); });
-  const html = LETTERS.filter(L=>byLetter[L]).map(L=>{
-  const items = byLetter[L].sort((a,b)=>a.t.localeCompare(b.t)).map(x=>{
-    const anchor = x.t.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-    return `
-      <div class="term" id="term-${anchor}">
-        <div class="term-top"><span class="term-name">${x.t}</span><span class="term-cat">${x.c}</span></div>
-        <div class="term-def">${x.d}</div>
-      </div>`;
-  }).join('');
-    return `<div class="letter" id="L-${L}">
-      <button class="letter-head" onclick="this.parentElement.classList.toggle('collapsed')">
-        <span class="letter-glyph">${L}</span>
-        <span class="letter-meta">${byLetter[L].length} term${byLetter[L].length>1?'s':''}</span>
-        <svg class="letter-chev" width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <div class="letter-body">${items}</div>
-    </div>`;
-  }).join('');
-  document.getElementById('glossary').innerHTML = html;
-  document.getElementById('no-results').style.display = list.length ? 'none':'block';
-  document.getElementById('count-line').textContent = `${list.length} term${list.length===1?'':'s'}`;
-}
-function filterTerms(){
-  const q=document.getElementById('search').value.trim().toLowerCase();
-  if(!q){ render(TERMS); buildAZ(); return; }
-  const list=TERMS.filter(x=>x.t.toLowerCase().includes(q)||x.d.toLowerCase().includes(q)||x.c.toLowerCase().includes(q));
-  render(list);
-  const have=new Set(list.map(x=>firstLetter(x.t)));
-  document.getElementById('az').innerHTML = LETTERS.map(L=>have.has(L)?`<a href="#L-${L}">${L}</a>`:`<a class="empty">${L}</a>`).join('');
-}
-
-// init
-buildAZ();
-render(TERMS);
-
-// deep-link: if URL has #term-xxx, open that letter and scroll to term
-if(window.location.hash && window.location.hash.startsWith('#term-')){
-  const target = document.querySelector(window.location.hash);
-  if(target){
-    // make sure the letter section is open
-    const letter = target.closest('.letter');
-    if(letter) letter.classList.remove('collapsed');
-    setTimeout(()=>target.scrollIntoView({behavior:'smooth',block:'center'}),200);
-    target.style.background='rgba(200,149,42,.08)';
-    target.style.borderRadius='8px';
-    setTimeout(()=>target.style.background='',2000);
-  }
-}
-</script>
-<!-- Shared C.H.I glossary — auto-tags known terms (tincture, capsule, infusion,
-     adaptogen, etc) anywhere in the page text with a hover definition. -->
-<script src="chi-glossary.js"></script>
-
-<script>
-function toggleMobileMenu() {
-  const hamburger = document.getElementById('hamburger-toggle');
-  const menu = document.getElementById('mobile-menu');
-  const overlay = document.getElementById('mobile-overlay');
-
-  if (hamburger && menu && overlay) {
-    hamburger.classList.toggle('open');
-    menu.classList.toggle('open');
-    overlay.classList.toggle('open');
-  }
-}
-
-function closeMobileMenu() {
-  const hamburger = document.getElementById('hamburger-toggle');
-  const menu = document.getElementById('mobile-menu');
-  const overlay = document.getElementById('mobile-overlay');
-
-  if (hamburger && menu && overlay) {
-    hamburger.classList.remove('open');
-    menu.classList.remove('open');
-    overlay.classList.remove('open');
-  }
-}
-
-// Close menu when a link is clicked
-document.addEventListener('DOMContentLoaded', function() {
-  const mobileMenuLinks = document.querySelectorAll('.mobile-menu a');
-  mobileMenuLinks.forEach(link => {
-    link.addEventListener('click', closeMobileMenu);
+  document.addEventListener('mouseover', function(e){
+    const el = e.target.closest('.chi-term,[data-herbs]');
+    if(!el) return;
+    showTip(el, e);
   });
-});
-</script>
 
-
-<script>
-function toggleMobileMenu() {
-  const hamburger = document.getElementById('hamburger-toggle');
-  const menu = document.getElementById('mobile-menu');
-  const overlay = document.getElementById('mobile-overlay');
-
-  if (hamburger && menu && overlay) {
-    hamburger.classList.toggle('open');
-    menu.classList.toggle('open');
-    overlay.classList.toggle('open');
-  }
-}
-
-function closeMobileMenu() {
-  const hamburger = document.getElementById('hamburger-toggle');
-  const menu = document.getElementById('mobile-menu');
-  const overlay = document.getElementById('mobile-overlay');
-
-  if (hamburger && menu && overlay) {
-    hamburger.classList.remove('open');
-    menu.classList.remove('open');
-    overlay.classList.remove('open');
-  }
-}
-
-// Close menu when a link is clicked
-document.addEventListener('DOMContentLoaded', function() {
-  const mobileMenuLinks = document.querySelectorAll('.mobile-menu a');
-  mobileMenuLinks.forEach(link => {
-    link.addEventListener('click', closeMobileMenu);
+  document.addEventListener('mousemove', function(e){
+    if(tip.classList.contains('show') && e.target.closest('.chi-term,[data-herbs]'))
+      positionTip(e);
   });
-});
-</script>
 
-    <script src="herbexa-knowledge-base.js"></script>
-<script src="herbexa-widget-local.js"></script>
-</body></html>
-</html>
+  document.addEventListener('mouseout', function(e){
+    if(!e.target.closest('.chi-term,[data-herbs]')) return;
+    hideTimer = setTimeout(()=>tip.classList.remove('show'), 250);
+  });
+
+  // Touch support: mouseover/mousemove/mouseout never fire from a tap on
+  // most mobile browsers, so on touch-only devices the tooltip previously
+  // never appeared at all. Tap a term to show it (centered — see
+  // positionTipCenter above), tap anywhere else to dismiss it. Listeners
+  // are passive (no preventDefault) so normal scrolling is untouched; a
+  // small movement threshold on touchend tells a tap apart from a scroll.
+  let touchStartX = 0, touchStartY = 0, touchStartTarget = null;
+
+  document.addEventListener('touchstart', function(e){
+    const t = e.touches[0];
+    if(!t) return;
+    touchStartX = t.clientX;
+    touchStartY = t.clientY;
+    touchStartTarget = e.target;
+  }, {passive:true});
+
+  document.addEventListener('touchend', function(e){
+    const t = e.changedTouches[0];
+    if(!t) return;
+    const movedX = Math.abs(t.clientX - touchStartX);
+    const movedY = Math.abs(t.clientY - touchStartY);
+    if(movedX > 10 || movedY > 10) return; // scroll/swipe, not a tap
+
+    const el = touchStartTarget && touchStartTarget.closest ? touchStartTarget.closest('.chi-term,[data-herbs]') : null;
+    if(el){
+      showTip(el, e, true);
+    } else if(!(e.target.closest && e.target.closest('.chi-tooltip'))){
+      clearTimeout(hideTimer);
+      tip.classList.remove('show');
+    }
+  }, {passive:true});
+
+  // Auto-tag known terms in the page after render
+  // Uses a MutationObserver so it catches dynamically rendered content too
+  const tagged = new WeakSet();
+  const termKeys = Object.keys(DEFS).sort((a,b)=>b.length-a.length); // longest first
+
+  function tagNode(node){
+    if(node.nodeType !== Node.TEXT_NODE) return;
+    if(!node.textContent.trim()) return;
+    const parent = node.parentElement;
+    if(!parent) return;
+    // Skip: already tagged, inside script/style/input, inside a chi-term
+    if(parent.closest('.chi-term,.chi-tooltip,script,style,input,textarea,a,button')) return;
+    if(tagged.has(node)) return;
+    tagged.add(node);
+
+    let text = node.textContent;
+    let changed = false;
+    let html = text;
+
+    termKeys.forEach(term=>{
+      if(!html.toLowerCase().includes(term)) return;
+      const re = new RegExp('(?<![\w-])(' + term.replace(/[-[\]{}()*+?.,\\^$|#\s]/g,'\\$&') + ')(?![\w-])', 'gi');
+      if(re.test(html)){
+        html = html.replace(re, `<span class="chi-term" data-term="${term}">$1</span>`);
+        changed = true;
+      }
+    });
+
+    if(changed){
+      const span = document.createElement('span');
+      span.innerHTML = html;
+      parent.replaceChild(span, node);
+    }
+  }
+
+  function tagTree(root){
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+    const nodes = [];
+    let n;
+    while((n = walker.nextNode())) nodes.push(n);
+    nodes.forEach(tagNode);
+  }
+
+  // Tag existing content once the DOM is ready. If this script loads after
+  // the document has already parsed (e.g. included at the end of <body>),
+  // DOMContentLoaded won't fire again, so tag immediately in that case.
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', ()=>tagTree(document.body));
+  } else {
+    tagTree(document.body);
+  }
+
+  // Watch for dynamic content (React renders, JS-injected HTML)
+  const observer = new MutationObserver(muts=>{
+    muts.forEach(m=>{
+      m.addedNodes.forEach(n=>{
+        if(n.nodeType === Node.ELEMENT_NODE) tagTree(n);
+        else if(n.nodeType === Node.TEXT_NODE) tagNode(n);
+      });
+    });
+  });
+  observer.observe(document.body, {childList:true, subtree:true});
+})();

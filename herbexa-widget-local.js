@@ -293,13 +293,37 @@ class HerbexaWidget {
         }
 
         @media (max-width: 480px) {
+          /* Center the button itself on mobile instead of pinning bottom-right */
+          #herbexa-widget {
+            left: 50%;
+            right: auto;
+            transform: translateX(-50%);
+            bottom: 16px;
+          }
+
+          /* Chat panel: fixed + centered independently of the button, so it
+             stays centered regardless of the button's own transform. */
           .herbexa-chat {
-            width: calc(100vw - 40px);
+            position: fixed;
+            left: 50%;
+            right: auto;
+            transform: translateX(-50%);
+            bottom: 90px;
+            width: calc(100vw - 32px);
             height: 70vh;
             max-height: 500px;
-            bottom: 80px;
-            right: 20px;
-            left: 20px;
+            opacity: 0;
+            pointer-events: none;
+          }
+
+          /* Explicit transform here too (same value) — otherwise the base
+             .herbexa-chat.open{transform:translateY(0)} rule (higher
+             specificity, defined earlier) would win and cancel the
+             horizontal centering right when the panel opens. */
+          .herbexa-chat.open {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(-50%);
           }
 
           .herbexa-text {
