@@ -140,7 +140,7 @@
   'thymol': {l:'Thymol',d:'Phenolic compound in thyme and oregano essential oils. Antimicrobial, antifungal and expectorant. Works synergistically with carvacrol; together they make thyme essential oil potent for respiratory support.'},
   'eugenol': {l:'Eugenol',d:'Phenolic compound in clove essential oil and nutmeg. Potent analgesic (numbing pain), antimicrobial, antispasmodic and anti-inflammatory. Used traditionally for dental pain; also supports cardiovascular function.'},
   'menthol': {l:'Menthol',d:'Monoterpene alcohol in peppermint oil. Activates TRPM8 (cold receptors) creating cooling sensation; relaxes smooth muscle; supports respiratory function and digestion. Also analgesic and antimicrobial.'},
-  'linalool': {l:'Linalool',d:'Monoterpene alcohol in lavender, lemon and basil. Anxiolytic and sedative — modulates GABA and acetylcholine; also anti-inflammatory and antimicrobial. Responsible for lavender's calming scent.'},
+  'linalool': {l:'Linalool',d:'Monoterpene alcohol in lavender, lemon and basil. Anxiolytic and sedative — modulates GABA and acetylcholine; also anti-inflammatory and antimicrobial. Responsible for lavender\'s calming scent.'},
   'geraniol': {l:'Geraniol',d:'Monoterpene in rose, lavender and geranium. Has antimicrobial, antitumor and neuroprotective properties. Precursor to rose oxide and other beneficial volatile compounds.'},
   'limonene': {l:'Limonene',d:'Monoterpene in lemon and citrus oils. Activates Nrf2 for antioxidant protection; supports liver detoxification; enhances absorption of other compounds. Also modulates immune function and has mood-elevating effects.'},
   'pinene': {l:'Pinene',d:'Monoterpene in pine, rosemary and cannabis oils. Anti-inflammatory, bronchodilator and memory-enhancing — inhibits acetylcholinesterase enzyme. Two forms: α-pinene and β-pinene have different ratios in different plants.'},
@@ -190,7 +190,7 @@
 
   let hideTimer;
 
-  function showTip(el, e){
+  function showTip(el, e, centered){
     const term = el.dataset.term || el.textContent.trim();
     const def = DEFS[term.toLowerCase()];
     const herbs = el.dataset.herbs ? el.dataset.herbs.split('|').filter(Boolean) : [];
@@ -216,11 +216,16 @@
     }
 
     clearTimeout(hideTimer);
-    positionTip(e);
+    if(centered){ positionTipCenter(); } else { positionTip(e); }
     tip.classList.add('show');
   }
 
   function positionTip(e){
+    // Reset anything the centered (touch) path may have set, so switching
+    // back to a mouse-driven position isn't fighting leftover inline styles.
+    tip.style.transform = '';
+    tip.style.maxWidth = '';
+
     const pad = 12;
     const rect = tip.getBoundingClientRect();
     const tw = rect.width || 320;
@@ -254,6 +259,17 @@
     tip.style.top = Math.max(minPad, Math.min(y, maxTop)) + 'px';
   }
 
+  // Touch/mobile path: center the tooltip in the viewport instead of
+  // anchoring it to a touch point. Touch devices have no cursor position to
+  // anchor to, and anchoring near an edge is exactly what was cropping the
+  // definition off-screen before — centering guarantees it's fully visible.
+  function positionTipCenter(){
+    tip.style.maxWidth = Math.min(340, window.innerWidth - 32) + 'px';
+    tip.style.left = '50%';
+    tip.style.top = '50%';
+    tip.style.transform = 'translate(-50%, -50%)';
+  }
+
   document.addEventListener('mouseover', function(e){
     const el = e.target.closest('.chi-term,[data-herbs]');
     if(!el) return;
@@ -269,6 +285,38 @@
     if(!e.target.closest('.chi-term,[data-herbs]')) return;
     hideTimer = setTimeout(()=>tip.classList.remove('show'), 250);
   });
+
+  // Touch support: mouseover/mousemove/mouseout never fire from a tap on
+  // most mobile browsers, so on touch-only devices the tooltip previously
+  // never appeared at all. Tap a term to show it (centered — see
+  // positionTipCenter above), tap anywhere else to dismiss it. Listeners
+  // are passive (no preventDefault) so normal scrolling is untouched; a
+  // small movement threshold on touchend tells a tap apart from a scroll.
+  let touchStartX = 0, touchStartY = 0, touchStartTarget = null;
+
+  document.addEventListener('touchstart', function(e){
+    const t = e.touches[0];
+    if(!t) return;
+    touchStartX = t.clientX;
+    touchStartY = t.clientY;
+    touchStartTarget = e.target;
+  }, {passive:true});
+
+  document.addEventListener('touchend', function(e){
+    const t = e.changedTouches[0];
+    if(!t) return;
+    const movedX = Math.abs(t.clientX - touchStartX);
+    const movedY = Math.abs(t.clientY - touchStartY);
+    if(movedX > 10 || movedY > 10) return; // scroll/swipe, not a tap
+
+    const el = touchStartTarget && touchStartTarget.closest ? touchStartTarget.closest('.chi-term,[data-herbs]') : null;
+    if(el){
+      showTip(el, e, true);
+    } else if(!(e.target.closest && e.target.closest('.chi-tooltip'))){
+      clearTimeout(hideTimer);
+      tip.classList.remove('show');
+    }
+  }, {passive:true});
 
   // Auto-tag known terms in the page after render
   // Uses a MutationObserver so it catches dynamically rendered content too
