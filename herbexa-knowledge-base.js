@@ -1,5 +1,111 @@
 // Herbexa Knowledge Base
 // Curated herb responses - no API calls needed
+//
+// v2 update: added direct herb-name recognition (HERB_FACTS) so a question
+// like "what is neem" answers about Neem itself, not a loosely-matched
+// wellness topic. Also tightened scoreMatch() so short common words
+// (is, it, of...) can no longer trigger false topic matches. Existing
+// topic category responses below are unchanged.
+
+// ─── DIRECT HERB LOOKUP ──────────────────────────────────────────
+// Checked BEFORE topic-category matching. If the question names a herb we
+// know, answer about that herb specifically and link straight to its
+// profile. Key = herb name as it should display (also used to build the
+// profile link, same convention as elsewhere: lowercase, spaces -> hyphens).
+const HERB_FACTS = {
+  "passionflower": { latin: "Passiflora incarnata", blurb: "a flowering vine traditionally used to ease restlessness and support relaxation, often taken as tea before bed." },
+  "valerian": { latin: "Valeriana officinalis", blurb: "a root herb with a long history of traditional use for promoting calm and supporting restful sleep." },
+  "chamomile": { latin: "Matricaria chamomilla", blurb: "a gentle daisy-like flower, one of the most widely used herbs for soothing the mind and easing occasional stomach upset." },
+  "lavender": { latin: "Lavandula angustifolia", blurb: "an aromatic flowering herb valued both for its calming scent and, taken as tea, its traditional use for relaxation." },
+  "ginkgo biloba": { latin: "Ginkgo biloba", blurb: "one of the oldest living tree species; its leaves are widely studied for supporting circulation and mental clarity." },
+  "rosemary": { latin: "Salvia rosmarinus", blurb: "a fragrant Mediterranean herb traditionally associated with memory and focus, used both in cooking and as tea." },
+  "gotu kola": { latin: "Centella asiatica", blurb: "a low-growing herb from Ayurvedic and Traditional Chinese Medicine, traditionally regarded as a tonic for mental clarity and healthy skin." },
+  "lion's mane": { latin: "Hericium erinaceus", blurb: "a shaggy white medicinal mushroom drawing modern research interest for cognitive and nerve support." },
+  "ginger": { latin: "Zingiber officinale", blurb: "a warming root long used to ease nausea and support healthy digestion." },
+  "peppermint": { latin: "Mentha piperita", blurb: "a cooling mint traditionally used to soothe the digestive tract and ease bloating." },
+  "fennel": { latin: "Foeniculum vulgare", blurb: "an aromatic seed herb traditionally chewed or steeped to ease gas and support digestive comfort." },
+  "slippery elm": { latin: "Ulmus rubra", blurb: "an inner-bark herb that forms a soothing mucilage, traditionally used to calm the digestive lining." },
+  "licorice": { latin: "Glycyrrhiza glabra", blurb: "a sweet root traditionally used to support digestive comfort; not recommended long-term or alongside blood pressure medication." },
+  "elderberry": { latin: "Sambucus nigra", blurb: "a dark purple berry popular during cold season, traditionally used to support the immune system." },
+  "echinacea": { latin: "Echinacea purpurea", blurb: "a prairie flower widely used at the first sign of a cold to support immune response." },
+  "astragalus": { latin: "Astragalus membranaceus", blurb: "a root from Traditional Chinese Medicine, traditionally taken as a preventive tonic for resilience and immune support." },
+  "reishi": { latin: "Ganoderma lucidum", blurb: "a woody medicinal mushroom known in East Asian tradition as the “mushroom of immortality,” valued for overall resilience." },
+  "rose hips": { latin: "Rosa canina", blurb: "the fruit of the wild rose, naturally rich in vitamin C and traditionally used to support seasonal wellness." },
+  "ashwagandha": { latin: "Withania somnifera", blurb: "an adaptogenic root from Ayurveda, widely used to support the body's response to stress." },
+  "rhodiola": { latin: "Rhodiola rosea", blurb: "an adaptogenic root from cold mountain regions, traditionally used to support energy and resilience under stress." },
+  "lemon balm": { latin: "Melissa officinalis", blurb: "a gentle, lemon-scented mint traditionally used to ease nervous tension and support calm." },
+  "skullcap": { latin: "Scutellaria lateriflora", blurb: "a nervine herb traditionally used to ease tension and support a settled nervous system." },
+  "ginseng": { latin: "Panax ginseng", blurb: "a root revered in Asian and North American herbal traditions for supporting energy, stamina, and vitality." },
+  "maca": { latin: "Lepidium meyenii", blurb: "a Peruvian root vegetable traditionally used to support energy, stamina, and vitality." },
+  "cordyceps": { latin: "Cordyceps militaris", blurb: "a medicinal mushroom traditionally used, especially by athletes, to support energy and stamina." },
+  "siberian ginseng": { latin: "Eleutherococcus senticosus", blurb: "a gentler relative of true ginseng, traditionally used to support endurance without overstimulation." },
+  "turmeric": { latin: "Curcuma longa", blurb: "a golden root well known for curcumin, widely studied for its support of the body's inflammatory response." },
+  "boswellia": { latin: "Boswellia serrata", blurb: "also known as frankincense, a resin traditionally used to support joint comfort." },
+  "willow bark": { latin: "Salix alba", blurb: "the traditional source of salicin, long used to ease discomfort before aspirin was developed." },
+  "nettle": { latin: "Urtica dioica", blurb: "a mineral-rich leaf herb from European tradition, used for overall vitality and joint and skin health." },
+  "burdock root": { latin: "Arctium lappa", blurb: "a root traditionally used to support skin health and gentle detoxification from within." },
+  "red clover": { latin: "Trifolium pratense", blurb: "a flowering herb containing phytoestrogens, traditionally used for skin clarity and hormonal balance." },
+  "calendula": { latin: "Calendula officinalis", blurb: "a bright marigold flower, one of the most trusted topical herbs for soothing irritated skin." },
+  "tribulus": { latin: "Tribulus terrestris", blurb: "a fruiting plant traditionally used to support desire and satisfaction in intimate wellness." },
+  "damiana": { latin: "Turnera diffusa", blurb: "a Central American leaf herb with a long traditional reputation as an aphrodisiac and mood lifter." },
+  "cacao": { latin: "Theobroma cacao", blurb: "the source of chocolate, valued both for enjoyment and its traditional association with circulation and mood." },
+  "vitex": { latin: "Vitex agnus-castus", blurb: "also called chasteberry, a berry traditionally used to support hormonal balance, especially around the menstrual cycle." },
+  "dong quai": { latin: "Angelica sinensis", blurb: "a root central to Traditional Chinese Medicine, traditionally used to support menstrual comfort and women's wellness." },
+  "black cohosh": { latin: "Actaea racemosa", blurb: "a North American root traditionally used to support women through hormonal transitions." },
+  "raspberry leaf": { latin: "Rubus idaeus", blurb: "a nourishing leaf herb traditionally used to support the reproductive system, especially in the lead-up to childbirth." },
+  "neem": { latin: "Azadirachta indica", blurb: "a tree native to the Indian subcontinent, central to Ayurvedic tradition; its leaves and oil are traditionally used topically for skin support and are prized for their bitter, purifying qualities." },
+  "garlic": { latin: "Allium sativum", blurb: "a pungent bulb used as food and medicine for centuries, traditionally valued for cardiovascular and immune support." },
+  "milk thistle": { latin: "Silybum marianum", blurb: "a spiny plant whose seeds contain silymarin, traditionally used to support liver health." },
+  "aloe vera": { latin: "Aloe barbadensis miller", blurb: "a succulent whose gel is widely used topically to soothe skin, and occasionally taken internally in small amounts for digestive comfort." },
+  "holy basil": { latin: "Ocimum sanctum", blurb: "also called tulsi, a sacred plant in Ayurveda traditionally used as an adaptogen to support stress resilience and respiratory health." },
+  "tulsi": { latin: "Ocimum sanctum", blurb: "also called holy basil, a sacred plant in Ayurveda traditionally used as an adaptogen to support stress resilience and respiratory health." },
+  "hibiscus": { latin: "Hibiscus sabdariffa", blurb: "a tart flower commonly brewed as tea, traditionally used to support blood pressure already within a normal range." },
+  "dandelion": { latin: "Taraxacum officinale", blurb: "a common “weed” with edible leaves and root, traditionally used to support liver and digestive function." },
+  "cinnamon": { latin: "Cinnamomum verum", blurb: "a warming spice bark traditionally used to support healthy blood sugar balance and digestion." }
+};
+
+const HERB_FACT_SUGGESTIONS = [
+  "Would you like to add this to your Stack?",
+  "See the full profile for preparation methods, safety notes, and research.",
+  "Track this in your Herbal Planner to see how it works for you."
+];
+
+// Finds the best (longest) herb-name match contained in the query.
+// Longest-match-wins so "red clover" beats a shorter accidental overlap.
+function findHerbMatch(userQuery) {
+  const q = userQuery.toLowerCase().replace(/['’]/g, "");
+  let bestKey = null;
+  let bestLen = 0;
+  Object.keys(HERB_FACTS).forEach(key => {
+    const normKey = key.replace(/['’]/g, "");
+    if (q.includes(normKey) && normKey.length > bestLen) {
+      bestKey = key;
+      bestLen = normKey.length;
+    }
+  });
+  return bestKey;
+}
+
+function formatHerbName(key) {
+  return key.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+}
+
+function getHerbFactResponse(herbKey, lessTehnical) {
+  const fact = HERB_FACTS[herbKey];
+  const displayName = formatHerbName(herbKey);
+  let message = `**${displayName}** (*${fact.latin}*) is ${fact.blurb}\n\n[${displayName} Profile]`;
+
+  if (lessTehnical) {
+    message = message
+      .replace(/\s*\(\*.*?\*\)/g, "") // drop the latin binomial
+      .replace(/curcumin|phytochemical|phytoestrogen|alkaloid|mucilage|silymarin|salicin/g, "compound")
+      .replace(/adaptogenic|adaptogen/g, "balancing");
+  }
+
+  const suggestion = HERB_FACT_SUGGESTIONS[Math.floor(Math.random() * HERB_FACT_SUGGESTIONS.length)];
+  message += "\n\n" + suggestion;
+  return message;
+}
 
 const HERBEXA_KB = {
   // Sleep & Rest
@@ -123,15 +229,21 @@ const HERBEXA_KB = {
 };
 
 // Scoring function: How well does a query match a category?
+// v2: ignores words shorter than 3 letters entirely, and only allows a
+// substring match (vs. an exact match) when BOTH sides are 4+ letters.
+// This stops noise words like "is", "it", "of" from matching inside
+// unrelated keywords (e.g. "is" inside "dermatitis").
 function scoreMatch(userQuery, categoryKeywords) {
-  const queryWords = userQuery.toLowerCase().split(/\s+/);
+  const queryWords = userQuery.toLowerCase().split(/\s+/).filter(w => w.length >= 3);
   const keywords = categoryKeywords.toLowerCase().split("|");
 
   let matches = 0;
   keywords.forEach(keyword => {
     queryWords.forEach(word => {
-      if (word.includes(keyword) || keyword.includes(word)) {
-        matches++;
+      if (word === keyword) {
+        matches += 2;
+      } else if (word.length >= 4 && keyword.length >= 4 && (word.includes(keyword) || keyword.includes(word))) {
+        matches += 1;
       }
     });
   });
@@ -145,10 +257,16 @@ function getHerbexaResponse(userQuery, lessTehnical = false) {
     return "Ask me anything about herbs! What wellness area interests you? Sleep, focus, digestion, immunity, stress, energy, or something else?";
   }
 
+  // 1) Does the question name a specific herb we know? Answer directly.
+  const herbKey = findHerbMatch(userQuery);
+  if (herbKey) {
+    return getHerbFactResponse(herbKey, lessTehnical);
+  }
+
+  // 2) Otherwise, fall back to wellness-topic matching.
   let bestScore = 0;
   let bestKey = "default";
 
-  // Score all categories
   Object.keys(HERBEXA_KB).forEach(key => {
     if (key !== "default") {
       const score = scoreMatch(userQuery, key);
@@ -159,7 +277,6 @@ function getHerbexaResponse(userQuery, lessTehnical = false) {
     }
   });
 
-  // If no good match, use default
   if (bestScore === 0) {
     bestKey = "default";
   }
@@ -173,7 +290,7 @@ function getHerbexaResponse(userQuery, lessTehnical = false) {
       .replace(/curcumin|phytochemical|phytoestrogen|alkaloid/g, "compound")
       .replace(/bioavailable|absorption/g, "your body can use it")
       .replace(/NF-κB|COX-2|pathway/g, "")
-      .replace(/\(.*?\)/g, "");
+      .replace(/\(.*?\)/g, ""); // Remove parenthetical explanations
   }
 
   // Add random suggestion
@@ -188,5 +305,6 @@ function getHerbexaResponse(userQuery, lessTehnical = false) {
 // Export for use in widget
 window.HERBEXA_ENGINE = {
   getResponse: getHerbexaResponse,
-  kb: HERBEXA_KB
+  kb: HERBEXA_KB,
+  herbFacts: HERB_FACTS
 };
