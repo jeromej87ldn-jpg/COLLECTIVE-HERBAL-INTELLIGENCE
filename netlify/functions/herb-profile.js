@@ -2,7 +2,7 @@ const https = require('https');
 const { URLSearchParams } = require('url');
 const Anthropic = require('@anthropic-ai/sdk');
 const { createClient } = require('@supabase/supabase-js');
-const { findMissing, deriveFunctionalOverview } = require('./profile-validation');
+const { findMissing, deriveFunctionalOverview, REQUIRED_SECTIONS } = require('./profile-validation');
 // ── SINGLE-CALL PROFILE (replaces the old Stage 1 / Stage 2 split) ──
 // The two-stage design existed to show something fast while a slower
 // Sonnet call filled in the rich content in the background — but the
@@ -286,6 +286,35 @@ Answer ONLY "yes" or "no", nothing else.`
           deriveFunctionalOverview(row.data);
           let healed = row.data.functionalOverview !== before;
 
+          // Heal-on-read, part 2: a row cached before the retry-until-filled
+          // generation logic existed — or one that still fell short after
+          // MAX_ATTEMPTS — can be stuck serving an incomplete profile (e.g.
+          // empty herbalActions) forever, since a cache hit never used to
+          // re-check for gaps. If a REQUIRED section is still genuinely
+          // empty, do one synchronous regeneration attempt — the same call
+          // a brand-new herb gets — and replace the cached row if it comes
+          // back more complete. This only costs an extra Sonnet call the
+          // first time a broken herb is viewed after this deploy; every
+          // view after that is a normal fast cache hit again. Wrapped in
+          // try/catch so a failed repair just falls back to serving the
+          // existing (still incomplete, but present) cached data.
+          const stillMissing = findMissing(row.data);
+          const criticalGap = stillMissing.some(f => REQUIRED_SECTIONS.includes(f));
+          if (criticalGap) {
+            try {
+              const repaired = await requestProfile(anthropic, name, buildUserMessage(name));
+              if (!repaired.error) {
+                deriveFunctionalOverview(repaired);
+                repaired.images = row.data.images || [];
+                repaired.generatedAt = new Date().toISOString();
+                row.data = repaired;
+                healed = true;
+              }
+            } catch (repairErr) {
+              console.error('Repair generation failed, serving existing cached data:', repairErr.message);
+            }
+          }
+
           // Image healing removed from this synchronous path — an external
           // Wikimedia call here, on every cache-hit view, risked pushing
           // requests past Netlify's function timeout (this handler is
@@ -300,7 +329,7 @@ Answer ONLY "yes" or "no", nothing else.`
           }
           return {
             statusCode: 200,
-            headers: { 'Content-Type': 'application/json', 'X-Cache': 'hit' },
+            headers: { 'Content-Type': 'application/json', 'X-Cache': healed ? 'repaired' : 'hit' },
             body: JSON.stringify(row.data)
           };
         }
