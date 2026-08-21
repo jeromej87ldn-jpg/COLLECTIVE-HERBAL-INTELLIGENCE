@@ -483,15 +483,26 @@ class HerbexaWidget {
     // Convert [Text] to clickable links
     return text
       .replace(/\[([^\]]+) Profile\]/g, (match, herb) => {
+        // supreme.html is the actual Herbadex/profile page on this site —
+        // it reads ?herb=name-with-hyphens and converts hyphens back to
+        // spaces itself. There is no herb-profile.html; that was the bug.
         const herbSlug = herb.toLowerCase().replace(/\s+/g, "-");
-        return `<a href="/herb-profile.html?herb=${herbSlug}" target="_blank">[${herb} Profile]</a>`;
+        return `<a href="/supreme.html?herb=${herbSlug}" target="_blank">[${herb} Profile]</a>`;
       })
       .replace(/\[Herb Match\]/g, '<a href="/herb-match.html">[Herb Match]</a>')
-      .replace(/\[Herb Profiles\]/g, '<a href="/glossary.html">[Herb Profiles]</a>')
-      .replace(/\[Browse Profiles\]/g, '<a href="/glossary.html">[Browse Profiles]</a>')
-      .replace(/\[Herbal Planner\]/g, '<a href="/garden.html">[Herbal Planner]</a>')
+      // Herb Profiles / Browse Profiles -> supreme.html (the Herbadex, the
+      // actual A-Z herb library). glossary.html is just term definitions,
+      // not herb profiles — that was pointing to the wrong page.
+      .replace(/\[Herb Profiles\]/g, '<a href="/supreme.html">[Herb Profiles]</a>')
+      .replace(/\[Browse Profiles\]/g, '<a href="/supreme.html">[Browse Profiles]</a>')
+      // Herbal Planner -> herb-planner.html. garden.html is the community
+      // photo gallery, a different page — that was also wrong.
+      .replace(/\[Herbal Planner\]/g, '<a href="/herb-planner.html">[Herbal Planner]</a>')
       .replace(/\[Browse Resources\]/g, '<a href="/resources.html">[Browse Resources]</a>')
-      .replace(/\[Contact Us\]/g, '<a href="/contact.html">[Contact Us]</a>')
+      // There's no contact.html on the site (and no contact info found
+      // elsewhere) — pointing at Resources for now rather than a dead link.
+      // Flag to Jerome: worth adding a real contact page/email later.
+      .replace(/\[Contact Us\]/g, '<a href="/resources.html">[Contact Us]</a>')
       .replace(/\[Try Herb Match\]/g, '<a href="/herb-match.html">[Try Herb Match]</a>');
   }
 
