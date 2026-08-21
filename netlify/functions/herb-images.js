@@ -78,8 +78,9 @@ exports.handler = async (event) => {
       return { statusCode: 400, body: JSON.stringify({ error: 'herbName is required' }) };
     }
 
-    // Fetch up to 2 images (non-blocking, called separately after profile loads)
-    const images = await fetchHerbImages(latinName || '', herbName.trim(), 2);
+    // Fetch up to 4 images (non-blocking, called separately after profile loads;
+    // the frontend shows these as a small slideshow when there's more than one)
+    const images = await fetchHerbImages(latinName || '', herbName.trim(), 4);
 
     return {
       statusCode: 200,
