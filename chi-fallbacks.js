@@ -36,7 +36,7 @@
     herbalActions:     'No herbal actions have been documented for this herb yet.',
     bodyEffects:       'No body system effects have been documented for this herb yet.',
     preparation:       'No preparation methods have been documented for this herb yet.',
-    dosage:            'No recommended dosage has been recorded for this preparation. Consult a qualified practitioner before use.',
+    dosage:            'No information recorded so far.',
     rareFact:          'No additional historical note has been recorded for this herb yet.',
     interactions:      'No interactions have been documented for this herb. This is not a confirmation of safety — consult a qualified practitioner, particularly if you take prescription medication.',
     safetyLevel:       'No safety assessment has been recorded for this herb yet. Consult a qualified practitioner before use.',
