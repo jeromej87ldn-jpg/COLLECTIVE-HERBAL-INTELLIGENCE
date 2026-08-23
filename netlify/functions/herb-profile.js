@@ -258,34 +258,15 @@ exports.handler = async (event) => {
       deriveFunctionalOverview(cachedRow.data);
       let healed = cachedRow.data.functionalOverview !== before;
 
-      // Heal-on-read, part 2: a row cached before the retry-until-filled
-      // generation logic existed — or one that still fell short after
-      // MAX_ATTEMPTS — can be stuck serving an incomplete profile (e.g.
-      // empty herbalActions) forever, since a cache hit never used to
-      // re-check for gaps. If a REQUIRED section is still genuinely
-      // empty, do one synchronous regeneration attempt — the same call
-      // a brand-new herb gets — and replace the cached row if it comes
-      // back more complete. This only costs an extra Sonnet call the
-      // first time a broken herb is viewed after this deploy; every
-      // view after that is a normal fast cache hit again. Wrapped in
-      // try/catch so a failed repair just falls back to serving the
-      // existing (still incomplete, but present) cached data.
-      const stillMissing = findMissing(cachedRow.data);
-      const criticalGap = stillMissing.some(f => REQUIRED_SECTIONS.includes(f));
-      if (criticalGap) {
-        try {
-          const repaired = await requestProfile(anthropic, name, buildUserMessage(name));
-          if (!repaired.error) {
-            deriveFunctionalOverview(repaired);
-            repaired.images = cachedRow.data.images || [];
-            repaired.generatedAt = new Date().toISOString();
-            cachedRow.data = repaired;
-            healed = true;
-          }
-        } catch (repairErr) {
-          console.error('Repair generation failed, serving existing cached data:', repairErr.message);
-        }
-      }
+      // Heal-on-read, part 2 -- REMOVED. This used to run a full,
+      // synchronous Sonnet repair call on every cache-hit view whenever
+      // herbalActions/compounds/bodyEffects (REQUIRED_SECTIONS) was empty
+      // on the cached row -- true for a lot of pre-this-schema rows. That
+      // turned an ordinary cached view into a 15-30s wait, and sometimes
+      // a Netlify 504, on what's supposed to be the fast path (one DB
+      // read). Gaps in cached data are shown via the frontend's
+      // chi-fallbacks.js placeholders instead. Herbs can still be
+      // repaired individually -- just not automatically on every view.
 
       // Image healing removed from this synchronous path — an external
       // Wikimedia call here, on every cache-hit view, risked pushing
