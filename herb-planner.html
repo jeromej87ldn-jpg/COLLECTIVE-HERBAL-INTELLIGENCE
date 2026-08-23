@@ -81,6 +81,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 /* ── Privacy / checkin screen ── */
 .privacy-banner{background:rgba(74,140,101,.08);border:1px solid rgba(74,140,101,.28);color:var(--tag-text);border-radius:10px;padding:1rem 1.1rem;font-size:13px;line-height:1.7;margin-bottom:1.6rem;}
 .checkin-question{margin-bottom:1.5rem;}
+.safety-intro-banner{display:flex;gap:.85rem;align-items:flex-start;background:var(--danger-bg);border:1px solid var(--danger-border);border-left:4px solid var(--danger);border-radius:10px;padding:1rem 1.2rem;margin-bottom:1.5rem;}
+.safety-intro-icon{font-size:22px;line-height:1;flex-shrink:0;}
+.safety-intro-title{font-weight:700;color:var(--danger-text);font-size:14.5px;margin-bottom:.3rem;letter-spacing:.01em;}
+.safety-intro-text{font-size:13px;color:var(--text);opacity:.9;line-height:1.6;}
 .checkin-q-text{font-weight:500;margin-bottom:.6rem;color:var(--text);font-size:14.5px;}
 .checkin-btn-row{display:flex;gap:.5rem;flex-wrap:wrap;}
 .checkin-btn{font-family:'DM Sans',sans-serif;font-size:13px;padding:.55rem 1.1rem;border-radius:999px;border:1px solid var(--card-border);background:var(--card);color:var(--muted);cursor:pointer;transition:all .15s;}
@@ -555,6 +559,14 @@ input:focus,select:focus{border-color:rgba(200,149,42,.4);}
   <section id="screen-checkin" class="screen">
     <div class="privacy-banner">
       🔒 <strong>Your privacy:</strong> C.H.I never shares this information with any third party — not Google, Apple, Meta, or X. That's also why sign-in here is manual rather than a social login. We can't promise protection from everything, but keeping your health information private is the whole point.
+    </div>
+
+    <div class="safety-intro-banner">
+      <span class="safety-intro-icon">⚠️</span>
+      <div>
+        <div class="safety-intro-title">Please don't skip this — it's about your safety</div>
+        <div class="safety-intro-text">A few honest answers let us flag herbs that could be risky for you specifically — for example, one that lowers blood pressure further if yours already runs low, or one that interacts with a medication you're taking. It takes under a minute.</div>
+      </div>
     </div>
 
     <h1>Before we start — a quick safety check-in</h1>

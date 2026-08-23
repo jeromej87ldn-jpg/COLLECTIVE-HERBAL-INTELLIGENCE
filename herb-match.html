@@ -88,16 +88,27 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 
 .results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem;margin-bottom:2rem;}
 
-.herb-card{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:1.5rem;cursor:default;transition:all .2s;text-align:center;}
+.herb-card{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:1.25rem;cursor:default;transition:all .2s;text-align:left;position:relative;}
 .herb-card:hover{border-color:rgba(200,149,42,.4);background:rgba(200,149,42,.08);}
 
-.herb-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--gold-light);margin-bottom:.25rem;}
-.herb-latin{font-style:italic;font-size:12px;color:var(--muted);margin-bottom:.75rem;}
-.match-badge{display:inline-block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:.25rem .6rem;border-radius:999px;margin-bottom:.75rem;}
-.match-badge.strong{background:rgba(122,204,160,.18);color:#7acca0;}
-.match-badge.good{background:rgba(200,149,42,.18);color:var(--gold-light);}
-.match-badge.worth-exploring{background:rgba(160,160,220,.18);color:#b3b3e6;}
-.match-reason{font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:1rem;text-align:left;}
+.herb-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.6rem;}
+.herb-swatch{width:12px;height:12px;border-radius:50%;background:var(--herb-color,var(--gold));display:inline-block;flex-shrink:0;}
+.herb-card .tag{font-size:10px;letter-spacing:.04em;text-transform:uppercase;padding:.25rem .55rem;border-radius:999px;background:rgba(255,255,255,.06);color:var(--muted);border:1px solid var(--card-border);}
+.stack-star{background:none;border:none;font-size:17px;color:var(--muted);cursor:pointer;line-height:1;padding:0;transition:color .15s;}
+.stack-star.is-saved{color:var(--gold-light);}
+.stack-star:hover{color:var(--gold-light);}
+
+.herb-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--gold-light);margin-bottom:.15rem;}
+.herb-latin{font-style:italic;font-size:12px;color:var(--muted);margin-bottom:.6rem;}
+.herb-blurb{font-size:12.5px;color:var(--text);opacity:.85;line-height:1.6;margin-bottom:.6rem;}
+.herb-dose{font-size:11.5px;color:var(--muted);margin-bottom:.85rem;}
+
+.match-banner{border-radius:8px;padding:.65rem .8rem;margin-bottom:1rem;font-size:12px;line-height:1.6;}
+.match-banner-label{display:block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;margin-bottom:.3rem;}
+.match-banner-reason{opacity:.9;}
+.match-banner.strong{background:rgba(122,204,160,.1);border:1px solid rgba(122,204,160,.28);color:#7acca0;}
+.match-banner.good{background:rgba(200,149,42,.1);border:1px solid rgba(200,149,42,.28);color:var(--gold-light);}
+.match-banner.worth-exploring{background:rgba(160,160,220,.1);border:1px solid rgba(160,160,220,.28);color:#b3b3e6;}
 
 .herb-actions{display:flex;flex-direction:column;gap:.6rem;margin-top:1rem;}
 .herb-btn{padding:.6rem;border:1px solid var(--card-border);border-radius:5px;background:transparent;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;}
@@ -762,23 +773,39 @@ function updateResultsGrid() {
     return;
   }
 
+  const owned = getOwnedHerbs();
+
   validHerbs.forEach(herb => {
     const safeName = herb.name.replace(/'/g, "\\'");
+    const saved = owned.includes(herb.name);
     const card = document.createElement('div');
     card.className = 'herb-card';
     card.setAttribute('data-herb', herb.name);
+    card.style.setProperty('--herb-color', herb.categoryColor || 'var(--gold)');
     card.innerHTML = `
+      <div class="herb-card-top">
+        <span class="herb-swatch"></span>
+        ${herb.category ? `<span class="tag">${herb.category}</span>` : '<span></span>'}
+        <button type="button" class="stack-star ${saved ? 'is-saved' : ''}" data-stack-name="${herb.name}" title="${saved ? 'Remove from your stack' : 'Save to your stack'}">${saved ? '★' : '☆'}</button>
+      </div>
       <div class="herb-name">${herb.name}</div>
       <div class="herb-latin">${herb.latin || ''}</div>
-      ${herb.matchStrength ? `<div class="match-badge ${badgeClass(herb.matchStrength)}">${herb.matchStrength}</div>` : ''}
-      ${herb.matchReason ? `<div class="match-reason">${herb.matchReason}</div>` : ''}
+      ${herb.blurb ? `<div class="herb-blurb">${herb.blurb}</div>` : ''}
+      ${herb.typicalDose ? `<div class="herb-dose">Typical dose: ${herb.typicalDose}</div>` : ''}
+      ${herb.matchStrength ? `<div class="match-banner ${badgeClass(herb.matchStrength)}">
+        <span class="match-banner-label">${herb.matchStrength} match</span>
+        ${herb.matchReason ? `<div class="match-banner-reason">${herb.matchReason}</div>` : ''}
+      </div>` : ''}
       <div class="herb-actions">
-        <button class="herb-btn primary" onclick="viewProfile('${safeName}')">View profile</button>
-        <button class="herb-btn" onclick="addHerbToStack('${safeName}')">+ Add to stack</button>
+        <button class="herb-btn primary" onclick="viewProfile('${safeName}')">📖 View profile</button>
         <button class="herb-btn" onclick="rejectHerb('${safeName}')">Offer alternative</button>
       </div>
     `;
     grid.appendChild(card);
+  });
+
+  grid.querySelectorAll('.stack-star').forEach(btn => {
+    btn.addEventListener('click', () => toggleHerbInStack(btn.dataset.stackName));
   });
 }
 
@@ -1137,6 +1164,17 @@ function addToStack() {
   if (currentProfile) {
     addHerbToStack(currentProfile);
   }
+}
+
+// Star toggle on result cards -- silent add/remove (no alert popup, unlike
+// addHerbToStack above which is a deliberate action from the profile
+// viewer and keeps its confirmation). Re-renders so the star fill updates.
+function toggleHerbInStack(herbName) {
+  const stack = getOwnedHerbs();
+  const idx = stack.indexOf(herbName);
+  if (idx === -1) stack.push(herbName); else stack.splice(idx, 1);
+  localStorage.setItem('chi_herb_stack', JSON.stringify(stack));
+  updateResultsGrid();
 }
 
 // ─── INIT ───────────────────────────────────────────────

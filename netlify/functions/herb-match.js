@@ -27,6 +27,10 @@ Return ONLY valid JSON:
     {
       "name": "common name",
       "latin": "latin binomial",
+      "category": "primary herbal category (e.g. Adaptogen, Nervine, Digestive, Immune, Anti-inflammatory, Circulatory)",
+      "categoryColor": "#hex color that fits the herb's character, varied across the list -- not the same color repeated",
+      "blurb": "one short plain-language sentence on what this herb is or does, under 90 characters",
+      "typicalDose": "one short phrase on typical dose/form, e.g. '300-600mg extract, 1-2x daily' or '1 cup tea, up to 3x daily'",
       "matchReason": "one short, warm, plain-language sentence on why this fits their specific situation",
       "matchStrength": "strong | good | worth exploring"
     }

@@ -35,7 +35,11 @@
   }
 
   function start() {
-    setInterval(spawnLeaf, 400);
+    // Leaves run for 7 seconds after the page is entered, then stop --
+    // not a continuous background effect. Leaves already spawned keep
+    // falling and removing themselves as normal; only new spawning stops.
+    var intervalId = setInterval(spawnLeaf, 400);
+    setTimeout(function () { clearInterval(intervalId); }, 7000);
   }
 
   // Same pattern as chi-glossary.js: if this script loads after the
