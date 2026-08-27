@@ -178,7 +178,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ch
 .rd-votes{font-size:12px;color:rgba(245,240,232,.35);}
 .star-rate-row{display:flex;gap:6px;justify-content:center;margin-top:1rem;}
 .rate-star{font-size:22px;color:rgba(255,255,255,.2);cursor:pointer;transition:color .15s;}
-.rate-star:hover,.rate-star.hovered{color:var(--gold);}
+.rate-star:hover,.rate-star.hovered,.rate-star.selected{color:var(--gold);}
 
 /* Forum */
 .forum-section{background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-radius:6px;overflow:hidden;}
@@ -848,7 +848,7 @@ async function loadHerbProfile(herbName) {
 }
 
 // Poll for profile generation. Returns Stage 1 immediately, Stage 2 loads in background.
-async function fetchHerbProfilePolling(herbName, { maxMs = 300000, intervalMs = 2500 } = {}) {
+async function fetchHerbProfilePolling(herbName, { maxMs = 180000, intervalMs = 2500 } = {}) {
   const started = Date.now();
   while (true) {
     const res = await fetch('/.netlify/functions/herb-profile', {
@@ -1014,11 +1014,19 @@ function renderProfile(h) {
       ${body}
     </div>`;
   }).join('');
+  // Sources -- real citation links only. h.sources is [{url,title}], filtered
+  // server-side in herb-profile.js to URLs actually retrieved from PubMed/
+  // Wikipedia -- never a free-text "source" string that could be invented.
+  const escHtml = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const sourcesHTML = (Array.isArray(h.sources) && h.sources.length)
+    ? h.sources.filter(s => s && s.url).map(s => `<a href="${escHtml(s.url)}" target="_blank" rel="noopener noreferrer" style="color:var(--gold);text-decoration:underline;">${escHtml(s.title || s.url)}</a>`).join(' &middot; ')
+    : `<span style="opacity:.62;font-style:italic;">${F.message('source')}</span>`;
+
 
   document.getElementById('profile-main-content').innerHTML = `
     <div style="background:rgba(200,149,42,.07);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
       <div style="font-size:14.5px;line-height:1.8;color:var(--charcoal);margin-bottom:1rem;${F.has(h.functionalOverview) ? '' : 'opacity:.62;font-style:italic;'}">${F.text(h.functionalOverview, 'functionalOverview')}</div>
-      <div style="font-size:11.5px;color:var(--charcoal-mid);border-top:1px solid rgba(200,149,42,.2);padding-top:.75rem;"><span style="text-transform:uppercase;letter-spacing:.08em;color:var(--gold);font-weight:600;">Source</span><span style="margin-left:.5rem;${F.has(h.source) ? '' : 'opacity:.62;font-style:italic;'}">${F.text(h.source, 'source')}</span></div>
+<div style="font-size:11.5px;color:var(--charcoal-mid);border-top:1px solid rgba(200,149,42,.2);padding-top:.75rem;"><span style="text-transform:uppercase;letter-spacing:.08em;color:var(--gold);font-weight:600;">Sources</span><span style="margin-left:.5rem;">${sourcesHTML}</span></div>
     </div>
 
     <div class="content-section">
@@ -1048,26 +1056,6 @@ function renderProfile(h) {
           ? h.interactions.map(i=>`<div style="font-size:14px;color:var(--charcoal-mid);padding:6px 0;border-bottom:1px solid rgba(196,82,42,.08);display:flex;gap:8px;"><span style="color:#c4522a;font-weight:700;font-size:12px;margin-top:2px;">!</span>${i}</div>`).join('')
           : `<div style="font-size:13px;color:var(--charcoal-mid);line-height:1.7;opacity:.72;font-style:italic;">${F.message('interactions')}</div>`}
       </div>
-    </div>
-
-    <div class="content-section">
-      <h2><span class="cs-icon">🌱</span>Plant characteristics</h2>
-      <p>${F.text(h.keyCharacteristics, 'keyCharacteristics')}</p>
-    </div>
-
-    <div class="content-section">
-      <h2><span class="cs-icon">🌾</span>Growing information</h2>
-      <p>${F.text(h.growingInformation, 'growingInformation')}</p>
-    </div>
-
-    <div class="content-section">
-      <h2><span class="cs-icon">🔗</span>Herbal combinations</h2>
-      <p>${F.text(h.herbalCombinations, 'herbalCombinations')}</p>
-    </div>
-
-    <div class="content-section">
-      <h2><span class="cs-icon">🍂</span>Harvesting &amp; storage</h2>
-      <p>${F.text(h.harvestingStorage, 'harvestingStorage')}</p>
     </div>
 
     <div class="content-section" id="community-photos-block" style="display:none;">
@@ -1104,46 +1092,38 @@ function renderProfile(h) {
       ${bodyHTML}
     </div>`;
 
-  // Sidebar: ranking + forum
-  const rankData = TOP20.find(r => r.name.toLowerCase() === h.name.toLowerCase()) || {rank:'—',stars:4.5,votes:0};
-  const forumEntries = (h.forumSeed || []).map(f => `
-    <div class="forum-entry">
-      <div class="fe-meta">
-        <div class="fe-avatar">${f.initials}</div>
-        <span class="fe-name">${f.user}</span>
-        <span class="fe-date">Recently</span>
-      </div>
-      <div class="fe-stars">${Array(f.rating).fill('<span class="fe-star">★</span>').join('')}</div>
-      <div class="fe-text">${f.comment}</div>
-    </div>`).join('');
-
+  // Sidebar: ranking + forum -- real data only. Real submissions live in
+  // the herb_testimonials table (see herb_testimonials.sql), fetched below
+  // by renderHerbTestimonials(); nothing here is generated or hardcoded.
   document.getElementById('profile-sidebar-content').innerHTML = `
     <div class="rank-display">
-      <div class="rd-number">#${rankData.rank}</div>
-      <div class="rd-label">CHI Community Ranking</div>
-      <div class="rd-stars">${Array(5).fill('').map((_,i)=>`<span class="rd-star ${i<Math.round(rankData.stars)?'':'empty'}">★</span>`).join('')}</div>
-      <div class="rd-votes">${rankData.votes ? rankData.votes.toLocaleString() + ' community ratings' : 'Be the first to rate'}</div>
+      <div class="rd-label">Community rating</div>
+      <div class="rd-stars" id="rd-stars">${Array(5).fill('<span class="rd-star empty">★</span>').join('')}</div>
+      <div class="rd-votes" id="rd-votes">Loading…</div>
       <div class="rd-label" style="margin-top:1rem;">Rate this herb</div>
       <div class="star-rate-row" id="rate-row">
-        ${[1,2,3,4,5].map(n=>`<span class="rate-star" data-val="${n}" onmouseover="hoverStars(${n})" onmouseout="clearHover()" onclick="rateHerb(${n})">★</span>`).join('')}
+        ${[1,2,3,4,5].map(n=>`<span class="rate-star" data-val="${n}" onmouseover="hoverStars(${n})" onmouseout="clearHover()" onclick="selectRating(${n})">★</span>`).join('')}
       </div>
     </div>
 
     <div class="forum-section">
       <div class="forum-header">
         <h4>Community experiences</h4>
-        <span class="forum-count">${(h.forumSeed||[]).length} entries</span>
+        <span class="forum-count" id="forum-count">…</span>
       </div>
-      ${forumEntries}
+      <div id="forum-entries"><div style="font-size:12px;color:var(--muted);padding:.5rem 0;">Loading…</div></div>
       <div class="forum-add">
         <textarea class="forum-textarea" id="forum-input" placeholder="Share your experience with ${h.name}..."></textarea>
         <button class="forum-submit" onclick="addForumEntry('${h.name}')">Share experience</button>
       </div>
     </div>`;
+  selectedRating = 0;
 
   document.getElementById('profile-loading').style.display = 'none';
   document.getElementById('profile-content').style.display = 'block';
 }
+
+let selectedRating = 0;
 
 function hoverStars(n) {
   document.querySelectorAll('.rate-star').forEach(s => {
@@ -1153,19 +1133,79 @@ function hoverStars(n) {
 function clearHover() {
   document.querySelectorAll('.rate-star').forEach(s => s.classList.remove('hovered'));
 }
-function rateHerb(n) {
-  alert(`Thank you! Your ${n}-star rating has been recorded. Ratings update the CHI Top 20 ranking.`);
+// Selecting a star no longer submits anything by itself -- it just sets
+// what "Share experience" will send, same as any normal review widget.
+// Real submission -> rating and optional comment go together in one
+// request to submit-herb-testimonial.js, and nothing appears publicly
+// until an admin approves it.
+function selectRating(n) {
+  selectedRating = n;
+  document.querySelectorAll('.rate-star').forEach(s => {
+    s.classList.toggle('selected', parseInt(s.dataset.val) <= n);
+  });
 }
 
-function addForumEntry(herbName) {
-  const text = document.getElementById('forum-input').value.trim();
-  if(!text) return;
-  const entries = document.querySelector('.forum-section .forum-header');
-  const newEntry = document.createElement('div');
-  newEntry.className = 'forum-entry';
-  newEntry.innerHTML = `<div class="fe-meta"><div class="fe-avatar">U</div><span class="fe-name">You</span><span class="fe-date">Just now</span></div><div class="fe-stars"><span class="fe-star">★★★★★</span></div><div class="fe-text">${text}</div>`;
-  entries.insertAdjacentElement('afterend', newEntry);
-  document.getElementById('forum-input').value = '';
+async function addForumEntry(herbName) {
+  const textarea = document.getElementById('forum-input');
+  const text = textarea.value.trim();
+  if (!selectedRating) {
+    alert('Please pick a star rating before sharing your experience.');
+    return;
+  }
+  try {
+    const res = await fetch('/.netlify/functions/submit-herb-testimonial', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ herbName, rating: selectedRating, comment: text })
+    });
+    if (!res.ok) throw new Error('failed');
+    textarea.value = '';
+    selectedRating = 0;
+    document.querySelectorAll('.rate-star').forEach(s => s.classList.remove('selected'));
+    alert('Thanks for sharing -- this will appear here once it\'s been reviewed.');
+  } catch (e) {
+    alert('Could not submit right now. Please try again in a moment.');
+  }
+}
+
+// Fetches real approved testimonials + a real aggregate rating for this
+// herb. Replaces the old TOP20 hardcoded stars/votes and forumSeed fake
+// reviews entirely -- see get-herb-testimonials.js.
+async function renderHerbTestimonials(herbName) {
+  const starsEl = document.getElementById('rd-stars');
+  const votesEl = document.getElementById('rd-votes');
+  const entriesEl = document.getElementById('forum-entries');
+  const countEl = document.getElementById('forum-count');
+  if (!starsEl || !votesEl || !entriesEl || !countEl) return;
+  const emptyNote = '<div style="font-size:12px;color:var(--muted);padding:.5rem 0;">No community experiences yet -- be the first to share one.</div>';
+  try {
+    const res = await fetch('/.netlify/functions/get-herb-testimonials?herb=' + encodeURIComponent((herbName || '').toLowerCase().trim()));
+    if (!res.ok) throw new Error('bad response');
+    const data = await res.json();
+    const testimonials = data.testimonials || [];
+    const count = data.count || 0;
+    const average = data.average;
+
+    starsEl.innerHTML = Array(5).fill('').map((_, i) =>
+      `<span class="rd-star ${average && i < Math.round(average) ? '' : 'empty'}">★</span>`
+    ).join('');
+    votesEl.textContent = count ? `${average}★ average \u00b7 ${count} real rating${count === 1 ? '' : 's'}` : 'Be the first to rate';
+    countEl.textContent = `${count} ${count === 1 ? 'entry' : 'entries'}`;
+    entriesEl.innerHTML = testimonials.length ? testimonials.map(t => `
+      <div class="forum-entry">
+        <div class="fe-meta">
+          <div class="fe-avatar">${(t.display_name || 'A').charAt(0).toUpperCase()}</div>
+          <span class="fe-name">${t.display_name}</span>
+          <span class="fe-date">${new Date(t.created_at).toLocaleDateString()}</span>
+        </div>
+        <div class="fe-stars">${Array(t.rating).fill('<span class="fe-star">★</span>').join('')}</div>
+        ${t.comment ? `<div class="fe-text">${t.comment}</div>` : ''}
+      </div>`).join('') : emptyNote;
+  } catch (e) {
+    votesEl.textContent = 'Be the first to rate';
+    countEl.textContent = '0 entries';
+    entriesEl.innerHTML = emptyNote;
+  }
 }
 
 // Herb stack — same chi_phyto_stack key the former Plant Intelligence page
@@ -1355,6 +1395,7 @@ window.renderProfile = function(h) {
   if (h && h.name) {
     fetchHerbImage(h.name, h.latin);
     renderCommunityPhotos(h.name);
+    renderHerbTestimonials(h.name);
   }
 };
 

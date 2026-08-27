@@ -16,21 +16,11 @@ const REQUIRED_TEXT = ['name', 'latin', 'category', 'summary', 'safetyLevel'];
 // herbalActions/compounds/bodyEffects require a NON-EMPTY array — every
 // herb genuinely has at least one action/compound/effect, so an empty
 // array here really does mean the model skipped the field.
-// CRITICAL: compounds must be non-empty AND contain only REAL compounds after validation
 const REQUIRED_SECTIONS = ['herbalActions', 'compounds', 'bodyEffects'];
 
 const REQUIRED_TEXT_SECTIONS = {
   spiritualHistory: h => h.spiritualHistory && h.spiritualHistory.overview && h.spiritualHistory.overview.trim(),
   modernUse: h => h.modernUse && h.modernUse.trim()
-};
-
-// Optional fields (new custom fields) — don't block profile if missing for backwards compat
-const OPTIONAL_TEXT_SECTIONS = {
-  keyCharacteristics: h => h.keyCharacteristics && h.keyCharacteristics.trim(),
-  growingInformation: h => h.growingInformation && h.growingInformation.trim(),
-  usesApplications: h => h.usesApplications && h.usesApplications.trim(),
-  herbalCombinations: h => h.herbalCombinations && h.herbalCombinations.trim(),
-  harvestingStorage: h => h.harvestingStorage && h.harvestingStorage.trim()
 };
 
 // interactions was previously unenforced entirely — it could be missing or
