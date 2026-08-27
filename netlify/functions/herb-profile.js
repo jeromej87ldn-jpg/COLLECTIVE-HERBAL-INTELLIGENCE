@@ -144,9 +144,9 @@ exports.handler = async (event) => {
     }
 
     if (cachedRow && cachedRow.status === 'complete' && cachedRow.data && cachedRow.data.name) {
-      // Check if profile is complete (has all required fields)
-      const requiredFields = ['category', 'safetyLevel', 'modernUse', 'compounds', 'herbalActions', 'bodyEffects', 'preparation', 'interactions', 'keyCharacteristics', 'growingInformation', 'usesApplications', 'harvestingStorage'];
-      const isIncomplete = requiredFields.some(f => !cachedRow.data[f] || (Array.isArray(cachedRow.data[f]) && cachedRow.data[f].length === 0) || (typeof cachedRow.data[f] === 'object' && Object.keys(cachedRow.data[f]).length === 0) || (typeof cachedRow.data[f] === 'string' && !cachedRow.data[f].trim()));
+      // Check if profile is complete (has original required fields — new fields optional for backwards compat)
+      const requiredFields = ['category', 'safetyLevel', 'modernUse', 'compounds', 'herbalActions', 'bodyEffects', 'preparation', 'interactions'];
+      const isIncomplete = requiredFields.some(f => !cachedRow.data[f] || (Array.isArray(cachedRow.data[f]) && cachedRow.data[f].length === 0) || (typeof cachedRow.data[f] === 'object' && cachedRow.data[f] !== null && Object.keys(cachedRow.data[f]).length === 0) || (typeof cachedRow.data[f] === 'string' && !cachedRow.data[f].trim()));
 
       if (isIncomplete) {
         console.log(`Profile incomplete for ${name}, regenerating...`);
