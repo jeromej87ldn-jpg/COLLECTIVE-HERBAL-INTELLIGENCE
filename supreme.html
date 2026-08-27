@@ -848,7 +848,7 @@ async function loadHerbProfile(herbName) {
 }
 
 // Poll for profile generation. Returns Stage 1 immediately, Stage 2 loads in background.
-async function fetchHerbProfilePolling(herbName, { maxMs = 180000, intervalMs = 2500 } = {}) {
+async function fetchHerbProfilePolling(herbName, { maxMs = 300000, intervalMs = 2500 } = {}) {
   const started = Date.now();
   while (true) {
     const res = await fetch('/.netlify/functions/herb-profile', {

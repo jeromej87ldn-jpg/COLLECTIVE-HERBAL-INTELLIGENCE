@@ -52,7 +52,7 @@ Do not invent testimonials or user reviews -- that data comes only from real use
 Keep sources empty unless you can cite a well-known published reference by name.
 Return ONLY the JSON object.`;
 
-const MAX_ATTEMPTS = 1;
+const MAX_ATTEMPTS = 2;
 
 function extractJson(text) {
   const stripped = text.trim()

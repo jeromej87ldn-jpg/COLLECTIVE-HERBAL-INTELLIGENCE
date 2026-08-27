@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herb Match — Discovery Engine — Herbadex</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --forest:#1a3a2a;--forest-mid:#2d5c42;--forest-light:#4a8c65;
+  --gold:#c8952a;--gold-light:#e8b84b;--night:#0c1a10;
+  --parchment:#f5f0e8;--muted:rgba(245,240,232,0.5);
+  --card:rgba(255,255,255,0.04);--card-border:rgba(255,255,255,0.08);
+  --text:#f5f0e8;--accent:#c8952a;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--night);color:var(--text);min-height:100vh;
+  background-image:radial-gradient(ellipse 70% 50% at 50% -5%,rgba(74,140,101,0.1),transparent 60%),radial-gradient(ellipse 50% 40% at 90% 100%,rgba(200,149,42,0.05),transparent 55%);}
+
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:var(--forest);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:100;}
+.nav-logo{text-decoration:none;display:flex;flex-direction:column;}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-light);letter-spacing:.1em;}
+.nav-full{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.5);}
+.nav-right{display:flex;align-items:center;gap:1.25rem;}
+.nav-right>a{color:rgba(245,240,232,.6);text-decoration:none;font-size:13px;transition:color .2s;}
+.nav-right>a:hover,.nav-right>a.active{color:var(--gold-light);}
+
+/* MAIN CONTAINER */
+.container{max-width:1000px;margin:0 auto;padding:3rem 2.5rem;}
+
+/* HERO SECTION */
+.hero{text-align:center;margin-bottom:3rem;}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;color:var(--parchment);margin-bottom:.5rem;}
+.hero p{font-size:15px;color:var(--muted);line-height:1.8;max-width:620px;margin:0 auto 1.5rem;}
+
+/* PYRAMID/TREE ISSUES */
+.pyramid-section{background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:2rem;margin-bottom:2.5rem;}
+.pyramid-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;color:var(--gold-light);margin-bottom:1.5rem;}
+.pyramid-intro{font-size:13px;color:var(--muted);margin-bottom:2rem;line-height:1.7;}
+
+.issue-category{margin-bottom:2rem;}
+.category-name{font-size:14px;font-weight:600;color:var(--gold-light);letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
+.category-name::before{content:'▸';font-size:16px;}
+
+.issues-grid{display:flex;flex-wrap:wrap;gap:.6rem;margin-left:1.5rem;}
+.issue-chip{padding:.55rem 1.15rem;border-radius:999px;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .2s;}
+.issue-chip:hover{border-color:rgba(200,149,42,.45);}
+.issue-chip.picked{background:rgba(200,149,42,.22);border-color:var(--gold);color:var(--gold-light);}
+
+.selection-status{text-align:center;padding:1.5rem;background:rgba(200,149,42,.08);border:1px solid rgba(200,149,42,.15);border-radius:8px;margin-top:1.5rem;}
+.selection-status p{font-size:13px;color:var(--muted);}
+.selection-status .count{font-size:18px;font-weight:600;color:var(--gold-light);margin:0.5rem 0;}
+
+/* SPECIFICS (second-tier drill-down) */
+.specifics-section{margin-top:1.75rem;}
+.specifics-panel{background:rgba(0,0,0,.18);border:1px dashed rgba(200,149,42,.3);border-radius:10px;padding:1.25rem 1.5rem;margin-bottom:1rem;}
+.specifics-panel-title{font-size:13px;color:var(--gold-light);margin-bottom:.9rem;line-height:1.5;}
+.specifics-panel-title strong{color:var(--parchment);}
+.specific-chips{display:flex;flex-wrap:wrap;gap:.6rem;}
+.specific-chip{padding:.5rem 1rem;border-radius:999px;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--text);font-size:12.5px;cursor:pointer;transition:all .2s;}
+.specific-chip:hover{border-color:rgba(200,149,42,.45);}
+.specific-chip.picked{background:rgba(200,149,42,.22);border-color:var(--gold);color:var(--gold-light);}
+.specifics-loading{font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:8px;}
+.specifics-note{font-size:11.5px;color:var(--muted);margin-top:.9rem;font-style:italic;}
+
+/* SUBMIT BUTTON */
+.submit-btn{display:block;margin:2rem auto 0;padding:1rem 2.5rem;background:var(--gold);color:var(--forest);border:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s;}
+.submit-btn:hover:not(:disabled){background:var(--gold-light);}
+.submit-btn:disabled{opacity:0.5;cursor:not-allowed;}
+
+/* RESULTS SECTION */
+.results-section{display:none;}
+.results-section.show{display:block;}
+
+.results-header{margin-bottom:1.25rem;text-align:center;}
+.results-header h2{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:500;color:var(--parchment);margin-bottom:.5rem;}
+.results-header p{font-size:13px;color:var(--muted);}
+.results-note{font-size:12px;color:var(--muted);font-style:italic;max-width:480px;margin:.75rem auto 0;line-height:1.6;}
+
+.results-loading{text-align:center;padding:3rem 1rem;}
+.results-loading p{font-size:13px;color:var(--muted);margin-top:1rem;}
+
+.results-error{text-align:center;padding:2rem;background:rgba(220,90,90,.08);border:1px solid rgba(220,90,90,.25);border-radius:10px;margin-bottom:2rem;}
+.results-error p{font-size:13px;color:#e39a9a;line-height:1.6;}
+
+.results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem;margin-bottom:2rem;}
+
+.herb-card{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:1.5rem;cursor:default;transition:all .2s;text-align:center;}
+.herb-card:hover{border-color:rgba(200,149,42,.4);background:rgba(200,149,42,.08);}
+
+.herb-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--gold-light);margin-bottom:.25rem;}
+.herb-latin{font-style:italic;font-size:12px;color:var(--muted);margin-bottom:.75rem;}
+.match-badge{display:inline-block;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:.25rem .6rem;border-radius:999px;margin-bottom:.75rem;}
+.match-badge.strong{background:rgba(122,204,160,.18);color:#7acca0;}
+.match-badge.good{background:rgba(200,149,42,.18);color:var(--gold-light);}
+.match-badge.worth-exploring{background:rgba(160,160,220,.18);color:#b3b3e6;}
+.match-reason{font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:1rem;text-align:left;}
+
+.herb-actions{display:flex;flex-direction:column;gap:.6rem;margin-top:1rem;}
+.herb-btn{padding:.6rem;border:1px solid var(--card-border);border-radius:5px;background:transparent;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;}
+.herb-btn:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
+.herb-btn.primary{background:var(--gold);color:var(--forest);border-color:var(--gold);}
+
+/* PROFILE VIEWER */
+.profile-section{display:none;}
+.profile-section.show{display:block;margin-top:2rem;}
+
+.profile-header{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:2rem;margin-bottom:2rem;text-align:center;}
+.profile-name{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:500;color:var(--gold-light);margin-bottom:.5rem;}
+.profile-latin{font-style:italic;font-size:13px;color:var(--muted);margin-bottom:1rem;}
+
+/* CAUTION BLOCKS — interactions and safety read as warnings, not as detail */
+.profile-caution{background:rgba(220,90,90,.07)!important;border:1px solid rgba(220,90,90,.22)!important;border-left:3px solid #dc5a5a!important;}
+.profile-caution-title{color:#e39a9a!important;}
+
+/* PROFILE VIEW TOGGLE */
+
+
+/* Herb profile content — ported to match Herbadex's presentation exactly
+   (same section layout/typography), with a Plant Intelligence compound
+   science section appended after it. Scoped light/parchment theme so it
+   reads correctly against this page's dark chrome. Herbadex (supreme.html)
+   itself is not modified — these rules are a deliberate duplicate. */
+#profile-content{
+  --parchment-dark:#ede5d0;--parchment-deep:#e0d5b8;
+  --charcoal:#2a2a25;--charcoal-mid:#4a4a42;
+  background:var(--parchment);color:var(--charcoal);
+  border-radius:10px;padding:2rem 2.25rem;text-align:left;
+}
+#profile-content .content-section{margin-bottom:3rem;}
+#profile-content .content-section h2{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;color:var(--charcoal);margin-bottom:1.1rem;padding-bottom:.6rem;border-bottom:1px solid var(--parchment-dark);display:flex;align-items:center;gap:10px;}
+#profile-content .content-section h2 .cs-icon{font-size:17px;}
+#profile-content .content-section p{font-size:14px;color:var(--charcoal-mid);line-height:1.8;margin-bottom:1rem;}
+#profile-content .spirit-block{background:linear-gradient(135deg,rgba(26,58,42,.07) 0%,rgba(200,149,42,.06) 100%);border:1px solid rgba(200,149,42,.2);border-radius:6px;padding:1.75rem;margin:1.5rem 0;}
+#profile-content .spirit-block .sb-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
+#profile-content .spirit-block .sb-label::before{content:'✦';}
+#profile-content .spirit-block p{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:300;font-style:italic;color:var(--charcoal);line-height:1.65;margin-bottom:0;}
+#profile-content .timeline{position:relative;padding-left:2rem;}
+#profile-content .timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;background:var(--parchment-deep);}
+#profile-content .tl-item{position:relative;padding-bottom:1.5rem;}
+#profile-content .tl-item::before{content:'';position:absolute;left:-2rem;top:5px;width:8px;height:8px;border-radius:50%;background:var(--gold);border:2px solid var(--parchment);}
+#profile-content .tl-year{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}
+#profile-content .tl-text{font-size:14px;color:var(--charcoal-mid);line-height:1.7;}
+@media(max-width:600px){#profile-content{padding:1.5rem 1.25rem;}}
+.profile-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+.profile-btn{padding:.7rem 1.2rem;border:1px solid var(--card-border);border-radius:5px;background:transparent;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;}
+.profile-btn:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
+.profile-btn.primary{background:var(--gold);color:var(--forest);border-color:var(--gold);}
+
+.profile-block{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:1.5rem;margin-bottom:1.25rem;text-align:left;}
+.profile-block-title{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold-light);margin-bottom:.75rem;}
+.profile-block p{font-size:13px;line-height:1.7;color:var(--muted);}
+.profile-compound-row{display:flex;justify-content:space-between;gap:1rem;padding:.5rem 0;border-bottom:1px solid var(--card-border);font-size:13px;}
+.profile-compound-row:last-child{border-bottom:none;}
+.profile-compound-row .cname{color:var(--text);}
+.profile-compound-row .crole{color:var(--muted);font-size:12px;}
+
+/* EDGE TABS (cross-navigation) */
+
+.back-to-match-tab{position:fixed;left:0;top:45%;transform:translateY(-50%);writing-mode:vertical-rl;background:var(--gold);color:var(--forest);border:none;border-radius:0 8px 8px 0;padding:1rem .5rem;font-family:'DM Sans',sans-serif;font-size:11.5px;font-weight:700;letter-spacing:.04em;cursor:pointer;z-index:150;box-shadow:3px 0 12px rgba(0,0,0,.25);display:none;}
+.back-to-match-tab.show{display:block;}
+.back-to-match-tab:hover{background:var(--gold-light);}
+
+/* MODAL (Alternatives) */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);z-index:200;display:none;align-items:center;justify-content:center;padding:1.5rem;}
+.modal-overlay.show{display:flex;}
+.modal{background:var(--forest);border:1px solid rgba(200,149,42,.3);border-radius:12px;padding:2rem;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;}
+.modal h3{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;margin-bottom:1rem;color:var(--gold-light);}
+.modal p{font-size:13px;color:var(--muted);margin-bottom:1.5rem;line-height:1.6;}
+
+.modal-actions{display:flex;justify-content:flex-end;gap:.6rem;margin-top:1.5rem;}
+.modal-btn{padding:.6rem 1.2rem;border-radius:5px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;border:1px solid var(--card-border);background:transparent;color:var(--muted);}
+.modal-btn.primary{background:var(--gold);color:var(--forest);border-color:var(--gold);}
+
+/* LOADING */
+.loading{text-align:center;padding:2rem;}
+.spinner{display:inline-block;width:24px;height:24px;border:2px solid rgba(200,149,42,.2);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;}
+.spinner.small{width:14px;height:14px;border-width:2px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:600px){
+  .container{padding:2rem 1.25rem;}
+  .results-grid{grid-template-columns:1fr;}
+}
+
+/* ════════════════════════════════════════════════════════════════ */
+/* MOBILE RESPONSIVE DESIGN — Hamburger Menu + Sidebar Navigation    */
+/* ════════════════════════════════════════════════════════════════ */
+
+/* Mobile menu overlay — full screen, dims when menu is open */
+.mobile-menu-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 99;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.mobile-menu-overlay.open {
+  display: block;
+  opacity: 1;
+}
+
+/* Hamburger button — only visible on mobile */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 6px;
+  z-index: 101;
+}
+.nav-hamburger span {
+  display: block;
+  width: 24px;
+  height: 2.5px;
+  background: var(--gold-light, #e8b84b);
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+.nav-hamburger.open span:nth-child(1) {
+  transform: rotate(45deg) translate(10px, 10px);
+}
+.nav-hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+.nav-hamburger.open span:nth-child(3) {
+  transform: rotate(-45deg) translate(9px, -9px);
+}
+
+/* Mobile sidebar menu */
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 280px;
+  background: var(--forest, #1a3a2a);
+  z-index: 100;
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  border-right: 1px solid rgba(200, 149, 42, 0.2);
+  padding-top: 70px;
+}
+.mobile-menu.open {
+  transform: translateX(0);
+}
+
+.mobile-menu-section {
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(200, 149, 42, 0.1);
+}
+.mobile-menu-section:last-child {
+  border-bottom: none;
+}
+
+.mobile-menu-title {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted, rgba(245, 240, 232, 0.5));
+  padding: 0.5rem 1.1rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.mobile-menu a {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.75rem 1.1rem;
+  font-size: 13px;
+  color: rgba(245, 240, 232, 0.7);
+  text-decoration: none;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.mobile-menu a:hover {
+  background: rgba(200, 149, 42, 0.08);
+  color: var(--gold-light, #e8b84b);
+}
+.mobile-menu a.active {
+  color: var(--gold-light, #e8b84b);
+}
+
+.mobile-menu-icon {
+  font-size: 14px;
+  width: 18px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+/* Show hamburger and mobile menu only on tablets and smaller */
+@media (max-width: 768px) {
+  .nav-hamburger {
+    display: flex;
+  }
+  .nav-right > a:not(.nav-cta):not(.nav-inbox) {
+    display: none !important;
+  }
+  .nav-dd {
+    display: none !important;
+  }
+  .mobile-menu {
+    display: block;
+  }
+}
+
+/* Further optimize for phones */
+@media (max-width: 600px) {
+  nav {
+    padding: 0 1.5rem;
+    height: 56px;
+  }
+  .mobile-menu {
+    width: 260px;
+    padding-top: 56px;
+  }
+}
+
+@media (max-width: 480px) {
+  nav {
+    padding: 0 1rem;
+  }
+  .mobile-menu {
+    width: 240px;
+  }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  
+<!-- Mobile hamburger button -->
+<button class="nav-hamburger" id="hamburger-toggle" onclick="toggleMobileMenu()">
+  <span></span>
+  <span></span>
+  <span></span>
+</button>
+
+<!-- Mobile menu overlay -->
+<div class="mobile-menu-overlay" id="mobile-overlay" onclick="closeMobileMenu()"></div>
+
+<!-- Mobile sidebar menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mobile-menu-section">
+    <div class="mobile-menu-title">Tools</div>
+    <a href="herb-match.html"><span class="mobile-menu-icon">🌿</span>Herb Match</a>
+    <a href="supreme.html"><span class="mobile-menu-icon">📖</span>Herbadex</a>
+    <a href="herb-identifier.html"><span class="mobile-menu-icon">🔍</span>Herb Identifier</a>
+    <a href="herb-planner.html"><span class="mobile-menu-icon">🗓️</span>Herb Planner</a>
+    <a href="resources.html"><span class="mobile-menu-icon">📚</span>Resources</a>
+  </div>
+  <div class="mobile-menu-section">
+    <div class="mobile-menu-title">Community</div>
+    <a href="community.html"><span class="mobile-menu-icon">💬</span>Community Feed</a>
+    <a href="garden.html"><span class="mobile-menu-icon">🌱</span>Herbal Garden</a>
+    <a href="glossary.html"><span class="mobile-menu-icon">📚</span>Glossary</a>
+  </div>
+  <div class="mobile-menu-section">
+    <div class="mobile-menu-title">Account</div>
+    <a href="profile.html"><span class="mobile-menu-icon">🌿</span>My Profile</a>
+    <a href="inbox.html"><span class="mobile-menu-icon">✉️</span>Inbox</a>
+    <a href="join.html"><span class="mobile-menu-icon">➕</span>Join CHI</a>
+  </div>
+  <div class="mobile-menu-section">
+    <div class="mobile-menu-title">Legal</div>
+    <a href="privacy-policy.html"><span class="mobile-menu-icon">🔒</span>Privacy</a>
+    <a href="terms.html"><span class="mobile-menu-icon">📄</span>Terms</a>
+    <a href="disclaimer.html"><span class="mobile-menu-icon">⚠️</span>Disclaimer</a>
+    <a href="index.html" onclick="localStorage.clear()"><span class="mobile-menu-icon">↩</span>Sign Out</a>
+  </div>
+</div>
+
+  
+  <a href="home.html" class="nav-logo">
+    <span class="nav-chi">Herbadex</span>
+    <span class="nav-full">Collective Herbal Intelligence</span>
+  </a>
+  <div class="nav-right">
+    <a href="supreme.html">Herbadex</a>
+    <a href="herb-match.html" class="active">Herb Match</a>
+    <a href="herb-planner.html">Herb Planner</a>
+  </div>
+</nav>
+
+<div class="container">
+  <!-- HERO -->
+  <div class="hero">
+    <h1>Let's find what your body's asking for</h1>
+    <p>There's no wrong answer here — just pick whatever's been on your mind lately. We'll ask a couple of gentle follow-up questions, then bring you a real spread of herbs to consider, not just the usual suspects.</p>
+  </div>
+
+  <!-- PAGE 1: INITIAL SELECTION -->
+  <div class="pyramid-section" id="pyramid-section-page1">
+    <div class="pyramid-title">What have you been struggling with lately?</div>
+    <div class="pyramid-intro">Choose up to 5 — whatever feels most present for you right now.</div>
+
+    <div id="issues-container"></div>
+
+    <div class="selection-status">
+      <p>You've chosen:</p>
+      <div class="count" id="selection-count">0/5</div>
+    </div>
+
+    <button class="submit-btn" id="submit-btn-page1" disabled>Next →</button>
+  </div>
+
+  <!-- PAGE 2: DETAILED QUESTIONS -->
+  <div class="pyramid-section" id="pyramid-section-page2" style="display:none;">
+    <div class="pyramid-title">Let's get more specific</div>
+    <div class="pyramid-intro">For each concern you picked, tell us more (optional — you can skip any).</div>
+
+    <div class="specifics-section" id="specifics-section"></div>
+
+    <div style="display:flex;gap:1rem;justify-content:center;margin-top:2rem;">
+      <button class="submit-btn" id="back-to-page1" style="background:transparent;border:1px solid var(--gold);color:var(--gold-light);">← Back</button>
+      <button class="submit-btn" id="submit-btn-page2">See what might help</button>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results-section" id="results-section">
+    <div class="results-header">
+      <h2>Herbs worth considering</h2>
+      <p id="results-description"></p>
+      <p class="results-note">We keep this fresh on purpose — herbs already in your stack, or ones we've shown you recently, take a back seat unless they're genuinely the best fit.</p>
+    </div>
+    <div id="results-body">
+      <div class="results-loading" id="results-loading">
+        <div class="spinner"></div>
+        <p>Looking beyond the obvious choices…</p>
+      </div>
+      <div class="results-grid" id="results-grid"></div>
+    </div>
+    <button class="submit-btn" onclick="backToPyramid()">← Search again</button>
+  </div>
+
+  <!-- PROFILE VIEWER -->
+  <div class="profile-section" id="profile-section">
+    <div class="profile-header">
+      <div class="profile-name" id="profile-name"></div>
+      <div class="profile-latin" id="profile-latin"></div>
+      <div class="profile-actions">
+        <button class="profile-btn primary" onclick="addToStack()">+ Add to stack</button>
+        <button class="profile-btn" onclick="backToResults()">← Back to results</button>
+      </div>
+    </div>
+    <div id="profile-content"></div>
+  </div>
+</div>
+
+<!-- Edge tab for cross-nav -->
+<button class="back-to-match-tab" id="back-to-match-tab" onclick="backToResults()">← Back to Herb Match</button>
+
+<!-- Alternatives Modal -->
+<div class="modal-overlay" id="alternatives-modal">
+  <div class="modal">
+    <h3>Looking for something different…</h3>
+    <div class="loading">
+      <div class="spinner"></div>
+      <p style="margin-top:1rem;font-size:13px;color:var(--muted);">Searching further afield for a better match</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────
+// A broader spread of common, everyday concerns, grouped so the list feels
+// approachable rather than clinical. Selecting one reveals a second,
+// AI-generated tier of more specific options (see ensureSpecifics()).
+const ISSUE_CATEGORIES = {
+  'Sleep & Rest': ['Trouble falling asleep', 'Waking in the night', 'Restless or light sleep', 'Racing mind at bedtime'],
+  'Mood & Mind': ['Everyday stress', 'Anxious feelings', 'Low mood', 'Irritability', 'Emotional overwhelm'],
+  'Focus & Cognitive': ['Brain fog', 'Trouble concentrating', 'Memory support', 'Mental fatigue'],
+  'Energy & Stamina': ['Low energy', 'Afternoon slump', 'Fatigue that lingers', 'Burnout recovery'],
+  'Digestion & Gut': ['Bloating', 'Slow digestion', 'Occasional cramping', 'Gut sensitivity', 'Nausea'],
+  'Immune Support': ['Catching colds often', 'Wanting a stronger baseline', 'Recovering from illness'],
+  'Inflammation & Joints': ['Joint stiffness', 'Occasional aches', 'Muscle soreness', 'Morning stiffness'],
+  'Heart & Circulation': ['Cold hands and feet', 'Wanting circulatory support', 'Healthy blood pressure support'],
+  'Skin & Beauty': ['Dry or irritated skin', 'Occasional breakouts', 'Wanting a healthy glow', 'Signs of aging'],
+  'Hormonal Balance': ['PMS-type symptoms', 'Cycle irregularity', 'Menopause-related changes', 'Libido support'],
+  "Men's Vitality": ['Stamina and drive', 'Prostate support', 'Healthy testosterone support'],
+  'Respiratory & Sinus': ['Seasonal congestion', 'Occasional cough', 'Sinus pressure', 'Allergy-type symptoms'],
+  'Detox & Liver': ['Feeling sluggish', 'Wanting gentle liver support', 'Supporting natural detox'],
+  'Headaches & Tension': ['Tension headaches', 'Occasional migraines', 'Jaw or neck tension'],
+};
+
+let selectedIssues = [];
+let selectedSpecifics = {};   // { issue: [specific, specific, ...] }
+let specificsCache = {};      // { issue: [specific, specific, ...] | 'loading' | 'error' }
+let currentResults = [];
+let currentProfile = null;
+let matchPageState = 'page1';  // 'page1' or 'page2'
+
+// ─── OWNED / SEEN HERBS (used to widen variety) ─────────
+function getOwnedHerbs() {
+  try { return JSON.parse(localStorage.getItem('chi_herb_stack') || '[]'); } catch (e) { return []; }
+}
+function getSeenHerbs() {
+  try { return JSON.parse(localStorage.getItem('chi_match_seen') || '[]'); } catch (e) { return []; }
+}
+function rememberSeenHerbs(names) {
+  let seen = getSeenHerbs();
+  names.forEach(n => { if (n && !seen.includes(n)) seen.push(n); });
+  // Keep this bounded so it doesn't grow forever.
+  if (seen.length > 40) seen = seen.slice(seen.length - 40);
+  localStorage.setItem('chi_match_seen', JSON.stringify(seen));
+}
+function buildAvoidList(extra) {
+  const combined = [...getOwnedHerbs(), ...getSeenHerbs(), ...(extra || [])];
+  return [...new Set(combined.filter(Boolean))];
+}
+
+// ─── STATE PERSISTENCE (survives page refresh) ──────
+// The results grid, selected issues/specifics, and whichever herb profile
+// is open all live in memory — which a full page navigation/refresh wipes
+// out. We persist the essentials to sessionStorage so a refresh lands you
+// back where you left off.
+function persistMatchState() {
+  try {
+    sessionStorage.setItem('chi_match_state', JSON.stringify({
+      issues: selectedIssues,
+      specifics: selectedSpecifics,
+      results: currentResults
+    }));
+  } catch (e) {}
+}
+
+// ─── BUILD PYRAMID ──────────────────────────────────────
+function buildPyramid() {
+  const container = document.getElementById('issues-container');
+  container.innerHTML = '';
+
+  Object.entries(ISSUE_CATEGORIES).forEach(([category, issues]) => {
+    const categoryDiv = document.createElement('div');
+    categoryDiv.className = 'issue-category';
+
+    const categoryTitle = document.createElement('div');
+    categoryTitle.className = 'category-name';
+    categoryTitle.textContent = category;
+    categoryDiv.appendChild(categoryTitle);
+
+    const gridDiv = document.createElement('div');
+    gridDiv.className = 'issues-grid';
+
+    issues.forEach(issue => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'issue-chip';
+      chip.id = 'issue-' + slug(issue);
+      chip.textContent = issue;
+      chip.onclick = () => {
+        const isPicked = chip.classList.contains('picked');
+        if (!isPicked) {
+          if (selectedIssues.length >= 5) return;
+          selectedIssues.push(issue);
+          chip.classList.add('picked');
+          if (matchPageState === 'page2') ensureSpecifics(issue);
+        } else {
+          selectedIssues = selectedIssues.filter(i => i !== issue);
+          delete selectedSpecifics[issue];
+          chip.classList.remove('picked');
+        }
+        updateSelectionStatus();
+        if (matchPageState === 'page2') renderSpecificsSection();
+      };
+
+      gridDiv.appendChild(chip);
+    });
+
+    categoryDiv.appendChild(gridDiv);
+    container.appendChild(categoryDiv);
+  });
+}
+
+function slug(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, '-'); }
+
+function updateSelectionStatus() {
+  if (matchPageState === 'page1') {
+    document.getElementById('selection-count').textContent = `${selectedIssues.length}/5`;
+    document.getElementById('submit-btn-page1').disabled = selectedIssues.length === 0;
+  }
+}
+
+function goToPage2() {
+  if (selectedIssues.length === 0) return;
+  matchPageState = 'page2';
+  document.getElementById('pyramid-section-page1').style.display = 'none';
+  document.getElementById('pyramid-section-page2').style.display = 'block';
+
+  // Load specifics for all selected issues
+  selectedIssues.forEach(issue => ensureSpecifics(issue));
+  renderSpecificsSection();
+  window.scrollTo(0, 0);
+}
+
+function backToPage1() {
+  matchPageState = 'page1';
+  document.getElementById('pyramid-section-page1').style.display = 'block';
+  document.getElementById('pyramid-section-page2').style.display = 'none';
+  window.scrollTo(0, 0);
+}
+
+// ─── SECOND TIER: GET MORE SPECIFIC ─────────────────────
+// For each selected issue, ask the AI for a handful of more specific
+// variations. This is what lets one broad pick ("Stress") turn into a
+// sharper signal ("work deadline pressure" vs "social anxiety") before we
+// go looking for herbs — rather than guessing from the broad label alone.
+async function ensureSpecifics(issue) {
+  if (specificsCache[issue]) { renderSpecificsSection(); return; }
+  specificsCache[issue] = 'loading';
+  renderSpecificsSection();
+
+  try {
+    const res = await fetch('/.netlify/functions/herb-specifics', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ issue })
+    });
+    if (!res.ok) throw new Error('Request failed');
+    const data = await res.json();
+    specificsCache[issue] = (data.specifics && data.specifics.length) ? data.specifics : 'error';
+  } catch (err) {
+    specificsCache[issue] = 'error';
+  }
+  renderSpecificsSection();
+}
+
+function renderSpecificsSection() {
+  const section = document.getElementById('specifics-section');
+  section.innerHTML = '';
+
+  selectedIssues.forEach(issue => {
+    const state = specificsCache[issue];
+    const panel = document.createElement('div');
+    panel.className = 'specifics-panel';
+
+    const title = document.createElement('div');
+    title.className = 'specifics-panel-title';
+    title.innerHTML = `More specifically, with <strong>${issue}</strong>? <span style="opacity:.7">(optional)</span>`;
+    panel.appendChild(title);
+
+    if (state === 'loading') {
+      panel.innerHTML += `<div class="specifics-loading"><div class="spinner small"></div> Thinking of a few angles…</div>`;
+    } else if (state === 'error' || !state) {
+      panel.innerHTML += `<div class="specifics-note">Couldn't load extra options right now — no problem, we'll work from "${issue}" as-is.</div>`;
+    } else {
+      const chipsWrap = document.createElement('div');
+      chipsWrap.className = 'specific-chips';
+      state.forEach(spec => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'specific-chip';
+        if (selectedSpecifics[issue] && selectedSpecifics[issue].includes(spec)) chip.classList.add('picked');
+        chip.textContent = spec;
+        chip.onclick = () => toggleSpecific(issue, spec, chip);
+        chipsWrap.appendChild(chip);
+      });
+      panel.appendChild(chipsWrap);
+    }
+
+    section.appendChild(panel);
+  });
+}
+
+function toggleSpecific(issue, spec, chipEl) {
+  if (!selectedSpecifics[issue]) selectedSpecifics[issue] = [];
+  const list = selectedSpecifics[issue];
+  const idx = list.indexOf(spec);
+  if (idx >= 0) {
+    list.splice(idx, 1);
+    chipEl.classList.remove('picked');
+  } else {
+    list.push(spec);
+    chipEl.classList.add('picked');
+  }
+}
+
+function flattenSpecifics() {
+  return Object.values(selectedSpecifics).flat();
+}
+
+function submitIssues() {
+  if (selectedIssues.length === 0) return;
+  findMatchingHerbs(selectedIssues);
+}
+
+// ─── FIND MATCHING HERBS (real AI call) ─────────────────
+async function findMatchingHerbs(issues) {
+  document.getElementById('pyramid-section-page1').style.display = 'none';
+  document.getElementById('pyramid-section-page2').style.display = 'none';
+  document.getElementById('results-section').classList.add('show');
+  document.getElementById('results-description').textContent = `Herbs matching: ${issues.join(', ')}`;
+  document.getElementById('results-loading').style.display = 'block';
+  document.getElementById('results-grid').innerHTML = '';
+
+  try {
+    const res = await fetch('/.netlify/functions/herb-match', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        issues,
+        specifics: flattenSpecifics(),
+        avoid: buildAvoidList(),
+        count: 12
+      })
+    });
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      // Surface the server's diagnostic detail (e.g. the raw model output or
+      // a 'max_tokens' truncation) into the console so failures are
+      // diagnosable instead of generic.
+      if (errBody.detail) console.error('herb-match failure detail:', errBody.detail);
+      const err = new Error(errBody.error || `Request failed (${res.status})`);
+      err.detail = errBody.detail;
+      throw err;
+    }
+    const data = await res.json();
+    currentResults = data.herbs || [];
+    rememberSeenHerbs(currentResults.map(h => h && h.name));
+    document.getElementById('results-loading').style.display = 'none';
+    updateResultsGrid();
+    persistMatchState();
+  } catch (err) {
+    console.error(err);
+    document.getElementById('results-loading').style.display = 'none';
+    const detailText = err.detail ? `<pre style="text-align:left;white-space:pre-wrap;font-size:11px;opacity:.75;margin-top:1rem;overflow:auto;max-height:220px">${JSON.stringify(err.detail, null, 2).replace(/</g,'&lt;')}</pre>` : '';
+    document.getElementById('results-grid').innerHTML = `<div class="results-error" style="grid-column:1/-1"><p>We couldn't reach the matching engine just now (${err.message}). Please try again in a moment.</p>${detailText}</div>`;
+  }
+}
+
+function badgeClass(strength) {
+  if (strength === 'strong') return 'strong';
+  if (strength === 'good') return 'good';
+  return 'worth-exploring';
+}
+
+function updateResultsGrid() {
+  const grid = document.getElementById('results-grid');
+  grid.innerHTML = '';
+
+  // Defensive: a single malformed entry (e.g. missing name) shouldn't be
+  // able to blank the whole preview. Drop anything unusable and still show
+  // whatever's left; only fall back to an error message if nothing is left.
+  const validHerbs = (currentResults || []).filter(h => h && typeof h.name === 'string' && h.name.trim());
+
+  if (!validHerbs.length) {
+    grid.innerHTML = `<div class="results-error" style="grid-column:1/-1"><p>We didn't get back anything usable that time. Please try again — it usually works on the next try.</p></div>`;
+    return;
+  }
+
+  validHerbs.forEach(herb => {
+    const safeName = herb.name.replace(/'/g, "\\'");
+    const card = document.createElement('div');
+    card.className = 'herb-card';
+    card.setAttribute('data-herb', herb.name);
+    card.innerHTML = `
+      <div class="herb-name">${herb.name}</div>
+      <div class="herb-latin">${herb.latin || ''}</div>
+      ${herb.matchStrength ? `<div class="match-badge ${badgeClass(herb.matchStrength)}">${herb.matchStrength}</div>` : ''}
+      ${herb.matchReason ? `<div class="match-reason">${herb.matchReason}</div>` : ''}
+      <div class="herb-actions">
+        <button class="herb-btn primary" onclick="viewProfile('${safeName}')">View profile</button>
+        <button class="herb-btn" onclick="addHerbToStack('${safeName}')">+ Add to stack</button>
+        <button class="herb-btn" onclick="rejectHerb('${safeName}')">Offer alternative</button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function backToPyramid() {
+  matchPageState = 'page1';
+  document.getElementById('pyramid-section-page1').style.display = 'block';
+  document.getElementById('pyramid-section-page2').style.display = 'none';
+  document.getElementById('results-section').classList.remove('show');
+  document.getElementById('profile-section').classList.remove('show');
+  document.getElementById('back-to-match-tab').classList.remove('show');
+  selectedIssues = [];
+  selectedSpecifics = {};
+  specificsCache = {};
+  document.querySelectorAll('.issue-chip').forEach(el => el.classList.remove('picked'));
+  document.getElementById('specifics-section').innerHTML = '';
+  updateSelectionStatus();
+  sessionStorage.removeItem('chi_match_state');
+}
+
+// ─── PROFILE VIEWER (real AI call, reuses herb-profile.js) ──
+async function viewProfile(herbName) {
+  currentProfile = herbName;
+  document.getElementById('results-section').classList.remove('show');
+  document.getElementById('profile-section').classList.add('show');
+  document.getElementById('back-to-match-tab').classList.add('show');
+
+  document.getElementById('profile-name').textContent = herbName;
+  document.getElementById('profile-latin').textContent = '';
+
+  // Show a spinner + ticker while loading
+  const tickerHTML = `<div class="loading">
+    <div class="spinner"></div>
+    <p style="margin-top:1rem;font-size:13px;color:var(--forest);">Loading everything we know about ${herbName}…</p>
+    <div id="loading-ticker" style="margin-top:1.5rem;padding:0.8rem;background:rgba(200,149,42,.08);border-left:2px solid var(--gold);font-size:12px;color:var(--forest);font-style:italic;max-height:80px;overflow:auto;"></div>
+  </div>`;
+  document.getElementById('profile-content').innerHTML = tickerHTML;
+
+  // Start the ticker (rotates through herbal facts)
+  startLoadingTicker();
+
+  try {
+    const profile = await fetchHerbProfilePolling(herbName);
+
+    // Render Stage 1 immediately (essentials + basic compounds/actions)
+    renderProfileContent(profile);
+
+    // If Stage 2 is still loading, poll for updates and merge when ready
+    if (profile.stage2Status === 'loading') {
+      const updated = await pollForStage2Update(herbName);
+      if (updated && updated.stage2Status === 'complete') {
+        // Stage 2 arrived, re-render with full detailed content
+        renderProfileContent(updated);
+      }
+    }
+  } catch (err) {
+    console.error(err);
+    document.getElementById('profile-content').innerHTML = `<div class="results-error"><p>Couldn't load the profile for ${herbName} (${err.message}). You can still add it to your stack, or try again in a moment.</p></div>`;
+  }
+}
+
+// Rotating ticker of herbal facts while profile loads
+const HERBAL_FACTS = [
+  '💚 Adaptogens like ashwagandha help your body handle stress without overstimulating any one system.',
+  '🌿 Bitter herbs like gentian work through taste receptors on your tongue — they must be tasted, not swallowed as capsules.',
+  '🔬 Quercetin, found in nettle and onions, stabilizes mast cells and can ease allergic responses.',
+  '⚡ Turmeric\'s curcumin alone is weak; black pepper\'s piperine boosts absorption 2000-fold.',
+  '🌱 Tannins in oak bark and raspberry leaf contract tissue — useful for wounds and diarrhea.',
+  '🧠 Reishi has been used for centuries to calm the nervous system; modern studies confirm it.',
+  '💪 Saponins in ashwagandha improve cell membrane permeability so other compounds absorb better.',
+  '🌊 Herbal synergy means five-herb formulas often outperform single isolated compounds.',
+  '☘️ Fresh herb teas capture volatile oils; dried herbs preserve alkaloids and bitter principles.',
+  '✨ Silymarin from milk thistle is so powerful it\'s used clinically for mushroom poisoning.'
+];
+
+let tickerIndex = 0;
+let tickerInterval = null;
+
+function startLoadingTicker() {
+  const ticker = document.getElementById('loading-ticker');
+  if (!ticker) return;
+
+  tickerIndex = 0;
+  ticker.textContent = HERBAL_FACTS[tickerIndex];
+
+  if (tickerInterval) clearInterval(tickerInterval);
+  tickerInterval = setInterval(() => {
+    tickerIndex = (tickerIndex + 1) % HERBAL_FACTS.length;
+    const el = document.getElementById('loading-ticker');
+    if (el) el.textContent = HERBAL_FACTS[tickerIndex];
+  }, 5000); // Change fact every 5 seconds
+}
+
+function stopLoadingTicker() {
+  if (tickerInterval) {
+    clearInterval(tickerInterval);
+    tickerInterval = null;
+  }
+}
+
+// Poll for profile generation. Returns Stage 1 immediately, Stage 2 loads in background.
+async function fetchHerbProfilePolling(herbName, { maxMs = 300000, intervalMs = 2500 } = {}) {
+  const started = Date.now();
+  while (true) {
+    const res = await fetch('/.netlify/functions/herb-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ herbName })
+    });
+
+    if (res.status === 200) {
+      return await res.json(); // Stage 1 ready (may have stage2Status: 'loading')
+    }
+
+    if (res.status === 202) {
+      if (Date.now() - started > maxMs) throw new Error('Timed out waiting for the profile to generate');
+      await new Promise(r => setTimeout(r, intervalMs));
+      continue;
+    }
+
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(errBody.error || `Request failed (${res.status})`);
+  }
+}
+
+// Poll for Stage 2 updates (detailed mechanisms, spiritual history, etc.)
+async function pollForStage2Update(herbName, { maxMs = 120000, intervalMs = 3000 } = {}) {
+  const started = Date.now();
+  while (true) {
+    if (Date.now() - started > maxMs) return null; // give up
+    const res = await fetch('/.netlify/functions/herb-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ herbName })
+    });
+
+    if (res.status === 200) {
+      const data = await res.json();
+      if (data.stage2Status === 'complete') {
+        return data; // Stage 2 is ready, return full profile
+      }
+    }
+
+    await new Promise(r => setTimeout(r, intervalMs));
+  }
+}
+
+function renderProfileContent(profile) {
+  stopLoadingTicker(); // Stop the spinner ticker
+  document.getElementById('profile-name').textContent = profile.name || currentProfile;
+  document.getElementById('profile-latin').textContent = profile.latin || '';
+  document.getElementById('profile-content').innerHTML = buildHerbadexStyleProfileHtml(profile);
+}
+
+// Ported from Herbadex's renderProfile() (supreme.html) so a herb viewed
+// from Herb Match reads identically to its Herbadex entry — same sections,
+// same layout — with Plant Intelligence's compound-mechanism/herbal-action
+// detail appended after it. Deliberately duplicated here rather than
+// shared, since supreme.html itself is not to be modified. There is no
+// more "essential vs full" split — this is the one profile.
+function buildHerbadexStyleProfileHtml(h) {
+  const F = window.CHI_FALLBACK;
+  const spirit = h.spiritualHistory || {};
+  const stage2Pending = h.stage2Status === 'loading';
+
+  const timelineHTML = (spirit.timeline || []).map(t =>
+    `<div class="tl-item"><div class="tl-year">${t.era}</div><div class="tl-text">${t.text}</div></div>`
+  ).join('');
+
+  const compoundsHTML = F.section(h.compounds, 'compounds', list => list.map(c =>
+    `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--parchment-dark);">
+      <span style="font-size:13px;font-weight:500;color:var(--charcoal);min-width:130px;">${c.name}</span>
+      <div style="flex:1;height:3px;background:var(--parchment-deep);border-radius:2px;overflow:hidden;"><div style="width:${c.strength || 0}%;height:100%;background:var(--gold);border-radius:2px;"></div></div>
+      <span style="font-size:12px;color:var(--charcoal-mid);min-width:150px;text-align:right;">${F.has(c.role) ? c.role : '—'}</span>
+    </div>`
+  ).join(''));
+
+  const bodyHTML = F.section(h.bodyEffects, 'bodyEffects', list => list.map(b =>
+    `<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--parchment-dark);">
+      <strong style="font-size:13px;color:var(--forest);min-width:130px;">${b.system}</strong>
+      <span style="font-size:13px;color:var(--charcoal-mid);flex:1;">${F.has(b.effect) ? b.effect : '—'}</span>
+    </div>`
+  ).join(''));
+
+  const prepLabels = {tea:'Tea',tincture:'Tincture',capsule:'Capsule',topical:'Topical',smoke:'Smoke',traditional:'Traditional'};
+  const prepData = h.preparation || {};
+  const prepHTML = Object.keys(prepLabels).map(k => {
+    const v = prepData[k];
+    const body = F.has(v)
+      ? `<div style="font-size:13.5px;color:var(--charcoal-mid);line-height:1.7;">${v}</div>`
+      : `<div style="font-size:12.5px;color:var(--charcoal-mid);line-height:1.7;opacity:.62;font-style:italic;">${F.message('dosage')}</div>`;
+    return `<div style="padding:1.1rem 1.35rem;background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-radius:6px;">
+      <div style="font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:8px;">${prepLabels[k]}</div>
+      ${body}
+    </div>`;
+  }).join('');
+
+  // Plant Intelligence — compound mechanism & evidence, and full herbal
+  // actions, appended after the Herbadex-style profile rather than
+  // replacing any of it.
+  const piCompoundsHTML = F.has(h.compounds) ? h.compounds.map(c => `
+    <div style="padding:.9rem 0;border-bottom:1px solid var(--parchment-dark);">
+      <div style="font-size:13.5px;font-weight:500;color:var(--charcoal);margin-bottom:.3rem;">${c.name}</div>
+      ${F.has(c.mechanism)
+        ? `<p style="font-size:13px;color:var(--charcoal-mid);line-height:1.7;margin-bottom:.3rem;">${c.mechanism}</p>`
+        : `<p style="font-size:12.5px;color:var(--charcoal-mid);opacity:.62;font-style:italic;">${stage2Pending ? 'Still gathering the mechanism…' : F.message('mechanism')}</p>`}
+      ${F.has(c.evidence) ? `<p style="font-size:12px;color:var(--charcoal-mid);opacity:.75;font-style:italic;">${c.evidence}</p>` : ''}
+    </div>`).join('') : F.note('compounds');
+
+  const piActionsHTML = F.has(h.herbalActions) ? h.herbalActions.map(a => `
+    <div style="padding:.9rem 0;border-bottom:1px solid var(--parchment-dark);">
+      <div style="display:flex;justify-content:space-between;gap:10px;margin-bottom:.3rem;flex-wrap:wrap;">
+        <span style="font-size:13.5px;font-weight:500;color:var(--charcoal);">${a.name}</span>
+        <span style="font-size:11px;color:var(--gold);text-transform:uppercase;letter-spacing:.05em;">${F.has(a.system) ? a.system : ''}</span>
+      </div>
+      ${F.has(a.description) ? `<p style="font-size:13px;color:var(--charcoal-mid);line-height:1.7;">${a.description}</p>` : ''}
+      ${F.has(a.compounds) ? `<p style="font-size:12px;color:var(--charcoal-mid);opacity:.75;margin-top:.3rem;">Key compounds: ${a.compounds.join(', ')}</p>` : ''}
+    </div>`).join('') : (stage2Pending
+      ? `<p style="font-size:13px;color:var(--charcoal-mid);opacity:.62;font-style:italic;">Still gathering this section…</p>`
+      : F.note('herbalActions'));
+
+  return `
+    <div style="background:rgba(200,149,42,.07);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.85rem;">
+        ${F.has(h.category) ? `<span style="font-size:11px;padding:3px 10px;border-radius:999px;background:rgba(200,149,42,.15);color:var(--gold);font-weight:600;">${h.category}</span>` : ''}
+        ${F.has(h.origin) ? `<span style="font-size:11px;color:var(--charcoal-mid);">Origin: ${h.origin}</span>` : ''}
+        ${F.has(h.tradition) ? `<span style="font-size:11px;color:var(--charcoal-mid);">Tradition: ${h.tradition}</span>` : ''}
+      </div>
+      <div style="font-size:14.5px;line-height:1.8;color:var(--charcoal);margin-bottom:1rem;${F.has(h.functionalOverview) ? '' : 'opacity:.62;font-style:italic;'}">${F.text(h.functionalOverview, 'functionalOverview')}</div>
+      <div style="font-size:11.5px;color:var(--charcoal-mid);border-top:1px solid rgba(200,149,42,.2);padding-top:.75rem;"><span style="text-transform:uppercase;letter-spacing:.08em;color:var(--gold);font-weight:600;">Source</span><span style="margin-left:.5rem;${F.has(h.source) ? '' : 'opacity:.62;font-style:italic;'}">${F.text(h.source, 'source')}</span></div>
+    </div>
+
+    <div class="content-section">
+      <h2><span class="cs-icon">🔬</span>Modern research &amp; use</h2>
+      ${F.section(h.modernUse, 'modernUse', v => v.split('\n\n').map(p=>`<p>${p}</p>`).join(''))}
+    </div>
+
+    <div class="content-section">
+      <h2><span class="cs-icon">✦</span>Spiritual &amp; cultural history</h2>
+      ${F.section(spirit.overview, 'spiritualHistory', v => v.split('\n\n').map(p=>`<p>${p}</p>`).join(''))}
+      <div class="spirit-block">
+        <div class="sb-label">Ancient knowledge</div>
+        ${F.has(h.rareFact) ? `<p>${h.rareFact}</p>` : F.note('rareFact')}
+      </div>
+      ${timelineHTML ? `<div class="timeline" style="margin-top:1.5rem;">${timelineHTML}</div>` : `<div style="margin-top:1.5rem;">${F.note('timeline')}</div>`}
+    </div>
+
+    <div class="content-section">
+      <h2><span class="cs-icon">⚗</span>Active compounds</h2>
+      ${compoundsHTML}
+    </div>
+
+    <div class="content-section">
+      <h2><span class="cs-icon">🫀</span>Effects on body systems</h2>
+      ${bodyHTML}
+    </div>
+
+    <div class="content-section">
+      <h2><span class="cs-icon">🌿</span>How to prepare &amp; use</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;">${prepHTML}</div>
+    </div>
+
+    <div class="content-section">
+      <h2><span class="cs-icon">⚠</span>Interactions &amp; cautions</h2>
+      <div style="background:rgba(196,82,42,.06);border:1px solid rgba(196,82,42,.18);border-left:3px solid #c4522a;border-radius:0 4px 4px 0;padding:1.25rem 1.5rem;">
+        ${F.has(h.interactions)
+          ? h.interactions.map(i=>`<div style="font-size:14px;color:var(--charcoal-mid);padding:6px 0;border-bottom:1px solid rgba(196,82,42,.08);display:flex;gap:8px;"><span style="color:#c4522a;font-weight:700;font-size:12px;margin-top:2px;">!</span>${i}</div>`).join('')
+          : `<div style="font-size:13px;color:var(--charcoal-mid);line-height:1.7;opacity:.72;font-style:italic;">${F.message('interactions')}</div>`}
+        <div style="margin-top:.85rem;font-size:12.5px;color:var(--charcoal-mid);"><strong style="color:var(--charcoal)">Safety:</strong> ${F.has(h.safetyLevel) ? h.safetyLevel : F.message('safetyLevel')}</div>
+      </div>
+    </div>
+
+    <div class="content-section" style="border-top:2px solid var(--gold);padding-top:2rem;margin-top:3rem;">
+      <h2><span class="cs-icon">🧪</span>Compound science</h2>
+      <div style="font-size:12px;color:var(--charcoal-mid);opacity:.7;margin-bottom:1rem;font-style:italic;">Mechanism, evidence, and full herbal-action detail.</div>
+      <div style="margin-bottom:1.5rem;">${piCompoundsHTML}</div>
+      <h2 style="margin-top:1.5rem;font-size:19px;"><span class="cs-icon">🧬</span>Herbal actions</h2>
+      ${piActionsHTML}
+    </div>
+  `;
+}
+function backToResults() {
+  document.getElementById('results-section').classList.add('show');
+  document.getElementById('profile-section').classList.remove('show');
+  document.getElementById('back-to-match-tab').classList.remove('show');
+}
+
+// ─── ALTERNATIVES (Rejection Flow, real AI call) ────────
+async function rejectHerb(herbName) {
+  showAlternativesModal();
+
+  const shownNames = currentResults.map(r => r.name);
+  const avoid = buildAvoidList([herbName, ...shownNames]);
+
+  try {
+    const res = await fetch('/.netlify/functions/herb-match', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        issues: selectedIssues.length ? selectedIssues : ['general wellbeing'],
+        specifics: flattenSpecifics(),
+        avoid,
+        count: 1
+      })
+    });
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      throw new Error(errBody.error || `Request failed (${res.status})`);
+    }
+    const data = await res.json();
+    const alt = (data.herbs || [])[0];
+    hideAlternativesModal();
+
+    if (!alt) {
+      alert("Couldn't find a fresh alternative right now — try adjusting your selections instead.");
+      return;
+    }
+
+    rememberSeenHerbs([alt.name]);
+    currentResults = currentResults.filter(r => r.name !== herbName);
+    currentResults.unshift(alt);
+    updateResultsGrid();
+    persistMatchState();
+
+    const newCard = document.querySelector(`[data-herb="${alt.name}"]`);
+    if (newCard) {
+      newCard.style.borderColor = 'rgba(200, 149, 42, 0.8)';
+      newCard.style.background = 'rgba(200, 149, 42, 0.15)';
+      setTimeout(() => newCard.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+    }
+  } catch (err) {
+    console.error('Alternative generation failed:', err);
+    hideAlternativesModal();
+    alert('Could not generate an alternative right now. Please try again shortly.');
+  }
+}
+
+function showAlternativesModal() {
+  document.getElementById('alternatives-modal').classList.add('show');
+}
+
+function hideAlternativesModal() {
+  document.getElementById('alternatives-modal').classList.remove('show');
+}
+
+// ─── HERB STACK ─────────────────────────────────────────
+function addHerbToStack(herbName) {
+  const stack = getOwnedHerbs();
+  if (!stack.includes(herbName)) {
+    stack.push(herbName);
+  }
+  localStorage.setItem('chi_herb_stack', JSON.stringify(stack));
+  alert(`${herbName} added to your stack!`);
+}
+
+function addToStack() {
+  if (currentProfile) {
+    addHerbToStack(currentProfile);
+  }
+}
+
+// ─── INIT ───────────────────────────────────────────────
+buildPyramid();
+document.getElementById('submit-btn-page1').onclick = goToPage2;
+document.getElementById('submit-btn-page2').onclick = submitIssues;
+document.getElementById('back-to-page1').onclick = backToPage1;
+
+
+// Restore state on page refresh rather than starting fresh.
+(function restoreOnLoad() {
+  try {
+    const saved = JSON.parse(sessionStorage.getItem('chi_match_state') || 'null');
+    if (saved && saved.results && saved.results.length) {
+      selectedIssues = saved.issues || [];
+      selectedSpecifics = saved.specifics || {};
+      currentResults = saved.results;
+      document.getElementById('pyramid-section-page1').style.display = 'none';
+      document.getElementById('pyramid-section-page2').style.display = 'none';
+      document.getElementById('results-section').classList.add('show');
+      document.getElementById('results-description').textContent = selectedIssues.length ? `Herbs matching: ${selectedIssues.join(', ')}` : '';
+      document.getElementById('results-loading').style.display = 'none';
+      updateResultsGrid();
+    }
+  } catch (e) {}
+
+  const reopenHerb = sessionStorage.getItem('chi_reopen_profile');
+  if (reopenHerb) {
+    sessionStorage.removeItem('chi_reopen_profile');
+    viewProfile(reopenHerb);
+  }
+})();
+</script>
+
+<!-- Shared CHI glossary: auto-tags known terms in the herb profile and shows definition tooltips on hover -->
+<script src="chi-fallbacks.js"></script>
+<script src="chi-glossary.js"></script>
+
+
+<script>
+function toggleMobileMenu() {
+  const hamburger = document.getElementById('hamburger-toggle');
+  const menu = document.getElementById('mobile-menu');
+  const overlay = document.getElementById('mobile-overlay');
+
+  if (hamburger && menu && overlay) {
+    hamburger.classList.toggle('open');
+    menu.classList.toggle('open');
+    overlay.classList.toggle('open');
+  }
+}
+
+function closeMobileMenu() {
+  const hamburger = document.getElementById('hamburger-toggle');
+  const menu = document.getElementById('mobile-menu');
+  const overlay = document.getElementById('mobile-overlay');
+
+  if (hamburger && menu && overlay) {
+    hamburger.classList.remove('open');
+    menu.classList.remove('open');
+    overlay.classList.remove('open');
+  }
+}
+
+// Close menu when a link is clicked
+document.addEventListener('DOMContentLoaded', function() {
+  const mobileMenuLinks = document.querySelectorAll('.mobile-menu a');
+  mobileMenuLinks.forEach(link => {
+    link.addEventListener('click', closeMobileMenu);
+  });
+});
+</script>
+
+    <script src="herbexa-knowledge-base.js"></script>
+<script src="herbexa-widget-local.js"></script>
+<script src="chi-leaves.js"></script>
+</body></html>
+</html>
