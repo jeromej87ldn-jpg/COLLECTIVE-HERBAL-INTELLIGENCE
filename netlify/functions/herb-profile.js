@@ -108,6 +108,21 @@ function extractJson(text) {
 const RESEARCH_USER_AGENT = 'CHI-Herbadex-Bot/1.0 (collectiveherbalintelligence.com; contact via site owner)';
 const RESEARCH_TIMEOUT_MS = 5000;
 
+// Herbadex names herbs with a trailing plant-part word for disambiguation
+// ("maca root", "devil's claw root", "milk thistle seed"), but external
+// reference sources index the plant itself, not that compound name --
+// Wikipedia's actual page is titled "Maca", not "Maca root", so a lookup
+// for the raw name 404s and grounding silently comes back empty even for
+// extremely well-documented herbs. Stripping a recognized trailing part
+// word gives a second, more likely-to-match name to try.
+const PLANT_PART_WORDS = ['root','roots','leaf','leaves','bark','seed','seeds','flower','flowers','fruit','berry','berries','extract','powder','oil','rhizome','stem','herb','stalk','stalks','husk','husks','peel','peels','pod','pods'];
+function strippedName(name) {
+  const words = name.trim().split(/\s+/);
+  if (words.length < 2) return null;
+  const last = words[words.length - 1].toLowerCase();
+  return PLANT_PART_WORDS.includes(last) ? words.slice(0, -1).join(' ') : null;
+}
+
 function httpsGetJson(url, headers) {
   return new Promise((resolve, reject) => {
     const req = https.get(url, { headers, timeout: RESEARCH_TIMEOUT_MS }, (res) => {
@@ -140,20 +155,32 @@ function httpsGetText(url, headers) {
 // run sequentially (efetch needs esearch's IDs first) so a slow NCBI
 // response can cost up to ~2x RESEARCH_TIMEOUT_MS in the worst case --
 // still fails soft into an empty array rather than blocking generation.
+async function pubmedSearchIds(term, maxResults) {
+  const searchParams = new URLSearchParams({
+    db: 'pubmed',
+    term,
+    retmax: String(maxResults),
+    retmode: 'json',
+    sort: 'relevance'
+  });
+  const searchData = await httpsGetJson(
+    `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?${searchParams.toString()}`,
+    { 'User-Agent': RESEARCH_USER_AGENT }
+  );
+  return (searchData.esearchresult && searchData.esearchresult.idlist) || [];
+}
+
 async function fetchPubMedAbstracts(herbName, maxResults = 4) {
   try {
-    const searchParams = new URLSearchParams({
-      db: 'pubmed',
-      term: `"${herbName}" AND (herb OR extract OR botanical) AND (safety OR clinical OR trial OR interaction OR pharmacology OR review)`,
-      retmax: String(maxResults),
-      retmode: 'json',
-      sort: 'relevance'
-    });
-    const searchData = await httpsGetJson(
-      `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?${searchParams.toString()}`,
-      { 'User-Agent': RESEARCH_USER_AGENT }
-    );
-    const ids = (searchData.esearchresult && searchData.esearchresult.idlist) || [];
+    const queryFor = (n) => `"${n}" AND (herb OR extract OR botanical) AND (safety OR clinical OR trial OR interaction OR pharmacology OR review)`;
+    let ids = await pubmedSearchIds(queryFor(herbName), maxResults);
+    // Retry with the plant-part suffix stripped ("maca root" -> "maca") --
+    // the exact-phrase match above often finds nothing for a compound name
+    // that papers only ever refer to by the plant name alone.
+    const alt = strippedName(herbName);
+    if (!ids.length && alt) {
+      ids = await pubmedSearchIds(queryFor(alt), maxResults);
+    }
     if (!ids.length) return [];
 
     const fetchParams = new URLSearchParams({
@@ -182,19 +209,34 @@ async function fetchPubMedAbstracts(herbName, maxResults = 4) {
   }
 }
 
+async function wikipediaSummaryFor(name) {
+  const title = encodeURIComponent(name.trim());
+  const data = await httpsGetJson(
+    `https://en.wikipedia.org/api/rest_v1/page/summary/${title}`,
+    { 'User-Agent': RESEARCH_USER_AGENT, 'Accept': 'application/json' }
+  );
+  if (!data || data.type === 'disambiguation' || !data.extract) return null;
+  return {
+    title: data.title,
+    url: (data.content_urls && data.content_urls.desktop && data.content_urls.desktop.page) || `https://en.wikipedia.org/wiki/${title}`,
+    text: data.extract.slice(0, 1500)
+  };
+}
+
 async function fetchWikipediaSummary(herbName) {
   try {
-    const title = encodeURIComponent(herbName.trim());
-    const data = await httpsGetJson(
-      `https://en.wikipedia.org/api/rest_v1/page/summary/${title}`,
-      { 'User-Agent': RESEARCH_USER_AGENT, 'Accept': 'application/json' }
-    );
-    if (!data || data.type === 'disambiguation' || !data.extract) return null;
-    return {
-      title: data.title,
-      url: (data.content_urls && data.content_urls.desktop && data.content_urls.desktop.page) || `https://en.wikipedia.org/wiki/${title}`,
-      text: data.extract.slice(0, 1500)
-    };
+    const direct = await wikipediaSummaryFor(herbName).catch(() => null);
+    if (direct) return direct;
+    // Retry with the plant-part suffix stripped -- Wikipedia's actual page
+    // is usually titled after the plant alone ("Maca"), not the compound
+    // name Herbadex uses for disambiguation ("Maca root"), so the direct
+    // lookup 404s for a large share of well-documented herbs.
+    const alt = strippedName(herbName);
+    if (alt) {
+      const stripped = await wikipediaSummaryFor(alt).catch(() => null);
+      if (stripped) return stripped;
+    }
+    return null;
   } catch (e) {
     return null;
   }
