@@ -139,21 +139,32 @@ exports.handler = async (event) => {
     }
 
     if (cachedRow && cachedRow.status === 'complete' && cachedRow.data && cachedRow.data.name) {
-      const before = cachedRow.data.functionalOverview;
-      deriveFunctionalOverview(cachedRow.data);
-      validateCompounds(cachedRow.data);
-      let healed = cachedRow.data.functionalOverview !== before;
+      // Cached rows can be stale/sparse (e.g. left over from an earlier
+      // generation approach that returned thin data). Re-check against the
+      // same completeness rules used for fresh generations -- if it's
+      // missing real content, fall through and regenerate instead of
+      // serving the sparse profile forever.
+      const cachedMissing = findMissing(cachedRow.data);
+      if (cachedMissing.length) {
+        console.log(`Cached profile for ${name} is incomplete (missing: ${cachedMissing.join(', ')}), regenerating...`);
+        // Fall through to generation logic below
+      } else {
+        const before = cachedRow.data.functionalOverview;
+        deriveFunctionalOverview(cachedRow.data);
+        validateCompounds(cachedRow.data);
+        let healed = cachedRow.data.functionalOverview !== before;
 
-      if (healed) {
-        supabase.from('herbs').upsert({ name, status: 'complete', data: cachedRow.data }).then(
-          () => {}, e => console.error('healed-row save failed:', e.message)
-        );
+        if (healed) {
+          supabase.from('herbs').upsert({ name, status: 'complete', data: cachedRow.data }).then(
+            () => {}, e => console.error('healed-row save failed:', e.message)
+          );
+        }
+        return {
+          statusCode: 200,
+          headers: { 'Content-Type': 'application/json', 'X-Cache': healed ? 'repaired' : 'hit' },
+          body: JSON.stringify(cachedRow.data)
+        };
       }
-      return {
-        statusCode: 200,
-        headers: { 'Content-Type': 'application/json', 'X-Cache': healed ? 'repaired' : 'hit' },
-        body: JSON.stringify(cachedRow.data)
-      };
     }
 
     // If herb exists but is pending (in the 2,500 list), generate it now
