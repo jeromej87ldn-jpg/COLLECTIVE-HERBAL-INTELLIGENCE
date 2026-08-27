@@ -25,7 +25,7 @@ if (process.env.SUPABASE_URL && process.env.SUPABASE_KEY) {
 
 const SYSTEM_PROMPT = `You are the Herbadex -- CHI's herb knowledge engine.
 
-You will be given real reference material retrieved from PubMed and/or Wikipedia for this herb, or told explicitly that none was found. Base every substantive claim ONLY on that material or on extremely well-established general knowledge (the kind found in any standard reference on the plant) -- never on an unverifiable specific you are inferring or guessing to sound complete. If the material doesn't support a field, or none was found, leave that field null/empty rather than filling it in. A short, honest, partial profile is correct behavior here, not a failure -- do not pad fields to look complete.
+You will be given real reference material retrieved from PubMed, PubMed Central, Wikipedia, Wikidata, and/or Crossref for this herb, or told explicitly that none was found. Base every substantive claim ONLY on that material or on extremely well-established general knowledge (the kind found in any standard reference on the plant) -- never on an unverifiable specific you are inferring or guessing to sound complete. If the material doesn't support a field, or none was found, leave that field null/empty rather than filling it in. A short, honest, partial profile is correct behavior here, not a failure -- do not pad fields to look complete.
 
 Return ONLY valid JSON, no markdown fences, no explanation:
 {
@@ -51,22 +51,6 @@ Do not invent a numeric "strength" or confidence score for a compound -- that ki
 Do not invent user reviews, testimonials, or community experiences -- that content must come from real people, never be generated.
 Return ONLY the JSON object. No other text.`;
 
-// Field-completeness rules (REQUIRED_TEXT, REQUIRED_SECTIONS, findMissing,
-// deriveFunctionalOverview) now live in ./profile-validation.js — pulled out
-// so that logic has zero dependencies and can be unit-tested directly with
-// plain node, without needing the Anthropic/Supabase SDKs or live API keys.
-// NOTE: with the grounding-based prompt above, an empty/missing section is
-// frequently the CORRECT answer (no supporting material found), not a gap
-// to chase with a retry -- findMissing()'s output below is diagnostic only.
-
-// Single attempt: this whole call has to finish inside one synchronous
-// request/response, and a second full Sonnet call stacked onto the first
-// is the other place (besides the now-removed always-on validation call)
-// where a first-time generation could run past Netlify's function time
-// limit. A profile that comes back with a gap isn't stuck — the heal-on-read
-// path above already re-generates it the next time anyone views it, so this
-// just moves the retry from "inside the same slow request" to "on the next,
-// separate, fast-enough request."
 const MAX_ATTEMPTS = 1;
 
 function extractJson(text) {
@@ -86,35 +70,9 @@ function extractJson(text) {
   }
 }
 
-// ── GROUNDING (real retrieved reference material) ──
-// Before generating a genuinely new herb, real text is pulled from PubMed
-// and Wikipedia and handed to Claude as reference material to synthesize
-// from, instead of asking it to write purely from training-data recall.
-// This is the actual fix for "a wrong AI answer reads exactly as confident
-// as a right one" -- grounding at least ties generation to real, checkable
-// source text, and the URLs Claude is allowed to cite are restricted (see
-// the filter in the handler below) to ones that were genuinely retrieved
-// here, not whatever the model feels like constructing.
-//
-// Both fetches fail soft (empty result) on any error/timeout so a slow or
-// down external API never blocks profile generation -- worst case, the
-// profile generates ungrounded and says so, the same as before this change.
-// Timeouts are kept short (5s) because this runs on the new-herb path only,
-// stacked in front of the Haiku validation call and the Sonnet generation
-// call, inside one synchronous Netlify function -- the exact time budget
-// that caused the 504 timeouts fixed earlier tonight. Grounding runs
-// concurrently with validation (see handler) rather than after it, so it
-// doesn't add pure serial latency on top of an already-tight budget.
 const RESEARCH_USER_AGENT = 'CHI-Herbadex-Bot/1.0 (collectiveherbalintelligence.com; contact via site owner)';
 const RESEARCH_TIMEOUT_MS = 5000;
 
-// Herbadex names herbs with a trailing plant-part word for disambiguation
-// ("maca root", "devil's claw root", "milk thistle seed"), but external
-// reference sources index the plant itself, not that compound name --
-// Wikipedia's actual page is titled "Maca", not "Maca root", so a lookup
-// for the raw name 404s and grounding silently comes back empty even for
-// extremely well-documented herbs. Stripping a recognized trailing part
-// word gives a second, more likely-to-match name to try.
 const PLANT_PART_WORDS = ['root','roots','leaf','leaves','bark','seed','seeds','flower','flowers','fruit','berry','berries','extract','powder','oil','rhizome','stem','herb','stalk','stalks','husk','husks','peel','peels','pod','pods'];
 function strippedName(name) {
   const words = name.trim().split(/\s+/);
@@ -150,11 +108,6 @@ function httpsGetText(url, headers) {
   });
 }
 
-// PubMed's E-utilities are free and need no API key. esearch finds
-// relevant article IDs; efetch pulls their abstracts as plain text. These
-// run sequentially (efetch needs esearch's IDs first) so a slow NCBI
-// response can cost up to ~2x RESEARCH_TIMEOUT_MS in the worst case --
-// still fails soft into an empty array rather than blocking generation.
 async function pubmedSearchIds(term, maxResults) {
   const searchParams = new URLSearchParams({
     db: 'pubmed',
@@ -172,11 +125,8 @@ async function pubmedSearchIds(term, maxResults) {
 
 async function fetchPubMedAbstracts(herbName, maxResults = 4) {
   try {
-    const queryFor = (n) => `"${n}" AND (herb OR extract OR botanical) AND (safety OR clinical OR trial OR interaction OR pharmacology OR review)`;
+    const queryFor = (n) => `${n} AND (herb OR plant OR extract OR medicinal OR botanical OR traditional OR pharmacological OR phytochemical)`;
     let ids = await pubmedSearchIds(queryFor(herbName), maxResults);
-    // Retry with the plant-part suffix stripped ("maca root" -> "maca") --
-    // the exact-phrase match above often finds nothing for a compound name
-    // that papers only ever refer to by the plant name alone.
     const alt = strippedName(herbName);
     if (!ids.length && alt) {
       ids = await pubmedSearchIds(queryFor(alt), maxResults);
@@ -194,9 +144,6 @@ async function fetchPubMedAbstracts(herbName, maxResults = 4) {
       { 'User-Agent': RESEARCH_USER_AGENT }
     );
 
-    // efetch's plain-text abstract output numbers entries "1. Title..."
-    // separated by blank lines -- split on that rather than trying to
-    // parse it as structured data.
     const entries = text.split(/\n\d+\.\s/).map(s => s.trim()).filter(Boolean);
     return ids
       .map((id, i) => ({
@@ -223,14 +170,30 @@ async function wikipediaSummaryFor(name) {
   };
 }
 
+async function wikipediaResolveTitle(name) {
+  const params = new URLSearchParams({
+    action: 'opensearch',
+    search: name.trim(),
+    limit: '1',
+    namespace: '0',
+    format: 'json'
+  });
+  const data = await httpsGetJson(
+    `https://en.wikipedia.org/w/api.php?${params.toString()}`,
+    { 'User-Agent': RESEARCH_USER_AGENT, 'Accept': 'application/json' }
+  );
+  return (Array.isArray(data) && Array.isArray(data[1]) && data[1][0]) || null;
+}
+
 async function fetchWikipediaSummary(herbName) {
   try {
+    const resolved = await wikipediaResolveTitle(herbName).catch(() => null);
+    if (resolved) {
+      const result = await wikipediaSummaryFor(resolved).catch(() => null);
+      if (result) return result;
+    }
     const direct = await wikipediaSummaryFor(herbName).catch(() => null);
     if (direct) return direct;
-    // Retry with the plant-part suffix stripped -- Wikipedia's actual page
-    // is usually titled after the plant alone ("Maca"), not the compound
-    // name Herbadex uses for disambiguation ("Maca root"), so the direct
-    // lookup 404s for a large share of well-documented herbs.
     const alt = strippedName(herbName);
     if (alt) {
       const stripped = await wikipediaSummaryFor(alt).catch(() => null);
@@ -242,42 +205,156 @@ async function fetchWikipediaSummary(herbName) {
   }
 }
 
-// Builds the reference-material block appended to the generation prompt.
-// Returns null when nothing real was found at all -- buildUserMessage uses
-// that to tell the model plainly it has nothing to draw on beyond
-// well-established general knowledge, rather than silently falling back to
-// pure recall without saying so.
-function buildGroundingBlock(pubmedResults, wikiResult) {
+async function fetchPMCArticles(herbName, maxResults = 3) {
+  try {
+    const queryFor = (n) => `${n} AND (herb OR plant OR extract OR medicinal OR botanical OR traditional)`;
+    const searchParams = new URLSearchParams({
+      db: 'pmc',
+      term: queryFor(herbName),
+      retmax: String(maxResults),
+      retmode: 'json',
+      sort: 'relevance'
+    });
+    const searchData = await httpsGetJson(
+      `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?${searchParams.toString()}`,
+      { 'User-Agent': RESEARCH_USER_AGENT }
+    );
+    const ids = (searchData.esearchresult && searchData.esearchresult.idlist) || [];
+    if (!ids.length) {
+      const alt = strippedName(herbName);
+      if (alt) {
+        return await fetchPMCArticles(alt, maxResults);
+      }
+      return [];
+    }
+
+    const fetchParams = new URLSearchParams({
+      db: 'pmc',
+      id: ids.join(','),
+      rettype: 'abstract',
+      retmode: 'text'
+    });
+    const text = await httpsGetText(
+      `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?${fetchParams.toString()}`,
+      { 'User-Agent': RESEARCH_USER_AGENT }
+    );
+
+    const entries = text.split(/\n\d+\.\s/).map(s => s.trim()).filter(Boolean);
+    return ids
+      .map((id, i) => ({
+        url: `https://www.ncbi.nlm.nih.gov/pmc/articles/PMC${id}/`,
+        text: (entries[i] || '').slice(0, 2000)
+      }))
+      .filter(e => e.text);
+  } catch (e) {
+    return [];
+  }
+}
+
+async function fetchWikidataPlantInfo(herbName) {
+  try {
+    const searchParams = new URLSearchParams({
+      action: 'wbsearchentities',
+      search: herbName.trim(),
+      language: 'en',
+      type: 'item',
+      limit: '1',
+      format: 'json'
+    });
+    const searchData = await httpsGetJson(
+      `https://www.wikidata.org/w/api.php?${searchParams.toString()}`,
+      { 'User-Agent': RESEARCH_USER_AGENT }
+    );
+
+    const entities = searchData.search || [];
+    if (!entities.length) return null;
+
+    const itemId = entities[0].id;
+
+    const itemParams = new URLSearchParams({
+      action: 'wbgetentities',
+      ids: itemId,
+      props: 'info|claims|labels|descriptions',
+      languages: 'en',
+      format: 'json'
+    });
+    const itemData = await httpsGetJson(
+      `https://www.wikidata.org/w/api.php?${itemParams.toString()}`,
+      { 'User-Agent': RESEARCH_USER_AGENT }
+    );
+
+    const entity = itemData.entities[itemId];
+    if (!entity || !entity.labels || !entity.labels.en) return null;
+
+    const label = entity.labels.en.value;
+    const description = entity.descriptions && entity.descriptions.en
+      ? entity.descriptions.en.value
+      : '';
+
+    const text = `${label}. ${description}`;
+    if (!text || text.length < 20) return null;
+
+    return {
+      url: `https://www.wikidata.org/wiki/${itemId}`,
+      text: text.slice(0, 1500)
+    };
+  } catch (e) {
+    return null;
+  }
+}
+
+async function fetchCrossrefArticles(herbName, maxResults = 2) {
+  try {
+    const queryFor = (n) => `("${n}" OR "${n.replace(/\s+/g, '-')}") AND (medicinal OR phytochemical OR pharmacological)`;
+    const searchParams = new URLSearchParams({
+      query: queryFor(herbName),
+      rows: String(maxResults),
+      sort: 'relevance'
+    });
+
+    const data = await httpsGetJson(
+      `https://api.crossref.org/works?${searchParams.toString()}`,
+      { 'User-Agent': RESEARCH_USER_AGENT }
+    );
+
+    if (!data.message || !Array.isArray(data.message.items)) return [];
+
+    return data.message.items
+      .filter(item => item.DOI && (item.abstract || item.title))
+      .map(item => {
+        const abstractText = item.abstract || (Array.isArray(item.title) ? item.title.join(' ') : item.title) || '';
+        return {
+          url: `https://doi.org/${item.DOI}`,
+          text: abstractText.slice(0, 1500)
+        };
+      })
+      .filter(e => e.text && e.text.length > 50);
+  } catch (e) {
+    return [];
+  }
+}
+
+function buildGroundingBlock(pubmedResults, pmcResults, wikiResult, wikidataResult, crossrefResults) {
   const parts = [];
   if (pubmedResults.length) {
     parts.push('PubMed abstracts:\n' + pubmedResults.map(p => `[${p.url}]\n${p.text}`).join('\n\n'));
   }
+  if (pmcResults.length) {
+    parts.push('PubMed Central articles:\n' + pmcResults.map(p => `[${p.url}]\n${p.text}`).join('\n\n'));
+  }
   if (wikiResult) {
     parts.push(`Wikipedia (${wikiResult.url}):\n${wikiResult.text}`);
+  }
+  if (wikidataResult) {
+    parts.push(`Wikidata (${wikidataResult.url}):\n${wikidataResult.text}`);
+  }
+  if (crossrefResults.length) {
+    parts.push('Crossref academic papers:\n' + crossrefResults.map(c => `[${c.url}]\n${c.text}`).join('\n\n'));
   }
   return parts.length ? parts.join('\n\n---\n\n') : null;
 }
 
-// ── IMAGES (sourced, never AI-generated) ──
-// NOT CURRENTLY CALLED from the handler below — an earlier version awaited
-// this inline on every request (including cache hits), which risked
-// blowing Netlify's function timeout on a handler that's deliberately
-// single-call/synchronous (see note at top of file) and broke profile
-// loading entirely. Left defined here, ready to be wired into a proper
-// non-blocking path (e.g. a separate endpoint the frontend calls after
-// the profile itself has already rendered) rather than inline again.
-// A wrong-looking generated plant photo is a misidentification risk, so
-// images come from Wikimedia Commons only, filtered to public-domain/CC
-// licenses. Plants of the World Online (POWO) has no simple public
-// image-search API, so it isn't wired in automatically — imagesNote flags
-// herbs that need a manual POWO check when Wikimedia turns up nothing.
 const WIKIMEDIA_USER_AGENT = RESEARCH_USER_AGENT;
-// Wikimedia's real LicenseShortName values are space-separated — "CC BY-SA
-// 4.0", "CC BY 3.0", "Public domain" — not hyphenated "CC-BY-SA" the way an
-// earlier version of this list assumed. That mismatch silently rejected
-// almost every real CC-licensed image. Matching is now done against a
-// space/hyphen-stripped version of the license string so format
-// variations ("CC BY-SA", "CC-BY-SA", "cc by sa") all match the same way.
 const ACCEPTED_LICENSES = ['cc0', 'ccby', 'ccbysa', 'publicdomain', 'pdself', 'pd'];
 function normalizeLicense(s) {
   return (s || '').toLowerCase().replace(/[\s-]+/g, '');
@@ -320,7 +397,7 @@ async function fetchHerbImages(latinName, commonName, maxImages = 1) {
     try {
       data = await wikimediaSearch(term, maxImages);
     } catch (e) {
-      continue; // network hiccup or nothing found — try the next term
+      continue;
     }
     const pages = (data.query && data.query.pages) || {};
     for (const page of Object.values(pages)) {
@@ -328,17 +405,13 @@ async function fetchHerbImages(latinName, commonName, maxImages = 1) {
       if (!info) continue;
       const meta = info.extmetadata || {};
       const licenseShort = (meta.LicenseShortName && meta.LicenseShortName.value) || '';
-      if (!ACCEPTED_LICENSES.some(lic => normalizeLicense(licenseShort).includes(lic))) continue; // skip anything not public-domain/CC
+      if (!ACCEPTED_LICENSES.some(lic => normalizeLicense(licenseShort).includes(lic))) continue;
       const artist = ((meta.Artist && meta.Artist.value) || 'Unknown').replace(/<[^>]+>/g, '').trim();
       const credit = `${artist} — ${licenseShort || 'Unknown license'} — Wikimedia Commons`;
-      // thumburl is the properly-sized (800px-wide) rendition requested via
-      // iiurlwidth; info.url is the raw original file, which can be huge
-      // and slow to load. Fall back to the original only if no thumbnail
-      // was generated (e.g. the source file is already small).
       results.push({ url: info.thumburl || info.url || '', credit });
       if (results.length >= maxImages) break;
     }
-    if (results.length) break; // found via Latin name — no need to also try common name
+    if (results.length) break;
   }
   return results;
 }
@@ -353,7 +426,7 @@ function buildUserMessage(name, excludedHerb, issues, groundingBlock) {
   if (groundingBlock) {
     return `${base}\n\nREFERENCE MATERIAL (real, retrieved just now -- ground your answer in this, and only cite these exact URLs in "sources" where relevant):\n\n${groundingBlock}`;
   }
-  return `${base}\n\nNo reference material could be retrieved from PubMed or Wikipedia for this herb. Only include fields you are confident reflect extremely well-established, standard-reference-level knowledge. Leave everything else null rather than filling in unverifiable specifics. "sources" must be an empty array.`;
+  return `${base}\n\nNo reference material could be retrieved from PubMed, PubMed Central, Wikipedia, Wikidata, or Crossref for this herb. Only include fields you are confident reflect extremely well-established, standard-reference-level knowledge. Leave everything else null rather than filling in unverifiable specifics. "sources" must be an empty array.`;
 }
 
 async function requestProfile(anthropic, name, userMessage, attempt = 1, priorMissing = null) {
@@ -385,15 +458,11 @@ async function requestProfile(anthropic, name, userMessage, attempt = 1, priorMi
     return { error: 'Model response was not valid JSON', stopReason: message.stop_reason, raw: textBlock.text.trim().slice(0, 300) };
   }
 
-  // findMissing() is diagnostic only now -- with the grounding-based prompt,
-  // an empty section is frequently the correct, honest answer rather than
-  // something to retry into existence. MAX_ATTEMPTS is 1, so this never
-  // actually triggers a retry; it's kept for visibility on the row.
   const missing = findMissing(herb);
   if (missing.length && attempt < MAX_ATTEMPTS) {
     return requestProfile(anthropic, name, userMessage, attempt + 1, missing);
   }
-  herb._missingFields = missing; // kept visible even on the final attempt rather than silently dropped
+  herb._missingFields = missing;
   return herb;
 }
 
@@ -415,13 +484,6 @@ exports.handler = async (event) => {
     }
     const anthropic = new Anthropic({ apiKey });
 
-    // ── 1. CACHE CHECK (moved ahead of validation) ────────────────────
-    // Checking the cache first means a repeat view of an already-good herb
-    // costs one fast Supabase read and NOTHING else — no Haiku call, no
-    // Sonnet call, no research fetches. That's the overwhelming majority of
-    // requests (anyone re-opening a herb someone already generated), so
-    // this is the single biggest lever for staying comfortably under
-    // Netlify's function time limit.
     let cachedRow = null;
     if (supabase) {
       try {
@@ -437,30 +499,9 @@ exports.handler = async (event) => {
     }
 
     if (cachedRow && cachedRow.status === 'complete' && cachedRow.data && cachedRow.data.name) {
-      // Heal-on-read: older cached rows (generated before this fallback
-      // existed) can still be missing functionalOverview. Patch it here
-      // too, not just on fresh generations, and persist the fix so this
-      // row doesn't need healing again next time.
       const before = cachedRow.data.functionalOverview;
       deriveFunctionalOverview(cachedRow.data);
       let healed = cachedRow.data.functionalOverview !== before;
-
-      // Heal-on-read, part 2 -- REMOVED. This used to run a full,
-      // synchronous Sonnet repair call on every cache-hit view whenever
-      // herbalActions/compounds/bodyEffects (REQUIRED_SECTIONS) was empty
-      // on the cached row -- true for a lot of pre-this-schema rows. That
-      // turned an ordinary cached view into a 15-30s wait, and sometimes
-      // a Netlify 504, on what's supposed to be the fast path (one DB
-      // read). Gaps in cached data are shown via the frontend's
-      // chi-fallbacks.js placeholders instead. Herbs can still be
-      // repaired individually -- just not automatically on every view.
-
-      // Image healing removed from this synchronous path — an external
-      // Wikimedia call here, on every cache-hit view, risked pushing
-      // requests past Netlify's function timeout (this handler is
-      // deliberately single-call/synchronous; see note at top of file).
-      // Images need a non-blocking approach — see fetchHerbImages below,
-      // currently unused pending that redesign.
 
       if (healed) {
         supabase.from('herbs').upsert({ name, status: 'complete', data: cachedRow.data }).then(
@@ -473,18 +514,8 @@ exports.handler = async (event) => {
         body: JSON.stringify(cachedRow.data)
       };
     }
-    // No more 'generating' status to check for — a request either hasn't
-    // started, is running right now (this same call), or is done. Nothing
-    // gets left in limbo between requests anymore.
 
-    // ── 2. VALIDATE + GROUND, CONCURRENTLY ────────────────────────────
-    // The "is this actually an herb" check and the PubMed/Wikipedia
-    // grounding fetches are independent of each other, so they run at the
-    // same time rather than one after another -- this keeps the added
-    // latency from grounding from just stacking serially on top of an
-    // already-tight synchronous request budget. Only reached on a genuine
-    // cache miss (see reordering note above).
-    let isHerb = true; // fail-open: a flaky classification call shouldn't block a real herb search
+    let isHerb = true;
     try {
       const check = await anthropic.messages.create({
         model: 'claude-haiku-4-5-20251001',
@@ -504,9 +535,6 @@ Answer ONLY "yes" or "no", nothing else.`
     }
 
     if (!isHerb) {
-      // Self-heal: if a bad profile for this name is already cached
-      // (generated before this gate existed), remove it so it can't
-      // keep being served on some other code path later.
       if (supabase) {
         supabase.from('herbs').delete().eq('name', name).then(
           () => {}, e => console.error('bad-cache cleanup failed:', e.message)
@@ -521,13 +549,15 @@ Answer ONLY "yes" or "no", nothing else.`
       };
     }
 
-    const [pubmedResults, wikiResult] = await Promise.all([
+    const [pubmedResults, pmcResults, wikiResult, wikidataResult, crossrefResults] = await Promise.all([
       fetchPubMedAbstracts(name),
-      fetchWikipediaSummary(name)
+      fetchPMCArticles(name),
+      fetchWikipediaSummary(name),
+      fetchWikidataPlantInfo(name),
+      fetchCrossrefArticles(name)
     ]);
-    const groundingBlock = buildGroundingBlock(pubmedResults, wikiResult);
+    const groundingBlock = buildGroundingBlock(pubmedResults, pmcResults, wikiResult, wikidataResult, crossrefResults);
 
-    // ── 3. GENERATE (single synchronous call — no background dispatch) ──
     const userMsg = buildUserMessage(name, excludedHerb, issues, groundingBlock);
     const herb = await requestProfile(anthropic, name, userMsg);
 
@@ -537,18 +567,15 @@ Answer ONLY "yes" or "no", nothing else.`
 
     deriveFunctionalOverview(herb);
 
-    // Enforced in code, not just by the prompt: "sources" may only contain
-    // URLs that were actually retrieved above. If the model returns
-    // anything else (or nothing was grounded), it's dropped rather than
-    // trusted -- a plausible-looking invented citation is worse than none.
     const realUrls = new Set([
       ...pubmedResults.map(p => p.url),
-      ...(wikiResult ? [wikiResult.url] : [])
+      ...pmcResults.map(p => p.url),
+      ...(wikiResult ? [wikiResult.url] : []),
+      ...(wikidataResult ? [wikidataResult.url] : []),
+      ...crossrefResults.map(c => c.url)
     ]);
     herb.sources = Array.isArray(herb.sources) ? herb.sources.filter(s => s && realUrls.has(s.url)) : [];
 
-    // Image fetch removed from this synchronous path for the same reason as
-    // the cache-hit path above — see fetchHerbImages, currently unused.
     herb.images = [];
 
     herb.generatedAt = new Date().toISOString();
