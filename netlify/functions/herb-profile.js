@@ -39,7 +39,12 @@ Return ONLY valid JSON, no markdown fences, no explanation:
   "preparation": {"tea":"method or null","tincture":"method or null","capsule":"method or null","topical":"method or null","traditional":"method or null"},
   "rareFact": "one surprising fact, or null",
   "interactions": ["known interaction"],
-  "disclaimer": "Educational reference only. Not medical advice. Consult healthcare provider before use."
+  "disclaimer": "Educational reference only. Not medical advice. Consult healthcare provider before use.",
+  "keyCharacteristics": "2-3 sentence description of defining traits, appearance, or botanical features",
+  "growingInformation": "Growing conditions, climate, soil requirements, hardiness, or cultivation notes",
+  "usesApplications": "1-2 paragraph(s) on practical uses, applications, and preparations",
+  "herbalCombinations": "Common herbal pairings or synergistic combinations, or null if rarely combined",
+  "harvestingStorage": "Harvesting season/methods and proper storage conditions"
 }
 
 Limits: compounds max 4, herbalActions max 4, bodyEffects max 4, interactions max 3, timeline max 3.
@@ -140,8 +145,8 @@ exports.handler = async (event) => {
 
     if (cachedRow && cachedRow.status === 'complete' && cachedRow.data && cachedRow.data.name) {
       // Check if profile is complete (has all required fields)
-      const requiredFields = ['category', 'safetyLevel', 'modernUse', 'compounds', 'herbalActions', 'bodyEffects', 'preparation', 'interactions'];
-      const isIncomplete = requiredFields.some(f => !cachedRow.data[f] || (Array.isArray(cachedRow.data[f]) && cachedRow.data[f].length === 0) || (typeof cachedRow.data[f] === 'object' && Object.keys(cachedRow.data[f]).length === 0));
+      const requiredFields = ['category', 'safetyLevel', 'modernUse', 'compounds', 'herbalActions', 'bodyEffects', 'preparation', 'interactions', 'keyCharacteristics', 'growingInformation', 'usesApplications', 'harvestingStorage'];
+      const isIncomplete = requiredFields.some(f => !cachedRow.data[f] || (Array.isArray(cachedRow.data[f]) && cachedRow.data[f].length === 0) || (typeof cachedRow.data[f] === 'object' && Object.keys(cachedRow.data[f]).length === 0) || (typeof cachedRow.data[f] === 'string' && !cachedRow.data[f].trim()));
 
       if (isIncomplete) {
         console.log(`Profile incomplete for ${name}, regenerating...`);
