@@ -139,21 +139,30 @@ exports.handler = async (event) => {
     }
 
     if (cachedRow && cachedRow.status === 'complete' && cachedRow.data && cachedRow.data.name) {
-      const before = cachedRow.data.functionalOverview;
-      deriveFunctionalOverview(cachedRow.data);
-      validateCompounds(cachedRow.data);
-      let healed = cachedRow.data.functionalOverview !== before;
+      // Check if profile is complete (has all required fields)
+      const requiredFields = ['category', 'safetyLevel', 'modernUse', 'compounds', 'herbalActions', 'bodyEffects', 'preparation', 'interactions'];
+      const isIncomplete = requiredFields.some(f => !cachedRow.data[f] || (Array.isArray(cachedRow.data[f]) && cachedRow.data[f].length === 0) || (typeof cachedRow.data[f] === 'object' && Object.keys(cachedRow.data[f]).length === 0));
 
-      if (healed) {
-        supabase.from('herbs').upsert({ name, status: 'complete', data: cachedRow.data }).then(
-          () => {}, e => console.error('healed-row save failed:', e.message)
-        );
+      if (isIncomplete) {
+        console.log(`Profile incomplete for ${name}, regenerating...`);
+        // Fall through to generation logic
+      } else {
+        const before = cachedRow.data.functionalOverview;
+        deriveFunctionalOverview(cachedRow.data);
+        validateCompounds(cachedRow.data);
+        let healed = cachedRow.data.functionalOverview !== before;
+
+        if (healed) {
+          supabase.from('herbs').upsert({ name, status: 'complete', data: cachedRow.data }).then(
+            () => {}, e => console.error('healed-row save failed:', e.message)
+          );
+        }
+        return {
+          statusCode: 200,
+          headers: { 'Content-Type': 'application/json', 'X-Cache': healed ? 'repaired' : 'hit' },
+          body: JSON.stringify(cachedRow.data)
+        };
       }
-      return {
-        statusCode: 200,
-        headers: { 'Content-Type': 'application/json', 'X-Cache': healed ? 'repaired' : 'hit' },
-        body: JSON.stringify(cachedRow.data)
-      };
     }
 
     // If herb exists but is pending (in the 2,500 list), generate it now
