@@ -1061,11 +1061,6 @@ function renderProfile(h) {
     </div>
 
     <div class="content-section">
-      <h2><span class="cs-icon">📋</span>Uses &amp; applications</h2>
-      ${F.section(h.usesApplications, 'usesApplications', v => v.split('\n\n').map(p=>`<p>${p}</p>`).join(''))}
-    </div>
-
-    <div class="content-section">
       <h2><span class="cs-icon">🔗</span>Herbal combinations</h2>
       <p>${F.text(h.herbalCombinations, 'herbalCombinations')}</p>
     </div>

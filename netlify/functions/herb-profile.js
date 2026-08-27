@@ -18,38 +18,40 @@ IMPORTANT DISCLAIMER: Profiles are generated for educational reference only and 
 
 Generate a complete, informative herb profile based on well-established herbal knowledge. Include traditional uses, modern applications, preparation methods, safety considerations, and phytochemistry where applicable.
 
+COMPOUND ACCURACY CRITICAL: Only use real, well-established herbal compounds. Never invent compound names. Use ONLY compounds from known herbal references (e.g. curcumin from turmeric, gingerol from ginger, allicin from garlic, inulin from burdock, silymarin from milk thistle). Each compound must be verifiable in herbal/botanical literature.
+
 Return ONLY valid JSON, no markdown fences, no explanation:
 {
   "name": "common name",
   "latin": "latin binomial, or null if not confident",
-  "category": "primary action category, or null",
+  "category": "primary action category (never null)",
   "categoryColor": "#hex",
   "origin": "native region, or null",
-  "tradition": "primary healing tradition(s), or null",
+  "tradition": "primary healing tradition(s) (never null)",
   "preparations": ["tea","tincture","capsule"],
-  "safetyLevel": "Generally safe | Use with caution | Consult professional | null if not established",
+  "safetyLevel": "Generally safe | Use with caution | Consult professional (never null)",
   "summary": "2 sentence overview, warm and plain",
   "functionalOverview": "2-3 sentence in-depth summary of what it does and how people use it",
   "sources": [],
   "spiritualHistory": { "overview": "3-4 sentence paragraph on cultural/spiritual significance, or null", "timeline": [{"era":"period or culture","text":"one sentence"}] },
   "modernUse": "1-2 paragraph(s) on current applications and research",
-  "compounds": [{"name":"compound name (e.g. baicalein)","class":"Flavonoid | Alkaloid | Terpenoid | Saponin | Glycoside | Tannin | Polysaccharide | Phenolic acid","role":"what it does","mechanism":"1-2 sentences on HOW it works","evidence":"supporting information"}],
-  "herbalActions": [{"name":"action name","system":"body system","description":"1-2 sentences","compounds":["compound name"]}],
+  "compounds": [{"name":"REAL compound name ONLY (e.g. curcumin, gingerol, silymarin, inulin)","class":"Flavonoid | Alkaloid | Terpenoid | Saponin | Glycoside | Tannin | Polysaccharide | Phenolic acid","role":"what it does","mechanism":"1-2 sentences on HOW it works","evidence":"supporting information"}],
+  "herbalActions": [{"name":"action name","system":"body system","description":"1-2 sentences","compounds":["REAL compound name"]}],
   "bodyEffects": [{"system":"body system","effect":"short phrase"}],
   "preparation": {"tea":"method or null","tincture":"method or null","capsule":"method or null","topical":"method or null","traditional":"method or null"},
   "rareFact": "one surprising fact, or null",
   "interactions": ["known interaction"],
   "disclaimer": "Educational reference only. Not medical advice. Consult healthcare provider before use.",
-  "keyCharacteristics": "2-3 sentence description of defining traits, appearance, or botanical features",
-  "growingInformation": "Growing conditions, climate, soil requirements, hardiness, or cultivation notes",
-  "usesApplications": "1-2 paragraph(s) on practical uses, applications, and preparations",
+  "keyCharacteristics": "2-3 sentence description of defining traits, appearance, or botanical features (REQUIRED, never empty)",
+  "growingInformation": "Growing conditions, climate, soil requirements, hardiness, or cultivation notes (REQUIRED, never empty)",
   "herbalCombinations": "Common herbal pairings or synergistic combinations, or null if rarely combined",
-  "harvestingStorage": "Harvesting season/methods and proper storage conditions"
+  "harvestingStorage": "Harvesting season/methods and proper storage conditions (REQUIRED, never empty)"
 }
 
 Limits: compounds max 4, herbalActions max 4, bodyEffects max 4, interactions max 3, timeline max 3.
 Do not invent testimonials or user reviews -- that data comes only from real users.
 Keep sources empty unless you can cite a well-known published reference by name.
+MANDATORY FIELDS (never null or empty): category, tradition, safetyLevel, keyCharacteristics, growingInformation, harvestingStorage.
 Return ONLY the JSON object.`;
 
 const MAX_ATTEMPTS = 2;

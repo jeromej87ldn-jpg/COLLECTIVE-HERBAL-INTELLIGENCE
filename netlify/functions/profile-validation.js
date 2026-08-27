@@ -16,6 +16,7 @@ const REQUIRED_TEXT = ['name', 'latin', 'category', 'summary', 'safetyLevel'];
 // herbalActions/compounds/bodyEffects require a NON-EMPTY array — every
 // herb genuinely has at least one action/compound/effect, so an empty
 // array here really does mean the model skipped the field.
+// CRITICAL: compounds must be non-empty AND contain only REAL compounds after validation
 const REQUIRED_SECTIONS = ['herbalActions', 'compounds', 'bodyEffects'];
 
 const REQUIRED_TEXT_SECTIONS = {
