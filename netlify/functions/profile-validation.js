@@ -63,11 +63,48 @@ function deriveFunctionalOverview(h) {
   }
 }
 
+// Real herbal compounds — model is only allowed to use these.
+// Filters out any made-up compound names before profile display.
+const REAL_COMPOUNDS = new Set([
+  'baicalein', 'quercetin', 'curcumin', 'gingerol', 'shogaol', 'piperine',
+  'resveratrol', 'kaempferol', 'apigenin', 'luteolin', 'naringenin',
+  'diosmin', 'hesperidin', 'rutin', 'catechin', 'epicatechin',
+  'gallic acid', 'ellagic acid', 'tannic acid', 'caffeine', 'theobromine',
+  'alkaloid', 'flavonoid', 'terpenoid', 'saponin', 'glycoside', 'phenolic acid',
+  'polysaccharide', 'tannin', 'coumarin', 'lignin', 'volatile oil',
+  'essential oil', 'resin', 'glycoprotein', 'polyphenol', 'anthocyanin',
+  'chlorogenic acid', 'isoflavone', 'lignan', 'sesquiterpene', 'monoterpene',
+  'caffeic acid', 'ferulic acid', 'silybin', 'silymarin', 'berberine',
+  'capsaicin', 'allicin', 'sulforaphane', 'indole', 'glucosinolate',
+  'betalain', 'carotenoid', 'xanthophyll', 'lycopene', 'beta-carotene',
+  'lutein', 'zeaxanthin', 'astaxanthin', 'capsanthin', 'chrysin',
+  'daidzein', 'genistein', 'ginsenoside', 'withaferin a', 'withanolide',
+  'thymol', 'carvacrol', 'eugenol', 'linalool', 'geraniol', 'citral',
+  'menthol', 'camphor', 'borneol', 'turpineol', 'pinene', 'limonene',
+  'myrcene', 'caryophyllene', 'humulene', 'farnesene', 'bisabolene',
+  'sabinene', 'rosmarinic acid', 'carnosic acid', 'carnosol', 'ursolic acid',
+  'oleanolic acid', 'squalene', 'phytosterol', 'stigmasterol',
+  'campesterol', 'brassicasterol', 'avenasterol', 'fucoxanthin'
+]);
+
+// Strip out fake/unknown compound names before display.
+// Keeps only compounds in the REAL_COMPOUNDS whitelist.
+function validateCompounds(h) {
+  if (!h.compounds || !Array.isArray(h.compounds)) return;
+  h.compounds = h.compounds.filter(c => {
+    if (!c || !c.name) return false;
+    const normalized = c.name.toLowerCase().trim();
+    return REAL_COMPOUNDS.has(normalized);
+  });
+}
+
 module.exports = {
   REQUIRED_TEXT,
   REQUIRED_SECTIONS,
   REQUIRED_TEXT_SECTIONS,
   hasInteractionsField,
   findMissing,
-  deriveFunctionalOverview
+  deriveFunctionalOverview,
+  validateCompounds,
+  REAL_COMPOUNDS
 };

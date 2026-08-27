@@ -1,7 +1,7 @@
 const https = require('https');
 const Anthropic = require('@anthropic-ai/sdk');
 const { createClient } = require('@supabase/supabase-js');
-const { findMissing, deriveFunctionalOverview } = require('./profile-validation');
+const { findMissing, deriveFunctionalOverview, validateCompounds } = require('./profile-validation');
 
 function supabaseProjectUrl() {
   return (process.env.SUPABASE_URL || '').replace(/\/rest\/v1\/?$/, '');
@@ -141,6 +141,7 @@ exports.handler = async (event) => {
     if (cachedRow && cachedRow.status === 'complete' && cachedRow.data && cachedRow.data.name) {
       const before = cachedRow.data.functionalOverview;
       deriveFunctionalOverview(cachedRow.data);
+      validateCompounds(cachedRow.data);
       let healed = cachedRow.data.functionalOverview !== before;
 
       if (healed) {
@@ -196,6 +197,7 @@ Answer ONLY "yes" or "no", nothing else.`
     }
 
     deriveFunctionalOverview(herb);
+    validateCompounds(herb);
 
     if (!herb.disclaimer) {
       herb.disclaimer = 'Educational reference only. Not medical advice. Consult healthcare provider before use.';
