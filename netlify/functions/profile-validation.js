@@ -20,10 +20,15 @@ const REQUIRED_SECTIONS = ['herbalActions', 'compounds', 'bodyEffects'];
 
 const REQUIRED_TEXT_SECTIONS = {
   spiritualHistory: h => h.spiritualHistory && h.spiritualHistory.overview && h.spiritualHistory.overview.trim(),
-  modernUse: h => h.modernUse && h.modernUse.trim(),
+  modernUse: h => h.modernUse && h.modernUse.trim()
+};
+
+// Optional fields (new custom fields) — don't block profile if missing for backwards compat
+const OPTIONAL_TEXT_SECTIONS = {
   keyCharacteristics: h => h.keyCharacteristics && h.keyCharacteristics.trim(),
   growingInformation: h => h.growingInformation && h.growingInformation.trim(),
   usesApplications: h => h.usesApplications && h.usesApplications.trim(),
+  herbalCombinations: h => h.herbalCombinations && h.herbalCombinations.trim(),
   harvestingStorage: h => h.harvestingStorage && h.harvestingStorage.trim()
 };
 
