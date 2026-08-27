@@ -1,15 +1,12 @@
-const https = require('https');
 const Anthropic = require('@anthropic-ai/sdk');
 const { createClient } = require('@supabase/supabase-js');
 const { findMissing, deriveFunctionalOverview, validateCompounds } = require('./profile-validation');
 
+// Batch generation function for Netlify scheduled events
+// Runs on a schedule to proactively generate herb profiles from the pending list
+
 function supabaseProjectUrl() {
   return (process.env.SUPABASE_URL || '').replace(/\/rest\/v1\/?$/, '');
-}
-
-let supabase = null;
-if (process.env.SUPABASE_URL && process.env.SUPABASE_KEY) {
-  supabase = createClient(supabaseProjectUrl(), process.env.SUPABASE_KEY);
 }
 
 const SYSTEM_PROMPT = `You are the Herbadex -- CHI's herb knowledge engine.
@@ -55,6 +52,7 @@ MANDATORY FIELDS (never null or empty): category, tradition, safetyLevel, keyCha
 Return ONLY the JSON object.`;
 
 const MAX_ATTEMPTS = 2;
+const BATCH_SIZE = 20; // Process 20 herbs per day (most common first)
 
 function extractJson(text) {
   const stripped = text.trim()
@@ -114,134 +112,110 @@ async function requestProfile(anthropic, name, attempt = 1, priorMissing = null)
 }
 
 exports.handler = async (event) => {
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
+  const startTime = Date.now();
+  const supabase = createClient(supabaseProjectUrl(), process.env.SUPABASE_KEY);
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+
+  if (!apiKey) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'ANTHROPIC_API_KEY not set' })
+    };
   }
 
+  const anthropic = new Anthropic({ apiKey });
+  const results = {
+    success: 0,
+    failed: 0,
+    skipped: 0,
+    errors: [],
+    herbs: []
+  };
+
   try {
-    const { herbName, previewApiKey, excludedHerb, issues } = JSON.parse(event.body || '{}');
-    if (!herbName || !herbName.trim()) {
-      return { statusCode: 400, body: JSON.stringify({ error: 'herbName is required' }) };
-    }
-    const name = herbName.trim().toLowerCase();
-    const serverKey = process.env.ANTHROPIC_API_KEY;
-    const apiKey = serverKey || previewApiKey;
-    if (!apiKey) {
-      return { statusCode: 500, body: JSON.stringify({ error: 'Server is missing ANTHROPIC_API_KEY' }) };
-    }
-    const anthropic = new Anthropic({ apiKey });
+    // Fetch pending herbs (not yet generated)
+    const { data: pendingHerbs, error: queryErr } = await supabase
+      .from('herbs')
+      .select('name, status')
+      .eq('status', 'pending')
+      .limit(BATCH_SIZE);
 
-    let cachedRow = null;
-    if (supabase) {
-      try {
-        const { data: row } = await supabase
-          .from('herbs')
-          .select('data, status')
-          .eq('name', name)
-          .maybeSingle();
-        cachedRow = row;
-      } catch (cacheErr) {
-        console.error('Supabase read failed:', cacheErr.message);
-      }
-    }
-
-    if (cachedRow && cachedRow.status === 'complete' && cachedRow.data && cachedRow.data.name) {
-      // Check if profile is complete (has original required fields — new fields optional for backwards compat)
-      const requiredFields = ['category', 'safetyLevel', 'modernUse', 'compounds', 'herbalActions', 'bodyEffects', 'preparation', 'interactions'];
-      const isIncomplete = requiredFields.some(f => !cachedRow.data[f] || (Array.isArray(cachedRow.data[f]) && cachedRow.data[f].length === 0) || (typeof cachedRow.data[f] === 'object' && cachedRow.data[f] !== null && Object.keys(cachedRow.data[f]).length === 0) || (typeof cachedRow.data[f] === 'string' && !cachedRow.data[f].trim()));
-
-      if (isIncomplete) {
-        console.log(`Profile incomplete for ${name}, regenerating...`);
-        // Fall through to generation logic
-      } else {
-        const before = cachedRow.data.functionalOverview;
-        deriveFunctionalOverview(cachedRow.data);
-        validateCompounds(cachedRow.data);
-        let healed = cachedRow.data.functionalOverview !== before;
-
-        if (healed) {
-          supabase.from('herbs').upsert({ name, status: 'complete', data: cachedRow.data }).then(
-            () => {}, e => console.error('healed-row save failed:', e.message)
-          );
-        }
-        return {
-          statusCode: 200,
-          headers: { 'Content-Type': 'application/json', 'X-Cache': healed ? 'repaired' : 'hit' },
-          body: JSON.stringify(cachedRow.data)
-        };
-      }
-    }
-
-    // If herb exists but is pending (in the 2,500 list), generate it now
-    if (cachedRow && cachedRow.status === 'pending') {
-      console.log(`Generating pending herb: ${name}`);
-      // Fall through to generation logic below
-    }
-
-    let isHerb = true;
-    try {
-      const check = await anthropic.messages.create({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 10,
-        messages: [{
-          role: 'user',
-          content: `Is "${name}" primarily known and used as a medicinal herb, culinary herb/spice, or traditional herbal remedy plant (examples: ashwagandha, chamomile, turmeric, echinacea, ginger, rosemary)?
-Answer "no" if it is mainly a staple food eaten as a vegetable, fruit, grain, meat, or everyday produce item rather than for herbal/medicinal use (examples: cabbage, potato, chicken, apple, rice, lettuce) — even if it has a minor folk remedy use.
-Answer ONLY "yes" or "no", nothing else.`
-        }]
-      });
-      const verdictBlock = check.content.find(b => b.type === 'text');
-      const verdict = (verdictBlock && verdictBlock.text || '').trim().toLowerCase();
-      if (verdict.startsWith('no')) isHerb = false;
-    } catch (validationErr) {
-      console.error('Herb validation check failed, proceeding anyway:', validationErr.message);
-    }
-
-    if (!isHerb) {
-      if (supabase) {
-        supabase.from('herbs').delete().eq('name', name).then(
-          () => {}, e => console.error('bad-cache cleanup failed:', e.message)
-        );
-      }
+    if (queryErr) {
       return {
-        statusCode: 400,
+        statusCode: 500,
+        body: JSON.stringify({ error: `Failed to query pending herbs: ${queryErr.message}` })
+      };
+    }
+
+    if (!pendingHerbs || pendingHerbs.length === 0) {
+      return {
+        statusCode: 200,
         body: JSON.stringify({
-          error: 'not_an_herb',
-          message: `"${herbName.trim()}" doesn't look like a recognized herb, spice, or traditional herbal remedy plant — it reads more like a staple food item. Herbadex only generates profiles for herbal/medicinal plants. If this looks wrong, try the plant's common herbal name.`
+          message: 'No pending herbs to generate',
+          results
         })
       };
     }
 
-    const herb = await requestProfile(anthropic, name);
-
-    if (herb.error) {
-      return { statusCode: 502, body: JSON.stringify({ error: 'Generation failed: ' + herb.error }) };
-    }
-
-    deriveFunctionalOverview(herb);
-    validateCompounds(herb);
-
-    if (!herb.disclaimer) {
-      herb.disclaimer = 'Educational reference only. Not medical advice. Consult healthcare provider before use.';
-    }
-
-    herb.images = [];
-    herb.generatedAt = new Date().toISOString();
-
-    if (supabase) {
+    // Generate profiles for each pending herb
+    for (const herbRow of pendingHerbs) {
       try {
-        await supabase.from('herbs').upsert({ name, status: 'complete', data: herb });
-      } catch (e) {
-        console.error('Supabase write failed:', e.message);
+        const name = herbRow.name.toLowerCase();
+        console.log(`[batch] Generating profile for: ${name}`);
+
+        const herb = await requestProfile(anthropic, name);
+
+        if (herb.error) {
+          results.failed++;
+          results.errors.push({ herb: name, error: herb.error });
+          console.log(`[batch] Generation failed for ${name}: ${herb.error}`);
+          continue;
+        }
+
+        // Post-generation fixes
+        deriveFunctionalOverview(herb);
+        validateCompounds(herb);
+
+        if (!herb.disclaimer) {
+          herb.disclaimer = 'Educational reference only. Not medical advice. Consult healthcare provider before use.';
+        }
+
+        herb.images = [];
+        herb.generatedAt = new Date().toISOString();
+
+        // Save to Supabase
+        const { error: saveErr } = await supabase
+          .from('herbs')
+          .upsert({ name, status: 'complete', data: herb });
+
+        if (saveErr) {
+          results.failed++;
+          results.errors.push({ herb: name, error: `Save failed: ${saveErr.message}` });
+          console.log(`[batch] Save failed for ${name}: ${saveErr.message}`);
+        } else {
+          results.success++;
+          results.herbs.push(name);
+          console.log(`[batch] Successfully generated and saved: ${name}`);
+        }
+      } catch (err) {
+        results.failed++;
+        results.errors.push({ herb: herbRow.name, error: err.message });
+        console.error(`[batch] Exception generating ${herbRow.name}:`, err);
       }
     }
 
+    const elapsedMs = Date.now() - startTime;
     return {
       statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(herb)
+      body: JSON.stringify({
+        message: `Batch generation complete`,
+        results,
+        elapsedMs,
+        totalProcessed: pendingHerbs.length
+      })
     };
   } catch (error) {
+    console.error('[batch] Fatal error:', error);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: error.message })

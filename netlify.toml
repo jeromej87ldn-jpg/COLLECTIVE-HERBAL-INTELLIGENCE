@@ -1,3 +1,9 @@
 [build]
   functions = "netlify/functions"
   publish = "."
+
+# Scheduled function to proactively generate herb profiles
+# Runs daily to batch-generate 20 pending profiles from the 2,500 herb list
+# Most common herbs generated first; less common as the list progresses
+[functions."batch-generate-herbs"]
+  schedule = "0 2 * * *"
