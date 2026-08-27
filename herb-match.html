@@ -974,11 +974,18 @@ function buildHerbadexStyleProfileHtml(h) {
     `<div class="tl-item"><div class="tl-year">${t.era}</div><div class="tl-text">${t.text}</div></div>`
   ).join('');
 
+  // Text-based, no invented "strength" meter -- brought in line with
+  // supreme.html's own renderProfile(), which never had a fake precision
+  // bar. This copy had drifted from the original when it was duplicated.
   const compoundsHTML = F.section(h.compounds, 'compounds', list => list.map(c =>
-    `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--parchment-dark);">
-      <span style="font-size:13px;font-weight:500;color:var(--charcoal);min-width:130px;">${c.name}</span>
-      <div style="flex:1;height:3px;background:var(--parchment-deep);border-radius:2px;overflow:hidden;"><div style="width:${c.strength || 0}%;height:100%;background:var(--gold);border-radius:2px;"></div></div>
-      <span style="font-size:12px;color:var(--charcoal-mid);min-width:150px;text-align:right;">${F.has(c.role) ? c.role : '—'}</span>
+    `<div style="padding:10px 0;border-bottom:1px solid var(--parchment-dark);">
+      <div style="display:flex;justify-content:space-between;gap:10px;align-items:baseline;">
+        <span style="font-size:13px;font-weight:500;color:var(--charcoal);">${c.name}</span>
+        <span style="font-size:11px;color:var(--charcoal-mid);">${F.has(c.class) ? c.class : ''}</span>
+      </div>
+      ${F.has(c.role) ? `<div style="font-size:12.5px;color:var(--charcoal-mid);margin-top:3px;">${c.role}</div>` : ''}
+      ${F.has(c.mechanism) ? `<div style="font-size:12px;color:var(--charcoal-mid);opacity:.85;margin-top:4px;"><strong>Mechanism:</strong> ${c.mechanism}</div>` : ''}
+      ${F.has(c.evidence) ? `<div style="font-size:12px;color:var(--charcoal-mid);opacity:.85;margin-top:4px;"><strong>Evidence:</strong> ${c.evidence}</div>` : ''}
     </div>`
   ).join(''));
 
