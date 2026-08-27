@@ -23,33 +23,41 @@ if (process.env.SUPABASE_URL && process.env.SUPABASE_KEY) {
   supabase = createClient(supabaseProjectUrl(), process.env.SUPABASE_KEY);
 }
 
-const SYSTEM_PROMPT = `You are the Herbadex — CHI's herb knowledge engine.
-Provide a complete, rich herb profile. Return ONLY valid JSON, no markdown fences, no explanation:
+const SYSTEM_PROMPT = `You are the Herbadex -- CHI's herb knowledge engine.
+
+You will be given real reference material retrieved from PubMed and/or Wikipedia for this herb, or told explicitly that none was found. Base every substantive claim ONLY on that material or on extremely well-established general knowledge (the kind found in any standard reference on the plant) -- never on an unverifiable specific you are inferring or guessing to sound complete. If the material doesn't support a field, or none was found, leave that field null/empty rather than filling it in. A short, honest, partial profile is correct behavior here, not a failure -- do not pad fields to look complete.
+
+Return ONLY valid JSON, no markdown fences, no explanation:
 {
-  "name": "common name", "latin": "latin binomial", "category": "primary action category",
-  "categoryColor": "#hex", "origin": "native region", "tradition": "primary healing tradition(s)",
-  "preparations": ["tea","tincture","capsule"], "safetyLevel": "Generally safe | Use with caution | Consult professional",
-  "summary": "2 sentence overview, warm and plain",
-  "functionalOverview": "2-3 sentence in-depth summary of what it does and how people use it",
-  "source": "a real, verifiable citation or null if not genuinely confident one exists — never invent one",
-  "spiritualHistory": { "overview": "3-4 sentence paragraph on cultural/spiritual significance", "timeline": [{"era":"period or culture","text":"one sentence"}] },
-  "modernUse": "1-2 paragraph(s) on current research and modern applications",
-  "compounds": [{"name":"compound name (e.g. baicalein, pabloside)","class":"Flavonoid | Alkaloid | Terpenoid | Saponin | Glycoside | Tannin | Polysaccharide | Phenolic acid","role":"plain English explanation of what it does (e.g. 'supports calming and anti-inflammatory effects')","mechanism":"1-2 sentences on HOW it works in the body (e.g. 'acts on GABA receptors to reduce nervous system activation')","evidence":"scientific evidence, traditional use records, or research studies backing this compound"}],
+  "name": "common name", "latin": "latin binomial, or null if not confident", "category": "primary action category, or null",
+  "categoryColor": "#hex", "origin": "native region, or null", "tradition": "primary healing tradition(s), or null",
+  "preparations": ["tea","tincture","capsule"], "safetyLevel": "Generally safe | Use with caution | Consult professional | null if not established",
+  "summary": "2 sentence overview, warm and plain, or null if nothing reliable to say",
+  "functionalOverview": "2-3 sentence in-depth summary of what it does and how people use it, or null",
+  "sources": [{"url":"an exact URL copied from the reference material below","title":"short title for it"}],
+  "spiritualHistory": { "overview": "3-4 sentence paragraph on cultural/spiritual significance, or null", "timeline": [{"era":"period or culture","text":"one sentence"}] },
+  "modernUse": "1-2 paragraph(s) on current research and modern applications, grounded in the material provided -- or null if none was found",
+  "compounds": [{"name":"compound name (e.g. baicalein, pabloside)","class":"Flavonoid | Alkaloid | Terpenoid | Saponin | Glycoside | Tannin | Polysaccharide | Phenolic acid","role":"plain English explanation of what it does","mechanism":"1-2 sentences on HOW it works in the body","evidence":"what the reference material actually says backs this compound"}],
   "herbalActions": [{"name":"action name","system":"body system","description":"1-2 sentences","compounds":["compound name"]}],
   "bodyEffects": [{"system":"body system","effect":"short phrase"}],
   "preparation": {"tea":"or null","tincture":"or null","capsule":"or null","topical":"or null","traditional":"or null"},
-  "rareFact": "one surprising fact, one sentence",
+  "rareFact": "one surprising fact, only if genuinely well-established -- or null",
   "interactions": ["known interaction"]
 }
 Limits: compounds max 4, herbalActions max 4, bodyEffects max 4, interactions max 3, timeline max 3.
+"sources" must only ever contain URLs you were actually given in the reference material below -- never construct, guess, or paraphrase a URL. If no reference material was provided, "sources" must be an empty array.
+Arrays (compounds, herbalActions, bodyEffects, interactions) should be empty [] rather than padded with weak or invented entries if the reference material doesn't genuinely support them.
+Do not invent a numeric "strength" or confidence score for a compound -- that kind of precision cannot genuinely be measured or sourced, so the schema does not ask for one.
 Do not invent user reviews, testimonials, or community experiences -- that content must come from real people, never be generated.
-CRITICAL: Every compound MUST have ALL fields filled in -- name, class, role (plain English), mechanism (how it works), and evidence. Never leave fields empty or use placeholder text. Do not invent a numeric "strength" or confidence score for a compound -- that kind of precision cannot genuinely be measured or sourced, so the schema does not ask for one.
 Return ONLY the JSON object. No other text.`;
 
 // Field-completeness rules (REQUIRED_TEXT, REQUIRED_SECTIONS, findMissing,
 // deriveFunctionalOverview) now live in ./profile-validation.js — pulled out
 // so that logic has zero dependencies and can be unit-tested directly with
 // plain node, without needing the Anthropic/Supabase SDKs or live API keys.
+// NOTE: with the grounding-based prompt above, an empty/missing section is
+// frequently the CORRECT answer (no supporting material found), not a gap
+// to chase with a retry -- findMissing()'s output below is diagnostic only.
 
 // Single attempt: this whole call has to finish inside one synchronous
 // request/response, and a second full Sonnet call stacked onto the first
@@ -78,6 +86,136 @@ function extractJson(text) {
   }
 }
 
+// ── GROUNDING (real retrieved reference material) ──
+// Before generating a genuinely new herb, real text is pulled from PubMed
+// and Wikipedia and handed to Claude as reference material to synthesize
+// from, instead of asking it to write purely from training-data recall.
+// This is the actual fix for "a wrong AI answer reads exactly as confident
+// as a right one" -- grounding at least ties generation to real, checkable
+// source text, and the URLs Claude is allowed to cite are restricted (see
+// the filter in the handler below) to ones that were genuinely retrieved
+// here, not whatever the model feels like constructing.
+//
+// Both fetches fail soft (empty result) on any error/timeout so a slow or
+// down external API never blocks profile generation -- worst case, the
+// profile generates ungrounded and says so, the same as before this change.
+// Timeouts are kept short (5s) because this runs on the new-herb path only,
+// stacked in front of the Haiku validation call and the Sonnet generation
+// call, inside one synchronous Netlify function -- the exact time budget
+// that caused the 504 timeouts fixed earlier tonight. Grounding runs
+// concurrently with validation (see handler) rather than after it, so it
+// doesn't add pure serial latency on top of an already-tight budget.
+const RESEARCH_USER_AGENT = 'CHI-Herbadex-Bot/1.0 (collectiveherbalintelligence.com; contact via site owner)';
+const RESEARCH_TIMEOUT_MS = 5000;
+
+function httpsGetJson(url, headers) {
+  return new Promise((resolve, reject) => {
+    const req = https.get(url, { headers, timeout: RESEARCH_TIMEOUT_MS }, (res) => {
+      let body = '';
+      res.on('data', chunk => { body += chunk; });
+      res.on('end', () => {
+        try { resolve(JSON.parse(body)); }
+        catch (e) { reject(e); }
+      });
+    });
+    req.on('error', reject);
+    req.on('timeout', () => req.destroy(new Error('Request timed out')));
+  });
+}
+
+function httpsGetText(url, headers) {
+  return new Promise((resolve, reject) => {
+    const req = https.get(url, { headers, timeout: RESEARCH_TIMEOUT_MS }, (res) => {
+      let body = '';
+      res.on('data', chunk => { body += chunk; });
+      res.on('end', () => resolve(body));
+    });
+    req.on('error', reject);
+    req.on('timeout', () => req.destroy(new Error('Request timed out')));
+  });
+}
+
+// PubMed's E-utilities are free and need no API key. esearch finds
+// relevant article IDs; efetch pulls their abstracts as plain text. These
+// run sequentially (efetch needs esearch's IDs first) so a slow NCBI
+// response can cost up to ~2x RESEARCH_TIMEOUT_MS in the worst case --
+// still fails soft into an empty array rather than blocking generation.
+async function fetchPubMedAbstracts(herbName, maxResults = 4) {
+  try {
+    const searchParams = new URLSearchParams({
+      db: 'pubmed',
+      term: `"${herbName}" AND (herb OR extract OR botanical) AND (safety OR clinical OR trial OR interaction OR pharmacology OR review)`,
+      retmax: String(maxResults),
+      retmode: 'json',
+      sort: 'relevance'
+    });
+    const searchData = await httpsGetJson(
+      `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?${searchParams.toString()}`,
+      { 'User-Agent': RESEARCH_USER_AGENT }
+    );
+    const ids = (searchData.esearchresult && searchData.esearchresult.idlist) || [];
+    if (!ids.length) return [];
+
+    const fetchParams = new URLSearchParams({
+      db: 'pubmed',
+      id: ids.join(','),
+      rettype: 'abstract',
+      retmode: 'text'
+    });
+    const text = await httpsGetText(
+      `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?${fetchParams.toString()}`,
+      { 'User-Agent': RESEARCH_USER_AGENT }
+    );
+
+    // efetch's plain-text abstract output numbers entries "1. Title..."
+    // separated by blank lines -- split on that rather than trying to
+    // parse it as structured data.
+    const entries = text.split(/\n\d+\.\s/).map(s => s.trim()).filter(Boolean);
+    return ids
+      .map((id, i) => ({
+        url: `https://pubmed.ncbi.nlm.nih.gov/${id}/`,
+        text: (entries[i] || '').slice(0, 1500)
+      }))
+      .filter(e => e.text);
+  } catch (e) {
+    return [];
+  }
+}
+
+async function fetchWikipediaSummary(herbName) {
+  try {
+    const title = encodeURIComponent(herbName.trim());
+    const data = await httpsGetJson(
+      `https://en.wikipedia.org/api/rest_v1/page/summary/${title}`,
+      { 'User-Agent': RESEARCH_USER_AGENT, 'Accept': 'application/json' }
+    );
+    if (!data || data.type === 'disambiguation' || !data.extract) return null;
+    return {
+      title: data.title,
+      url: (data.content_urls && data.content_urls.desktop && data.content_urls.desktop.page) || `https://en.wikipedia.org/wiki/${title}`,
+      text: data.extract.slice(0, 1500)
+    };
+  } catch (e) {
+    return null;
+  }
+}
+
+// Builds the reference-material block appended to the generation prompt.
+// Returns null when nothing real was found at all -- buildUserMessage uses
+// that to tell the model plainly it has nothing to draw on beyond
+// well-established general knowledge, rather than silently falling back to
+// pure recall without saying so.
+function buildGroundingBlock(pubmedResults, wikiResult) {
+  const parts = [];
+  if (pubmedResults.length) {
+    parts.push('PubMed abstracts:\n' + pubmedResults.map(p => `[${p.url}]\n${p.text}`).join('\n\n'));
+  }
+  if (wikiResult) {
+    parts.push(`Wikipedia (${wikiResult.url}):\n${wikiResult.text}`);
+  }
+  return parts.length ? parts.join('\n\n---\n\n') : null;
+}
+
 // ── IMAGES (sourced, never AI-generated) ──
 // NOT CURRENTLY CALLED from the handler below — an earlier version awaited
 // this inline on every request (including cache hits), which risked
@@ -91,7 +229,7 @@ function extractJson(text) {
 // licenses. Plants of the World Online (POWO) has no simple public
 // image-search API, so it isn't wired in automatically — imagesNote flags
 // herbs that need a manual POWO check when Wikimedia turns up nothing.
-const WIKIMEDIA_USER_AGENT = 'CHI-Herbadex-Bot/1.0 (collectiveherbalintelligence.com; contact via site owner)';
+const WIKIMEDIA_USER_AGENT = RESEARCH_USER_AGENT;
 // Wikimedia's real LicenseShortName values are space-separated — "CC BY-SA
 // 4.0", "CC BY 3.0", "Public domain" — not hyphenated "CC-BY-SA" the way an
 // earlier version of this list assumed. That mismatch silently rejected
@@ -163,18 +301,24 @@ async function fetchHerbImages(latinName, commonName, maxImages = 1) {
   return results;
 }
 
-function buildUserMessage(name, excludedHerb, issues) {
+function buildUserMessage(name, excludedHerb, issues, groundingBlock) {
+  let base;
   if (excludedHerb && issues && issues.length > 0) {
-    return `The user rejected: ${excludedHerb}. They're looking for an herb that helps with: ${issues.join(', ')}. Find a different, complementary herb that addresses these issues better than ${excludedHerb}. Provide the profile for: ${name}`;
+    base = `The user rejected: ${excludedHerb}. They're looking for an herb that helps with: ${issues.join(', ')}. Find a different, complementary herb that addresses these issues better than ${excludedHerb}. Provide the profile for: ${name}`;
+  } else {
+    base = `Provide the profile for: ${name}`;
   }
-  return `Provide the profile for: ${name}`;
+  if (groundingBlock) {
+    return `${base}\n\nREFERENCE MATERIAL (real, retrieved just now -- ground your answer in this, and only cite these exact URLs in "sources" where relevant):\n\n${groundingBlock}`;
+  }
+  return `${base}\n\nNo reference material could be retrieved from PubMed or Wikipedia for this herb. Only include fields you are confident reflect extremely well-established, standard-reference-level knowledge. Leave everything else null rather than filling in unverifiable specifics. "sources" must be an empty array.`;
 }
 
 async function requestProfile(anthropic, name, userMessage, attempt = 1, priorMissing = null) {
   let content = userMessage;
   if (attempt > 1) content += '\n\nReturn ONLY the JSON object, with no other text before or after it.';
   if (priorMissing && priorMissing.length) {
-    content += `\n\nYour previous attempt left these fields empty: ${priorMissing.join(', ')}. Make sure every one of those is fully populated this time — herbalActions and modernUse especially must not be empty.`;
+    content += `\n\nYour previous attempt had invalid structure for: ${priorMissing.join(', ')}. Fix the structure -- do not use this as a reason to add unverified content to any field.`;
   }
 
   const message = await anthropic.messages.create({
@@ -199,6 +343,10 @@ async function requestProfile(anthropic, name, userMessage, attempt = 1, priorMi
     return { error: 'Model response was not valid JSON', stopReason: message.stop_reason, raw: textBlock.text.trim().slice(0, 300) };
   }
 
+  // findMissing() is diagnostic only now -- with the grounding-based prompt,
+  // an empty section is frequently the correct, honest answer rather than
+  // something to retry into existence. MAX_ATTEMPTS is 1, so this never
+  // actually triggers a retry; it's kept for visibility on the row.
   const missing = findMissing(herb);
   if (missing.length && attempt < MAX_ATTEMPTS) {
     return requestProfile(anthropic, name, userMessage, attempt + 1, missing);
@@ -228,13 +376,10 @@ exports.handler = async (event) => {
     // ── 1. CACHE CHECK (moved ahead of validation) ────────────────────
     // Checking the cache first means a repeat view of an already-good herb
     // costs one fast Supabase read and NOTHING else — no Haiku call, no
-    // Sonnet call. That's the overwhelming majority of requests (anyone
-    // re-opening a herb someone already generated), so this is the single
-    // biggest lever for staying comfortably under Netlify's function time
-    // limit. Previously validation ran on every request, including cache
-    // hits, which stacked an extra API round-trip onto even the fastest
-    // path and made an otherwise-instant cached view vulnerable to the
-    // same timeout risk as a fresh generation.
+    // Sonnet call, no research fetches. That's the overwhelming majority of
+    // requests (anyone re-opening a herb someone already generated), so
+    // this is the single biggest lever for staying comfortably under
+    // Netlify's function time limit.
     let cachedRow = null;
     if (supabase) {
       try {
@@ -290,14 +435,14 @@ exports.handler = async (event) => {
     // started, is running right now (this same call), or is done. Nothing
     // gets left in limbo between requests anymore.
 
-    // ── 2. VALIDATE IT'S ACTUALLY AN HERB ─────────────────────────────
-    // Only reached on a genuine cache miss now — no point spending a Haiku
-    // call re-validating something already confirmed good and sitting in
-    // the cache (see reordering note above). This still catches legacy bad
-    // rows (e.g. "cabbage") the moment anyone re-searches them, since the
-    // cache-hit branch above only returns early for status:'complete' —
-    // anything else falls through to here and gets checked before a Sonnet
-    // call would ever be spent generating a fake profile for it.
+    // ── 2. VALIDATE + GROUND, CONCURRENTLY ────────────────────────────
+    // The "is this actually an herb" check and the PubMed/Wikipedia
+    // grounding fetches are independent of each other, so they run at the
+    // same time rather than one after another -- this keeps the added
+    // latency from grounding from just stacking serially on top of an
+    // already-tight synchronous request budget. Only reached on a genuine
+    // cache miss (see reordering note above).
+    let isHerb = true; // fail-open: a flaky classification call shouldn't block a real herb search
     try {
       const check = await anthropic.messages.create({
         model: 'claude-haiku-4-5-20251001',
@@ -311,32 +456,37 @@ Answer ONLY "yes" or "no", nothing else.`
       });
       const verdictBlock = check.content.find(b => b.type === 'text');
       const verdict = (verdictBlock && verdictBlock.text || '').trim().toLowerCase();
-      if (verdict.startsWith('no')) {
-        // Self-heal: if a bad profile for this name is already cached
-        // (generated before this gate existed), remove it so it can't
-        // keep being served on some other code path later.
-        if (supabase) {
-          supabase.from('herbs').delete().eq('name', name).then(
-            () => {}, e => console.error('bad-cache cleanup failed:', e.message)
-          );
-        }
-        return {
-          statusCode: 400,
-          body: JSON.stringify({
-            error: 'not_an_herb',
-            message: `"${herbName.trim()}" doesn't look like a recognized herb, spice, or traditional herbal remedy plant — it reads more like a staple food item. Herbadex only generates profiles for herbal/medicinal plants. If this looks wrong, try the plant's common herbal name.`
-          })
-        };
-      }
-      // If the check itself errors or returns something unparseable, we
-      // fail open (proceed) rather than blocking a real herb search
-      // because of a flaky classification call.
+      if (verdict.startsWith('no')) isHerb = false;
     } catch (validationErr) {
       console.error('Herb validation check failed, proceeding anyway:', validationErr.message);
     }
 
+    if (!isHerb) {
+      // Self-heal: if a bad profile for this name is already cached
+      // (generated before this gate existed), remove it so it can't
+      // keep being served on some other code path later.
+      if (supabase) {
+        supabase.from('herbs').delete().eq('name', name).then(
+          () => {}, e => console.error('bad-cache cleanup failed:', e.message)
+        );
+      }
+      return {
+        statusCode: 400,
+        body: JSON.stringify({
+          error: 'not_an_herb',
+          message: `"${herbName.trim()}" doesn't look like a recognized herb, spice, or traditional herbal remedy plant — it reads more like a staple food item. Herbadex only generates profiles for herbal/medicinal plants. If this looks wrong, try the plant's common herbal name.`
+        })
+      };
+    }
+
+    const [pubmedResults, wikiResult] = await Promise.all([
+      fetchPubMedAbstracts(name),
+      fetchWikipediaSummary(name)
+    ]);
+    const groundingBlock = buildGroundingBlock(pubmedResults, wikiResult);
+
     // ── 3. GENERATE (single synchronous call — no background dispatch) ──
-    const userMsg = buildUserMessage(name, excludedHerb, issues);
+    const userMsg = buildUserMessage(name, excludedHerb, issues, groundingBlock);
     const herb = await requestProfile(anthropic, name, userMsg);
 
     if (herb.error) {
@@ -344,6 +494,16 @@ Answer ONLY "yes" or "no", nothing else.`
     }
 
     deriveFunctionalOverview(herb);
+
+    // Enforced in code, not just by the prompt: "sources" may only contain
+    // URLs that were actually retrieved above. If the model returns
+    // anything else (or nothing was grounded), it's dropped rather than
+    // trusted -- a plausible-looking invented citation is worse than none.
+    const realUrls = new Set([
+      ...pubmedResults.map(p => p.url),
+      ...(wikiResult ? [wikiResult.url] : [])
+    ]);
+    herb.sources = Array.isArray(herb.sources) ? herb.sources.filter(s => s && realUrls.has(s.url)) : [];
 
     // Image fetch removed from this synchronous path for the same reason as
     // the cache-hit path above — see fetchHerbImages, currently unused.
