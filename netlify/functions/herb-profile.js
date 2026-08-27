@@ -156,6 +156,12 @@ exports.handler = async (event) => {
       };
     }
 
+    // If herb exists but is pending (in the 2,500 list), generate it now
+    if (cachedRow && cachedRow.status === 'pending') {
+      console.log(`Generating pending herb: ${name}`);
+      // Fall through to generation logic below
+    }
+
     let isHerb = true;
     try {
       const check = await anthropic.messages.create({
