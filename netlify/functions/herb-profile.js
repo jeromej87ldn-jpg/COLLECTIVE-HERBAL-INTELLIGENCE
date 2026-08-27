@@ -34,16 +34,16 @@ Provide a complete, rich herb profile. Return ONLY valid JSON, no markdown fence
   "source": "a real, verifiable citation or null if not genuinely confident one exists — never invent one",
   "spiritualHistory": { "overview": "3-4 sentence paragraph on cultural/spiritual significance", "timeline": [{"era":"period or culture","text":"one sentence"}] },
   "modernUse": "1-2 paragraph(s) on current research and modern applications",
-  "compounds": [{"name":"compound name (e.g. baicalein, pabloside)","class":"Flavonoid | Alkaloid | Terpenoid | Saponin | Glycoside | Tannin | Polysaccharide | Phenolic acid","role":"plain English explanation of what it does (e.g. 'supports calming and anti-inflammatory effects')","strength":0-100,"mechanism":"1-2 sentences on HOW it works in the body (e.g. 'acts on GABA receptors to reduce nervous system activation')","evidence":"scientific evidence, traditional use records, or research studies backing this compound"}],
+  "compounds": [{"name":"compound name (e.g. baicalein, pabloside)","class":"Flavonoid | Alkaloid | Terpenoid | Saponin | Glycoside | Tannin | Polysaccharide | Phenolic acid","role":"plain English explanation of what it does (e.g. 'supports calming and anti-inflammatory effects')","mechanism":"1-2 sentences on HOW it works in the body (e.g. 'acts on GABA receptors to reduce nervous system activation')","evidence":"scientific evidence, traditional use records, or research studies backing this compound"}],
   "herbalActions": [{"name":"action name","system":"body system","description":"1-2 sentences","compounds":["compound name"]}],
   "bodyEffects": [{"system":"body system","effect":"short phrase"}],
   "preparation": {"tea":"or null","tincture":"or null","capsule":"or null","topical":"or null","traditional":"or null"},
   "rareFact": "one surprising fact, one sentence",
-  "interactions": ["known interaction"],
-  "forumSeed": [{"user":"Name","initials":"XX","rating":5,"comment":"realistic experience"},{"user":"Name","initials":"XX","rating":4,"comment":"realistic experience"}]
+  "interactions": ["known interaction"]
 }
-Limits: compounds max 4, herbalActions max 4, bodyEffects max 4, interactions max 3, timeline max 3, forumSeed exactly 2.
-CRITICAL: Every compound MUST have ALL fields filled in — name, class, role (plain English), strength (0-100), mechanism (how it works), and evidence. Never leave fields empty or use placeholder text.
+Limits: compounds max 4, herbalActions max 4, bodyEffects max 4, interactions max 3, timeline max 3.
+Do not invent user reviews, testimonials, or community experiences -- that content must come from real people, never be generated.
+CRITICAL: Every compound MUST have ALL fields filled in -- name, class, role (plain English), mechanism (how it works), and evidence. Never leave fields empty or use placeholder text. Do not invent a numeric "strength" or confidence score for a compound -- that kind of precision cannot genuinely be measured or sourced, so the schema does not ask for one.
 Return ONLY the JSON object. No other text.`;
 
 // Field-completeness rules (REQUIRED_TEXT, REQUIRED_SECTIONS, findMissing,

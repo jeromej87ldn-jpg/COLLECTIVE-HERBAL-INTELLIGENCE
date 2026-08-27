@@ -58,6 +58,10 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:28px;margin-
     <h1>Pending community photos</h1>
     <div class="status-line" id="status-line">Loading…</div>
     <div class="pending-list" id="pending-list"></div>
+
+    <h1 style="margin-top:2.5rem;">Pending testimonials</h1>
+    <div class="status-line" id="testimonial-status-line">Loading…</div>
+    <div class="pending-list" id="testimonial-pending-list"></div>
   </div>
 
 </div>
@@ -96,8 +100,63 @@ async function loadPending(){
     document.getElementById('gate').style.display = 'none';
     document.getElementById('panel').style.display = 'block';
     renderPending(data.photos || []);
+    loadPendingTestimonials();
   } catch (e) {
     document.getElementById('gate-error').textContent = 'Could not reach the server.';
+  }
+}
+
+async function loadPendingTestimonials(){
+  try {
+    const res = await fetch('/.netlify/functions/herb-testimonials-admin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ passcode: PASSCODE, action: 'list' })
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    renderPendingTestimonials(data.testimonials || []);
+  } catch (e) {}
+}
+
+function renderPendingTestimonials(items){
+  const list = document.getElementById('testimonial-pending-list');
+  document.getElementById('testimonial-status-line').textContent =
+    items.length ? `${items.length} awaiting review` : '';
+  if (!items.length) {
+    list.innerHTML = '<div class="empty">Nothing waiting for review.</div>';
+    return;
+  }
+  list.innerHTML = items.map(t => `
+    <div class="pcard" id="tcard-${t.id}">
+      <div class="pcard-body">
+        <div class="pcard-herb">${t.herb_name} <span style="font-size:12px;color:var(--gold-light);">${'\u2605'.repeat(t.rating)}${'\u2606'.repeat(5 - t.rating)}</span></div>
+        <div class="pcard-meta">by ${t.display_name} \u00b7 ${new Date(t.created_at).toLocaleDateString()}</div>
+        ${t.comment ? `<div class="pcard-note">${t.comment}</div>` : '<div class="pcard-note" style="opacity:.6;">(rating only, no comment)</div>'}
+        <div class="pcard-actions">
+          <button class="btn-approve" onclick="moderateTestimonial('${t.id}','approve')">Approve</button>
+          <button class="btn-reject" onclick="moderateTestimonial('${t.id}','reject')">Reject</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+async function moderateTestimonial(id, action){
+  const card = document.getElementById('tcard-' + id);
+  if (card) card.style.opacity = '.4';
+  try {
+    const res = await fetch('/.netlify/functions/herb-testimonials-admin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ passcode: PASSCODE, action, testimonialId: id })
+    });
+    if (!res.ok) { if (card) card.style.opacity = '1'; return; }
+    if (card) card.remove();
+    const remaining = document.querySelectorAll('#testimonial-pending-list .pcard').length;
+    document.getElementById('testimonial-status-line').textContent = remaining ? `${remaining} awaiting review` : '';
+    if (!remaining) document.getElementById('testimonial-pending-list').innerHTML = '<div class="empty">Nothing waiting for review.</div>';
+  } catch (e) {
+    if (card) card.style.opacity = '1';
   }
 }
 
