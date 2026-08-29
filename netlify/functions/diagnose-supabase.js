@@ -101,10 +101,29 @@ exports.handler = async () => {
         const v = row.data && row.data[f];
         return !v || (Array.isArray(v) && v.length === 0) || (typeof v === 'object' && v !== null && !Array.isArray(v) && Object.keys(v).length === 0) || (typeof v === 'string' && !v.trim());
       }));
+      // Tally exactly which field(s) are missing across the broken rows,
+      // so we know whether this is one root cause or several. Excludes
+      // internal non-herb marker rows (e.g. cron heartbeat rows) from the
+      // count so they don't skew the picture.
+      const isRealHerbRow = row => !/^__.*__$/.test(row.name || '');
+      const brokenRealHerbs = broken.filter(isRealHerbRow);
+      const fieldFailureCounts = {};
+      requiredFields.forEach(f => { fieldFailureCounts[f] = 0; });
+      brokenRealHerbs.forEach(row => {
+        requiredFields.forEach(f => {
+          const v = row.data && row.data[f];
+          const fails = !v || (Array.isArray(v) && v.length === 0) || (typeof v === 'object' && v !== null && !Array.isArray(v) && Object.keys(v).length === 0) || (typeof v === 'string' && !v.trim());
+          if (fails) fieldFailureCounts[f]++;
+        });
+      });
       report.tests.broken_rows_sample_of_1000 = {
         checked: data.length,
-        broken_count: broken.length,
-        broken_names_sample: broken.slice(0, 15).map(r => r.name)
+        excluded_internal_marker_rows: data.length - (data.filter(isRealHerbRow).length),
+        broken_count_including_markers: broken.length,
+        broken_count_real_herbs_only: brokenRealHerbs.length,
+        field_failure_counts_across_broken_herbs: fieldFailureCounts,
+        broken_names_sample: brokenRealHerbs.slice(0, 15).map(r => r.name),
+        example_broken_row_full_data: brokenRealHerbs[0] ? brokenRealHerbs[0].data : null
       };
     }
   } catch (e) {
