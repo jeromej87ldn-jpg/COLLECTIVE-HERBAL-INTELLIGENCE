@@ -123,7 +123,37 @@ exports.handler = async () => {
         broken_count_real_herbs_only: brokenRealHerbs.length,
         field_failure_counts_across_broken_herbs: fieldFailureCounts,
         broken_names_sample: brokenRealHerbs.slice(0, 15).map(r => r.name),
-        example_broken_row_full_data: brokenRealHerbs[0] ? brokenRealHerbs[0].data : null
+        example_broken_row_full_data: brokenRealHerbs[0] ? brokenRealHerbs[0].data : null,
+        // Distinguish the two populations directly: rows missing ONLY
+        // herbalActions (otherwise modern/complete, cheaply healable) vs
+        // rows missing herbalActions AND other core fields too (likely a
+        // genuinely older/incompatible schema, probably needs real
+        // regeneration since there's nothing reliable to derive from).
+        example_missing_only_herbalActions: (() => {
+          const row = brokenRealHerbs.find(r => {
+            const d = r.data || {};
+            const missingHerbalActions = !Array.isArray(d.herbalActions) || d.herbalActions.length === 0;
+            const otherFieldsOk = ['category','safetyLevel','modernUse','compounds','bodyEffects','preparation','interactions']
+              .every(f => {
+                const v = d[f];
+                return v && !(Array.isArray(v) && v.length === 0) && !(typeof v === 'object' && !Array.isArray(v) && Object.keys(v).length === 0) && !(typeof v === 'string' && !v.trim());
+              });
+            return missingHerbalActions && otherFieldsOk;
+          });
+          return row ? { name: row.name, data: row.data } : null;
+        })(),
+        example_missing_everything: (() => {
+          const row = brokenRealHerbs.find(r => {
+            const d = r.data || {};
+            const failCount = ['category','safetyLevel','modernUse','compounds','herbalActions','bodyEffects','preparation','interactions']
+              .filter(f => {
+                const v = d[f];
+                return !v || (Array.isArray(v) && v.length === 0) || (typeof v === 'object' && v !== null && !Array.isArray(v) && Object.keys(v).length === 0) || (typeof v === 'string' && !v.trim());
+              }).length;
+            return failCount >= 5; // fails most required fields at once
+          });
+          return row ? { name: row.name, data: row.data } : null;
+        })()
       };
     }
   } catch (e) {
