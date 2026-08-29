@@ -55,31 +55,60 @@ exports.handler = async () => {
     report.tests.read = { ok: false, error: e.message };
   }
 
-  // Test 2: can we look up dandelion specifically, and what does its row actually look like?
+  // Test 2: check EVERY likely spelling/naming variant separately — the
+  // cache key is a raw lowercased string with no normalization, so
+  // "dandelion", "dandelion root" and a misspelling are three unrelated rows.
+  const nameVariants = ['dandelion', 'dandelion root', 'dandilion root', 'dandilion'];
+  report.tests.name_variant_lookup = {};
+  for (const variant of nameVariants) {
+    try {
+      const { data, error } = await supabase
+        .from('herbs')
+        .select('name, status, data')
+        .eq('name', variant)
+        .maybeSingle();
+      if (error) {
+        report.tests.name_variant_lookup[variant] = { ok: false, error: error.message };
+      } else if (!data) {
+        report.tests.name_variant_lookup[variant] = { ok: true, found: false };
+      } else {
+        const compoundsLen = Array.isArray(data.data && data.data.compounds) ? data.data.compounds.length : null;
+        const requiredFields = ['category', 'safetyLevel', 'modernUse', 'compounds', 'herbalActions', 'bodyEffects', 'preparation', 'interactions'];
+        const isIncomplete = data.status !== 'complete' || requiredFields.some(f => {
+          const v = data.data && data.data[f];
+          return !v || (Array.isArray(v) && v.length === 0) || (typeof v === 'object' && v !== null && !Array.isArray(v) && Object.keys(v).length === 0) || (typeof v === 'string' && !v.trim());
+        });
+        report.tests.name_variant_lookup[variant] = {
+          ok: true,
+          found: true,
+          status: data.status,
+          compounds_count: compoundsLen,
+          would_be_treated_as_incomplete_and_regenerated: isIncomplete
+        };
+      }
+    } catch (e) {
+      report.tests.name_variant_lookup[variant] = { ok: false, error: e.message };
+    }
+  }
+
+  // How many rows in the whole table currently fail herb-profile.js's own
+  // completeness check right now, and would regenerate on next search?
   try {
-    const { data, error } = await supabase
-      .from('herbs')
-      .select('name, status, data')
-      .eq('name', 'dandelion')
-      .maybeSingle();
-    if (error) {
-      report.tests.dandelion_lookup = { ok: false, error: error.message };
-    } else if (!data) {
-      report.tests.dandelion_lookup = { ok: true, found: false, note: 'No row named "dandelion" exists in the herbs table at all — every search will always regenerate.' };
-    } else {
-      const compoundsLen = Array.isArray(data.data && data.data.compounds) ? data.data.compounds.length : null;
-      report.tests.dandelion_lookup = {
-        ok: true,
-        found: true,
-        status: data.status,
-        compounds_count: compoundsLen,
-        has_modernUse: !!(data.data && data.data.modernUse),
-        has_preparation: !!(data.data && data.data.preparation),
-        interactions_is_array: Array.isArray(data.data && data.data.interactions)
+    const { data, error } = await supabase.from('herbs').select('name, status, data').eq('status', 'complete').limit(1000);
+    if (!error && data) {
+      const requiredFields = ['category', 'safetyLevel', 'modernUse', 'compounds', 'herbalActions', 'bodyEffects', 'preparation', 'interactions'];
+      const broken = data.filter(row => requiredFields.some(f => {
+        const v = row.data && row.data[f];
+        return !v || (Array.isArray(v) && v.length === 0) || (typeof v === 'object' && v !== null && !Array.isArray(v) && Object.keys(v).length === 0) || (typeof v === 'string' && !v.trim());
+      }));
+      report.tests.broken_rows_sample_of_1000 = {
+        checked: data.length,
+        broken_count: broken.length,
+        broken_names_sample: broken.slice(0, 15).map(r => r.name)
       };
     }
   } catch (e) {
-    report.tests.dandelion_lookup = { ok: false, error: e.message };
+    report.tests.broken_rows_sample_of_1000 = { error: e.message };
   }
 
   // Test 3: can we WRITE to the herbs table? (writes a harmless diagnostic row, then deletes it)
