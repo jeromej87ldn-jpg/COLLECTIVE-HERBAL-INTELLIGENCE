@@ -73,184 +73,39 @@ function deriveFunctionalOverview(h) {
   }
 }
 
-// ============================================================================
-// REAL_COMPOUNDS — expanded whitelist of genuine herbal/botanical compounds.
-//
-// WHY THIS WAS REWRITTEN (2026-08-29):
-// The original list held ~90 generic phytochemicals. Most herbs' actual
-// *distinguishing* active compounds (the ones that make a profile useful —
-// taraxasterol in dandelion, bacosides in bacopa, asiaticoside in gotu kola,
-// withanolide glycosides in ashwagandha, etc.) were never on it. Every time
-// a cached profile was re-served, validateCompounds() silently deleted any
-// compound not on this list. Once a herb's compounds array got stripped to
-// empty, herb-profile.js's completeness check (`compounds.length === 0`)
-// treated the cached row as broken and regenerated it from scratch via a
-// full Claude Sonnet call — the ~30 second wait. If the fresh generation
-// again produced real, correctly-named compounds not on the list, they were
-// stripped again on the very next load. Net effect: any herb whose genuine
-// compounds weren't in this list never actually cached — it regenerated on
-// every single visit, forever.
-//
-// This list is now several hundred entries, covering the compounds that
-// actually appear across the master herb database (Ayurvedic, TCM, European,
-// North American and ethnobotanical traditions). It is still not
-// exhaustive — new herbs can surface compounds not listed here — so
-// validateCompounds() below also has a hard safety rule: it will never
-// reduce a non-empty compounds array to zero. If every compound in a
-// profile fails the whitelist check, that's treated as a sign the list is
-// incomplete, not that the model hallucinated everything — the original
-// array is kept and a warning is logged so the gap can be found and the
-// list extended, instead of the cache silently self-destructing again.
-// ============================================================================
+// Real herbal compounds — model is only allowed to use these.
+// Filters out any made-up compound names before profile display.
 const REAL_COMPOUNDS = new Set([
-  // Flavonoids / flavonols / flavones / flavanones / anthocyanins
-  'quercetin','kaempferol','rutin','luteolin','apigenin','naringenin','hesperidin','diosmin',
-  'catechin','epicatechin','epigallocatechin','egcg','epigallocatechin gallate','myricetin',
-  'fisetin','vitexin','hyperoside','isoquercitrin','chrysin','baicalein','baicalin','wogonin',
-  'daidzein','genistein','formononetin','biochanin a','glycitein','isoflavone','flavonoid',
-  'anthocyanin','cyanidin','delphinidin','pelargonidin','malvidin','proanthocyanidin',
-  'oligomeric proanthocyanidin','opc','tangeretin','nobiletin','acacetin','galangin',
-
-  // Alkaloids
-  'caffeine','theobromine','theophylline','piperine','piperlongumine','berberine','hypericin',
-  'hyperforin','l-dopa','levodopa','mucunain','ephedrine','pseudoephedrine','reserpine',
-  'yohimbine','vincamine','colchicine','sanguinarine','protopine','chelerythrine','nicotine',
-  'harmine','harmaline','gramine','trigonelline','capsaicin','solanine','tomatine','alkaloid',
-  'isoquinoline alkaloid','indole alkaloid','tropane alkaloid','swainsonine',
-
-  // Terpenoids / terpenes
-  'menthol','menthone','carvone','thymol','carvacrol','eugenol','linalool','linalyl acetate',
-  'geraniol','citral','geranial','neral','citronellal','borneol','camphor','1,8-cineole',
-  'cineole','eucalyptol','pinene','alpha-pinene','beta-pinene','limonene','myrcene',
-  'caryophyllene','beta-caryophyllene','humulene','farnesene','bisabolol','bisabolene',
-  'chamazulene','sabinene','terpinene','terpineol','thujone','camphene','zingiberene',
-  'gingerol','shogaol','paradol','zingerone','curcumin','curcuminoid','bisdemethoxycurcumin',
-  'demethoxycurcumin','withanolide','withaferin a','withanoside','ginsenoside','ginsenoside rb1',
-  'ginsenoside rg1','eleutheroside','schisandrin','gomisin','deoxyschizandrin','asiaticoside',
-  'madecassoside','asiatic acid','madecassic acid','centellosside','glycyrrhizin',
-  'glycyrrhetinic acid','glycyrrhizic acid','guggulsterone','boswellic acid','ursolic acid',
-  'oleanolic acid','betulinic acid','lupeol','saikosaponin','paeoniflorin','catalpol','loganin',
-  'harpagoside','harpagide','valerenic acid','valepotriate','isovaleric acid','iridoid',
-  'iridoid glycoside','picroside','andrographolide','stevioside','rebaudioside','oleuropein',
-  'oleocanthal','forskolin','carnosic acid','carnosol','rosmarinic acid','triterpene',
-  'triterpenoid saponin','steroidal saponin','diosgenin','sarsasapogenin','ecdysterone',
-  'cucurbitacin','momordicin','charantin','taraxasterol','taraxacoside','taraxacin','inulin',
-  'chicoric acid','artemisinin','parthenolide','sesquiterpene lactone','cordycepin','adenosine',
-  'ganoderic acid','lucidenic acid','lanostane triterpene','beta-glucan','lentinan',
-  'polysaccharide-k','psk','grifolan','ergosterol','statin-like compound','hericenone',
-  'erinacine','ligustilide','ferulic acid','notoginsenoside','astragaloside','cycloastragenol',
-  'polyacetylene','falcarinol','falcarindiol',
-
-  // Phenolic acids / polyphenols
-  'gallic acid','ellagic acid','tannic acid','chlorogenic acid','caffeic acid','ferulic acid',
-  'sinapic acid','vanillic acid','syringic acid','p-coumaric acid','protocatechuic acid',
-  'salicylic acid','salicin','salicortin','populin','phenolic acid','polyphenol','tannin',
-  'hydrolysable tannin','condensed tannin','ellagitannin','punicalagin','curcuminoid',
-  'silymarin','silybin','silychristin','silydianin','isosilybin','lignan','sesamin',
-  'secoisolariciresinol','matairesinol','pinoresinol','coumarin','umbelliferone','scopoletin',
-  'esculetin','psoralen','bergapten','xanthotoxin','furanocoumarin',
-
-  // Vitamins / carotenoids / basic nutrients used as "active compounds" in profiles
-  'ascorbic acid','vitamin c','beta-carotene','alpha-carotene','lycopene','lutein','zeaxanthin',
-  'astaxanthin','carotenoid','xanthophyll','capsanthin','fucoxanthin','vitamin e','tocopherol',
-  'vitamin k','vitamin a','retinol','folate','riboflavin','thiamine','niacin','pyridoxine',
-
-  // Saponins / glycosides / other classes
-  'saponin','steroidal saponin','triterpenoid saponin','glycoside','cardiac glycoside',
-  'cyanogenic glycoside','phenolic glycoside','iridoid glycoside','glucosinolate',
-  'sulforaphane','glucomoringin','isothiocyanate','allicin','alliin','ajoene','allyl sulfide',
-  'diallyl disulfide','s-allylcysteine','indole','indole-3-carbinol','betalain','betanin',
-  'mucilage','arabinogalactan','pectin','gum arabic','resin','oleoresin','balsam','volatile oil',
-  'essential oil','fixed oil','fatty acid','omega-3 fatty acid','omega-6 fatty acid',
-  'linoleic acid','alpha-linolenic acid','gamma-linolenic acid','oleic acid','palmitic acid',
-  'phytosterol','beta-sitosterol','stigmasterol','campesterol','brassicasterol','avenasterol',
-  'squalene','fulvic acid','humic acid','polysaccharide','fructooligosaccharide','fos',
-  'arabinoxylan','glucomannan','pectin polysaccharide','mannan','xylan',
-
-  // Herb-specific named compounds commonly referenced in traditional/clinical profiles
-  'bacoside a','bacoside b','bacopaside','hericenone c','erinacine a','shatavarin',
-  'racemosol','tinosporin','tinosporide','cordifolioside','phyllemblin','emblicanin',
-  'chebulagic acid','chebulinic acid','terpinen-4-ol','apiole','myristicin','safrole',
-  'anethole','estragole','methyl chavicol','cinnamaldehyde','cinnamic acid','coumarin',
-  'eugenyl acetate','methyleugenol','vanillin','capsaicinoid','dihydrocapsaicin',
-  'nordihydrocapsaicin','piperonal','sesamol','sesamolin','curculigoside','icariin',
-  'epimedin','tribulosin','protodioscin','furostanol saponin','yohimbe alkaloid',
-  'mitragynine','7-hydroxymitragynine','kavalactone','kavain','methysticin','yangonin',
-  'desmethoxyyangonin','dihydrokavain','dihydromethysticin','damiana bitter','arbutin',
-  'hydroquinone','methylarbutin','ursolic acid glycoside','uva ursi tannin','triterpene acid',
-  'formic acid','histamine','serotonin (plant)','acetylcholine (plant)','scopoletin glycoside',
-  'melissic acid','citronellal','geranyl acetate','achilleine','azulene','proazulene',
-  'matricin','bisabolol oxide','apigenin glycoside','chamomile ether','valepotriate complex',
-  'didrovaltrate','valtrate','hyperoside flavonoid','pseudohypericin','biapigenin',
-  'adhatodine','vasicine','vasicinone','emodin','physcion','chrysophanol','aloin','aloe-emodin',
-  'rhein','sennoside','anthraquinone','anthraquinone glycoside','danthron','frangulin',
-  'glucofrangulin','cascaroside','barbaloin','stilbene','resveratrol','pterostilbene',
-  'combretastatin','polydatin','emodin glycoside','physcion glycoside','stilbene glycoside',
-  'schizandrin','gomisin a','deoxyschisandrin','wuweizisu','angelicin','psoralen glycoside',
-  'ligustrazine','senkyunolide','tetramethylpyrazine','cnidilide','notopterol',
-  'imperatorin','isoimperatorin','oxypeucedanin','archangelicin','osthole','columbianetin',
-
-  // Broad class fallbacks (kept from original list, still useful when the
-  // model or a rewrite legitimately describes a compound only by class)
-  'alkaloid','flavonoid','terpenoid','saponin','glycoside','tannin','polysaccharide',
-  'lignin','glycoprotein','betalain','isoflavone','monoterpene','sesquiterpene',
-  'triterpenoid','diterpene','iridoid'
+  'baicalein', 'quercetin', 'curcumin', 'gingerol', 'shogaol', 'piperine',
+  'resveratrol', 'kaempferol', 'apigenin', 'luteolin', 'naringenin',
+  'diosmin', 'hesperidin', 'rutin', 'catechin', 'epicatechin',
+  'gallic acid', 'ellagic acid', 'tannic acid', 'caffeine', 'theobromine',
+  'alkaloid', 'flavonoid', 'terpenoid', 'saponin', 'glycoside', 'phenolic acid',
+  'polysaccharide', 'tannin', 'coumarin', 'lignin', 'volatile oil',
+  'essential oil', 'resin', 'glycoprotein', 'polyphenol', 'anthocyanin',
+  'chlorogenic acid', 'isoflavone', 'lignan', 'sesquiterpene', 'monoterpene',
+  'caffeic acid', 'ferulic acid', 'silybin', 'silymarin', 'berberine',
+  'capsaicin', 'allicin', 'sulforaphane', 'indole', 'glucosinolate',
+  'betalain', 'carotenoid', 'xanthophyll', 'lycopene', 'beta-carotene',
+  'lutein', 'zeaxanthin', 'astaxanthin', 'capsanthin', 'chrysin',
+  'daidzein', 'genistein', 'ginsenoside', 'withaferin a', 'withanolide',
+  'thymol', 'carvacrol', 'eugenol', 'linalool', 'geraniol', 'citral',
+  'menthol', 'camphor', 'borneol', 'turpineol', 'pinene', 'limonene',
+  'myrcene', 'caryophyllene', 'humulene', 'farnesene', 'bisabolene',
+  'sabinene', 'rosmarinic acid', 'carnosic acid', 'carnosol', 'ursolic acid',
+  'oleanolic acid', 'squalene', 'phytosterol', 'stigmasterol',
+  'campesterol', 'brassicasterol', 'avenasterol', 'fucoxanthin'
 ]);
 
-// Normalizes a compound name for whitelist lookup: lowercases, trims,
-// collapses internal whitespace, and treats hyphens/slashes the same as
-// spaces so "Beta-Carotene", "beta carotene" and "Beta/Carotene" all match
-// the same canonical entry.
-function normalizeCompoundName(name) {
-  return String(name || '')
-    .toLowerCase()
-    .trim()
-    .replace(/[-/]+/g, ' ')
-    .replace(/\s+/g, ' ');
-}
-
-// Build a normalized lookup set once, so comparisons don't need to
-// re-normalize every whitelist entry on every call.
-const REAL_COMPOUNDS_NORMALIZED = new Set(
-  Array.from(REAL_COMPOUNDS, normalizeCompoundName)
-);
-
-function isRealCompound(name) {
-  const normalized = normalizeCompoundName(name);
-  if (!normalized) return false;
-  if (REAL_COMPOUNDS_NORMALIZED.has(normalized)) return true;
-  // Allow a compound listed as "X / Y" or "X (Y)" to match if either part
-  // alone is recognized — e.g. "Inulin / FOS" matches via "fos" or "inulin",
-  // "Vitamin C (Ascorbic Acid)" matches via either half.
-  const parts = normalized.split(/[()]/).join(' ').split(/[,;]| or /).map(p => p.trim()).filter(Boolean);
-  return parts.some(p => REAL_COMPOUNDS_NORMALIZED.has(p));
-}
-
-// Strip out fake/unknown compound names before display — but never let
-// this reduce a profile from having real compound data to having none.
-// If every compound in the array fails the whitelist check, that's treated
-// as a sign the whitelist is missing entries (it will always be incomplete
-// for a database this broad), not that the model invented everything. In
-// that case the original, unfiltered array is kept and a warning is
-// logged, rather than silently emptying the array — which previously
-// caused herb-profile.js's completeness check to treat the cached profile
-// as broken and regenerate it from scratch on every single load.
+// Strip out fake/unknown compound names before display.
+// Keeps only compounds in the REAL_COMPOUNDS whitelist.
 function validateCompounds(h) {
-  if (!h.compounds || !Array.isArray(h.compounds) || h.compounds.length === 0) return;
-
-  const filtered = h.compounds.filter(c => c && c.name && isRealCompound(c.name));
-
-  if (filtered.length === 0) {
-    console.warn(
-      `validateCompounds: all ${h.compounds.length} compound(s) for "${h.name || 'unknown herb'}" ` +
-      `failed the REAL_COMPOUNDS whitelist (${h.compounds.map(c => c && c.name).join(', ')}). ` +
-      `Keeping original compounds rather than emptying the array — extend REAL_COMPOUNDS with ` +
-      `these names if they are genuine.`
-    );
-    return; // keep h.compounds as-is
-  }
-
-  h.compounds = filtered;
+  if (!h.compounds || !Array.isArray(h.compounds)) return;
+  h.compounds = h.compounds.filter(c => {
+    if (!c || !c.name) return false;
+    const normalized = c.name.toLowerCase().trim();
+    return REAL_COMPOUNDS.has(normalized);
+  });
 }
 
 module.exports = {
@@ -261,7 +116,5 @@ module.exports = {
   findMissing,
   deriveFunctionalOverview,
   validateCompounds,
-  isRealCompound,
-  normalizeCompoundName,
   REAL_COMPOUNDS
 };
