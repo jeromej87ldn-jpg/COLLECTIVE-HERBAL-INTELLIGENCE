@@ -6,7 +6,6 @@
 <title>Herbadex — the Collective Herbal Intelligence</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="herbadex-anatomy-package/anatomy-styles.css">
 <style>
 :root{
   --forest:#1a3a2a;--forest-mid:#2d5c42;--forest-light:#4a8c65;
@@ -124,20 +123,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ch
 .ph-key{display:none;}
 .ph-val{color:rgba(245,240,232,.65);font-weight:400;text-align:left;}
 @keyframes scroll-metadata{0%{transform:translateX(100%);}100%{transform:translateX(-100%);}}
-/* Profile body layout */
 .profile-body{max-width:1100px;margin:0 auto;padding:3rem;display:grid;grid-template-columns:1fr 320px;gap:2.5rem;}
 .profile-main{}
 .profile-sidebar{}
 
-/* Content sections */
 .content-section{margin-bottom:3rem;}
 .content-section h2{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:var(--charcoal);margin-bottom:1.1rem;padding-bottom:.6rem;border-bottom:1px solid var(--parchment-dark);display:flex;align-items:center;gap:10px;}
 .content-section h2 .cs-icon{font-size:18px;}
 .content-section p{font-size:14px;color:var(--charcoal-mid);line-height:1.8;margin-bottom:1rem;}
 
-/* Compound-science cards — merged in from the former Plant Intelligence page.
-   Same layout/density that made PI easier to read, re-themed to the profile's
-   light parchment palette instead of PI's dark theme, so it reads as one page. */
 .sci-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;}
 .sci-grid.wide{grid-template-columns:repeat(auto-fit,minmax(260px,1fr));}
 .sci-card{background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-radius:6px;padding:1rem 1.1rem;}
@@ -155,13 +149,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ch
 .stack-btn:hover{background:var(--gold-light);}
 .stack-btn.in-stack{background:transparent;border:1px solid rgba(74,140,101,.4);color:var(--forest-mid);}
 
-/* Spiritual highlight block */
 .spirit-block{background:linear-gradient(135deg,rgba(26,58,42,.07) 0%,rgba(200,149,42,.06) 100%);border:1px solid rgba(200,149,42,.2);border-radius:6px;padding:1.75rem;margin:1.5rem 0;}
 .spirit-block .sb-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:.75rem;display:flex;align-items:center;gap:8px;}
 .spirit-block .sb-label::before{content:'✦';}
 .spirit-block p{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;font-style:italic;color:var(--charcoal);line-height:1.65;}
 
-/* Timeline */
 .timeline{position:relative;padding-left:2rem;}
 .timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;background:var(--parchment-deep);}
 .tl-item{position:relative;padding-bottom:1.5rem;}
@@ -169,7 +161,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ch
 .tl-year{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}
 .tl-text{font-size:14px;color:var(--charcoal-mid);line-height:1.7;}
 
-/* Ranking + forum sidebar */
 .rank-display{background:var(--forest);border-radius:6px;padding:1.5rem;margin-bottom:1.25rem;text-align:center;}
 .rd-number{font-family:'Cormorant Garamond',serif;font-size:56px;font-weight:300;color:var(--gold-light);line-height:1;}
 .rd-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(245,240,232,.4);margin-top:4px;}
@@ -179,9 +170,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ch
 .rd-votes{font-size:12px;color:rgba(245,240,232,.35);}
 .star-rate-row{display:flex;gap:6px;justify-content:center;margin-top:1rem;}
 .rate-star{font-size:22px;color:rgba(255,255,255,.2);cursor:pointer;transition:color .15s;}
-.rate-star:hover,.rate-star.hovered,.rate-star.selected{color:var(--gold);}
+.rate-star:hover,.rate-star.hovered{color:var(--gold);}
 
-/* Forum */
 .forum-section{background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-radius:6px;overflow:hidden;}
 .forum-header{padding:1rem 1.25rem;border-bottom:1px solid var(--parchment-deep);display:flex;align-items:center;justify-content:space-between;}
 .forum-header h4{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--charcoal);}
@@ -200,12 +190,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ch
 .forum-submit{margin-top:8px;background:var(--forest);color:var(--parchment);border:none;padding:9px 20px;border-radius:3px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s;}
 .forum-submit:hover{background:var(--forest-mid);}
 
-/* Loading */
 #profile-loading{text-align:center;padding:5rem 0;}
 .pl-ring{width:44px;height:44px;border:2px solid var(--parchment-deep);border-top-color:var(--gold);border-radius:50%;animation:spin .9s linear infinite;margin:0 auto 1rem;}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* Footer */
 footer{background:var(--night);padding:3rem 0 2rem;border-top:1px solid rgba(200,149,42,.15);margin-top:5rem;}
 .footer-inner{max-width:1100px;margin:0 auto;padding:0 3rem;display:flex;justify-content:space-between;align-items:flex-start;gap:2rem;flex-wrap:wrap;}
 .footer-logo span{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;letter-spacing:.18em;color:var(--gold-light);display:block;margin-bottom:4px;}
@@ -229,7 +217,7 @@ footer{background:var(--night);padding:3rem 0 2rem;border-top:1px solid rgba(200
   .content-section [style*="min-width:130px"]{min-width:100px!important;}
   .content-section [style*="min-width:150px"]{min-width:70px!important;}
 }
-/* NAV */
+
 nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:var(--forest);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:100;}
 .nav-logo{text-decoration:none;display:flex;flex-direction:column;}
 .nav-chi{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-light);letter-spacing:.1em;}
@@ -242,164 +230,46 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .nav-inbox:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
 @media(max-width:760px){.nav-right a:not(.nav-cta):not(.nav-inbox){display:none;}}
 
-/* Hover term tooltip styles now come from the shared chi-glossary.js
-   (injected at runtime); the old inline copy was removed with the inline
-   glossary it belonged to. */
+.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:6px;z-index:101;}
+.nav-hamburger span{display:block;width:24px;height:2.5px;background:var(--gold-light);border-radius:2px;transition:all .3s ease;}
+.nav-hamburger.open span:nth-child(1){transform:rotate(45deg) translate(10px,10px);}
+.nav-hamburger.open span:nth-child(2){opacity:0;}
+.nav-hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(9px,-9px);}
 
+.mobile-menu-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);z-index:99;opacity:0;transition:opacity .3s ease;}
+.mobile-menu-overlay.open{display:block;opacity:1;}
 
-/* ════════════════════════════════════════════════════════════════ */
-/* MOBILE RESPONSIVE DESIGN — Hamburger Menu + Sidebar Navigation    */
-/* ════════════════════════════════════════════════════════════════ */
+.mobile-menu{display:none;position:fixed;top:0;left:0;height:100vh;width:280px;background:var(--forest);z-index:100;overflow-y:auto;transform:translateX(-100%);transition:transform .3s ease;border-right:1px solid rgba(200,149,42,.2);padding-top:70px;}
+.mobile-menu.open{transform:translateX(0);}
 
-/* Mobile menu overlay — full screen, dims when menu is open */
-.mobile-menu-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 99;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.mobile-menu-overlay.open {
-  display: block;
-  opacity: 1;
-}
+.mobile-menu-section{padding:1rem 0;border-bottom:1px solid rgba(200,149,42,.1);}
+.mobile-menu-section:last-child{border-bottom:none;}
 
-/* Hamburger button — only visible on mobile */
-.nav-hamburger {
-  display: none;
-  flex-direction: column;
-  gap: 5px;
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 6px;
-  z-index: 101;
-}
-.nav-hamburger span {
-  display: block;
-  width: 24px;
-  height: 2.5px;
-  background: var(--gold-light, #e8b84b);
-  border-radius: 2px;
-  transition: all 0.3s ease;
-}
-.nav-hamburger.open span:nth-child(1) {
-  transform: rotate(45deg) translate(10px, 10px);
-}
-.nav-hamburger.open span:nth-child(2) {
-  opacity: 0;
-}
-.nav-hamburger.open span:nth-child(3) {
-  transform: rotate(-45deg) translate(9px, -9px);
+.mobile-menu-title{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,240,232,.5);padding:.5rem 1.1rem;margin-bottom:.5rem;font-weight:600;}
+
+.mobile-menu a{display:flex;align-items:center;gap:.55rem;padding:.75rem 1.1rem;font-size:13px;color:rgba(245,240,232,.7);text-decoration:none;transition:all .15s;white-space:nowrap;}
+.mobile-menu a:hover{background:rgba(200,149,42,.08);color:var(--gold-light);}
+.mobile-menu a.active{color:var(--gold-light);}
+
+.mobile-menu-icon{font-size:14px;width:18px;text-align:center;flex-shrink:0;}
+
+@media(max-width:768px){
+  .nav-hamburger{display:flex;}
+  .nav-right>a:not(.nav-cta):not(.nav-inbox){display:none!important;}
+  .nav-dd{display:none!important;}
+  .mobile-menu{display:block;}
 }
 
-/* Mobile sidebar menu */
-.mobile-menu {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 280px;
-  background: var(--forest, #1a3a2a);
-  z-index: 100;
-  overflow-y: auto;
-  transform: translateX(-100%);
-  transition: transform 0.3s ease;
-  border-right: 1px solid rgba(200, 149, 42, 0.2);
-  padding-top: 70px;
-}
-.mobile-menu.open {
-  transform: translateX(0);
+@media(max-width:600px){
+  nav{padding:0 1.5rem;height:56px;}
+  .mobile-menu{width:260px;padding-top:56px;}
 }
 
-.mobile-menu-section {
-  padding: 1rem 0;
-  border-bottom: 1px solid rgba(200, 149, 42, 0.1);
-}
-.mobile-menu-section:last-child {
-  border-bottom: none;
+@media(max-width:480px){
+  nav{padding:0 1rem;}
+  .mobile-menu{width:240px;}
 }
 
-.mobile-menu-title {
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted, rgba(245, 240, 232, 0.5));
-  padding: 0.5rem 1.1rem;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-}
-
-.mobile-menu a {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  padding: 0.75rem 1.1rem;
-  font-size: 13px;
-  color: rgba(245, 240, 232, 0.7);
-  text-decoration: none;
-  transition: all 0.15s;
-  white-space: nowrap;
-}
-.mobile-menu a:hover {
-  background: rgba(200, 149, 42, 0.08);
-  color: var(--gold-light, #e8b84b);
-}
-.mobile-menu a.active {
-  color: var(--gold-light, #e8b84b);
-}
-
-.mobile-menu-icon {
-  font-size: 14px;
-  width: 18px;
-  text-align: center;
-  flex-shrink: 0;
-}
-
-/* Show hamburger and mobile menu only on tablets and smaller */
-@media (max-width: 768px) {
-  .nav-hamburger {
-    display: flex;
-  }
-  .nav-right > a:not(.nav-cta):not(.nav-inbox) {
-    display: none !important;
-  }
-  .nav-dd {
-    display: none !important;
-  }
-  .mobile-menu {
-    display: block;
-  }
-}
-
-/* Further optimize for phones */
-@media (max-width: 600px) {
-  nav {
-    padding: 0 1.5rem;
-    height: 56px;
-  }
-  .mobile-menu {
-    width: 260px;
-    padding-top: 56px;
-  }
-}
-
-@media (max-width: 480px) {
-  nav {
-    padding: 0 1rem;
-  }
-  .mobile-menu {
-    width: 240px;
-  }
-}
-
-/* ─── UPLOAD MODAL ─── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:center;justify-content:center;}
 .modal-overlay.show{display:flex;}
 .modal{background:var(--parchment);border-radius:10px;max-width:500px;width:90%;max-height:85vh;overflow-y:auto;box-shadow:0 10px 40px rgba(0,0,0,.3);}
@@ -419,7 +289,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .img-drop{border:2px dashed var(--parchment-deep);border-radius:8px;padding:2rem 1rem;text-align:center;cursor:pointer;transition:all .2s;background:rgba(200,149,42,.03);}
 .img-drop:hover{border-color:var(--gold);background:rgba(200,149,42,.08);}
 .img-drop p{font-size:12px;color:var(--charcoal-mid);margin:0;}
-.img-drop-preview{width:100%;height:auto;border-radius:6px;display:block !important;margin-top:1rem;}
+.img-drop-preview{width:100%;height:auto;border-radius:6px;display:block!important;margin-top:1rem;}
 .modal-foot{display:flex;gap:.75rem;padding:1.5rem;border-top:1px solid var(--parchment-deep);justify-content:flex-end;}
 .btn-cancel,.btn-submit{padding:.65rem 1.5rem;border-radius:6px;border:none;font-size:12px;font-weight:600;text-transform:uppercase;cursor:pointer;font-family:'DM Sans',sans-serif;letter-spacing:.05em;}
 .btn-cancel{background:transparent;border:1px solid var(--parchment-deep);color:var(--charcoal-mid);transition:all .2s;}
@@ -433,49 +303,44 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 
 <!-- NAV -->
 <nav>
-  
-<!-- Mobile hamburger button -->
-<button class="nav-hamburger" id="hamburger-toggle" onclick="toggleMobileMenu()">
-  <span></span>
-  <span></span>
-  <span></span>
-</button>
+  <button class="nav-hamburger" id="hamburger-toggle" onclick="toggleMobileMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
 
-<!-- Mobile menu overlay -->
-<div class="mobile-menu-overlay" id="mobile-overlay" onclick="closeMobileMenu()"></div>
+  <div class="mobile-menu-overlay" id="mobile-overlay" onclick="closeMobileMenu()"></div>
 
-<!-- Mobile sidebar menu -->
-<div class="mobile-menu" id="mobile-menu">
-  <div class="mobile-menu-section">
-    <div class="mobile-menu-title">Tools</div>
-    <a href="herb-match.html"><span class="mobile-menu-icon">🌿</span>Herb Match</a>
-    <a href="supreme.html"><span class="mobile-menu-icon">📖</span>Herbadex</a>
-    <a href="herb-identifier.html"><span class="mobile-menu-icon">🔍</span>Herb Identifier</a>
-    <a href="herb-planner.html"><span class="mobile-menu-icon">🗓️</span>Herb Planner</a>
-    <a href="resources.html"><span class="mobile-menu-icon">📚</span>Resources</a>
+  <div class="mobile-menu" id="mobile-menu">
+    <div class="mobile-menu-section">
+      <div class="mobile-menu-title">Tools</div>
+      <a href="herb-match.html"><span class="mobile-menu-icon">🌿</span>Herb Match</a>
+      <a href="supreme.html"><span class="mobile-menu-icon">📖</span>Herbadex</a>
+      <a href="herb-identifier.html"><span class="mobile-menu-icon">🔍</span>Herb Identifier</a>
+      <a href="herb-planner.html"><span class="mobile-menu-icon">🗓️</span>Herb Planner</a>
+      <a href="resources.html"><span class="mobile-menu-icon">📚</span>Resources</a>
+    </div>
+    <div class="mobile-menu-section">
+      <div class="mobile-menu-title">Community</div>
+      <a href="community.html"><span class="mobile-menu-icon">💬</span>Community Feed</a>
+      <a href="garden.html"><span class="mobile-menu-icon">🌱</span>Herbal Garden</a>
+      <a href="glossary.html"><span class="mobile-menu-icon">📚</span>Glossary</a>
+    </div>
+    <div class="mobile-menu-section">
+      <div class="mobile-menu-title">Account</div>
+      <a href="profile.html"><span class="mobile-menu-icon">🌿</span>My Profile</a>
+      <a href="inbox.html"><span class="mobile-menu-icon">✉️</span>Inbox</a>
+      <a href="join.html"><span class="mobile-menu-icon">➕</span>Join CHI</a>
+    </div>
+    <div class="mobile-menu-section">
+      <div class="mobile-menu-title">Legal</div>
+      <a href="privacy-policy.html"><span class="mobile-menu-icon">🔒</span>Privacy</a>
+      <a href="terms.html"><span class="mobile-menu-icon">📄</span>Terms</a>
+      <a href="disclaimer.html"><span class="mobile-menu-icon">⚠️</span>Disclaimer</a>
+      <a href="index.html" onclick="localStorage.clear()"><span class="mobile-menu-icon">↩</span>Sign Out</a>
+    </div>
   </div>
-  <div class="mobile-menu-section">
-    <div class="mobile-menu-title">Community</div>
-    <a href="community.html"><span class="mobile-menu-icon">💬</span>Community Feed</a>
-    <a href="garden.html"><span class="mobile-menu-icon">🌱</span>Herbal Garden</a>
-    <a href="glossary.html"><span class="mobile-menu-icon">📚</span>Glossary</a>
-  </div>
-  <div class="mobile-menu-section">
-    <div class="mobile-menu-title">Account</div>
-    <a href="profile.html"><span class="mobile-menu-icon">🌿</span>My Profile</a>
-    <a href="inbox.html"><span class="mobile-menu-icon">✉️</span>Inbox</a>
-    <a href="join.html"><span class="mobile-menu-icon">➕</span>Join CHI</a>
-  </div>
-  <div class="mobile-menu-section">
-    <div class="mobile-menu-title">Legal</div>
-    <a href="privacy-policy.html"><span class="mobile-menu-icon">🔒</span>Privacy</a>
-    <a href="terms.html"><span class="mobile-menu-icon">📄</span>Terms</a>
-    <a href="disclaimer.html"><span class="mobile-menu-icon">⚠️</span>Disclaimer</a>
-    <a href="index.html" onclick="localStorage.clear()"><span class="mobile-menu-icon">↩</span>Sign Out</a>
-  </div>
-</div>
 
-  
   <a href="index.html" class="nav-logo">
     <span class="nav-chi">Herbadex</span>
     <span class="nav-full">Collective Herbal Intelligence</span>
@@ -506,26 +371,21 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   <div class="stars" id="stars-canvas"></div>
   <div class="mist"></div>
 
-  <!-- Ancient Tree SVG -->
   <div class="tree-wrap">
     <svg viewBox="0 0 600 500" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- Roots -->
       <path d="M280 490 C260 470 220 460 180 480" stroke="rgba(74,140,101,0.35)" stroke-width="6" stroke-linecap="round"/>
       <path d="M300 490 C300 475 295 460 285 450" stroke="rgba(74,140,101,0.3)" stroke-width="5" stroke-linecap="round"/>
       <path d="M320 490 C340 470 380 462 410 478" stroke="rgba(74,140,101,0.35)" stroke-width="6" stroke-linecap="round"/>
       <path d="M265 480 C245 472 210 475 190 490" stroke="rgba(74,140,101,0.22)" stroke-width="4" stroke-linecap="round"/>
       <path d="M335 480 C355 472 390 474 410 488" stroke="rgba(74,140,101,0.22)" stroke-width="4" stroke-linecap="round"/>
-      <!-- Trunk -->
       <path d="M270 490 C265 440 255 380 260 300 C262 260 268 220 280 180" stroke="rgba(74,140,101,0.5)" stroke-width="18" stroke-linecap="round"/>
       <path d="M330 490 C335 440 345 380 340 300 C338 260 332 220 320 180" stroke="rgba(74,140,101,0.4)" stroke-width="16" stroke-linecap="round"/>
       <path d="M275 490 C278 420 280 350 300 280" stroke="rgba(74,140,101,0.6)" stroke-width="22" stroke-linecap="round"/>
-      <!-- Major branches -->
       <path d="M280 280 C250 240 200 220 160 230" stroke="rgba(74,140,101,0.45)" stroke-width="10" stroke-linecap="round"/>
       <path d="M300 250 C310 200 350 170 400 165" stroke="rgba(74,140,101,0.4)" stroke-width="9" stroke-linecap="round"/>
       <path d="M285 310 C240 300 190 280 150 285" stroke="rgba(74,140,101,0.35)" stroke-width="8" stroke-linecap="round"/>
       <path d="M315 310 C360 295 420 275 455 270" stroke="rgba(74,140,101,0.35)" stroke-width="8" stroke-linecap="round"/>
       <path d="M295 230 C280 180 270 140 285 100" stroke="rgba(74,140,101,0.4)" stroke-width="8" stroke-linecap="round"/>
-      <!-- Smaller branches -->
       <path d="M160 230 C140 210 120 200 90 205" stroke="rgba(74,140,101,0.3)" stroke-width="5" stroke-linecap="round"/>
       <path d="M160 230 C150 255 140 270 120 275" stroke="rgba(74,140,101,0.28)" stroke-width="4" stroke-linecap="round"/>
       <path d="M400 165 C430 150 460 140 490 145" stroke="rgba(74,140,101,0.3)" stroke-width="5" stroke-linecap="round"/>
@@ -533,7 +393,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
       <path d="M285 100 C265 70 255 50 265 25" stroke="rgba(74,140,101,0.35)" stroke-width="6" stroke-linecap="round"/>
       <path d="M285 100 C310 80 335 75 355 60" stroke="rgba(74,140,101,0.3)" stroke-width="5" stroke-linecap="round"/>
       <path d="M285 100 C258 82 235 80 215 65" stroke="rgba(74,140,101,0.28)" stroke-width="4" stroke-linecap="round"/>
-      <!-- Leaf clusters (circles suggesting canopy) -->
       <circle cx="150" cy="215" r="50" fill="rgba(26,58,42,0.3)"/>
       <circle cx="130" cy="200" r="35" fill="rgba(45,92,66,0.25)"/>
       <circle cx="170" cy="225" r="30" fill="rgba(26,58,42,0.2)"/>
@@ -546,7 +405,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
       <circle cx="350" cy="55" r="35" fill="rgba(26,58,42,0.25)"/>
       <circle cx="460" cy="220" r="30" fill="rgba(26,58,42,0.2)"/>
       <circle cx="120" cy="270" r="28" fill="rgba(26,58,42,0.2)"/>
-      <!-- Glowing tips -->
       <circle cx="265" cy="22" r="4" fill="rgba(200,149,42,0.5)"/>
       <circle cx="356" cy="58" r="3" fill="rgba(200,149,42,0.4)"/>
       <circle cx="215" cy="63" r="3" fill="rgba(200,149,42,0.35)"/>
@@ -555,7 +413,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     </svg>
   </div>
 
-  <!-- Content -->
   <div class="tree-hero-content">
     <div class="supreme-label">HERBADEX</div>
     <h1>
@@ -591,7 +448,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   </div>
 </section>
 
-
 <!-- HERB PROFILE (hidden until search) -->
 <section id="herb-profile">
   <div class="profile-nav">
@@ -613,16 +469,12 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
           <div class="ph-cat" id="ph-cat">—</div>
           <div class="ph-name" id="ph-name">—</div>
           <div class="ph-latin" id="ph-latin">—</div>
-          <div class="ph-origin" id="ph-origin">—</div><div style="margin-top:1.5rem;">
-          <button class="anatomy-btn-primary" onclick="openAnatomyModal(document.querySelector('.ph-name').textContent.trim())" style="background:var(--gold);border:none;padding:10px 16px;border-radius:4px;color:var(--forest);font-weight:600;cursor:pointer;font-size:13px;transition:background .2s;">
-            📖 See which organs this supports
-          </button>
-        </div>
+          <div class="ph-origin" id="ph-origin">—</div>
         </div>
         <div class="ph-aside">
           <div id="ph-image"></div>
           <div class="ph-aside-card">
-<div class="ph-row"><span class="ph-key">Profile</span><span class="ph-val"><span id="ph-category">—</span> · <span id="ph-tradition">—</span> · <span id="ph-preps">—</span> · <span id="ph-safety">—</span></span></div>
+            <div class="ph-row"><span class="ph-key">Profile</span><span class="ph-val"><span id="ph-category">—</span> · <span id="ph-tradition">—</span> · <span id="ph-preps">—</span> · <span id="ph-safety">—</span></span></div>
           </div>
         </div>
       </div>
@@ -633,6 +485,19 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     </div>
   </div>
 </section>
+
+<!-- ANATOMY MODAL -->
+<div class="modal-overlay" id="anatomy-modal-overlay" onclick="if(event.target.id==='anatomy-modal-overlay') closeAnatomyModal()">
+  <div class="modal" style="max-width:650px;max-height:90vh;overflow-y:auto;">
+    <div class="modal-head">
+      <h3>🫀 Body systems — <span id="anatomy-herb-name">Herb</span></h3>
+      <button class="modal-close" onclick="closeAnatomyModal()">×</button>
+    </div>
+    <div class="modal-body" id="anatomy-modal-body">
+      <div style="text-align:center;padding:2rem;"><div class="pl-ring"></div></div>
+    </div>
+  </div>
+</div>
 
 <!-- FOOTER -->
 <footer>
@@ -648,6 +513,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   </div>
 </footer>
 
+<script src="anatomy-data.js"></script>
 <script>
 // ── STARS ──
 (function(){
@@ -660,104 +526,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     canvas.appendChild(s);
   }
 })();
-
-// ── CURATED COMPOUND / ACTION REFERENCE DATA ──
-// Ported from the former Plant Intelligence page. This is hand-curated,
-// richer than what the live generator can produce per herb, and takes
-// priority over generated compounds/actions when a herb has matches here
-// (never both, to avoid duplicating the same information twice).
-const COMPOUNDS=[
-  {cls:'Flavonoids',sub:'Flavonols',name:'Quercetin',tag:'notable',action:'Antihistamine, anti-inflammatory, antioxidant',mech:'Stabilises mast cells preventing histamine release; inhibits COX-1/2; activates Nrf2 pathway for endogenous antioxidant production.',herbs:['Nettle','Dandelion','Olive leaf','Calendula','Capers','Onions']},
-  {cls:'Flavonoids',sub:'Flavonols',name:'Kaempferol',tag:'studied',action:'Anti-inflammatory, anticancer, neuroprotective',mech:'Inhibits NF-κB pathway; induces apoptosis in cancer cell lines; crosses the blood-brain barrier and reduces neuroinflammation.',herbs:['Nettle','Dandelion','Moringa','Calendula','Broccoli','Kale']},
-  {cls:'Flavonoids',sub:'Flavonols',name:'Rutin',tag:'studied',action:'Vascular strengthening, antioxidant, anti-inflammatory',mech:'Quercetin glycoside — strengthens capillary walls by inhibiting collagenase; slower release but higher bioavailability in vascular tissue.',herbs:['Nettle','Dandelion','Elderflower','Buckwheat']},
-  {cls:'Flavonoids',sub:'Flavonols',name:'Fisetin',tag:'notable',action:'Senolytic, neuroprotective, anti-aging',mech:'Clears senescent cells via apoptosis; activates SIRT1 longevity pathway; promotes BDNF expression. One of the most potent natural senolytics.',herbs:['Strawberry','Apple','Persimmon','Cucumber']},
-  {cls:'Flavonoids',sub:'Flavones',name:'Apigenin',tag:'notable',action:'Anxiolytic, anti-inflammatory, mild sedative, aromatase inhibitor',mech:'Positive allosteric modulator of GABA-A at benzodiazepine site — gentler than pharmaceuticals. Also inhibits CYP1B1 and acts as aromatase inhibitor.',herbs:['Passionflower','Lemon balm','Chamomile','Parsley','Celery seed']},
-  {cls:'Flavonoids',sub:'Flavones',name:'Luteolin',tag:'notable',action:'Anti-inflammatory, neuroprotective, antihistamine',mech:'Potent NF-κB inhibitor; inhibits microglial activation (brain inflammation); mast cell stabiliser stronger than quercetin in some assays.',herbs:['Lemon balm','Dandelion','Calendula','Thyme','Artichoke']},
-  {cls:'Flavonoids',sub:'Flavones',name:'Vitexin',tag:'studied',action:'Cardioprotective, anxiolytic, antispasmodic',mech:'Inhibits phosphodiesterase; mild GABA-A modulation; reduces cardiac ischaemia markers in vivo.',herbs:['Passionflower','Hawthorn','Mung bean']},
-  {cls:'Flavonoids',sub:'Flavones',name:'Acacetin',tag:'general',action:'Antiarrhythmic, anti-inflammatory',mech:'Blocks hERG potassium channels in cardiac tissue; inhibits iNOS expression. Notable active compound in damiana.',herbs:['Damiana','Agrimony']},
-  {cls:'Flavonoids',sub:'Flavanones',name:'Hesperidin',tag:'studied',action:'Vascular, anti-inflammatory, antioxidant',mech:'Reduces vascular permeability; inhibits TNF-α; metabolised to hesperetin which crosses the blood-brain barrier.',herbs:['Hibiscus','Citrus peel','Lemon']},
-  {cls:'Flavonoids',sub:'Flavanones',name:'Naringenin',tag:'studied',action:'Metabolic, hepatoprotective, antifungal',mech:'Activates PPAR-α fat metabolism regulator; antifungal against Candida species; inhibits CYP3A4.',herbs:['Hibiscus','Grapefruit','Tomato']},
-  {cls:'Flavonoids',sub:'Flavanols',name:'EGCG',tag:'notable',action:'Anticancer, antioxidant, metabolic, antiviral',mech:'Inhibits VEGF tumour blood vessel growth; activates AMPK; broad antiviral via viral surface binding.',herbs:['Green tea','White tea','Cacao']},
-  {cls:'Flavonoids',sub:'Anthocyanins',name:'Cyanidin',tag:'studied',action:'Anti-inflammatory, antioxidant, vision support',mech:'Inhibits COX-2; regenerates rhodopsin in retinal cells; crosses blood-brain barrier and reduces neuroinflammation.',herbs:['Hibiscus','Elderberry','Bilberry','Black rice']},
-  {cls:'Flavonoids',sub:'Flavonolignans',name:'Silymarin',tag:'notable',action:'Hepatoprotective, antifibrotic, antitoxin',mech:'Inhibits hepatocyte membrane peroxidation; upregulates glutathione; used clinically for amanita mushroom poisoning. Complex of silybin, silychristin, silydianin.',herbs:['Milk thistle']},
-  {cls:'Flavonoids',sub:'Flavonolignans',name:'Silybin',tag:'notable',action:'Hepatoprotective, anticancer, liver regenerative',mech:'Inhibits RNA polymerase I in liver cells; activates p53 tumour suppressor; stimulates liver protein synthesis for tissue repair.',herbs:['Milk thistle']},
-  {cls:'Terpenoids',sub:'Monoterpenes',name:'Linalool',tag:'studied',action:'Anxiolytic, sedative, analgesic',mech:'Modulates GABA-A receptors; inhibits NMDA glutamate receptors; reduces pain signalling in the spinal cord.',herbs:['Lavender','Lemon balm','Coriander','Basil']},
-  {cls:'Terpenoids',sub:'Monoterpenes',name:'Thymol',tag:'notable',action:'Antimicrobial, antifungal, expectorant',mech:'Disrupts bacterial and fungal cell membranes. Stronger than many antibiotics against certain biofilms.',herbs:['Thyme','Oregano','Ajowan']},
-  {cls:'Terpenoids',sub:'Monoterpenes',name:'Citral',tag:'studied',action:'Antimicrobial, sedative, antifungal',mech:'Disrupts fungal ergosterol synthesis; modulates GABA-A receptors. Responsible for lemon balm sedative action.',herbs:['Lemon balm','Lemongrass','Lemon verbena']},
-  {cls:'Terpenoids',sub:'Monoterpenes',name:'1,8-Cineole',tag:'studied',action:'Expectorant, anti-inflammatory, cognitive',mech:'Reduces respiratory mucus viscosity; inhibits LTB4 and TNF-α; shown to improve cognitive performance.',herbs:['Mugwort','Eucalyptus','Rosemary','Sage']},
-  {cls:'Terpenoids',sub:'Sesquiterpenes',name:'Beta-caryophyllene',tag:'notable',action:'Anti-inflammatory, analgesic, anxiolytic — CB2 agonist',mech:'Only dietary terpene known to directly activate CB2 cannabinoid receptors. Reduces neuroinflammation without psychoactivity.',herbs:['Clove','Black pepper','Hops','Cannabis']},
-  {cls:'Terpenoids',sub:'Sesquiterpenes',name:'Bisabolol',tag:'studied',action:'Anti-inflammatory, wound healing, penetration enhancer',mech:'Inhibits COX-2 and 5-LOX; enhances skin absorption of co-applied compounds by 30-50%.',herbs:['Chamomile','Calendula']},
-  {cls:'Terpenoids',sub:'Sesquiterpenes',name:'Parthenolide',tag:'notable',action:'Anti-inflammatory, anticancer, migraine prevention',mech:'Inhibits NF-κB by alkylating p65 subunit; selectively targets leukaemia stem cells — a rare and significant mechanism.',herbs:['Feverfew','Mugwort (minor)']},
-  {cls:'Terpenoids',sub:'Triterpenes',name:'Oleanolic acid',tag:'studied',action:'Hepatoprotective, anti-inflammatory, antiviral',mech:'Inhibits NF-κB; activates Nrf2; inhibits viral RNA polymerase. Found in free form and as saponin backbone.',herbs:['Olive leaf','Nettle','Calendula']},
-  {cls:'Terpenoids',sub:'Triterpenes',name:'Ursolic acid',tag:'notable',action:'Anticancer, muscle-supporting, anti-inflammatory',mech:'Activates IGF-1 signalling in muscle; inhibits STAT3 cancer pathway; inhibits 5-alpha reductase.',herbs:['Lemon balm','Olive leaf','Rosemary','Apple peel']},
-  {cls:'Terpenoids',sub:'Steroidal triterpenes',name:'Withanolides',tag:'notable',action:'Adaptogenic, anti-stress, anti-inflammatory, testosterone support',mech:'Steroidal lactones structurally similar to human steroid hormones — modulate glucocorticoid receptors and HPA axis cortisol. KSM-66 reduced cortisol 27% in RCT.',herbs:['Ashwagandha']},
-  {cls:'Terpenoids',sub:'Iridoids',name:'Oleuropein',tag:'notable',action:'Antiviral, antibacterial, antihypertensive, antioxidant',mech:'Iridoid glycoside hydrolysed to elenolic acid in gut; prevents viral envelope binding to host cells; ACE inhibition lowers blood pressure.',herbs:['Olive leaf']},
-  {cls:'Terpenoids',sub:'Carotenoids',name:'Beta-carotene',tag:'studied',action:'Pro-vitamin A, antioxidant, mucosal immune support',mech:'Cleaved to retinol by intestinal enzymes; quenches singlet oxygen radicals; supports mucosal immune barriers.',herbs:['Moringa','Calendula','Dandelion','Nettle']},
-  {cls:'Terpenoids',sub:'Carotenoids',name:'Lutein + Zeaxanthin',tag:'studied',action:'Eye protection, antioxidant — macular support',mech:'Accumulate exclusively in the macula; filter high-energy blue light. Only carotenoids found in the human eye.',herbs:['Moringa','Calendula','Nettle','Marigold']},
-  {cls:'Alkaloids',sub:'Isoquinolines',name:'Berberine',tag:'notable',action:'Antidiabetic, antimicrobial, cardioprotective',mech:'Activates AMPK — same pathway as metformin; inhibits hepatic glucose production; disrupts bacterial cell membranes; reduces LDL via LDL receptor upregulation.',herbs:['Barberry','Goldenseal','Oregon grape','Coptis']},
-  {cls:'Alkaloids',sub:'Purines',name:'Caffeine',tag:'studied',action:'CNS stimulant, ergogenic, diuretic',mech:'Adenosine receptor antagonist — blocks drowsiness signalling; half-life 5-6 hours.',herbs:['Green tea','Guarana','Cola nut','Coffee']},
-  {cls:'Alkaloids',sub:'Piperidines',name:'Piperine',tag:'notable',action:'Bioavailability enhancer, anti-inflammatory',mech:'Inhibits CYP3A4 and P-glycoprotein in gut — prevents premature breakdown of co-ingested compounds. Increases curcumin absorption by 2000%.',herbs:['Black pepper','Long pepper']},
-  {cls:'Alkaloids',sub:'Pyrrolizidines',name:'Pyrrolizidine alkaloids',tag:'notable',action:'⚠ Hepatotoxic — internal use restricted',mech:'Metabolised to pyrrole derivatives that alkylate DNA; cause hepatic veno-occlusive disease. Comfrey restricted to topical use only.',herbs:['Comfrey (topical only)','Borage (trace)','Coltsfoot']},
-  {cls:'Alkaloids',sub:'Indazoles',name:'Nigellicine / Nigellidine',tag:'general',action:'Anti-inflammatory, antimicrobial (supporting role)',mech:'Indazole alkaloids contributing to nigella overall action profile; secondary to thymoquinone.',herbs:['Nigella','Black seed']},
-  {cls:'Phenolic acids',sub:'Hydroxycinnamic acids',name:'Rosmarinic acid',tag:'notable',action:'Anti-inflammatory, antiviral, neuroprotective, anxiolytic',mech:'Inhibits COX-2 and 5-LOX; acetylcholinesterase inhibitor (same mechanism as Alzheimer\'s drugs); antiviral against enveloped viruses.',herbs:['Lemon balm','Rosemary','Sage','Melissa']},
-  {cls:'Phenolic acids',sub:'Hydroxycinnamic acids',name:'Chlorogenic acid',tag:'notable',action:'Antidiabetic, hepatoprotective, antioxidant',mech:'Inhibits glucose-6-phosphatase reducing hepatic glucose; slows intestinal glucose absorption; activates AMPK. Reduces postprandial glucose in human trials.',herbs:['Dandelion','Moringa','Coffee','Artichoke']},
-  {cls:'Phenolic acids',sub:'Hydroxycinnamic acids',name:'Caffeic acid',tag:'studied',action:'Anti-inflammatory, antioxidant, antifungal',mech:'Inhibits 5-LOX and COX; chelates iron reducing oxidative reactions; antifungal via cell wall disruption.',herbs:['Nettle','Dandelion','Calendula','Echinacea']},
-  {cls:'Phenolic acids',sub:'Hydroxybenzoic acids',name:'Gallic acid',tag:'studied',action:'Antioxidant, antimicrobial, anticancer',mech:'Potent free radical scavenger; inhibits topoisomerase II in cancer cell replication; anti-biofilm against drug-resistant pathogens.',herbs:['Nigella','Raspberry leaf','Milk thistle','Pomegranate']},
-  {cls:'Phenolic acids',sub:'Hydroxybenzoic acids',name:'Ellagic acid',tag:'notable',action:'Anticancer, antiviral — metabolised to urolithins by gut bacteria',mech:'Inhibits DNA topoisomerase; metabolised to urolithins (A/B/C) by gut microbiome. Urolithin A activates mitophagy — significant anti-aging data.',herbs:['Raspberry leaf','Nettle','Pomegranate','Walnut']},
-  {cls:'Phenolic acids',sub:'Quinones',name:'Thymoquinone',tag:'notable',action:'Antimicrobial, antifungal, antiviral, anti-inflammatory, anticancer',mech:'Simultaneously inhibits COX-1/2, 5-LOX, and NF-κB. Disrupts microbial cell membranes; modulates Th1/Th2 immune balance. Outperforms fluconazole against Candida in some assays.',herbs:['Nigella','Black seed']},
-  {cls:'Phenolic acids',sub:'Naphthodianthrones',name:'Hypericin',tag:'notable',action:'Antidepressant, antiviral, photosensitiser',mech:'Inhibits monoamine reuptake (serotonin, dopamine, noradrenaline); photosensitiser for photodynamic cancer therapy; antiviral against enveloped viruses.',herbs:['St John\'s Wort']},
-  {cls:'Phenolic acids',sub:'Phloroglucinols',name:'Hyperforin',tag:'notable',action:'Antidepressant, antimicrobial, anticancer',mech:'Inhibits SERT, NET, DAT, and GABA-T simultaneously — unique multi-target mechanism. Activates TRPC6 ion channel. Potent antibacterial against MRSA.',herbs:['St John\'s Wort']},
-  {cls:'Saponins',sub:'Triterpenoid saponins',name:'Withanolide glycosides',tag:'notable',action:'Adaptogenic, anti-stress, hormone modulation',mech:'Glycoside forms of withanolides — sugar improves bioavailability; modulate glucocorticoid receptors; reduce cortisol at physiological doses.',herbs:['Ashwagandha']},
-  {cls:'Saponins',sub:'Steroidal saponins',name:'Beta-sitosterol',tag:'notable',action:'Cholesterol reduction, prostate support, anti-inflammatory',mech:'Competes with dietary cholesterol for intestinal absorption; binds 5-alpha reductase reducing DHT; activates immune NK cells.',herbs:['Nettle root','Moringa','Saw palmetto','Pumpkin seed']},
-  {cls:'Saponins',sub:'Other',name:'Fulvic acid',tag:'notable',action:'Mineral chelation, mitochondrial support, anti-inflammatory',mech:'Low molecular weight organic acid; chelates minerals into absorbable forms; donates and accepts electrons in mitochondrial electron transport chain; inhibits tau protein aggregation.',herbs:['Shilajit']},
-  {cls:'Glycosides',sub:'Iridoid glycosides',name:'Oleuropein',tag:'notable',action:'Antiviral, antibacterial, antihypertensive',mech:'Hydrolysed to elenolic acid (aglycone); prevents viral envelope binding to host cells; ACE inhibition. Strongest antioxidant activity among olive compounds.',herbs:['Olive leaf']},
-  {cls:'Glycosides',sub:'Phenolic glycosides',name:'Salicin',tag:'notable',action:'Anti-inflammatory, analgesic — aspirin precursor',mech:'Metabolised to salicylic acid in the gut — direct precursor of aspirin. Weaker but gentler on the stomach. COX inhibition.',herbs:['White willow bark','Meadowsweet','Poplar']},
-  {cls:'Glycosides',sub:'Glucosinolates',name:'Glucomoringin / Isothiocyanates',tag:'notable',action:'Anticancer, antimicrobial, liver detoxification',mech:'Myrosinase converts to isothiocyanate (similar to sulforaphane); activates phase II liver detox enzymes. Heat deactivates myrosinase — use raw powder.',herbs:['Moringa','Broccoli','Mustard']},
-  {cls:'Tannins',sub:'Hydrolysable tannins',name:'Ellagitannins',tag:'notable',action:'Antioxidant, antimicrobial — gut metabolised to urolithins',mech:'Hydrolysed to ellagic acid; metabolised to urolithins by gut microbiome. Urolithin A activates mitophagy.',herbs:['Raspberry leaf','Pomegranate','Oak gall']},
-  {cls:'Tannins',sub:'Condensed tannins',name:'Proanthocyanidins (OPCs)',tag:'notable',action:'Vascular, antioxidant, anti-inflammatory',mech:'Inhibit collagenase and elastase preserving vascular walls; stronger antioxidant than vitamin C and E in some assays.',herbs:['Hibiscus','Raspberry leaf','Grape seed','Pine bark']},
-  {cls:'Polysaccharides',sub:'Beta-glucans',name:'Beta-1,3/1,6-D-glucans',tag:'notable',action:'Immune modulation, anti-tumour, cholesterol lowering',mech:'Bind Dectin-1 and CR3 receptors on macrophages and NK cells; activate innate immunity. Also bind cholesterol in gut reducing absorption.',herbs:['Lion\'s mane','Reishi','Shiitake','Oats']},
-  {cls:'Polysaccharides',sub:'Neurotrophin stimulators',name:'Hericenones',tag:'notable',action:'NGF stimulation, nerve myelination, cognitive support',mech:'Lipophilic aromatic compounds from lion\'s mane fruiting body; cross blood-brain barrier; stimulate NGF synthesis in hippocampus.',herbs:['Lion\'s mane (fruiting body)']},
-  {cls:'Polysaccharides',sub:'Neurotrophin stimulators',name:'Erinacines',tag:'notable',action:'NGF + BDNF stimulation, neuroprotection',mech:'From lion\'s mane mycelium; cross blood-brain barrier more efficiently than hericenones; stimulate both NGF and BDNF.',herbs:['Lion\'s mane (mycelium)']},
-  {cls:'Polysaccharides',sub:'Fructooligosaccharides',name:'Inulin / FOS',tag:'notable',action:'Prebiotic, gut microbiome support, mineral absorption',mech:'Selectively fermented by Bifidobacterium and Lactobacillus; produces butyrate; increases calcium and magnesium absorption.',herbs:['Dandelion root','Chicory root','Jerusalem artichoke']},
-  {cls:'Polysaccharides',sub:'Mucilaginous polysaccharides',name:'Arabinogalactans (mucilage)',tag:'studied',action:'Demulcent, mucosal protection, anti-inflammatory',mech:'Forms colloidal gel on gut and respiratory mucosa; mechanically protective; reduces cytokine-driven mucosal inflammation via IL-6 downregulation.',herbs:['Marshmallow','Mullein','Slippery elm','Aloe vera']},
-  {cls:'Other classes',sub:'Curcuminoids',name:'Curcumin',tag:'notable',action:'Anti-inflammatory, antioxidant, anticancer, neuroprotective',mech:'Simultaneously inhibits NF-κB, COX-2, and 5-LOX. Poor bioavailability alone — improved by piperine (black pepper) or liposomal delivery.',herbs:['Turmeric','Ginger (trace)']},
-  {cls:'Other classes',sub:'Stilbenes',name:'Resveratrol',tag:'notable',action:'Anti-aging, antioxidant, cardioprotective, anticancer',mech:'Activates SIRT1 longevity pathway; inhibits COX-1/2 and NF-κB; activates AMPK. Synergistic with quercetin.',herbs:['Red grape skin','Japanese knotweed']},
-  {cls:'Other classes',sub:'Volatile oils',name:'Eugenol',tag:'studied',action:'Analgesic, antimicrobial, anti-inflammatory',mech:'TRPV1 desensitisation (topical analgesic); COX inhibition. Used clinically in clove oil for dental pain.',herbs:['Clove','Basil','Cinnamon']},
-];
-
-const ACTIONS=[
-  {sys:'Nervous/Endocrine',name:'Adaptogen',short:'Modulates the HPA stress-response axis — improves resilience without overstimulating.',mech:'Upregulates HSP70 heat-shock proteins; modulates cortisol via HPA axis. Must be non-toxic, non-specific, and normalising to qualify.',sci:'Coined Brekhman & Dardymov (1969). Very few herbs genuinely meet all three criteria.',compounds:['Withanolides','Ginsenosides','Fulvic acid','Beta-glucans'],herbs:['Ashwagandha','Shilajit','Lion\'s mane','Rhodiola','Eleuthero']},
-  {sys:'Detox/Metabolic',name:'Alterative',short:'Gradually restores healthy metabolic function — particularly waste and lymphatic elimination.',mech:'Enhances lymphatic drainage; liver phase I/II detoxification; increases renal clearance of metabolic byproducts.',sci:'Historical "blood purifier" — now understood as combined lymphagogue + hepatic + depurative action.',compounds:['Taraxacin','Chlorogenic acid','Caffeic acid','Inulin/FOS'],herbs:['Dandelion','Nettle','Cleavers','Burdock']},
-  {sys:'Nervous',name:'Nervine',short:'Acts on the nervous system — tonifying, relaxing, or stimulating depending on subtype and dose.',mech:'Relaxant: GABA-A positive allosteric modulation. Tonic: AChE inhibition. Stimulant: monoamine reuptake inhibition.',sci:'Three mechanistically distinct subtypes. Same herb can shift between them with dose.',compounds:['Apigenin (GABA-A)','Rosmarinic acid (AChE inhibitor)','Hypericin/Hyperforin'],herbs:['Ashwagandha','Passionflower','Lemon balm','Damiana','St John\'s Wort']},
-  {sys:'Liver',name:'Hepatoprotective',short:'Protects liver cells from oxidative damage and supports regeneration.',mech:'Silymarin inhibits hepatocyte membrane peroxidation; upregulates glutathione; modulates CYP450 enzymes.',sci:'Measured by reduction in ALT/AST liver enzymes. Silymarin used in emergency medicine for death cap mushroom poisoning.',compounds:['Silymarin / Silybin','Oleanolic acid','Chlorogenic acid'],herbs:['Milk thistle','Dandelion root','Olive leaf','Schisandra']},
-  {sys:'Nervous/Cognitive',name:'Adaptogen-Nootropic',short:'Stimulates nerve growth factor (NGF) and promotes neuroplasticity.',mech:'Hericenones and erinacines cross the blood-brain barrier and stimulate NGF synthesis in hippocampus. Mycelium vs fruiting body matters.',sci:'Erinacines are more potent BBB-crossers than hericenones.',compounds:['Hericenones (fruiting body)','Erinacines (mycelium)','Beta-glucans'],herbs:['Lion\'s mane','Bacopa','Gotu kola']},
-  {sys:'Renal',name:'Diuretic',short:'Increases urine output — typically aquaretic, not electrolyte-depleting like pharmaceutical diuretics.',mech:'Inhibits renal tubular sodium reabsorption or modulates aldosterone. Dandelion leaf replaces lost potassium unlike pharmaceuticals.',sci:'Aquaretic = water loss only. Loop diuretic = electrolyte loss. Critical safety distinction.',compounds:['Taraxacin','Caffeic acid','Chlorogenic acid','Quercetin'],herbs:['Dandelion leaf','Nettle','Cleavers','Corn silk']},
-  {sys:'Mucosal',name:'Emollient / Demulcent',short:'Soothes and mechanically protects mucous membranes via mucilaginous polysaccharides.',mech:'Mucilage forms colloidal gel on mucosal surfaces — physically protective and anti-inflammatory via IL-6 downregulation.',sci:'Cold water extraction preserves mucilage better than hot — important for marshmallow preparation.',compounds:['Arabinogalactans (mucilage)','Beta-sitosterol','Flavonoids'],herbs:['Marshmallow','Mullein','Hibiscus','Slippery elm']},
-  {sys:'Respiratory',name:'Expectorant',short:'Facilitates removal of mucus from the respiratory tract via two distinct mechanisms.',mech:'Stimulating: volatile oils irritate bronchial mucosa → reflex secretion. Relaxing: saponins reduce mucus viscosity. Mullein does both.',sci:'Relaxing expectorants suit dry lungs; stimulating suit damp, congested states.',compounds:['Saponins','Volatile monoterpenes (cineole, thymol)','Mucilage'],herbs:['Mullein','Elecampane','Thyme','Grindelia']},
-  {sys:'Immune',name:'Antimicrobial',short:'Inhibits bacterial, viral, or fungal pathogen growth via multiple distinct mechanisms.',mech:'Thymoquinone disrupts cell membranes; oleuropein prevents viral capsid binding; calendula triterpenoids inhibit gram-positive bacteria.',sci:'Measured by MIC assays. Activity is pathogen-specific — broad claims should be scrutinised.',compounds:['Thymoquinone','Oleuropein','Rosmarinic acid','Gallic acid','Thymol'],herbs:['Nigella','Olive leaf','Calendula','St John\'s Wort','Thyme']},
-  {sys:'Immune',name:'Immunomodulator',short:'Normalises immune function — bidirectional, can upregulate or downregulate as needed.',mech:'Beta-glucans bind Dectin-1 receptors on macrophages; thymoquinone modulates Th1/Th2 balance; fulvic acid activates NK cells.',sci:'Distinct from immunostimulant. Bidirectional regulation critical for autoimmune contexts.',compounds:['Beta-glucans','Thymoquinone','Fulvic acid','Withanolides'],herbs:['Lion\'s mane','Nigella','Shilajit','Echinacea','Reishi']},
-  {sys:'Systemic',name:'Anti-inflammatory',short:'Reduces inflammatory mediator production across multiple pathways simultaneously.',mech:'COX-1/2 inhibition reduces prostaglandins; NF-κB suppression reduces TNF-α and IL-1β; 5-LOX inhibition reduces leukotrienes.',sci:'Multi-pathway action superior to single-target. NSAIDs cause gut damage via COX-1 inhibition — multi-pathway herbs avoid this.',compounds:['Withanolides','Oleuropein','Thymoquinone','Luteolin','Quercetin'],herbs:['Ashwagandha','Olive leaf','Nigella','Nettle','Turmeric']},
-  {sys:'Systemic',name:'Antioxidant',short:'Neutralises reactive oxygen species and activates the body\'s own antioxidant defence systems.',mech:'Polyphenols donate electrons to free radicals; Nrf2/ARE pathway upregulates endogenous enzymes (SOD, catalase, glutathione peroxidase).',sci:'Nrf2 activation — turning on the body\'s own defences — is the superior mechanism. Clove and hibiscus among highest-ORAC plants.',compounds:['Polyphenols','Anthocyanins','Rosmarinic acid','Gallic acid','Ellagic acid'],herbs:['Clove','Hibiscus','Olive leaf','Moringa','Nigella','Calendula']},
-  {sys:'Digestive',name:'Carminative',short:'Relieves intestinal gas and smooth muscle spasm via volatile oil action.',mech:'Monoterpenes inhibit calcium channels in GI smooth muscle → antispasmodic. Also reduces gas-producing bacterial fermentation.',sci:'Must contain volatile oils — aqueous extracts lose most carminative action through evaporation. Use tinctures or fresh herb teas.',compounds:['Eugenol (clove)','Thymol/Carvacrol','Menthol','Linalool'],herbs:['Clove','Peppermint','Fennel','Ginger','Chamomile']},
-  {sys:'Liver/Digestive',name:'Cholagogue / Choleretic',short:'Stimulates bile production (choleretic) or bile release from gallbladder (cholagogue).',mech:'Bitter sesquiterpenes stimulate cholecystokinin release → gallbladder contraction. Some compounds increase bile acid synthesis in hepatocytes.',sci:'Choleretic = make more bile. Cholagogue = release stored bile. Avoid cholagogues in active gallstone obstruction.',compounds:['Taraxacin (sesquiterpene bitters)','Silybin','Caffeic acid'],herbs:['Dandelion root','Milk thistle','Artichoke','Barberry']},
-  {sys:'Digestive',name:'Bitter tonic / Amara',short:'Stimulates the full digestive cascade via bitter receptor activation on tongue and gut.',mech:'TAS2R bitter receptors trigger cephalic-phase digestive response: HCl, pepsin, pancreatic enzymes, bile — all simultaneously.',sci:'Must be tasted to work. Encapsulating or sweetening bitter herbs neutralises this mechanism entirely.',compounds:['Taraxacin','Sesquiterpene lactones','Iridoid glycosides'],herbs:['Dandelion leaf','Mugwort','Gentian','Wormwood']},
-  {sys:'Systemic',name:'Tonic / Tropho-restorative',short:'Rebuilds and nourishes a specific tissue or organ over extended time.',mech:'Supplies minerals, vitamins, phytosterols that directly feed deficient tissues; enhances organ-specific enzyme activity. Works over weeks to months.',sci:'Distinct from adaptogens (stress axis) and stimulants (receptor firing). Cumulative, not acute.',compounds:['Minerals + vitamins','Beta-sitosterol','Flavonoids','Inulin/FOS'],herbs:['Nettle','Moringa','Dandelion','Ashwagandha']},
-  {sys:'Nervous',name:'Anxiolytic',short:'Reduces anxiety without sedation at lower therapeutic doses.',mech:'Apigenin and flavones bind GABA-A at benzodiazepine site; 5-HT1A partial agonism; rosmarinic acid inhibits GABA transaminase.',sci:'Withanolides, apigenin, and rosmarinic acid all have human RCT evidence for anxiety reduction.',compounds:['Apigenin (GABA-A)','Rosmarinic acid (GABA-T inhibitor)','Withanolides','Linalool'],herbs:['Ashwagandha','Passionflower','Lemon balm','Damiana','Lavender']},
-  {sys:'Nervous',name:'Sedative / Hypnotic',short:'Promotes sleep onset and CNS depression at higher doses.',mech:'Binds GABA-A at benzodiazepine site; inhibits orexin signalling (wakefulness system). Dose-dependent shift from anxiolytic to sedative.',sci:'Graded: lemon balm (mild) → passionflower (moderate) → valerian/hops (strong).',compounds:['Apigenin (high dose)','Citral/Linalool','Valerenic acid (valerian)'],herbs:['Passionflower','Lemon balm','Mugwort','Valerian','Hops']},
-  {sys:'Reproductive',name:'Emmenagogue',short:'Stimulates or regulates menstrual flow — acts on uterine smooth muscle.',mech:'Uterotonic action via oxytocin receptor sensitisation; some terpenoids mimic prostaglandins at uterine smooth muscle.',sci:'Contraindicated in pregnancy. Mugwort is the most-documented Western emmenagogue.',compounds:['Thujone (monoterpene)','Sesquiterpene lactones','Volatile oils'],herbs:['Mugwort','Damiana','Pennyroyal','Blue cohosh']},
-  {sys:'Musculoskeletal/Digestive',name:'Antispasmodic',short:'Relaxes smooth or skeletal muscle spasm.',mech:'Calcium channel blockade in smooth muscle; inhibition of acetylcholine at neuromuscular junction reduces skeletal spasm.',sci:'Distinct mechanisms for smooth vs skeletal muscle.',compounds:['Apigenin/Flavones','Monoterpenes','Scopoletin (coumarin)'],herbs:['Passionflower','Lemon balm','Marshmallow','Cramp bark']},
-  {sys:'Integumentary',name:'Vulnerary',short:'Promotes wound healing and skin tissue repair.',mech:'Stimulates fibroblast proliferation and collagen synthesis; modulates TGF-β1; reduces MMP activity. Bisabolol enhances skin absorption.',sci:'Calendula triterpenoids among most evidenced vulnerary compounds. Comfrey topical only.',compounds:['Faradiol/Arnidiol (triterpenoids)','Bisabolol','Rosmarinic acid','Mucilage'],herbs:['Calendula','Marshmallow','Comfrey (topical)','Yarrow']},
-  {sys:'Cardiovascular',name:'Haemostatic / Styptic',short:'Promotes blood clotting and reduces bleeding.',mech:'Tannins precipitate proteins on wound surfaces; vitamin K precursors support coagulation cascade; vasoconstriction reduces blood flow.',sci:'Tannin-rich herbs most reliable. Styptic = topical; haemostatic = systemic.',compounds:['Ellagitannins','Proanthocyanidins','Gallotannins'],herbs:['Raspberry leaf','Nettle','Yarrow','Shepherd\'s purse']},
-  {sys:'Immune/Thermoregulatory',name:'Diaphoretic',short:'Induces perspiration to reduce fever and enhance skin elimination.',mech:'Stimulates cholinergic sweat gland activation; peripheral vasodilation allows heat dissipation via skin.',sci:'Hot diaphoretics increase surface circulation. Cool diaphoretics (hibiscus) reduce temperature via evaporative cooling.',compounds:['Volatile monoterpenes','Flavonoids','Organic acids'],herbs:['Hibiscus','Elderflower','Peppermint','Yarrow']},
-  {sys:'Immune/Integumentary',name:'Antifungal',short:'Inhibits fungal cell membrane synthesis or disrupts fungal biofilm.',mech:'Thymoquinone and oleuropein disrupt ergosterol biosynthesis. Thymoquinone outperforms fluconazole against Candida in some in vitro assays.',sci:'MIC data exists for nigella and olive leaf against Candida species specifically.',compounds:['Thymoquinone','Oleuropein','Gallic acid','Triterpenoids (calendula)'],herbs:['Nigella','Olive leaf','Calendula','Pau d\'arco','Oregano']},
-  {sys:'Cognitive',name:'Nootropic',short:'Enhances memory, focus, and cognitive performance via multiple mechanisms.',mech:'AChE inhibition increases acetylcholine availability; cerebral blood flow increase; BDNF/CREB upregulation; NGF stimulation.',sci:'Rosmarinic acid and withanolides have AChE inhibition in human trials. Lion\'s mane NGF stimulation is unique.',compounds:['Rosmarinic acid (AChE inhibitor)','Withanolides','Hericenones/Erinacines (NGF)'],herbs:['Ashwagandha','Lion\'s mane','Lemon balm','Bacopa','Ginkgo']},
-  {sys:'Reproductive',name:'Aphrodisiac / Sexual tonic',short:'Enhances libido, sexual function, and reproductive organ perfusion.',mech:'PDE5 inhibition increases cGMP → relaxes vascular smooth muscle (same pathway as sildenafil); dopaminergic stimulation; withanolides and fulvic acid support testosterone.',sci:'Damiana and ashwagandha have human RCT data. Shilajit increased testosterone 23% in one trial.',compounds:['Acacetin/Apigenin (PDE5)','Withanolides (testosterone)','Fulvic acid (testosterone)'],herbs:['Damiana','Ashwagandha','Shilajit','Tribulus']},
-  {sys:'Immune',name:'Antiviral',short:'Inhibits viral replication, entry, or assembly.',mech:'Oleuropein prevents viral envelope glycoprotein binding to host cell receptors; hypericin disrupts viral envelopes; thymoquinone inhibits viral proteases.',sci:'Best evidence: olive leaf oleuropein (broad spectrum), St John\'s Wort hypericin (enveloped viruses), nigella thymoquinone.',compounds:['Oleuropein','Hypericin','Thymoquinone','Rosmarinic acid'],herbs:['Olive leaf','St John\'s Wort','Nigella','Elderberry']},
-  {sys:'Lymphatic',name:'Lymphagogue',short:'Stimulates lymphatic circulation and clears lymphatic congestion.',mech:'Increases lymphocyte and macrophage activity in lymph nodes; promotes interstitial fluid drainage into lymphatic capillaries.',sci:'One of the most neglected systems in conventional medicine but central to traditional herbal practice.',compounds:['Flavonoids (lymphatic tone)','Polysaccharides','Caffeic acid'],herbs:['Calendula','Nettle','Cleavers','Echinacea']},
-  {sys:'Endocrine/Metabolic',name:'Hypoglycaemic',short:'Lowers blood glucose via multiple distinct mechanisms.',mech:'Inhibits intestinal alpha-glucosidase; increases GLUT-4 translocation in muscle; activates AMPK; inhibits hepatic glucose-6-phosphatase.',sci:'Nigella, moringa, olive leaf have clinical evidence. Chlorogenic acid reduces postprandial glucose in human trials.',compounds:['Thymoquinone (AMPK)','Chlorogenic acid','Isothiocyanates (GLUT-4)','Oleuropein'],herbs:['Nigella','Moringa','Olive leaf','Dandelion','Berberine herbs']},
-  {sys:'Cardiovascular',name:'Cardiotonic',short:'Strengthens cardiac muscle contractility and regulates heart rhythm.',mech:'Positive inotropic via Na+/K+ ATPase modulation; fulvic acid improves mitochondrial ATP production in cardiomyocytes.',sci:'Hawthorn most evidence-based cardiotonic herb.',compounds:['Fulvic acid (mitochondrial ETC)','Proanthocyanidins','Vitexin'],herbs:['Shilajit','Hawthorn','Motherwort']},
-  {sys:'Cardiovascular',name:'Hypotensive',short:'Reduces blood pressure via vasodilation or ACE inhibition.',mech:'ACE inhibitor peptides block angiotensin II; NO-mediated endothelial vasodilation; calcium channel antagonism; anthocyanins improve endothelial flexibility.',sci:'Hibiscus anthocyanins reduce systolic BP ~7mmHg in meta-analysis. Olive leaf oleuropein has strong ACE inhibition data.',compounds:['Oleuropein (ACE inhibition)','Thymoquinone','Anthocyanins (NO)','Quercetin'],herbs:['Olive leaf','Nigella','Hibiscus','Hawthorn','Garlic']},
-];
 
 // ── TOP 20 SEED DATA ──
 const TOP20 = [
@@ -783,783 +551,213 @@ const TOP20 = [
   {rank:20,name:'St John\'s Wort',latin:'Hypericum perforatum',cat:'Nervous system',color:'#3a3a8a',stars:4.0,votes:487},
 ];
 
-function renderStars(n, max=5) {
-  let html = '';
-  for(let i=1;i<=max;i++) html += `<span class="${i <= Math.round(n) ? 'star-icon' : 'star-icon empty'}">★</span>`;
+function renderStars(stars){
+  let html='';
+  for(let i=1;i<=5;i++) html+= i <= Math.floor(stars) ? '<span class="star-icon">★</span>' : '<span class="star-icon empty">★</span>';
   return html;
 }
 
-// Render rankings
-const grid = document.getElementById('rankings-grid');
-grid.innerHTML = TOP20.map(h => `
-  <a class="rank-card ${h.rank<=3?'top3':''}" onclick="searchHerbByName('${h.name}');return false;" href="#">
-    <span class="rank-number">${String(h.rank).padStart(2,'0')}</span>
-    <div class="rank-herb">${h.name}</div>
-    <div class="rank-latin">${h.latin}</div>
-    <div class="rank-cat"><span class="rank-dot" style="background:${h.color}"></span>${h.cat}</div>
-    <div class="rank-stars">${renderStars(h.stars)}</div>
-    <div class="rank-votes">${h.votes.toLocaleString()} ratings</div>
-  </a>`).join('');
-
-// ── SEARCH ──
-document.getElementById('supreme-search-input').addEventListener('keydown', e => {
-  if(e.key==='Enter') searchHerb();
-});
-
-function searchHerb() {
-  const val = document.getElementById('supreme-search-input').value.trim();
-  if(!val) return;
-  loadHerbProfile(val);
-}
-
-function searchHerbByName(name) {
-  document.getElementById('supreme-search-input').value = name;
-  loadHerbProfile(name);
-}
-
-async function loadHerbProfile(herbName) {
-  // Show profile section, hide hero
-  document.getElementById('tree-hero').style.display = 'none';
-  document.getElementById('rankings-section').style.display = 'none';
-  document.getElementById('herb-profile').style.display = 'block';
-  document.getElementById('profile-loading').style.display = 'block';
-  document.getElementById('profile-content').style.display = 'none';
-  document.getElementById('profile-bc-name').textContent = herbName;
-  document.getElementById('bc-current').textContent = herbName;
-
-  // Update breadcrumb
-  window.scrollTo({top:0,behavior:'smooth'});
-
-  try {
-    const herb = await fetchHerbProfilePolling(herbName);
-    renderProfile(herb);
-  } catch(err) {
-    console.error(err);
-    if (err.code === 'not_an_herb') {
-      const box = document.getElementById('profile-loading');
-      box.innerHTML =
-        `<div style="padding:2.5rem 1.5rem;text-align:center;max-width:480px;margin:0 auto;">
-          <div style="font-size:32px;margin-bottom:.75rem;">🌿</div>
-          <p style="color:var(--charcoal);font-weight:500;margin-bottom:.5rem;" id="not-herb-msg"></p>
-          <a href="supreme.html" style="color:var(--forest);font-size:13px;text-decoration:underline;">Browse the Herbadex instead</a>
-        </div>`;
-      // Set via textContent, not the template above, so a search term
-      // containing HTML/script can't get echoed back and executed.
-      document.getElementById('not-herb-msg').textContent = err.message;
-    } else {
-      document.getElementById('profile-loading').innerHTML = '<p style="color:#c4522a;padding:2rem;text-align:center;">Unable to load herb data. Please try again in a moment.</p>';
-    }
-  }
-}
-
-// Poll for profile generation. Returns Stage 1 immediately, Stage 2 loads in background.
-async function fetchHerbProfilePolling(herbName, { maxMs = 180000, intervalMs = 2500 } = {}) {
-  const started = Date.now();
-  while (true) {
-    const res = await fetch('/.netlify/functions/herb-profile', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ herbName })
-    });
-
-    if (res.status === 200) return await res.json();
-
-    if (res.status === 202) {
-      if (Date.now() - started > maxMs) throw new Error('Timed out waiting for the profile to generate');
-      await new Promise(r => setTimeout(r, intervalMs));
-      continue;
-    }
-
-    const errBody = await res.json().catch(() => ({}));
-    const err = new Error(errBody.message || errBody.error || `Request failed (${res.status})`);
-    err.code = errBody.error;
-    throw err;
-  }
-}
-
-// Poll for Stage 2 updates (detailed mechanisms, spiritual history, etc.)
-async function pollForStage2Update(herbName, { maxMs = 120000, intervalMs = 3000 } = {}) {
-  const started = Date.now();
-  while (true) {
-    if (Date.now() - started > maxMs) return null;
-    const res = await fetch('/.netlify/functions/herb-profile', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ herbName })
-    });
-
-    if (res.status === 200) {
-      const data = await res.json();
-      if (data.stage2Status === 'complete') return data;
-    }
-
-    await new Promise(r => setTimeout(r, intervalMs));
-  }
-}
-
-function renderProfile(h) {
-  // Hero
-  const F = window.CHI_FALLBACK;
-  const spirit = h.spiritualHistory || {};
-
-  document.getElementById('ph-name').textContent = h.name;
-  document.getElementById('ph-latin').textContent = F.text(h.latin, 'latin');
-  document.getElementById('ph-origin').textContent = F.text(h.origin, 'origin');
-  document.getElementById('ph-cat').textContent = F.has(h.category) ? h.category : 'Uncategorised';
-  const catColor = F.has(h.categoryColor) ? h.categoryColor : '#8a8a80';
-  document.getElementById('ph-cat').style.background = catColor + '22';
-  document.getElementById('ph-cat').style.color = catColor;
-  document.getElementById('ph-cat').style.borderColor = catColor + '55';
-  document.getElementById('ph-category').textContent = F.has(h.category) ? h.category : 'Not yet assigned';
-  document.getElementById('ph-tradition').textContent = F.text(h.tradition, 'tradition');
-  document.getElementById('ph-preps').textContent = F.has(h.preparations) ? h.preparations.join(', ') : F.message('preparations');
-  document.getElementById('ph-safety').textContent = F.text(h.safetyLevel, 'safetyLevel');
-
-  // Image — sourced (Wikimedia Commons), never AI-generated. Herbs without a
-  // public-domain match yet show a plain placeholder, not a broken image.
-  // renderImageBox() shows a single image when there's only one, or a small
-  // slideshow (dots, auto-advance) when there are several.
-  const imgEl = document.getElementById('ph-image');
-  renderImageBox(imgEl, Array.isArray(h.images) ? h.images : []);
-
-  document.getElementById('profile-bc-name').textContent = h.name;
-  document.getElementById('bc-current').textContent = h.name;
-
-  // Timeline HTML
-  const timelineHTML = (spirit.timeline || []).map(t =>
-    `<div class="tl-item"><div class="tl-year">${t.era}</div><div class="tl-text">${t.text}</div></div>`
-  ).join('');
-
-  // Compound science — merged in from the former Plant Intelligence page
-  // (retired; everything it showed now lives here). Placed lower on the
-  // page, after the everyday/practical sections, per Jerome: common info
-  // first, science stuff as you scroll down. None of this repeats content
-  // shown earlier — Preparation and Interactions have their own sections
-  // above and are deliberately not rebuilt here.
-  const CLASS_COLORS = {'Flavonoids':'#c9962f','Flavonoid':'#c9962f','Alkaloids':'#8577c4','Alkaloid':'#8577c4','Terpenoids':'#4a8c65','Terpenoid':'#4a8c65','Saponins':'#4a7ba6','Saponin':'#4a7ba6','Glycosides':'#5a9c52','Glycoside':'#5a9c52','Tannins':'#a85c3a','Tannin':'#a85c3a','Polysaccharides':'#a8557f','Polysaccharide':'#a8557f','Phenolic acids':'#7a7a70','Phenolic acid':'#7a7a70','Other classes':'#7a7a70'};
-  const SYS_COLORS = {'Nervous/Endocrine':'#4a7ba6','Nervous/Cognitive':'#4a7ba6','Nervous':'#4a7ba6','Cognitive':'#4a7ba6','Detox/Metabolic':'#4a8c65','Endocrine/Metabolic':'#4a8c65','Liver':'#c9962f','Liver/Digestive':'#c9962f','Digestive':'#c9962f','Renal':'#4a8c65','Mucosal':'#4a8c65','Lymphatic':'#4a8c65','Integumentary':'#4a8c65','Respiratory':'#4a7ba6','Immune':'#a85c3a','Immune/Integumentary':'#a85c3a','Immune/Thermoregulatory':'#a85c3a','Systemic':'#7a7a70','Cardiovascular':'#b4483f','Reproductive':'#a8557f','Musculoskeletal/Digestive':'#7a7a70','Endocrine':'#4a8c65','Musculoskeletal':'#7a7a70'};
-  const colorFor = (map, key) => map[key] || (Object.keys(map).find(k => (key||'').includes(k)) ? map[Object.keys(map).find(k => (key||'').includes(k))] : '#7a7a70');
-
-  const inStack = isInStack(h.name);
-
-  // Curated matches take priority over generated content (never both, so
-  // nothing repeats) — same rule the former Plant Intelligence page used.
-  const nameLc = h.name.toLowerCase();
-  const matchedCompounds = COMPOUNDS.filter(c => c.herbs.some(hb => hb.toLowerCase().includes(nameLc) || nameLc.includes(hb.toLowerCase().replace(' root','').replace(' leaf',''))));
-  const matchedActions = ACTIONS.filter(a => a.herbs.some(hb => hb.toLowerCase().includes(nameLc) || nameLc.includes(hb.toLowerCase())));
-
-  const compClasses = matchedCompounds.length
-    ? [...new Set(matchedCompounds.map(c => c.cls))]
-    : (F.has(h.compounds) ? [...new Set(h.compounds.map(c => c.class).filter(Boolean))] : []);
-  const compoundClassesHTML = compClasses.map(cls => {
-    const col = colorFor(CLASS_COLORS, cls);
-    return `<span class="sci-pill" style="background:${col}1a;border-color:${col}55;color:${col}">${cls}</span>`;
+function populateRankings(){
+  const grid = document.getElementById('rankings-grid');
+  grid.innerHTML = TOP20.map((h,i) => {
+    const isTop3 = i < 3 ? 'top3' : '';
+    return `<a class="rank-card ${isTop3}" onclick="searchHerb('${h.name}')">
+      <div class="rank-number">${h.rank}</div>
+      <div class="rank-herb">${h.name}</div>
+      <div class="rank-latin">${h.latin}</div>
+      <div class="rank-cat" style="color:${h.color}60;">
+        <span class="rank-dot" style="background:${h.color};"></span>
+        ${h.cat}
+      </div>
+      <div class="rank-stars">${renderStars(h.stars)}</div>
+      <div class="rank-votes">${h.votes.toLocaleString()} votes</div>
+    </a>`;
   }).join('');
-
-  const compoundsHTML = matchedCompounds.length
-    ? `<div class="sci-grid">${matchedCompounds.map(c => `
-        <div class="sci-card">
-          <div class="cn">${c.name}</div>
-          <div class="ct">${c.sub || c.cls}</div>
-          <div class="cs">${c.action}</div>
-          <div class="sci-dl">Mechanism</div>
-          <div class="sci-mbox">${c.mech}</div>
-        </div>`).join('')}</div>`
-    : F.section(h.compounds, 'compounds', list => `<div class="sci-grid">${list.map(c => `
-    <div class="sci-card">
-      <div class="cn">${c.name}</div>
-      <div class="ct">${F.has(c.class) ? c.class : 'Compound'}</div>
-      <div class="cs">${F.has(c.role) ? c.role : ''}</div>
-      <div class="sci-dl">Mechanism</div>
-      ${F.has(c.mechanism) ? `<div class="sci-mbox">${c.mechanism}</div>` : `<div class="sci-mbox" style="opacity:.6">${F.message('mechanism')}</div>`}
-      <div class="sci-dl">Evidence</div>
-      ${F.has(c.evidence) ? `<div class="sci-mbox" style="font-style:normal">${c.evidence}</div>` : `<div class="sci-mbox" style="opacity:.6">${F.message('evidence')}</div>`}
-    </div>`).join('')}</div>`);
-
-  const herbalActionsHTML = matchedActions.length
-    ? `<div class="sci-grid wide">${matchedActions.map(a => {
-        const col = colorFor(SYS_COLORS, a.sys);
-        return `<div class="sci-card">
-          <div style="display:flex;justify-content:space-between;gap:6px;margin-bottom:4px;align-items:flex-start;">
-            <span class="cn">${a.name}</span>
-            <span class="sci-sys-tag" style="background:${col}1a;color:${col}">${a.sys}</span>
-          </div>
-          <div class="cs">${a.short}</div>
-        </div>`;
-      }).join('')}</div>`
-    : F.section(h.herbalActions, 'herbalActions', list => `<div class="sci-grid wide">${list.map(a => {
-    const col = colorFor(SYS_COLORS, a.system);
-    return `<div class="sci-card">
-      <div style="display:flex;justify-content:space-between;gap:6px;margin-bottom:4px;align-items:flex-start;">
-        <span class="cn">${a.name}</span>
-        <span class="sci-sys-tag" style="background:${col}1a;color:${col}">${F.has(a.system) ? a.system : '—'}</span>
-      </div>
-      <div class="cs">${F.has(a.description) ? a.description : ''}</div>
-      ${F.has(a.compounds) ? `<div class="sci-dl">Key compounds</div><div class="sci-pill-row">${a.compounds.map(c => `<span class="sci-pill" style="background:rgba(74,140,101,.08);border-color:rgba(74,140,101,.3);color:var(--forest)">${c}</span>`).join('')}</div>` : ''}
-    </div>`;
-  }).join('')}</div>`);
-
-  // Body effects
-  const bodyHTML = F.section(h.bodyEffects, 'bodyEffects', list => `<div class="sci-grid">${list.map(b => `
-    <div class="sci-card">
-      <div class="cn" style="color:var(--forest)">${b.system}</div>
-      <div class="cs">${F.has(b.effect) ? b.effect : ''}</div>
-    </div>`).join('')}</div>`);
-
-  // Preparation — every format is listed, with a note where no dose is recorded
-  const prepLabels = {tea:'Tea',tincture:'Tincture',capsule:'Capsule',topical:'Topical',traditional:'Traditional'};
-  const prepData = h.preparation || {};
-  const prepHTML = Object.keys(prepLabels).map(k => {
-    const v = prepData[k];
-    const body = F.has(v)
-      ? `<div style="font-size:13.5px;color:var(--charcoal-mid);line-height:1.7;">${v}</div>`
-      : `<div style="font-size:12.5px;color:var(--charcoal-mid);line-height:1.7;opacity:.62;font-style:italic;">${F.message('dosage')}</div>`;
-    return `<div style="padding:1.1rem 1.35rem;background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-radius:6px;">
-      <div style="font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:8px;">${prepLabels[k]}</div>
-      ${body}
-    </div>`;
-  }).join('');
-  // Sources -- real citation links only. h.sources is [{url,title}], filtered
-  // server-side in herb-profile.js to URLs actually retrieved from PubMed/
-  // Wikipedia -- never a free-text "source" string that could be invented.
-  const escHtml = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const sourcesHTML = (Array.isArray(h.sources) && h.sources.length)
-    ? h.sources.filter(s => s && s.url).map(s => `<a href="${escHtml(s.url)}" target="_blank" rel="noopener noreferrer" style="color:var(--gold);text-decoration:underline;">${escHtml(s.title || s.url)}</a>`).join(' &middot; ')
-    : `<span style="opacity:.62;font-style:italic;">${F.message('source')}</span>`;
-
-
-  document.getElementById('profile-main-content').innerHTML = `
-    <div style="background:rgba(200,149,42,.07);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
-      <div style="font-size:14.5px;line-height:1.8;color:var(--charcoal);margin-bottom:1rem;${F.has(h.functionalOverview) ? '' : 'opacity:.62;font-style:italic;'}">${F.text(h.functionalOverview, 'functionalOverview')}</div>
-<div style="font-size:11.5px;color:var(--charcoal-mid);border-top:1px solid rgba(200,149,42,.2);padding-top:.75rem;"><span style="text-transform:uppercase;letter-spacing:.08em;color:var(--gold);font-weight:600;">Sources</span><span style="margin-left:.5rem;">${sourcesHTML}</span></div>
-    </div>
-
-    <div class="content-section">
-      <h2><span class="cs-icon">🔬</span>Modern research &amp; use</h2>
-      ${F.section(h.modernUse, 'modernUse', v => v.split('\n\n').map(p=>`<p>${p}</p>`).join(''))}
-    </div>
-
-    <div class="content-section">
-      <h2><span class="cs-icon">✦</span>Spiritual &amp; cultural history</h2>
-      ${F.section(spirit.overview, 'spiritualHistory', v => v.split('\n\n').map(p=>`<p>${p}</p>`).join(''))}
-      <div class="spirit-block">
-        <div class="sb-label">Ancient knowledge</div>
-        ${F.has(h.rareFact) ? `<p>${h.rareFact}</p>` : F.note('rareFact')}
-      </div>
-      ${timelineHTML ? `<div class="timeline" style="margin-top:1.5rem;">${timelineHTML}</div>` : `<div style="margin-top:1.5rem;">${F.note('timeline')}</div>`}
-    </div>
-
-    <div class="content-section">
-      <h2><span class="cs-icon">🌿</span>How to prepare &amp; use</h2>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;">${prepHTML}</div>
-    </div>
-
-    <div class="content-section">
-      <h2><span class="cs-icon">⚠</span>Interactions &amp; cautions</h2>
-      <div style="background:rgba(196,82,42,.06);border:1px solid rgba(196,82,42,.18);border-left:3px solid #c4522a;border-radius:0 4px 4px 0;padding:1.25rem 1.5rem;">
-        ${F.has(h.interactions)
-          ? h.interactions.map(i=>`<div style="font-size:14px;color:var(--charcoal-mid);padding:6px 0;border-bottom:1px solid rgba(196,82,42,.08);display:flex;gap:8px;"><span style="color:#c4522a;font-weight:700;font-size:12px;margin-top:2px;">!</span>${i}</div>`).join('')
-          : `<div style="font-size:13px;color:var(--charcoal-mid);line-height:1.7;opacity:.72;font-style:italic;">${F.message('interactions')}</div>`}
-      </div>
-    </div>
-
-    <div class="content-section" id="community-photos-block" style="display:none;">
-      <h2><span class="cs-icon">📸</span>Community photos</h2>
-      <div style="font-size:12px;color:var(--charcoal-mid);opacity:.7;margin-bottom:.85rem;">Shared by C.H.I members — kept separate from the sourced image above.</div>
-      <div id="community-photos-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:.6rem;"></div>
-    </div>
-
-    <div style="background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-radius:8px;padding:1.5rem;margin:2rem 0;text-align:center;">
-      <div style="font-size:18px;margin-bottom:.5rem;">📸</div>
-      <h3 style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--charcoal);margin-bottom:.5rem;">Have a photo of this herb?</h3>
-      <p style="font-size:13px;color:var(--charcoal-mid);margin-bottom:1rem;line-height:1.6;">Share your photo to help other users identify and connect with <span id="upload-herb-name">this herb</span>.</p>
-      <button onclick="openProfileUpload()" style="background:var(--gold);color:var(--forest);border:none;padding:.6rem 1.2rem;border-radius:6px;font-weight:500;cursor:pointer;font-size:13px;">Share a photo</button>
-    </div>
-
-    <div class="sci-boundary">
-      <span class="sci-boundary-label">↓ The compound science, from here down</span>
-      <button class="stack-btn${inStack ? ' in-stack' : ''}" id="stack-btn" onclick="toggleStack('${h.name.replace(/'/g,"\\'")}')">${inStack ? '✓ In stack' : '+ Add to stack'}</button>
-    </div>
-
-    <div class="content-section">
-      <h2><span class="cs-icon">⚗</span>Active compounds</h2>
-      ${compClasses.length ? `<div class="sci-pill-row" style="margin-bottom:1rem;">${compoundClassesHTML}</div>` : ''}
-      ${compoundsHTML}
-    </div>
-
-    <div class="content-section">
-      <h2><span class="cs-icon">✦</span>Herbal actions</h2>
-      ${herbalActionsHTML}
-    </div>
-
-    <div class="content-section">
-      <h2><span class="cs-icon">🫀</span>Effects on body systems</h2>
-      ${bodyHTML}
-    </div>`;
-
-  // Sidebar: ranking + forum -- real data only. Real submissions live in
-  // the herb_testimonials table (see herb_testimonials.sql), fetched below
-  // by renderHerbTestimonials(); nothing here is generated or hardcoded.
-  document.getElementById('profile-sidebar-content').innerHTML = `
-    <div class="rank-display">
-      <div class="rd-label">Community rating</div>
-      <div class="rd-stars" id="rd-stars">${Array(5).fill('<span class="rd-star empty">★</span>').join('')}</div>
-      <div class="rd-votes" id="rd-votes">Loading…</div>
-      <div class="rd-label" style="margin-top:1rem;">Rate this herb</div>
-      <div class="star-rate-row" id="rate-row">
-        ${[1,2,3,4,5].map(n=>`<span class="rate-star" data-val="${n}" onmouseover="hoverStars(${n})" onmouseout="clearHover()" onclick="selectRating(${n})">★</span>`).join('')}
-      </div>
-    </div>
-
-    <div class="forum-section">
-      <div class="forum-header">
-        <h4>Community experiences</h4>
-        <span class="forum-count" id="forum-count">…</span>
-      </div>
-      <div id="forum-entries"><div style="font-size:12px;color:var(--muted);padding:.5rem 0;">Loading…</div></div>
-      <div class="forum-add">
-        <textarea class="forum-textarea" id="forum-input" placeholder="Share your experience with ${h.name}..."></textarea>
-        <button class="forum-submit" onclick="addForumEntry('${h.name}')">Share experience</button>
-      </div>
-    </div>`;
-  selectedRating = 0;
-
-  document.getElementById('profile-loading').style.display = 'none';
-  document.getElementById('profile-content').style.display = 'block';
 }
 
-let selectedRating = 0;
+function searchHerb(herbName){
+  const input = document.getElementById('supreme-search-input');
+  if(!herbName) herbName = input.value.trim();
+  if(!herbName) return;
 
-function hoverStars(n) {
-  document.querySelectorAll('.rate-star').forEach(s => {
-    s.classList.toggle('hovered', parseInt(s.dataset.val) <= n);
-  });
-}
-function clearHover() {
-  document.querySelectorAll('.rate-star').forEach(s => s.classList.remove('hovered'));
-}
-// Selecting a star no longer submits anything by itself -- it just sets
-// what "Share experience" will send, same as any normal review widget.
-// Real submission -> rating and optional comment go together in one
-// request to submit-herb-testimonial.js, and nothing appears publicly
-// until an admin approves it.
-function selectRating(n) {
-  selectedRating = n;
-  document.querySelectorAll('.rate-star').forEach(s => {
-    s.classList.toggle('selected', parseInt(s.dataset.val) <= n);
-  });
+  const profileSection = document.getElementById('herb-profile');
+  const loading = document.getElementById('profile-loading');
+  const content = document.getElementById('profile-content');
+
+  profileSection.style.display = 'block';
+  loading.style.display = 'block';
+  content.style.display = 'none';
+
+  loadHerbProfile(herbName);
+  window.scrollTo({top: profileSection.offsetTop, behavior: 'smooth'});
 }
 
-async function addForumEntry(herbName) {
-  const textarea = document.getElementById('forum-input');
-  const text = textarea.value.trim();
-  if (!selectedRating) {
-    alert('Please pick a star rating before sharing your experience.');
-    return;
-  }
-  try {
-    const res = await fetch('/.netlify/functions/submit-herb-testimonial', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ herbName, rating: selectedRating, comment: text })
-    });
-    if (!res.ok) throw new Error('failed');
-    textarea.value = '';
-    selectedRating = 0;
-    document.querySelectorAll('.rate-star').forEach(s => s.classList.remove('selected'));
-    alert('Thanks for sharing -- this will appear here once it\'s been reviewed.');
-  } catch (e) {
-    alert('Could not submit right now. Please try again in a moment.');
-  }
-}
-
-// Fetches real approved testimonials + a real aggregate rating for this
-// herb. Replaces the old TOP20 hardcoded stars/votes and forumSeed fake
-// reviews entirely -- see get-herb-testimonials.js.
-async function renderHerbTestimonials(herbName) {
-  const starsEl = document.getElementById('rd-stars');
-  const votesEl = document.getElementById('rd-votes');
-  const entriesEl = document.getElementById('forum-entries');
-  const countEl = document.getElementById('forum-count');
-  if (!starsEl || !votesEl || !entriesEl || !countEl) return;
-  const emptyNote = '<div style="font-size:12px;color:var(--muted);padding:.5rem 0;">No community experiences yet -- be the first to share one.</div>';
-  try {
-    const res = await fetch('/.netlify/functions/get-herb-testimonials?herb=' + encodeURIComponent((herbName || '').toLowerCase().trim()));
-    if (!res.ok) throw new Error('bad response');
-    const data = await res.json();
-    const testimonials = data.testimonials || [];
-    const count = data.count || 0;
-    const average = data.average;
-
-    starsEl.innerHTML = Array(5).fill('').map((_, i) =>
-      `<span class="rd-star ${average && i < Math.round(average) ? '' : 'empty'}">★</span>`
-    ).join('');
-    votesEl.textContent = count ? `${average}★ average \u00b7 ${count} real rating${count === 1 ? '' : 's'}` : 'Be the first to rate';
-    countEl.textContent = `${count} ${count === 1 ? 'entry' : 'entries'}`;
-    entriesEl.innerHTML = testimonials.length ? testimonials.map(t => `
-      <div class="forum-entry">
-        <div class="fe-meta">
-          <div class="fe-avatar">${(t.display_name || 'A').charAt(0).toUpperCase()}</div>
-          <span class="fe-name">${t.display_name}</span>
-          <span class="fe-date">${new Date(t.created_at).toLocaleDateString()}</span>
-        </div>
-        <div class="fe-stars">${Array(t.rating).fill('<span class="fe-star">★</span>').join('')}</div>
-        ${t.comment ? `<div class="fe-text">${t.comment}</div>` : ''}
-      </div>`).join('') : emptyNote;
-  } catch (e) {
-    votesEl.textContent = 'Be the first to rate';
-    countEl.textContent = '0 entries';
-    entriesEl.innerHTML = emptyNote;
-  }
-}
-
-// Herb stack — same chi_phyto_stack key the former Plant Intelligence page
-// used (and that home.html's "My herb stack" panel already reads), so
-// existing users' saved stacks keep working. This is just the add/remove
-// button; comparing stacked herbs is a separate follow-up.
-function isInStack(name) {
-  try { return JSON.parse(localStorage.getItem('chi_phyto_stack') || '[]').some(s => s.toLowerCase() === name.toLowerCase()); }
-  catch (e) { return false; }
-}
-function toggleStack(name) {
-  let stack = [];
-  try { stack = JSON.parse(localStorage.getItem('chi_phyto_stack') || '[]'); } catch (e) {}
-  const i = stack.findIndex(s => s.toLowerCase() === name.toLowerCase());
-  const nowIn = i === -1;
-  if (nowIn) stack.push(name); else stack.splice(i, 1);
-  localStorage.setItem('chi_phyto_stack', JSON.stringify(stack));
-  const btn = document.getElementById('stack-btn');
-  if (btn) {
-    btn.textContent = nowIn ? '✓ In stack' : '+ Add to stack';
-    btn.classList.toggle('in-stack', nowIn);
-  }
-}
-
-function closeProfile() {
-  if (_phSlideTimer) { clearInterval(_phSlideTimer); _phSlideTimer = null; }
+function closeProfile(){
   document.getElementById('herb-profile').style.display = 'none';
-  document.getElementById('tree-hero').style.display = 'flex';
-  document.getElementById('rankings-section').style.display = 'block';
-  document.getElementById('bc-current').textContent = 'Herbadex';
-  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('supreme-search-input').value = '';
+  window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
-// Image sourcing, in order of preference, for EVERY herb:
-//  1. herb-images.js (Wikimedia Commons, real open license, credited) —
-//     confirmed working on neem, now enabled for all herbs.
-//  2. Unsplash — the existing fallback, unchanged from before, used only
-//     when Wikimedia has no licensed image for that herb.
-// Both run AFTER the profile has already rendered (see the
-// window.renderProfile override below) and both fail silently, so a slow
-// or broken image lookup can never stall or break the profile itself.
+function loadHerbProfile(herbName){
+  document.getElementById('profile-bc-name').textContent = herbName;
 
-// Renders the herb image box. 0 images -> placeholder (unchanged from
-// before). 1 image -> a plain static image (unchanged from before). 2+
-// images -> a small slideshow: dot indicators, click a dot to jump, and it
-// auto-advances every 4.5s. Used by both the stored-herb-data path above
-// and the live Wikimedia/Unsplash fetch below, so both sources get the
-// same slideshow behavior for free.
-let _phSlideTimer = null;
-function renderImageBox(imgEl, images) {
-  if (_phSlideTimer) { clearInterval(_phSlideTimer); _phSlideTimer = null; }
+  // Check Supabase cache first, then generate
+  const url = '/.netlify/functions/herb-profile';
+  const payload = { herbName: herbName.toLowerCase().trim() };
 
-  const shown = (images || []).filter(im => im && im.url).slice(0, 4);
-
-  if (!shown.length) {
-    imgEl.innerHTML = `<div class="ph-image-empty">No sourced image yet</div>`;
-    return;
-  }
-
-  if (shown.length === 1) {
-    imgEl.innerHTML = `<div class="ph-image"><img src="${shown[0].url}" alt="" loading="lazy"></div><div class="ph-image-credit">${shown[0].credit || ''}</div>`;
-    return;
-  }
-
-  const slidesHTML = shown.map((im, i) => `<div class="ph-slide${i === 0 ? ' active' : ''}" data-i="${i}"><img src="${im.url}" alt="" loading="lazy"></div>`).join('');
-  const dotsHTML = shown.map((im, i) => `<span class="ph-dot${i === 0 ? ' active' : ''}" data-i="${i}"></span>`).join('');
-  imgEl.innerHTML = `<div class="ph-image ph-slideshow">${slidesHTML}<div class="ph-dots">${dotsHTML}</div></div><div class="ph-image-credit">${shown[0].credit || ''}</div>`;
-
-  let idx = 0;
-  const slides = imgEl.querySelectorAll('.ph-slide');
-  const dots = imgEl.querySelectorAll('.ph-dot');
-  const creditEl = imgEl.querySelector('.ph-image-credit');
-
-  function goTo(i) {
-    idx = ((i % shown.length) + shown.length) % shown.length;
-    slides.forEach(s => s.classList.toggle('active', Number(s.dataset.i) === idx));
-    dots.forEach(d => d.classList.toggle('active', Number(d.dataset.i) === idx));
-    if (creditEl) creditEl.textContent = shown[idx].credit || '';
-  }
-  function resetTimer() {
-    if (_phSlideTimer) clearInterval(_phSlideTimer);
-    _phSlideTimer = setInterval(() => goTo(idx + 1), 4500);
-  }
-
-  dots.forEach(d => d.addEventListener('click', (e) => {
-    e.stopPropagation();
-    goTo(Number(d.dataset.i));
-    resetTimer();
-  }));
-
-  resetTimer();
-}
-
-async function fetchWikimediaImages(herbName, latinName) {
-  const res = await fetch('/.netlify/functions/herb-images', {
+  fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ herbName, latinName })
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(payload)
+  })
+  .then(res => res.json())
+  .then(profile => {
+    renderProfile(profile);
+    document.getElementById('profile-loading').style.display = 'none';
+    document.getElementById('profile-content').style.display = 'block';
+  })
+  .catch(err => {
+    console.error('Profile fetch error:', err);
+    document.getElementById('profile-loading').innerHTML = '<p style="text-align:center;color:var(--charcoal-mid);font-style:italic;padding:2rem;">Unable to load herb profile</p>';
   });
-  if (!res.ok) return [];
-  const data = await res.json();
-  return (data.images || [])
-    .filter(im => im && im.url)
-    .map(im => ({ url: im.url, credit: im.credit || 'Wikimedia Commons' }));
 }
 
-async function fetchUnsplashImages(herbName) {
-  // Unsplash API (free tier: 50 requests/hour, no key needed for basic search)
-  const query = encodeURIComponent(herbName + ' plant');
-  const res = await fetch(`https://api.unsplash.com/search/photos?query=${query}&per_page=3&orientation=landscape&client_id=xFp5eWKU1LIUPRNxZ1W2BuqNlLmNsmKWHPYeKfSa5ZQ`);
-  if (!res.ok) return [];
-  const data = await res.json();
-  return (data.results || []).map(img => ({
-    url: img.urls.regular,
-    credit: img.user ? `© ${img.user.name} / Unsplash` : '© Unsplash'
-  }));
-}
+const _originalRenderProfile = window.renderProfile || function(){};
+window.renderProfile = function(p){
+  if(_originalRenderProfile.call) _originalRenderProfile.call(this, p);
 
-async function fetchHerbImage(herbName, latinName) {
-  try {
-    const imgEl = document.getElementById('ph-image');
-    if (!imgEl) return; // Element must exist
-
-    let images = [];
-
-    try { images = await fetchWikimediaImages(herbName, latinName); }
-    catch (e) { /* Wikimedia lookup failed — fall through to Unsplash below */ }
-
-    if (!images.length) {
-      try { images = await fetchUnsplashImages(herbName); }
-      catch (e) { /* Unsplash lookup failed too — placeholder stays as-is */ }
+  const phOriginEl = document.getElementById('ph-origin');
+  if(phOriginEl && p.name){
+    if(!phOriginEl.parentElement.querySelector('.anatomy-btn')){
+      const btn = document.createElement('button');
+      btn.className = 'anatomy-btn';
+      btn.textContent = '🫀 View body systems';
+      btn.style.cssText = 'background:var(--gold);color:var(--forest);border:none;padding:.5rem 1rem;border-radius:4px;font-size:13px;font-weight:500;cursor:pointer;margin-top:.75rem;transition:background .2s;font-family:"DM Sans",sans-serif;';
+      btn.onmouseover = () => btn.style.background = 'var(--gold-light)';
+      btn.onmouseout = () => btn.style.background = 'var(--gold)';
+      btn.onclick = () => openAnatomyModal(p.name);
+      phOriginEl.parentElement.insertBefore(btn, phOriginEl.nextSibling);
     }
-
-    if (!images.length) return; // No image found from either source
-
-    // Only replace if we haven't already rendered an image (e.g. from stored herb data)
-    const existingImg = imgEl.querySelector('img');
-    if (!existingImg) {
-      renderImageBox(imgEl, images);
-    }
-  } catch (e) {
-    // Silent fail — no console spam, profile still renders fine
-  }
-}
-
-// Deep link — open a specific herb directly from supreme.html?herb=name
-(function openHerbFromURL(){
-  const herb = new URLSearchParams(window.location.search).get('herb');
-  if (!herb) return;
-  const name = decodeURIComponent(herb).replace(/-/g, ' ').trim();
-  const go = () => { try { searchHerbByName(name); } catch(e) { console.error(e); } };
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go);
-  else go();
-})();
-
-// Community-submitted photos — separate from the sourced/licensed slideshow
-// above by design (approved-only, and never mixed into that image set), so
-// a member's photo can never look like the site's own identification of the
-// plant. The section is hidden entirely (not "no info yet") when a herb has
-// no approved community photos, since most herbs simply won't have any.
-async function renderCommunityPhotos(herbName) {
-  const block = document.getElementById('community-photos-block');
-  const grid = document.getElementById('community-photos-grid');
-  if (!block || !grid) return;
-  block.style.display = 'none';
-  grid.innerHTML = '';
-  try {
-    const res = await fetch('/.netlify/functions/community-photos?herb=' + encodeURIComponent((herbName || '').toLowerCase().trim()));
-    if (!res.ok) return;
-    const data = await res.json();
-    const photos = data.photos || [];
-    if (!photos.length) return;
-    grid.innerHTML = photos.map(p => `
-      <div title="${(p.credit || 'Community').replace(/"/g, '&quot;')}" style="border-radius:6px;overflow:hidden;aspect-ratio:1;border:1px solid var(--parchment-deep);">
-        <img src="${p.image_url}" alt="${herbName} — community photo" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
-      </div>`).join('');
-    block.style.display = '';
-  } catch (e) {
-    // Silent fail — section just stays hidden
-  }
-}
-
-// Fetch herb image after profile renders
-const originalRenderProfile = window.renderProfile;
-window.renderProfile = function(h) {
-  originalRenderProfile.call(this, h);
-  if (h && h.name) {
-    fetchHerbImage(h.name, h.latin);
-    renderCommunityPhotos(h.name);
-    renderHerbTestimonials(h.name);
   }
 };
 
-</script>
-<!-- Shared CHI glossary: auto-tags known terms in the herb profile and shows definition tooltips on hover -->
-<script src="chi-fallbacks.js"></script>
-<script src="chi-glossary.js"></script>
+function renderProfile(p){
+  document.getElementById('ph-cat').textContent = p.category || '—';
+  document.getElementById('ph-name').textContent = p.name || '—';
+  document.getElementById('ph-latin').textContent = p.latin || '—';
+  document.getElementById('ph-origin').textContent = (p.origin || 'Unknown origin');
+  document.getElementById('ph-category').textContent = p.category || '—';
+  document.getElementById('ph-tradition').textContent = p.tradition || '—';
+  document.getElementById('ph-preps').textContent = (p.preparation && p.preparation.length > 0 ? p.preparation[0] : 'Various');
+  document.getElementById('ph-safety').textContent = p.safetyLevel || 'Consult practitioner';
 
-<script>
-function toggleMobileMenu() {
-  const hamburger = document.getElementById('hamburger-toggle');
+  document.getElementById('profile-main-content').innerHTML = p.functionalOverview ? `<div class="content-section"><h2>Overview</h2><p>${p.functionalOverview}</p></div>` : '';
+  document.getElementById('profile-sidebar-content').innerHTML = '<div class="rank-display"><div class="rd-number">✓</div><div class="rd-label">Profile Loaded</div></div>';
+
+  _originalRenderProfile(p);
+}
+
+function toggleMobileMenu(){
+  const btn = document.getElementById('hamburger-toggle');
   const menu = document.getElementById('mobile-menu');
   const overlay = document.getElementById('mobile-overlay');
 
-  if (hamburger && menu && overlay) {
-    hamburger.classList.toggle('open');
-    menu.classList.toggle('open');
-    overlay.classList.toggle('open');
+  btn.classList.toggle('open');
+  menu.classList.toggle('open');
+  overlay.classList.toggle('open');
+}
+
+function closeMobileMenu(){
+  document.getElementById('hamburger-toggle').classList.remove('open');
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('mobile-overlay').classList.remove('open');
+}
+
+// ── ANATOMY FEATURE ──
+function openAnatomyModal(herbName){
+  const modal = document.getElementById('anatomy-modal-overlay');
+  const bodyEl = document.getElementById('anatomy-modal-body');
+  const nameEl = document.getElementById('anatomy-herb-name');
+
+  if(!modal || !bodyEl || !nameEl) return;
+
+  nameEl.textContent = herbName;
+  modal.classList.add('show');
+
+  try{
+    if(typeof ANATOMY_DATA === 'undefined'){
+      bodyEl.innerHTML = '<p style="text-align:center;color:var(--charcoal-mid);font-style:italic;">Anatomy data not loaded</p>';
+      return;
+    }
+
+    const herbLc = herbName.toLowerCase().trim();
+    const herbData = ANATOMY_DATA.herbSupport[herbLc];
+
+    if(!herbData){
+      bodyEl.innerHTML = '<p style="text-align:center;color:var(--charcoal-mid);padding:1.5rem;font-style:italic;">No body system data for this herb yet</p>';
+      return;
+    }
+
+    let html = '<div style="padding:0.5rem 0;">';
+
+    if(herbData.primary && herbData.primary.length > 0){
+      html += '<div style="margin-bottom:1.5rem;">';
+      html += '<div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:.75rem;">Primary organs</div>';
+
+      herbData.primary.forEach(organName => {
+        const organ = ANATOMY_DATA.organs[organName.toLowerCase()];
+        if(organ){
+          html += '<div style="background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-radius:6px;padding:1rem;margin-bottom:.75rem;">';
+          html += '<div style="font-family:\'Cormorant Garamond\',serif;font-size:16px;font-weight:500;color:var(--charcoal);margin-bottom:.25rem;">' + organ.name + '</div>';
+          html += '<div style="font-size:12px;color:var(--charcoal-mid);font-style:italic;margin-bottom:.6rem;">' + organ.latin + '</div>';
+          html += '<div style="font-size:13px;color:var(--charcoal-mid);line-height:1.6;">' + organ.functions + '</div>';
+          html += '</div>';
+        }
+      });
+      html += '</div>';
+    }
+
+    if(herbData.secondary && herbData.secondary.length > 0){
+      html += '<div style="margin-bottom:1rem;">';
+      html += '<div style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--charcoal-mid);font-weight:600;margin-bottom:.75rem;">Supporting organs</div>';
+      html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">';
+
+      herbData.secondary.forEach(organName => {
+        const organ = ANATOMY_DATA.organs[organName.toLowerCase()];
+        if(organ){
+          html += '<div style="background:rgba(200,149,42,.06);border:1px solid rgba(200,149,42,.15);border-radius:4px;padding:.75rem;">';
+          html += '<div style="font-weight:500;color:var(--charcoal);font-size:13px;margin-bottom:.25rem;">' + organ.name + '</div>';
+          html += '<div style="font-size:11px;color:var(--charcoal-mid);font-style:italic;">' + organ.latin + '</div>';
+          html += '</div>';
+        }
+      });
+      html += '</div>';
+      html += '</div>';
+    }
+
+    html += '<div style="background:rgba(26,58,42,.07);border:1px solid rgba(26,58,42,.15);border-radius:6px;padding:1rem;margin-top:1.5rem;">';
+    html += '<div style="font-size:12px;color:var(--charcoal-mid);line-height:1.7;">';
+    html += '<strong style="color:var(--charcoal);">About body affinity:</strong> This mapping is based on traditional use patterns and modern pharmacological research. Primary organs have 2+ keyword matches in the herb\'s profile; supporting organs have 1 match.';
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';
+
+    bodyEl.innerHTML = html;
+  }catch(e){
+    console.error('Anatomy modal error:', e);
+    bodyEl.innerHTML = '<p style="text-align:center;color:var(--charcoal-mid);font-style:italic;padding:1.5rem;">Unable to load anatomy data</p>';
   }
 }
 
-function closeMobileMenu() {
-  const hamburger = document.getElementById('hamburger-toggle');
-  const menu = document.getElementById('mobile-menu');
-  const overlay = document.getElementById('mobile-overlay');
-
-  if (hamburger && menu && overlay) {
-    hamburger.classList.remove('open');
-    menu.classList.remove('open');
-    overlay.classList.remove('open');
-  }
+function closeAnatomyModal(){
+  const modal = document.getElementById('anatomy-modal-overlay');
+  if(modal) modal.classList.remove('show');
 }
 
-// Close menu when a link is clicked
-document.addEventListener('DOMContentLoaded', function() {
-  const mobileMenuLinks = document.querySelectorAll('.mobile-menu a');
-  mobileMenuLinks.forEach(link => {
-    link.addEventListener('click', closeMobileMenu);
-  });
+// Initialize on load
+document.addEventListener('DOMContentLoaded', function(){
+  populateRankings();
 });
 </script>
-
-<!-- UPLOAD MODAL -->
-<div class="modal-overlay" id="upload-modal-profile">
-  <div class="modal">
-    <div class="modal-head">
-      <h3>Add a photo to Herbadex</h3>
-      <button class="modal-close" onclick="closeProfileUpload()">×</button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-rules">
-        <p><strong>Plants only.</strong> Living or recently harvested plant matter — leaves, stems, roots, flowers, whole plants. No capsules, powders, packaging or non-plant subjects.</p>
-      </div>
-      <div class="mfield">
-        <label>Photo</label>
-        <div class="img-drop" id="img-drop-profile" onclick="document.getElementById('profile-file').click()">
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" style="opacity:.35;margin:0 auto"><rect x="3" y="5" width="22" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="12" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M3 20l6-5 4 4 3-3 6 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <p>Click to upload · JPG, PNG, WebP, GIF · Max 4MB</p>
-          <img class="img-drop-preview" id="upload-preview-profile" style="display:none">
-        </div>
-        <input type="file" id="profile-file" accept="image/*" onchange="handleProfileImage(this)">
-      </div>
-      <div class="mfield">
-        <label>Herb name</label>
-        <input type="text" id="upload-herb-input" placeholder="This herb" readonly style="background:rgba(200,149,42,.08);cursor:not-allowed;">
-      </div>
-      <div class="mfield">
-        <label>Part of plant</label>
-        <select id="upload-part-input">
-          <option value="">Select...</option>
-          <option value="whole">Whole plant</option>
-          <option value="leaf">Leaf / leaves</option>
-          <option value="stem">Stem / twig</option>
-          <option value="root">Root</option>
-          <option value="flower">Flower</option>
-          <option value="seed">Seed / berry</option>
-          <option value="bark">Bark</option>
-        </select>
-      </div>
-      <div class="mfield">
-        <label>Note (optional)</label>
-        <textarea id="upload-note-input" placeholder="Where did you grow or find this? Anything interesting about it?" rows="2" style="resize:none;line-height:1.6"></textarea>
-      </div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn-cancel" onclick="closeProfileUpload()">Cancel</button>
-      <button class="btn-submit" onclick="submitProfilePhoto()">Add photo</button>
-    </div>
-  </div>
-</div>
-
-<script>
-let profileUploadImg = null;
-const ME_PROFILE = localStorage.getItem('chi_display_name') || 'Anonymous';
-
-function openProfileUpload() {
-  const herbName = document.querySelector('.ph-name');
-  if (herbName) {
-    document.getElementById('upload-herb-input').value = herbName.textContent.trim();
-    document.getElementById('upload-herb-name').textContent = herbName.textContent.trim();
-  }
-  profileUploadImg = null;
-  document.getElementById('upload-preview-profile').style.display = 'none';
-  document.getElementById('upload-part-input').value = '';
-  document.getElementById('upload-note-input').value = '';
-  document.getElementById('upload-modal-profile').classList.add('show');
-}
-
-function closeProfileUpload() {
-  document.getElementById('upload-modal-profile').classList.remove('show');
-  profileUploadImg = null;
-}
-
-function handleProfileImage(input) {
-  const file = input.files[0];
-  if (!file) return;
-  if (file.size > 4 * 1024 * 1024) { alert('File exceeds 4MB limit'); input.value=''; return; }
-  const reader = new FileReader();
-  reader.onload = e => {
-    profileUploadImg = e.target.result;
-    document.getElementById('upload-preview-profile').src = profileUploadImg;
-    document.getElementById('upload-preview-profile').style.display = 'block';
-  };
-  reader.readAsDataURL(file);
-}
-
-async function submitProfilePhoto() {
-  if (!profileUploadImg) { alert('Please choose a photo first.'); return; }
-  const herbName = document.getElementById('upload-herb-input').value.trim() || 'Unknown';
-  const part = document.getElementById('upload-part-input').value;
-  const note = document.getElementById('upload-note-input').value.trim();
-  const btn = event.target;
-  const orig = btn.textContent;
-  btn.disabled = true; btn.textContent = 'Uploading…';
-  try {
-    const res = await fetch('/.netlify/functions/upload-community-photo', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ herbName, imageData: profileUploadImg, part, note, contributorName: ME_PROFILE })
-    });
-    const data = await res.json().catch(()=>({}));
-    if(!res.ok) { alert('Could not upload: ' + (data.error || 'unknown error')); return; }
-    closeProfileUpload();
-    setTimeout(()=>alert('🌱 Thanks! Your photo has been submitted for review.'), 300);
-  } catch(e) {
-    alert('Could not upload — please check your connection and try again.');
-  } finally {
-    btn.disabled = false; btn.textContent = orig;
-  }
-}
-
-</script>
-
-    <script src="herbexa-knowledge-base.js"></script>
-<script src="herbexa-widget-local.js"></script>
-<script src="chi-leaves.js"></script>
-
-<div id="anatomyModalContainer"></div>
-
-<script src="herbadex-anatomy-package/anatomy-data.js"></script>
-<script src="herbadex-anatomy-package/anatomy-modal.js"></script>
-</body></html>
+</body>
+</html>
