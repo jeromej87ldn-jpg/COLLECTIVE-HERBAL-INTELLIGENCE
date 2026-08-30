@@ -498,6 +498,56 @@ const ANATOMY_DATA = {
       primaryOrgans: ['heart', 'blood_vessel'],
       secondaryOrgans: ['brain'],
       description: 'Circulatory tonic that strengthens heart function and supports healthy blood pressure.'
+    },
+    'ashwagandha': {
+      primaryOrgans: ['brain', 'heart', 'kidneys'],
+      secondaryOrgans: ['blood_vessel', 'lungs'],
+      description: 'Adaptogenic herb that supports stress resilience, cognitive function, and overall nervous system health.'
+    },
+    'chamomile': {
+      primaryOrgans: ['stomach', 'small_intestine', 'brain'],
+      secondaryOrgans: ['liver', 'heart'],
+      description: 'Calming digestive and nervine herb that promotes relaxation and gentle digestive support.'
+    },
+    'echinacea': {
+      primaryOrgans: ['lungs', 'trachea'],
+      secondaryOrgans: ['blood_vessel', 'brain'],
+      description: 'Immune-supporting herb that strengthens respiratory and circulatory defenses.'
+    },
+    'ginseng': {
+      primaryOrgans: ['brain', 'heart', 'kidneys', 'blood_vessel'],
+      secondaryOrgans: ['lungs', 'stomach', 'liver'],
+      description: 'Potent adaptogenic tonic that supports energy, endurance, and overall vitality.'
+    },
+    'lavender': {
+      primaryOrgans: ['brain', 'heart'],
+      secondaryOrgans: ['lungs', 'stomach'],
+      description: 'Aromatic calming herb that supports relaxation, sleep quality, and emotional balance.'
+    },
+    'elderberry': {
+      primaryOrgans: ['lungs', 'trachea'],
+      secondaryOrgans: ['blood_vessel', 'heart', 'brain'],
+      description: 'Antiviral-rich berry that supports immune response and respiratory health.'
+    },
+    'garlic': {
+      primaryOrgans: ['heart', 'blood_vessel', 'liver'],
+      secondaryOrgans: ['lungs', 'stomach', 'kidneys'],
+      description: 'Pungent cardiovascular and immune tonic with antimicrobial and anti-inflammatory properties.'
+    },
+    'ginkgo': {
+      primaryOrgans: ['brain', 'blood_vessel'],
+      secondaryOrgans: ['heart', 'lungs', 'kidneys'],
+      description: 'Circulation-enhancing herb that supports cognitive clarity and peripheral blood flow.'
+    },
+    'nettle': {
+      primaryOrgans: ['kidneys', 'liver', 'lungs'],
+      secondaryOrgans: ['blood_vessel', 'stomach', 'heart'],
+      description: 'Mineral-rich nutritive herb that supports kidney function and overall nourishment.'
+    },
+    'rosemary': {
+      primaryOrgans: ['brain', 'heart', 'liver'],
+      secondaryOrgans: ['lungs', 'blood_vessel', 'stomach'],
+      description: 'Aromatic circulatory and cognitive tonic with antioxidant and digestive benefits.'
     }
   }
 };
