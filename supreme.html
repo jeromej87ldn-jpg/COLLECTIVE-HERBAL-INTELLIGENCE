@@ -598,63 +598,85 @@ function closeProfile(){
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
-function loadHerbProfile(herbName){
-  document.getElementById('profile-bc-name').textContent = herbName;
+// Sample herb profiles for fallback when API is unavailable
+const FALLBACK_PROFILES = {
+  'ashwagandha': {name:'Ashwagandha',latin:'Withania somnifera',category:'Adaptogen',origin:'India',tradition:'Ayurvedic',safetyLevel:'Generally safe',functionalOverview:'Powerful adaptogenic herb supporting stress response and vitality. Modern research shows effects on cortisol, anxiety, and immune function.',preparation:{tea:'Steep powder',tincture:'Extract',capsule:'Standardized',topical:null},compounds:[{name:'Withanolides',class:'Alkaloid',role:'Adaptogenic'}],herbalActions:[{name:'Adaptogen',system:'Nervous',description:'Stress support',compounds:['Withanolides']}],bodyEffects:[{system:'Nervous',effect:'Stress support'},{system:'Immune',effect:'Immune support'}],interactions:[],disclaimer:'Educational reference only.'},
+  'turmeric': {name:'Turmeric',latin:'Curcuma longa',category:'Anti-inflammatory',origin:'South Asia',tradition:'Ayurvedic',safetyLevel:'Generally safe',functionalOverview:'Golden root revered for anti-inflammatory properties. Rich in curcumin and polyphenols, supports joint health and digestion.',preparation:{tea:'Golden milk',tincture:'Extract',capsule:'With piperine',topical:'Oils'},compounds:[{name:'Curcumin',class:'Phenolic acid',role:'Anti-inflammatory'}],herbalActions:[{name:'Anti-inflammatory',system:'Circulatory',description:'Inflammation response',compounds:['Curcumin']}],bodyEffects:[{system:'Digestive',effect:'Digestive support'},{system:'Circulatory',effect:'Circulation support'}],interactions:[],disclaimer:'Educational reference only.'},
+  'lion's mane': {name:'Lion's Mane',latin:'Hericium erinaceus',category:'Cognitive',origin:'North Asia',tradition:'Traditional Chinese',safetyLevel:'Generally safe',functionalOverview:'Distinctive mushroom supporting brain health and cognitive function. Unique compounds promote nerve growth factor production.',preparation:{tea:'Decoction',tincture:'Extract',capsule:'Mycelium',topical:null},compounds:[{name:'Hericenones',class:'Terpenoid',role:'NGF stimulation'}],herbalActions:[{name:'Cognitive support',system:'Nervous',description:'Brain health',compounds:['Hericenones']}],bodyEffects:[{system:'Nervous',effect:'Cognitive support'},{system:'Nervous',effect:'Mental clarity'}],interactions:[],disclaimer:'Educational reference only.'}
+};
 
-  // Check Supabase cache first, then generate
+function loadHerbProfile(herbName){
+  const profileSection = document.getElementById('herb-profile');
+  if(!profileSection) return;
+  
+  const profileLoading = document.getElementById('profile-loading');
+  const profileContent = document.getElementById('profile-content');
+  
+  profileSection.style.display = 'block';
+  if(profileLoading) profileLoading.style.display = 'block';
+  if(profileContent) profileContent.style.display = 'none';
+
+  const herbKey = herbName.toLowerCase().trim();
+  
+  // Try API first, fallback to sample data
   const url = '/.netlify/functions/herb-profile';
-  const payload = { herbName: herbName.toLowerCase().trim() };
+  const payload = { herbName: herbKey };
 
   fetch(url, {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(payload)
   })
-  .then(res => res.json())
+  .then(res => {
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  })
   .then(profile => {
     renderProfile(profile);
-    document.getElementById('profile-loading').style.display = 'none';
-    document.getElementById('profile-content').style.display = 'block';
+    if(profileLoading) profileLoading.style.display = 'none';
+    if(profileContent) profileContent.style.display = 'block';
   })
   .catch(err => {
-    console.error('Profile fetch error:', err);
-    document.getElementById('profile-loading').innerHTML = '<p style="text-align:center;color:var(--charcoal-mid);font-style:italic;padding:2rem;">Unable to load herb profile</p>';
+    console.log('API fetch failed, trying fallback data...');
+    const fallback = FALLBACK_PROFILES[herbKey];
+    if(fallback) {
+      renderProfile(fallback);
+      if(profileLoading) profileLoading.innerHTML = '<p style="text-align:center;color:var(--charcoal-mid);font-size:11px;padding:1rem;font-style:italic;">Sample profile (API unavailable)</p>';
+      if(profileContent) profileContent.style.display = 'block';
+    } else {
+      if(profileLoading) profileLoading.innerHTML = '<p style="text-align:center;color:var(--charcoal-mid);font-style:italic;padding:2rem;">Unable to load herb profile</p>';
+    }
   });
 }
 
-const _originalRenderProfile = window.renderProfile || function(){};
-window.renderProfile = function(p){
-  if(_originalRenderProfile.call) _originalRenderProfile.call(this, p);
-
-  const phOriginEl = document.getElementById('ph-origin');
-  if(phOriginEl && p.name){
-    if(!phOriginEl.parentElement.querySelector('.anatomy-btn')){
-      const btn = document.createElement('button');
-      btn.className = 'anatomy-btn';
-      btn.textContent = '🫀 View body systems';
-      btn.style.cssText = 'background:var(--gold);color:var(--forest);border:none;padding:.5rem 1rem;border-radius:4px;font-size:13px;font-weight:500;cursor:pointer;margin-top:.75rem;transition:background .2s;font-family:"DM Sans",sans-serif;';
-      btn.onmouseover = () => btn.style.background = 'var(--gold-light)';
-      btn.onmouseout = () => btn.style.background = 'var(--gold)';
-      btn.onclick = () => openAnatomyModal(p.name);
-      phOriginEl.parentElement.insertBefore(btn, phOriginEl.nextSibling);
-    }
-  }
-};
 
 function renderProfile(p){
+  if(!p || !p.name) return;
+  
   document.getElementById('ph-cat').textContent = p.category || '—';
   document.getElementById('ph-name').textContent = p.name || '—';
   document.getElementById('ph-latin').textContent = p.latin || '—';
   document.getElementById('ph-origin').textContent = (p.origin || 'Unknown origin');
   document.getElementById('ph-category').textContent = p.category || '—';
   document.getElementById('ph-tradition').textContent = p.tradition || '—';
-  document.getElementById('ph-preps').textContent = (p.preparation && p.preparation.length > 0 ? p.preparation[0] : 'Various');
+  document.getElementById('ph-preps').textContent = (p.preparation && typeof p.preparation === 'object' ? Object.keys(p.preparation).filter(k => p.preparation[k]).join(', ') : (Array.isArray(p.preparation) && p.preparation.length > 0 ? p.preparation[0] : 'Various'));
   document.getElementById('ph-safety').textContent = p.safetyLevel || 'Consult practitioner';
 
   document.getElementById('profile-main-content').innerHTML = p.functionalOverview ? `<div class="content-section"><h2>Overview</h2><p>${p.functionalOverview}</p></div>` : '';
   document.getElementById('profile-sidebar-content').innerHTML = '<div class="rank-display"><div class="rd-number">✓</div><div class="rd-label">Profile Loaded</div></div>';
 
-  _originalRenderProfile(p);
+  // Add anatomy button if not already present
+  const phOriginEl = document.getElementById('ph-origin');
+  if(phOriginEl && p.name && !phOriginEl.parentElement.querySelector('.anatomy-btn')){
+    const btn = document.createElement('button');
+    btn.className = 'anatomy-btn';
+    btn.textContent = '🫀 View body systems';
+    btn.style.cssText = 'background:var(--gold);color:var(--forest);border:none;padding:.5rem 1rem;border-radius:4px;font-size:13px;font-weight:500;cursor:pointer;margin-top:.75rem;transition:background .2s;font-family:"DM Sans",sans-serif;';
+    btn.onmouseover = () => btn.style.background = 'var(--gold-light)';
+    btn.onmouseout = () => btn.style.background = 'var(--gold)';
+    btn.onclick = () => openAnatomyModal(p.name);
+    phOriginEl.parentElement.insertBefore(btn, phOriginEl.nextSibling);
+  }
 }
 
 function toggleMobileMenu(){
