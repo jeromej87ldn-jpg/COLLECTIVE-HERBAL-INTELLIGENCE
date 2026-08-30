@@ -1,7 +1,7 @@
 const https = require('https');
 const Anthropic = require('@anthropic-ai/sdk');
 const { createClient } = require('@supabase/supabase-js');
-const { findMissing, deriveFunctionalOverview, validateCompounds } = require('./profile-validation');
+const { findMissing, deriveFunctionalOverview, validateCompounds } = require('../profile-validation');
 
 function supabaseProjectUrl() {
   return (process.env.SUPABASE_URL || '').replace(/\/rest\/v1\/?$/, '');
