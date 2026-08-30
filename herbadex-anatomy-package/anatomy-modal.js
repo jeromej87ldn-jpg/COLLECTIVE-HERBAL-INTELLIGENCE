@@ -16,13 +16,14 @@ class AnatomyModal {
     this.options = {
       containerId: options.containerId || 'anatomyModalContainer',
       currentHerb: options.currentHerb || 'ginger',
-      organImagesPath: options.organImagesPath || '/organs/', // Path to organ PNG files
+      organImagesPath: options.organImagesPath || 'herbadex-anatomy-package/organs/',
       ...options
     };
 
-    this.currentSystem = 'digestive';
+    this.currentSystem = null;
     this.selectedOrgan = null;
     this.modalElement = null;
+    this.herbSystems = []; // Systems this herb affects
 
     this.init();
   }
@@ -91,20 +92,48 @@ class AnatomyModal {
     });
   }
 
+  // Determine which systems the herb affects
+  getHerbSystems() {
+    const herbData = ANATOMY_DATA.herbSupport[this.options.currentHerb.toLowerCase()];
+    if (!herbData) return [];
+
+    const affectedSystemIds = new Set();
+    
+    // Get all organs the herb affects (primary + secondary)
+    const supportedOrgans = [...herbData.primaryOrgans, ...herbData.secondaryOrgans];
+    
+    // Find which systems these organs belong to
+    Object.entries(ANATOMY_DATA.systems).forEach(([systemId, system]) => {
+      const systemHasOrgans = system.organs.some(organId => supportedOrgans.includes(organId));
+      if (systemHasOrgans) {
+        affectedSystemIds.add(systemId);
+      }
+    });
+
+    return Array.from(affectedSystemIds);
+  }
+
   open(herbName = null) {
     if (herbName) {
       this.options.currentHerb = herbName;
     }
 
+    // Determine which systems this herb affects
+    this.herbSystems = this.getHerbSystems();
+
     // Update title
     const title = document.getElementById('modalTitle');
     if (title) {
-      title.textContent = `${this.capitalize(this.options.currentHerb)}'s Anatomy Map`;
+      title.textContent = `${this.capitalize(this.options.currentHerb)}'s Organ Support Map`;
     }
 
-    // Render initial system
+    // Render system tabs (only for systems the herb affects)
     this.renderSystemTabs();
-    this.switchSystem('digestive');
+
+    // Switch to first available system
+    if (this.herbSystems.length > 0) {
+      this.switchSystem(this.herbSystems[0]);
+    }
 
     // Show modal
     this.modalElement.classList.add('active');
@@ -120,18 +149,34 @@ class AnatomyModal {
 
   renderSystemTabs() {
     const tabsContainer = document.getElementById('systemTabs');
-    const tabs = Object.values(ANATOMY_DATA.systems).map(system => `
-      <button class="anatomy-system-tab ${system.id === 'digestive' ? 'active' : ''}"
-              data-system="${system.id}"
-              onclick="window.anatomyModal.switchSystem('${system.id}')">
-        ${system.name}
-      </button>
-    `).join('');
+    const herbData = ANATOMY_DATA.herbSupport[this.options.currentHerb.toLowerCase()];
+    
+    if (!herbData || this.herbSystems.length === 0) {
+      tabsContainer.innerHTML = '<p style="color: #999; font-size: 12px;">No systems affected by this herb</p>';
+      return;
+    }
+
+    const tabs = this.herbSystems.map(systemId => {
+      const system = ANATOMY_DATA.systems[systemId];
+      const isActive = systemId === (this.currentSystem || this.herbSystems[0]) ? 'active' : '';
+      return `
+        <button class="anatomy-system-tab ${isActive}"
+                data-system="${systemId}"
+                onclick="window.anatomyModal.switchSystem('${systemId}')">
+          ${system.name}
+        </button>
+      `;
+    }).join('');
 
     tabsContainer.innerHTML = tabs;
   }
 
   switchSystem(systemId) {
+    // Only allow switching to systems the herb affects
+    if (!this.herbSystems.includes(systemId)) {
+      return;
+    }
+
     this.currentSystem = systemId;
     this.selectedOrgan = null;
 
@@ -140,7 +185,7 @@ class AnatomyModal {
       tab.classList.toggle('active', tab.dataset.system === systemId);
     });
 
-    // Render organs for system
+    // Render organs for system (filtered by herb support)
     this.renderOrgans(systemId);
 
     // Clear detail
@@ -149,23 +194,42 @@ class AnatomyModal {
 
   renderOrgans(systemId) {
     const system = ANATOMY_DATA.systems[systemId];
+    const herbData = ANATOMY_DATA.herbSupport[this.options.currentHerb.toLowerCase()];
     const gridContainer = document.getElementById('organsGrid');
 
-    const organCards = system.organs.map(organId => {
+    if (!herbData) {
+      gridContainer.innerHTML = '<p style="color: #999;">No herb data available</p>';
+      return;
+    }
+
+    // Only show organs this herb supports in this system
+    const supportedInSystem = system.organs.filter(organId => 
+      herbData.primaryOrgans.includes(organId) || herbData.secondaryOrgans.includes(organId)
+    );
+
+    const organCards = supportedInSystem.map(organId => {
       const organ = ANATOMY_DATA.organs[organId];
       const imagePath = `${this.options.organImagesPath}${organId}.png`;
+      const isPrimary = herbData.primaryOrgans.includes(organId);
+      const supportBadge = isPrimary ? '★' : '◆';
 
       return `
         <div class="anatomy-organ-card ${this.selectedOrgan === organId ? 'active' : ''}"
              data-organ="${organId}"
+             title="${isPrimary ? 'Primary Support' : 'Secondary Support'}"
              onclick="window.anatomyModal.selectOrgan('${organId}')">
           <img src="${imagePath}" alt="${organ.name}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%2280%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22100%22 height=%2280%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2212%22 fill=%22%23999%22%3E${organId}%3C/text%3E%3C/svg%3E'">
           <div class="anatomy-organ-label">${organ.name}</div>
+          <div style="font-size: 11px; color: var(--anatomy-gold); margin-top: 2px;">${supportBadge}</div>
         </div>
       `;
     }).join('');
 
-    gridContainer.innerHTML = organCards || '<p style="color: #999;">No organs found</p>';
+    if (supportedInSystem.length === 0) {
+      gridContainer.innerHTML = '<p style="color: #999; grid-column: 1/-1;">No organs in this system are supported by this herb</p>';
+    } else {
+      gridContainer.innerHTML = organCards;
+    }
   }
 
   selectOrgan(organId) {
@@ -204,8 +268,8 @@ class AnatomyModal {
           <p>${herbData.description}</p>
           <div class="anatomy-support-level">
             ${isPrimary
-              ? '<span class="anatomy-badge-primary">Primary Support</span>'
-              : '<span class="anatomy-badge-secondary">Secondary Support</span>'}
+              ? '<span class="anatomy-badge-primary">★ Primary Support</span>'
+              : '<span class="anatomy-badge-secondary">◆ Secondary Support</span>'}
           </div>
         </div>
       `;
