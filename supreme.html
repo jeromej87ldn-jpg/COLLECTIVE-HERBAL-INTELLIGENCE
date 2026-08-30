@@ -6,6 +6,7 @@
 <title>Herbadex — the Collective Herbal Intelligence</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="herbadex-anatomy-package/anatomy-styles.css">
 <style>
 :root{
   --forest:#1a3a2a;--forest-mid:#2d5c42;--forest-light:#4a8c65;
@@ -612,7 +613,11 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
           <div class="ph-cat" id="ph-cat">—</div>
           <div class="ph-name" id="ph-name">—</div>
           <div class="ph-latin" id="ph-latin">—</div>
-          <div class="ph-origin" id="ph-origin">—</div>
+          <div class="ph-origin" id="ph-origin">—</div><div style="margin-top:1.5rem;">
+          <button class="anatomy-btn-primary" onclick="openAnatomyModal(document.querySelector('.ph-name').textContent.trim())" style="background:var(--gold);border:none;padding:10px 16px;border-radius:4px;color:var(--forest);font-weight:600;cursor:pointer;font-size:13px;transition:background .2s;">
+            📖 See which organs this supports
+          </button>
+        </div>
         </div>
         <div class="ph-aside">
           <div id="ph-image"></div>
@@ -1552,5 +1557,9 @@ async function submitProfilePhoto() {
     <script src="herbexa-knowledge-base.js"></script>
 <script src="herbexa-widget-local.js"></script>
 <script src="chi-leaves.js"></script>
+
+<div id="anatomyModalContainer"></div>
+
+<script src="herbadex-anatomy-package/anatomy-data.js"></script>
+<script src="herbadex-anatomy-package/anatomy-modal.js"></script>
 </body></html>
-</html>

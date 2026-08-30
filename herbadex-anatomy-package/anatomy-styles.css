@@ -1,0 +1,529 @@
+/**
+ * HERBADEX Anatomy Education Modal Styles
+ *
+ * Include this CSS file in your HTML:
+ * <link rel="stylesheet" href="anatomy-styles.css">
+ */
+
+/* Variables (adjust to match HERBADEX color scheme) */
+:root {
+  --anatomy-gold: #c89530;
+  --anatomy-gold-dark: #b8842a;
+  --anatomy-text: #2c2c2c;
+  --anatomy-text-light: #666;
+  --anatomy-bg-light: #f9f9f9;
+  --anatomy-border: #eee;
+  --anatomy-system-digestive: rgba(200, 149, 42, 0.1);
+  --anatomy-system-respiratory: rgba(135, 206, 250, 0.1);
+  --anatomy-system-circulatory: rgba(220, 20, 60, 0.1);
+  --anatomy-system-nervous: rgba(75, 0, 130, 0.1);
+  --anatomy-system-urinary: rgba(34, 139, 34, 0.1);
+}
+
+/* Modal Overlay */
+.anatomy-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+.anatomy-modal-overlay.active {
+  display: flex;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Modal Container */
+.anatomy-modal {
+  background: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 1100px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* Modal Header */
+.anatomy-modal-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--anatomy-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(200, 149, 42, 0.05) 0%, rgba(216, 180, 105, 0.02) 100%);
+}
+
+.anatomy-modal-header h2 {
+  font-size: 1.5rem;
+  color: var(--anatomy-text);
+  margin: 0;
+}
+
+.anatomy-modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #999;
+  transition: color 0.2s ease;
+  padding: 0.5rem;
+}
+
+.anatomy-modal-close:hover {
+  color: var(--anatomy-gold);
+}
+
+/* Modal Body */
+.anatomy-modal-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  gap: 0;
+}
+
+/* Organs Gallery (Left) */
+.anatomy-organs-gallery {
+  flex: 0 0 35%;
+  padding: 1.5rem;
+  border-right: 1px solid var(--anatomy-border);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--anatomy-bg-light);
+}
+
+.anatomy-system-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.anatomy-system-tab {
+  padding: 0.6rem 1.2rem;
+  background: white;
+  border: 1px solid var(--anatomy-border);
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--anatomy-text);
+  transition: all 0.3s ease;
+}
+
+.anatomy-system-tab:hover {
+  border-color: var(--anatomy-gold);
+  color: var(--anatomy-gold);
+}
+
+.anatomy-system-tab.active {
+  background: var(--anatomy-gold);
+  color: white;
+  border-color: var(--anatomy-gold);
+}
+
+.anatomy-organs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 1rem;
+  flex: 1;
+}
+
+/* Organ Cards */
+.anatomy-organ-card {
+  background: white;
+  border: 2px solid var(--anatomy-border);
+  border-radius: 8px;
+  padding: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+.anatomy-organ-card:hover {
+  border-color: var(--anatomy-gold);
+  box-shadow: 0 4px 12px rgba(200, 149, 42, 0.15);
+  transform: translateY(-2px);
+}
+
+.anatomy-organ-card.active {
+  border-color: var(--anatomy-gold);
+  background: rgba(200, 149, 42, 0.05);
+}
+
+.anatomy-organ-card img {
+  width: 100%;
+  height: 70px;
+  object-fit: contain;
+  margin-bottom: 0.5rem;
+}
+
+.anatomy-organ-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--anatomy-text);
+  word-break: break-word;
+  line-height: 1.2;
+}
+
+/* Detail Section (Right) */
+.anatomy-detail-section {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  background: white;
+}
+
+.anatomy-detail-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #999;
+  font-style: italic;
+  font-size: 1rem;
+}
+
+.anatomy-organ-detail {
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.anatomy-organ-detail h3 {
+  font-size: 1.8rem;
+  color: var(--anatomy-text);
+  margin: 0 0 0.75rem 0;
+}
+
+.anatomy-system-badge {
+  display: inline-block;
+  background: var(--anatomy-system-digestive);
+  color: var(--anatomy-text);
+  padding: 0.35rem 0.9rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  border-left: 3px solid var(--anatomy-gold);
+}
+
+.anatomy-organ-description {
+  color: var(--anatomy-text-light);
+  line-height: 1.7;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+}
+
+.anatomy-organ-detail h4 {
+  font-size: 1rem;
+  color: var(--anatomy-text);
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--anatomy-gold);
+}
+
+.anatomy-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+}
+
+.anatomy-list li {
+  padding: 0.5rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+  color: var(--anatomy-text-light);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.anatomy-list li:before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--anatomy-gold);
+  font-weight: bold;
+}
+
+/* Herb Connection Box */
+.anatomy-herb-connection {
+  background: linear-gradient(135deg, var(--anatomy-system-digestive) 0%, rgba(200, 149, 42, 0.05) 100%);
+  padding: 1rem;
+  border-left: 3px solid var(--anatomy-gold);
+  border-radius: 4px;
+  margin: 1.5rem 0;
+  font-size: 0.95rem;
+}
+
+.anatomy-herb-connection.primary {
+  background: linear-gradient(135deg, rgba(200, 149, 42, 0.15) 0%, rgba(200, 149, 42, 0.05) 100%);
+  border-left-color: var(--anatomy-gold);
+}
+
+.anatomy-herb-connection.secondary {
+  background: linear-gradient(135deg, rgba(200, 149, 42, 0.08) 0%, rgba(200, 149, 42, 0.02) 100%);
+  border-left-color: #ddd;
+}
+
+.anatomy-herb-connection strong {
+  color: var(--anatomy-gold);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.anatomy-herb-connection p {
+  margin: 0.5rem 0 0 0;
+  color: var(--anatomy-text-light);
+}
+
+.anatomy-support-level {
+  margin-top: 0.75rem;
+}
+
+.anatomy-badge-primary,
+.anatomy-badge-secondary {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  border-radius: 3px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.anatomy-badge-primary {
+  background: var(--anatomy-gold);
+  color: white;
+}
+
+.anatomy-badge-secondary {
+  background: #f0f0f0;
+  color: var(--anatomy-text);
+}
+
+/* Processes (Deep Dive) */
+.anatomy-processes {
+  margin: 1rem 0;
+}
+
+.anatomy-process-item {
+  background: white;
+  border: 1px solid var(--anatomy-border);
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.anatomy-process-item:hover {
+  border-color: var(--anatomy-gold);
+  background: var(--anatomy-bg-light);
+}
+
+.anatomy-process-item.expanded {
+  border-color: var(--anatomy-gold);
+  background: rgba(200, 149, 42, 0.03);
+}
+
+.anatomy-process-title {
+  font-weight: 600;
+  color: var(--anatomy-text);
+  margin-bottom: 0.5rem;
+}
+
+.anatomy-process-content {
+  display: none;
+  color: var(--anatomy-text-light);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--anatomy-border);
+}
+
+.anatomy-process-item.expanded .anatomy-process-content {
+  display: block;
+}
+
+/* Related Herbs */
+.anatomy-related-herbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.anatomy-herb-tag {
+  display: inline-block;
+  background: var(--anatomy-system-digestive);
+  color: var(--anatomy-text);
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.anatomy-herb-tag:hover {
+  background: var(--anatomy-gold);
+  color: white;
+}
+
+/* Action Buttons */
+.anatomy-action-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1.5rem;
+}
+
+.anatomy-btn-primary,
+.anatomy-btn-secondary {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+}
+
+.anatomy-btn-primary {
+  background: var(--anatomy-gold);
+  color: white;
+}
+
+.anatomy-btn-primary:hover {
+  background: var(--anatomy-gold-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(200, 149, 42, 0.3);
+}
+
+.anatomy-btn-secondary {
+  background: var(--anatomy-bg-light);
+  color: var(--anatomy-text);
+  border: 1px solid var(--anatomy-border);
+}
+
+.anatomy-btn-secondary:hover {
+  background: white;
+  border-color: var(--anatomy-gold);
+  color: var(--anatomy-gold);
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+  .anatomy-modal-body {
+    flex-direction: column;
+  }
+
+  .anatomy-organs-gallery {
+    flex: 0 0 auto;
+    border-right: none;
+    border-bottom: 1px solid var(--anatomy-border);
+    max-height: 300px;
+  }
+
+  .anatomy-organs-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .anatomy-detail-section {
+    flex: 1;
+    padding: 1.5rem;
+  }
+
+  .anatomy-organ-detail h3 {
+    font-size: 1.5rem;
+  }
+
+  .anatomy-action-buttons {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 600px) {
+  .anatomy-modal {
+    max-width: 100%;
+    max-height: 95vh;
+    border-radius: 8px;
+  }
+
+  .anatomy-modal-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .anatomy-system-tabs {
+    gap: 0.3rem;
+  }
+
+  .anatomy-system-tab {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .anatomy-organs-grid {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  }
+
+  .anatomy-detail-section {
+    padding: 1rem;
+  }
+
+  .anatomy-organ-detail h3 {
+    font-size: 1.3rem;
+  }
+
+  .anatomy-organ-detail h4 {
+    font-size: 0.95rem;
+  }
+
+  .anatomy-list li,
+  .anatomy-organ-description {
+    font-size: 0.9rem;
+  }
+
+  .anatomy-herb-connection {
+    padding: 0.75rem;
+    margin: 1rem 0;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .anatomy-modal-overlay {
+    display: none;
+  }
+}
