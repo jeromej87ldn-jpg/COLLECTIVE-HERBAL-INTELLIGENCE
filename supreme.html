@@ -99,6 +99,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ch
 
 .profile-hero{background:var(--forest);padding:3.5rem 3rem;position:relative;overflow:hidden;}
 .profile-hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 80% at 85% 50%,rgba(74,140,101,.1) 0%,transparent 65%);pointer-events:none;}
+
+/* Interactions & cautions ticker — full-width band under the hero */
+.caution-ticker{background:#231512;border-top:1px solid rgba(196,82,42,.55);border-bottom:1px solid rgba(196,82,42,.55);height:40px;display:flex;align-items:center;overflow:hidden;}
+.ct-label{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#e8863f;font-weight:600;padding:0 1.25rem 0 1.5rem;flex-shrink:0;white-space:nowrap;border-right:1px solid rgba(196,82,42,.35);height:100%;display:flex;align-items:center;gap:7px;}
+.ct-track-wrap{flex:1;overflow:hidden;height:100%;display:flex;align-items:center;}
+.ct-track{display:flex;align-items:center;white-space:nowrap;width:max-content;animation:ct-scroll 30s linear infinite;}
+.ct-track:hover{animation-play-state:paused;}
+.ct-item{font-size:12.5px;color:#f0d7b8;padding:0 2.75rem;flex-shrink:0;display:inline-flex;align-items:center;gap:8px;}
+.ct-item::before{content:'!';color:#e8863f;font-weight:700;font-size:12px;}
+@keyframes ct-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@media (prefers-reduced-motion: reduce){.caution-ticker{height:auto;padding:.4rem 0;}.ct-track{animation:none;white-space:normal;flex-wrap:wrap;width:auto;}.ct-item.ct-dup{display:none;}}
 .ph-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1;display:grid;grid-template-columns:1fr auto;gap:3rem;align-items:start;}
 .ph-cat{display:inline-flex;align-items:center;gap:7px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:5px 14px;border-radius:2px;margin-bottom:1rem;border:1px solid;}
 .ph-name{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,5vw,62px);font-weight:300;line-height:1.06;color:var(--parchment);margin-bottom:.4rem;}
@@ -622,6 +633,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
         </div>
       </div>
     </div>
+    <div class="caution-ticker" id="caution-ticker" style="display:none;">
+      <div class="ct-label">⚠ Interactions &amp; cautions</div>
+      <div class="ct-track-wrap"><div class="ct-track" id="ct-track"></div></div>
+    </div>
     <div class="profile-body">
       <div class="profile-main" id="profile-main-content"></div>
       <div class="profile-sidebar" id="profile-sidebar-content"></div>
@@ -937,6 +952,24 @@ function renderProfile(h) {
 
   const inStack = isInStack(h.name);
 
+  // Interactions & cautions — surfaced on the scrolling ticker under the hero.
+  // Content is duplicated once for a seamless loop; duration scales with length.
+  (function(){
+    const tickerEl = document.getElementById('caution-ticker');
+    const trackEl = document.getElementById('ct-track');
+    if (!tickerEl || !trackEl) return;
+    const items = F.has(h.interactions) ? h.interactions : [];
+    if (items.length) {
+      const seq = items.map(i=>`<span class="ct-item">${i}</span>`).join('');
+      const dup = items.map(i=>`<span class="ct-item ct-dup">${i}</span>`).join('');
+      trackEl.innerHTML = seq + dup;
+      trackEl.style.animationDuration = Math.max(20, Math.round(items.join(' ').length / 5)) + 's';
+      tickerEl.style.display = 'flex';
+    } else {
+      tickerEl.style.display = 'none';
+    }
+  })();
+
   // Curated matches take priority over generated content (never both, so
   // nothing repeats) — same rule the former Plant Intelligence page used.
   const nameLc = h.name.toLowerCase();
@@ -971,28 +1004,19 @@ function renderProfile(h) {
       ${F.has(c.evidence) ? `<div class="sci-mbox" style="font-style:normal">${c.evidence}</div>` : `<div class="sci-mbox" style="opacity:.6">${F.message('evidence')}</div>`}
     </div>`).join('')}</div>`);
 
-  const herbalActionsHTML = matchedActions.length
-    ? `<div class="sci-grid wide">${matchedActions.map(a => {
-        const col = colorFor(SYS_COLORS, a.sys);
-        return `<div class="sci-card">
-          <div style="display:flex;justify-content:space-between;gap:6px;margin-bottom:4px;align-items:flex-start;">
-            <span class="cn">${a.name}</span>
-            <span class="sci-sys-tag" style="background:${col}1a;color:${col}">${a.sys}</span>
-          </div>
-          <div class="cs">${a.short}</div>
-        </div>`;
-      }).join('')}</div>`
-    : F.section(h.herbalActions, 'herbalActions', list => `<div class="sci-grid wide">${list.map(a => {
-    const col = colorFor(SYS_COLORS, a.system);
-    return `<div class="sci-card">
-      <div style="display:flex;justify-content:space-between;gap:6px;margin-bottom:4px;align-items:flex-start;">
-        <span class="cn">${a.name}</span>
-        <span class="sci-sys-tag" style="background:${col}1a;color:${col}">${F.has(a.system) ? a.system : '—'}</span>
-      </div>
-      <div class="cs">${F.has(a.description) ? a.description : ''}</div>
-      ${F.has(a.compounds) ? `<div class="sci-dl">Key compounds</div><div class="sci-pill-row">${a.compounds.map(c => `<span class="sci-pill" style="background:rgba(74,140,101,.08);border-color:rgba(74,140,101,.3);color:var(--forest)">${c}</span>`).join('')}</div>` : ''}
+  // Herbal actions — compact summary rows, listed inside the unified
+  // Compound science section (formerly a separate full-card section).
+  const actionRow = (name, system, desc) => {
+    const col = colorFor(SYS_COLORS, system);
+    return `<div style="display:flex;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--parchment-deep);font-size:13.5px;flex-wrap:wrap;">
+      <span style="font-weight:600;color:var(--charcoal);">${name}</span>
+      <span class="sci-sys-tag" style="background:${col}1a;color:${col};flex-shrink:0;">${F.has(system) ? system : '—'}</span>
+      <span style="color:var(--charcoal-mid);line-height:1.55;flex:1;min-width:200px;">${F.has(desc) ? desc : ''}</span>
     </div>`;
-  }).join('')}</div>`);
+  };
+  const herbalActionsHTML = matchedActions.length
+    ? matchedActions.map(a => actionRow(a.name, a.sys, a.short)).join('')
+    : F.section(h.herbalActions, 'herbalActions', list => list.map(a => actionRow(a.name, a.system, a.description)).join(''));
 
   // Body effects
   const bodyHTML = F.section(h.bodyEffects, 'bodyEffects', list => `<div class="sci-grid">${list.map(b => `
@@ -1049,26 +1073,10 @@ function renderProfile(h) {
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;">${prepHTML}</div>
     </div>
 
-    <div class="content-section">
-      <h2><span class="cs-icon">⚠</span>Interactions &amp; cautions</h2>
-      <div style="background:rgba(196,82,42,.06);border:1px solid rgba(196,82,42,.18);border-left:3px solid #c4522a;border-radius:0 4px 4px 0;padding:1.25rem 1.5rem;">
-        ${F.has(h.interactions)
-          ? h.interactions.map(i=>`<div style="font-size:14px;color:var(--charcoal-mid);padding:6px 0;border-bottom:1px solid rgba(196,82,42,.08);display:flex;gap:8px;"><span style="color:#c4522a;font-weight:700;font-size:12px;margin-top:2px;">!</span>${i}</div>`).join('')
-          : `<div style="font-size:13px;color:var(--charcoal-mid);line-height:1.7;opacity:.72;font-style:italic;">${F.message('interactions')}</div>`}
-      </div>
-    </div>
-
     <div class="content-section" id="community-photos-block" style="display:none;">
       <h2><span class="cs-icon">📸</span>Community photos</h2>
       <div style="font-size:12px;color:var(--charcoal-mid);opacity:.7;margin-bottom:.85rem;">Shared by C.H.I members — kept separate from the sourced image above.</div>
       <div id="community-photos-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:.6rem;"></div>
-    </div>
-
-    <div style="background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-radius:8px;padding:1.5rem;margin:2rem 0;text-align:center;">
-      <div style="font-size:18px;margin-bottom:.5rem;">📸</div>
-      <h3 style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--charcoal);margin-bottom:.5rem;">Have a photo of this herb?</h3>
-      <p style="font-size:13px;color:var(--charcoal-mid);margin-bottom:1rem;line-height:1.6;">Share your photo to help other users identify and connect with <span id="upload-herb-name">this herb</span>.</p>
-      <button onclick="openProfileUpload()" style="background:var(--gold);color:var(--forest);border:none;padding:.6rem 1.2rem;border-radius:6px;font-weight:500;cursor:pointer;font-size:13px;">Share a photo</button>
     </div>
 
     <div class="sci-boundary">
@@ -1077,14 +1085,13 @@ function renderProfile(h) {
     </div>
 
     <div class="content-section">
-      <h2><span class="cs-icon">⚗</span>Active compounds</h2>
+      <h2><span class="cs-icon">⚗</span>Compound science</h2>
       ${compClasses.length ? `<div class="sci-pill-row" style="margin-bottom:1rem;">${compoundClassesHTML}</div>` : ''}
       ${compoundsHTML}
-    </div>
-
-    <div class="content-section">
-      <h2><span class="cs-icon">✦</span>Herbal actions</h2>
-      ${herbalActionsHTML}
+      <div style="margin-top:1.5rem;background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-radius:6px;padding:1.1rem 1.35rem;">
+        <div style="font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:.5rem;">✦ Herbal actions — summary</div>
+        ${herbalActionsHTML}
+      </div>
     </div>
 
     <div class="content-section">
@@ -1116,6 +1123,13 @@ function renderProfile(h) {
         <textarea class="forum-textarea" id="forum-input" placeholder="Share your experience with ${h.name}..."></textarea>
         <button class="forum-submit" onclick="addForumEntry('${h.name}')">Share experience</button>
       </div>
+    </div>
+
+    <div class="forum-section" style="margin-top:1.25rem;text-align:center;padding:1.35rem 1.25rem;">
+      <div style="font-size:17px;margin-bottom:.4rem;">📸</div>
+      <h4 style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--charcoal);margin-bottom:.4rem;">Have a photo of this herb?</h4>
+      <p style="font-size:12.5px;color:var(--charcoal-mid);margin-bottom:.85rem;line-height:1.6;">Share your photo to help other users identify and connect with <span id="upload-herb-name">this herb</span>.</p>
+      <button onclick="openProfileUpload()" style="background:var(--gold);color:var(--forest);border:none;padding:.55rem 1.1rem;border-radius:6px;font-weight:500;cursor:pointer;font-size:12.5px;">Share a photo</button>
     </div>`;
   selectedRating = 0;
 
