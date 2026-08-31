@@ -164,6 +164,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ch
 .stack-btn{font-size:12px;font-weight:600;padding:.5rem 1rem;border-radius:5px;border:none;cursor:pointer;background:var(--gold);color:var(--forest);white-space:nowrap;transition:background .2s;}
 .stack-btn:hover{background:var(--gold-light);}
 .stack-btn.in-stack{background:transparent;border:1px solid rgba(74,140,101,.4);color:var(--forest-mid);}
+.hero-stack{margin-top:1.1rem;font-size:13px;padding:.6rem 1.2rem;position:relative;z-index:1;}
+.hero-stack.in-stack{border-color:rgba(232,184,75,.55);color:var(--gold-light);}
 
 /* Spiritual highlight block */
 .spirit-block{background:linear-gradient(135deg,rgba(26,58,42,.07) 0%,rgba(200,149,42,.06) 100%);border:1px solid rgba(200,149,42,.2);border-radius:6px;padding:1.75rem;margin:1.5rem 0;}
@@ -624,6 +626,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
           <div class="ph-name" id="ph-name">—</div>
           <div class="ph-latin" id="ph-latin">—</div>
           <div class="ph-origin" id="ph-origin">—</div>
+          <button class="stack-btn hero-stack" id="stack-btn" style="display:none;"></button>
         </div>
         <div class="ph-aside">
           <div id="ph-image"></div>
@@ -828,6 +831,13 @@ function searchHerbByName(name) {
 }
 
 async function loadHerbProfile(herbName) {
+  // Keep the herb in the URL so refreshing the page reloads THIS profile,
+  // not the search page (the ?herb= deep-link handler picks it up on load).
+  try {
+    const slug = herbName.toLowerCase().replace(/[^a-z0-9]/g,'-');
+    const url = new URL(window.location);
+    if (url.searchParams.get('herb') !== slug) { url.searchParams.set('herb', slug); history.replaceState(null, '', url); }
+  } catch(e) {}
   // Show profile section, hide hero
   document.getElementById('tree-hero').style.display = 'none';
   document.getElementById('rankings-section').style.display = 'none';
@@ -952,6 +962,15 @@ function renderProfile(h) {
 
   const inStack = isInStack(h.name);
 
+  // Add-to-stack now lives in the hero, next to the herb heading
+  const heroStackBtn = document.getElementById('stack-btn');
+  if (heroStackBtn) {
+    heroStackBtn.style.display = 'inline-flex';
+    heroStackBtn.textContent = inStack ? '✓ In stack' : '+ Add to stack';
+    heroStackBtn.classList.toggle('in-stack', inStack);
+    heroStackBtn.onclick = () => toggleStack(h.name);
+  }
+
   // Interactions & cautions — surfaced on the scrolling ticker under the hero.
   // Content is duplicated once for a seamless loop; duration scales with length.
   (function(){
@@ -1018,6 +1037,15 @@ function renderProfile(h) {
     ? matchedActions.map(a => actionRow(a.name, a.sys, a.short)).join('')
     : F.section(h.herbalActions, 'herbalActions', list => list.map(a => actionRow(a.name, a.system, a.description)).join(''));
 
+  // Simple, friendly list of what the herb does — action names only, no
+  // compounds or mechanisms. Shown right under the main summary.
+  const actionNames = matchedActions.length
+    ? matchedActions.map(a => a.name)
+    : (F.has(h.herbalActions) ? h.herbalActions.map(a => a.name).filter(Boolean) : []);
+  const simpleActionsHTML = actionNames.length
+    ? `<div style="display:flex;flex-wrap:wrap;gap:.5rem;">${actionNames.map(n => `<span style="background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-radius:6px;padding:.45rem .95rem;font-size:13.5px;font-weight:600;color:var(--charcoal);">${n}</span>`).join('')}</div>`
+    : '';
+
   // Body effects
   const bodyHTML = F.section(h.bodyEffects, 'bodyEffects', list => `<div class="sci-grid">${list.map(b => `
     <div class="sci-card">
@@ -1042,15 +1070,26 @@ function renderProfile(h) {
   // server-side in herb-profile.js to URLs actually retrieved from PubMed/
   // Wikipedia -- never a free-text "source" string that could be invented.
   const escHtml = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const sourcesHTML = (Array.isArray(h.sources) && h.sources.length)
-    ? h.sources.filter(s => s && s.url).map(s => `<a href="${escHtml(s.url)}" target="_blank" rel="noopener noreferrer" style="color:var(--gold);text-decoration:underline;">${escHtml(s.title || s.url)}</a>`).join(' &middot; ')
-    : `<span style="opacity:.62;font-style:italic;">${F.message('source')}</span>`;
+  const realSources = (Array.isArray(h.sources) ? h.sources : []).filter(s => s && s.url);
+  // The gold Sources row appears ONLY when real recorded citations exist.
+  // Without them, the text above stands as a plain educational summary —
+  // no citation row, so nothing implies a source that was never recorded.
+  const sourcesRowHTML = realSources.length
+    ? `<div style="font-size:11.5px;color:var(--charcoal-mid);border-top:1px solid rgba(200,149,42,.2);padding-top:.75rem;"><span style="text-transform:uppercase;letter-spacing:.08em;color:var(--gold);font-weight:600;">Sources</span><span style="margin-left:.5rem;">${realSources.map(s => `<a href="${escHtml(s.url)}" target="_blank" rel="noopener noreferrer" style="color:var(--gold);text-decoration:underline;">${escHtml(s.title || s.url)}</a>`).join(' &middot; ')}</span></div>`
+    : `<div style="font-size:10.5px;color:var(--charcoal-mid);opacity:.55;border-top:1px solid var(--parchment-deep);padding-top:.6rem;letter-spacing:.06em;text-transform:uppercase;">Summary — educational reference</div>`;
 
 
   document.getElementById('profile-main-content').innerHTML = `
     <div style="background:rgba(200,149,42,.07);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
       <div style="font-size:14.5px;line-height:1.8;color:var(--charcoal);margin-bottom:1rem;${F.has(h.functionalOverview) ? '' : 'opacity:.62;font-style:italic;'}">${F.text(h.functionalOverview, 'functionalOverview')}</div>
-<div style="font-size:11.5px;color:var(--charcoal-mid);border-top:1px solid rgba(200,149,42,.2);padding-top:.75rem;"><span style="text-transform:uppercase;letter-spacing:.08em;color:var(--gold);font-weight:600;">Sources</span><span style="margin-left:.5rem;">${sourcesHTML}</span></div>
+${sourcesRowHTML}
+    </div>
+
+    <div class="content-section">
+      <h2><span class="cs-icon">🌿</span>What this herb does</h2>
+      ${simpleActionsHTML || `<div style="font-size:13px;color:var(--charcoal-mid);opacity:.7;font-style:italic;">Actions for this herb haven't been recorded yet.</div>`}
+      <div style="font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:1.4rem 0 .75rem;">Effects on body systems</div>
+      ${bodyHTML}
     </div>
 
     <div class="content-section">
@@ -1081,7 +1120,6 @@ function renderProfile(h) {
 
     <div class="sci-boundary">
       <span class="sci-boundary-label">↓ The compound science, from here down</span>
-      <button class="stack-btn${inStack ? ' in-stack' : ''}" id="stack-btn" onclick="toggleStack('${h.name.replace(/'/g,"\\'")}')">${inStack ? '✓ In stack' : '+ Add to stack'}</button>
     </div>
 
     <div class="content-section">
@@ -1089,14 +1127,9 @@ function renderProfile(h) {
       ${compClasses.length ? `<div class="sci-pill-row" style="margin-bottom:1rem;">${compoundClassesHTML}</div>` : ''}
       ${compoundsHTML}
       <div style="margin-top:1.5rem;background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-radius:6px;padding:1.1rem 1.35rem;">
-        <div style="font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:.5rem;">✦ Herbal actions — summary</div>
+        <div style="font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:.5rem;">✦ Herbal actions</div>
         ${herbalActionsHTML}
       </div>
-    </div>
-
-    <div class="content-section">
-      <h2><span class="cs-icon">🫀</span>Effects on body systems</h2>
-      ${bodyHTML}
     </div>`;
 
   // Sidebar: ranking + forum -- real data only. Real submissions live in
@@ -1245,6 +1278,8 @@ function toggleStack(name) {
 }
 
 function closeProfile() {
+  // Leaving the profile — drop ?herb= so a refresh lands on the search page again
+  try { const url = new URL(window.location); url.searchParams.delete('herb'); history.replaceState(null, '', url); } catch(e) {}
   if (_phSlideTimer) { clearInterval(_phSlideTimer); _phSlideTimer = null; }
   document.getElementById('herb-profile').style.display = 'none';
   document.getElementById('tree-hero').style.display = 'flex';
