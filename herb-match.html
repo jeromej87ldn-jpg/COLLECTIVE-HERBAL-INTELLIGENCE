@@ -827,6 +827,12 @@ function backToPyramid() {
 
 // ─── PROFILE VIEWER (real AI call, reuses herb-profile.js) ──
 async function viewProfile(herbName) {
+  // One profile everywhere -- open the herb's real Herbadex profile page
+  // (supreme.html) instead of the ported local copy, so profile changes
+  // only ever need to be made in one place. Match results are kept in
+  // sessionStorage, so the browser back button returns to them intact.
+  window.location.href = 'supreme.html?herb=' + herbName.toLowerCase().replace(/[^a-z0-9]/g,'-');
+  return;
   currentProfile = herbName;
   document.getElementById('results-section').classList.remove('show');
   document.getElementById('profile-section').classList.add('show');
