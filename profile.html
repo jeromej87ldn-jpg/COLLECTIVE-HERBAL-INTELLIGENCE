@@ -57,9 +57,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .demo-toggle button.on{background:var(--gold);color:var(--forest);}
 .demo-note{font-size:11px;color:var(--muted);font-style:italic;}
 
-.wrap{max-width:880px;margin:0 auto;padding:3rem 1.5rem 5rem;}
+.wrap{max-width:880px;margin:0 auto;padding:2rem 1.5rem 5rem;}
 .fade{opacity:0;transform:translateY(10px);animation:fade .6s ease forwards;}
 @keyframes fade{to{opacity:1;transform:none;}}
+
+/* ── GREETING (shared with home.html) ── */
+.greeting{margin-bottom:1.75rem;}
+.greeting-eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:10px;margin-bottom:.5rem;}
+.greeting-eyebrow::before{content:'';width:16px;height:1px;background:var(--gold);opacity:.6;}
+.greeting-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,42px);font-weight:300;line-height:1.1;color:var(--parchment);}
+.greeting-title em{font-style:italic;color:var(--gold-light);}
+.greeting-sub{font-size:13.5px;color:var(--muted);margin-top:.4rem;}
 
 .phead{display:flex;gap:1.75rem;align-items:flex-start;background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:2rem;position:relative;overflow:hidden;}
 .phead::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 0% 0%,rgba(74,140,101,.12),transparent 55%);pointer-events:none;}
@@ -77,6 +85,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .level-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--forest);background:var(--gold);border-radius:999px;padding:.28rem .7rem;}
 .psince{font-size:12px;color:var(--muted);}
 .pbio{font-size:14.5px;line-height:1.7;color:rgba(245,240,232,.78);max-width:46ch;}
+.phead-journey{margin-top:1rem;max-width:340px;}
 .pactions{display:flex;flex-direction:column;gap:.6rem;position:relative;z-index:1;align-items:flex-end;}
 .btn{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;border-radius:6px;padding:.6rem 1.2rem;cursor:pointer;border:1px solid transparent;transition:all .2s;white-space:nowrap;display:inline-flex;align-items:center;gap:7px;justify-content:center;}
 .btn-primary{background:var(--gold);color:var(--forest);border-color:var(--gold);}
@@ -85,14 +94,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .btn-ghost:hover{border-color:var(--gold);color:var(--gold-light);}
 .btn-following{background:rgba(74,140,101,.18);color:var(--tag-text);border-color:var(--tag-border);}
 
-.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--card-border);border:1px solid var(--card-border);border-radius:10px;overflow:hidden;margin-top:1.25rem;}
-.stat{background:var(--bg);padding:1.1rem .5rem;text-align:center;cursor:pointer;transition:background .18s;position:relative;}
-.stat:hover{background:rgba(200,149,42,.06);}
-.stat.active{background:rgba(200,149,42,.1);}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;margin-top:1.25rem;}
+@media(max-width:680px){.stats{grid-template-columns:repeat(2,1fr);}.stats .stat:last-child{grid-column:1/-1;}}
+.stat{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:.85rem 1rem;cursor:pointer;transition:all .18s;position:relative;overflow:hidden;}
+.stat:hover{border-color:rgba(200,149,42,.3);background:rgba(200,149,42,.05);}
+.stat.active{background:rgba(200,149,42,.09);border-color:rgba(200,149,42,.45);}
 .stat.active::after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--gold);}
 .stat.active .stat-num{color:var(--gold-light);}
-.stat-num{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:var(--gold-light);}
-.stat-lbl{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+.stat-num{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;color:var(--gold-light);line-height:1;}
+.stat-lbl{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.3rem;}
 
 /* SAVED SUB-CATEGORIES */
 .saved-subcats{display:flex;gap:.5rem;flex-wrap:wrap;margin:1.25rem 0;}
@@ -574,6 +584,12 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 
 <div class="wrap">
 
+  <div class="greeting fade owner-only">
+    <div class="greeting-eyebrow">Your profile</div>
+    <h1 class="greeting-title">Every herbalist has a story — <em id="greet-name">this is yours.</em></h1>
+    <p class="greeting-sub">Your stack, your posts, your garden — everything you've grown on CHI, in one place.</p>
+  </div>
+
   <div class="phead fade">
     <div class="avatar" id="p-avatar">
       <span id="avatar-initial">S</span>
@@ -591,6 +607,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
         <span class="psince">Member since March 2024</span>
       </div>
       <div class="pbio">Kitchen-garden herbalist working through the nervines and adaptogens. Slow mornings, bitter teas, and a deep love of anything in the mint family.</div>
+      <div class="phead-journey owner-only" id="phead-journey"></div>
     </div>
     <div class="pactions" id="p-actions"></div>
   </div>
@@ -999,6 +1016,22 @@ function renderStats(){
     <div class="stat" data-tab="ach" onclick="setTab('ach',this)"><div class="stat-num">${L.level}</div><div class="stat-lbl">Level</div></div>`;
   document.getElementById('hdr-level').textContent = '★ Level ' + L.level;
   document.getElementById('hdr-rank').textContent = L.rank;
+  // Journey bar in the profile header
+  const j = document.getElementById('phead-journey');
+  if(j) j.innerHTML = `
+    <div class="xp-bar"><div class="xp-fill" style="width:${L.pct}%"></div></div>
+    <div class="xp-text">${L.into} XP into Level ${L.level} — ${L.pct}% of the way to Level ${L.level+1}</div>`;
+  // Share identity with other CHI pages (community, home)
+  try{
+    localStorage.setItem('chi_level', String(L.level));
+    localStorage.setItem('chi_rank', L.emoji + ' ' + L.rank);
+  }catch(e){}
+  // Personalise the greeting
+  try{
+    const gn = document.getElementById('greet-name');
+    const dn = localStorage.getItem('chi_display_name');
+    if(gn && dn) gn.textContent = 'this is ' + dn + "'s.";
+  }catch(e){}
 }
 
 function savedCount(){

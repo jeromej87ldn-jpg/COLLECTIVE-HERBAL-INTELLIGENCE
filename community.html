@@ -98,6 +98,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .author-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:500;flex-shrink:0;}
 .author-name{font-size:13px;font-weight:500;color:var(--th-text);transition:color .4s;}
 .author-rank{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--th-accent);}
+.me-level-chip{display:inline-flex;align-items:center;font-size:10px;font-weight:600;color:var(--night);background:var(--th-accent);border-radius:999px;padding:1px 7px;margin-left:6px;vertical-align:middle;}
 .author-time{font-size:11px;color:var(--th-muted);margin-left:auto;flex-shrink:0;transition:color .4s;}
 
 .blog-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:var(--th-text);line-height:1.2;margin-bottom:.75rem;cursor:pointer;transition:color .4s;}
@@ -624,6 +625,23 @@ const st = localStorage.getItem('chi_theme') || 'forest';
 document.body.setAttribute('data-theme', st);
 const ME_NAME = localStorage.getItem('chi_display_name') || 'Jerome';
 const ME_INIT = ME_NAME.charAt(0).toUpperCase();
+// Identity shared with profile.html — same avatar and level everywhere
+let ME_AVATAR = null, ME_RANK = '🌱 Seed', ME_LEVEL = null;
+try{
+  ME_AVATAR = localStorage.getItem('chi_avatar') || null;
+  ME_RANK = localStorage.getItem('chi_rank') || ME_RANK;
+  ME_LEVEL = localStorage.getItem('chi_level') || null;
+}catch(e){}
+// Avatar circle for the signed-in user: photo if set, initial otherwise
+function meAvHTML(size){
+  const s = size ? `width:${size}px;height:${size}px;` : '';
+  if(ME_AVATAR) return `<div class="author-av" style="${s}background-image:url('${ME_AVATAR}');background-size:cover;background-position:center;"></div>`;
+  return `<div class="author-av" style="${s}background:#c8952a22;color:#c8952a">${ME_INIT}</div>`;
+}
+// Small level chip shown next to the user's name
+function meLevelChip(){
+  return ME_LEVEL ? ` <span class="me-level-chip">★ Lv ${ME_LEVEL}</span>` : '';
+}
 
 // ── GROUPS ────────────────────────────────────────────────────────
 const GROUPS = [
@@ -864,8 +882,8 @@ function renderFeed() {
       <div class="blog-card-head">
         ${groupTag}
         <div class="blog-author">
-          <div class="author-av" style="background:${post.color}22;color:${post.color}">${post.initial}</div>
-          <div><div class="author-name">${post.author}</div><div class="author-rank">${post.rank}</div></div>
+          ${post.mine ? meAvHTML() : `<div class="author-av" style="background:${post.color}22;color:${post.color}">${post.initial}</div>`}
+          <div><div class="author-name">${post.author}${post.mine ? meLevelChip() : ''}</div><div class="author-rank">${post.rank}</div></div>
           <span class="author-time">${post.time}</span>
           <button class="follow-btn${followState[post.author]?' following':''}" onclick="toggleFollow(this,'${post.author}')">Follow</button>
         </div>
@@ -919,8 +937,8 @@ function openFull(id) {
     </div>
     ${groupTag}
     <div class="blog-author" style="margin-bottom:1.25rem">
-      <div class="author-av" style="background:${post.color}22;color:${post.color};width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500">${post.initial}</div>
-      <div><div class="author-name">${post.author}</div><div class="author-rank">${post.rank}</div></div>
+      ${post.mine ? meAvHTML(40) : `<div class="author-av" style="background:${post.color}22;color:${post.color};width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:500">${post.initial}</div>`}
+      <div><div class="author-name">${post.author}${post.mine ? meLevelChip() : ''}</div><div class="author-rank">${post.rank}</div></div>
       <span class="author-time" style="margin-left:auto">${post.time}</span>
     </div>
     <h1 class="full-post-title">${post.title}</h1>
@@ -1083,7 +1101,10 @@ function addFullComment(id) {
   if(!text) return;
   const div = document.createElement('div');
   div.className = 'comment-card';
-  div.innerHTML = `<div class="comment-av" style="background:var(--th-accent);color:var(--night);">${ME_INIT}</div><div class="comment-body"><div class="comment-author">${ME_NAME} <span>🌱 Seed</span></div><div class="comment-text">${text}</div></div>`;
+  const myCommentAv = ME_AVATAR
+    ? `<div class="comment-av" style="background-image:url('${ME_AVATAR}');background-size:cover;background-position:center;"></div>`
+    : `<div class="comment-av" style="background:var(--th-accent);color:var(--night);">${ME_INIT}</div>`;
+  div.innerHTML = `${myCommentAv}<div class="comment-body"><div class="comment-author">${ME_NAME}${meLevelChip()} <span>${ME_RANK}</span></div><div class="comment-text">${text}</div></div>`;
   document.getElementById('full-comments').appendChild(div);
   input.value = '';
 }
@@ -1141,7 +1162,7 @@ function publishPost() {
   const imageHTML = currentPostImage ? `<img class="post-image" src="${currentPostImage}" alt="Post image">` : '';
   const newPost = {
     id: POSTS.length + 1,
-    author:ME_NAME, initial:ME_INIT, color:'#c8952a', rank:'🌱 Seed',
+    author:ME_NAME, initial:ME_INIT, color:'#c8952a', rank:ME_RANK, mine:true,
     time:'Just now', category:cat, group:selectedWriteGroup,
     title, excerpt:body.substring(0,200)+(body.length>200?'...':''),
     herbs: herbs ? herbs.split(',').map(h=>h.trim()) : [],
