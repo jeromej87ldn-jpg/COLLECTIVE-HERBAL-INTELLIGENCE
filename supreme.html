@@ -100,6 +100,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ch
 .profile-hero{background:var(--forest);padding:3.5rem 3rem;position:relative;overflow:hidden;}
 .profile-hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 80% at 85% 50%,rgba(74,140,101,.1) 0%,transparent 65%);pointer-events:none;}
 
+/* Herb image as a faded hero backdrop — layered behind the heading,
+   fading in from the left so it blends into the page. */
+.ph-backdrop{position:absolute;top:0;right:0;bottom:0;width:58%;background-size:cover;background-position:center;opacity:0;transition:opacity 1.2s ease;pointer-events:none;z-index:0;
+  -webkit-mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.9) 60%);mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.9) 60%);}
+.ph-backdrop.show{opacity:.42;}
+.ph-backdrop-credit{position:absolute;right:1.1rem;bottom:.65rem;font-size:9.5px;color:rgba(245,240,232,.45);z-index:2;pointer-events:none;line-height:1.4;}
+@media(max-width:760px){.ph-backdrop{width:100%;}.ph-backdrop.show{opacity:.22;}}
+
 /* Interactions & cautions ticker — full-width band under the hero */
 .caution-ticker{background:#231512;border-top:1px solid rgba(196,82,42,.55);border-bottom:1px solid rgba(196,82,42,.55);height:40px;display:flex;align-items:center;overflow:hidden;}
 .ct-label{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#e8863f;font-weight:600;padding:0 1.25rem 0 1.5rem;flex-shrink:0;white-space:nowrap;border-right:1px solid rgba(196,82,42,.35);height:100%;display:flex;align-items:center;gap:7px;}
@@ -640,6 +648,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   </div>
   <div id="profile-content" style="display:none;">
     <div class="profile-hero">
+      <div class="ph-backdrop" id="ph-backdrop"></div>
+      <div class="ph-backdrop-credit" id="ph-backdrop-credit"></div>
       <div class="ph-inner">
         <div>
           <div class="ph-cat" id="ph-cat">—</div>
@@ -649,7 +659,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
           <button class="stack-btn hero-stack" id="stack-btn" style="display:none;"></button>
         </div>
         <div class="ph-aside">
-          <div id="ph-image"></div>
           <div class="ph-aside-card">
 <div class="ph-row"><span class="ph-key">Profile</span><span class="ph-val"><span id="ph-category">—</span> · <span id="ph-tradition">—</span> · <span id="ph-preps">—</span> · <span id="ph-safety">—</span></span></div>
           </div>
@@ -959,8 +968,7 @@ function renderProfile(h) {
   // public-domain match yet show a plain placeholder, not a broken image.
   // renderImageBox() shows a single image when there's only one, or a small
   // slideshow (dots, auto-advance) when there are several.
-  const imgEl = document.getElementById('ph-image');
-  renderImageBox(imgEl, Array.isArray(h.images) ? h.images : []);
+  renderImageBox(null, Array.isArray(h.images) ? h.images : []);
 
   document.getElementById('profile-bc-name').textContent = h.name;
   document.getElementById('bc-current').textContent = h.name;
@@ -1311,64 +1319,32 @@ function closeProfile() {
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// Image sourcing, in order of preference, for EVERY herb:
-//  1. herb-images.js (Wikimedia Commons, real open license, credited) —
-//     confirmed working on neem, now enabled for all herbs.
-//  2. Unsplash — the existing fallback, unchanged from before, used only
-//     when Wikimedia has no licensed image for that herb.
-// Both run AFTER the profile has already rendered (see the
-// window.renderProfile override below) and both fail silently, so a slow
-// or broken image lookup can never stall or break the profile itself.
+// Image sourcing: Wikimedia Commons ONLY (herb-images.js function — real
+// open license, credited, botanically identified). Runs AFTER the profile
+// has already rendered and fails silently, so a slow or broken image
+// lookup can never stall or break the profile itself.
 
-// Renders the herb image box. 0 images -> placeholder (unchanged from
-// before). 1 image -> a plain static image (unchanged from before). 2+
-// images -> a small slideshow: dot indicators, click a dot to jump, and it
-// auto-advances every 4.5s. Used by both the stored-herb-data path above
-// and the live Wikimedia/Unsplash fetch below, so both sources get the
-// same slideshow behavior for free.
-let _phSlideTimer = null;
+// ONE image, layered behind the hero heading as a faded backdrop (no box,
+// no slideshow). The image fades in from the left so it blends with the
+// page; its licensing credit sits small in the hero's bottom-right corner.
+// No image -> the backdrop simply stays hidden (no placeholder box).
+let _phSlideTimer = null; // kept: closeProfile() still clears it
 function renderImageBox(imgEl, images) {
-  if (_phSlideTimer) { clearInterval(_phSlideTimer); _phSlideTimer = null; }
-
-  const shown = (images || []).filter(im => im && im.url).slice(0, 4);
-
-  if (!shown.length) {
-    imgEl.innerHTML = `<div class="ph-image-empty">No sourced image yet</div>`;
+  const bd = document.getElementById('ph-backdrop');
+  const cr = document.getElementById('ph-backdrop-credit');
+  if (!bd) return;
+  const im = (images || []).filter(x => x && x.url)[0];
+  if (!im) {
+    bd.classList.remove('show');
+    bd.style.backgroundImage = '';
+    bd.dataset.has = '';
+    if (cr) cr.textContent = '';
     return;
   }
-
-  if (shown.length === 1) {
-    imgEl.innerHTML = `<div class="ph-image"><img src="${shown[0].url}" alt="" loading="lazy"></div><div class="ph-image-credit">${shown[0].credit || ''}</div>`;
-    return;
-  }
-
-  const slidesHTML = shown.map((im, i) => `<div class="ph-slide${i === 0 ? ' active' : ''}" data-i="${i}"><img src="${im.url}" alt="" loading="lazy"></div>`).join('');
-  const dotsHTML = shown.map((im, i) => `<span class="ph-dot${i === 0 ? ' active' : ''}" data-i="${i}"></span>`).join('');
-  imgEl.innerHTML = `<div class="ph-image ph-slideshow">${slidesHTML}<div class="ph-dots">${dotsHTML}</div></div><div class="ph-image-credit">${shown[0].credit || ''}</div>`;
-
-  let idx = 0;
-  const slides = imgEl.querySelectorAll('.ph-slide');
-  const dots = imgEl.querySelectorAll('.ph-dot');
-  const creditEl = imgEl.querySelector('.ph-image-credit');
-
-  function goTo(i) {
-    idx = ((i % shown.length) + shown.length) % shown.length;
-    slides.forEach(s => s.classList.toggle('active', Number(s.dataset.i) === idx));
-    dots.forEach(d => d.classList.toggle('active', Number(d.dataset.i) === idx));
-    if (creditEl) creditEl.textContent = shown[idx].credit || '';
-  }
-  function resetTimer() {
-    if (_phSlideTimer) clearInterval(_phSlideTimer);
-    _phSlideTimer = setInterval(() => goTo(idx + 1), 4500);
-  }
-
-  dots.forEach(d => d.addEventListener('click', (e) => {
-    e.stopPropagation();
-    goTo(Number(d.dataset.i));
-    resetTimer();
-  }));
-
-  resetTimer();
+  bd.style.backgroundImage = `url('${String(im.url).replace(/'/g, "%27")}')`;
+  bd.classList.add('show');
+  bd.dataset.has = '1';
+  if (cr) cr.textContent = im.credit || '';
 }
 
 async function fetchWikimediaImages(herbName, latinName) {
@@ -1384,42 +1360,21 @@ async function fetchWikimediaImages(herbName, latinName) {
     .map(im => ({ url: im.url, credit: im.credit || 'Wikimedia Commons' }));
 }
 
-async function fetchUnsplashImages(herbName) {
-  // Unsplash API (free tier: 50 requests/hour, no key needed for basic search)
-  const query = encodeURIComponent(herbName + ' plant');
-  const res = await fetch(`https://api.unsplash.com/search/photos?query=${query}&per_page=3&orientation=landscape&client_id=xFp5eWKU1LIUPRNxZ1W2BuqNlLmNsmKWHPYeKfSa5ZQ`);
-  if (!res.ok) return [];
-  const data = await res.json();
-  return (data.results || []).map(img => ({
-    url: img.urls.regular,
-    credit: img.user ? `© ${img.user.name} / Unsplash` : '© Unsplash'
-  }));
-}
-
 async function fetchHerbImage(herbName, latinName) {
+  // Wikimedia Commons ONLY — the licensed, botanically-identified source.
+  // The Unsplash keyword-search fallback is gone: it was the source of
+  // images that didn't match the herb. No verified image = no image.
   try {
-    const imgEl = document.getElementById('ph-image');
-    if (!imgEl) return; // Element must exist
-
     let images = [];
-
     try { images = await fetchWikimediaImages(herbName, latinName); }
-    catch (e) { /* Wikimedia lookup failed — fall through to Unsplash below */ }
+    catch (e) { /* Wikimedia lookup failed — backdrop stays hidden */ }
+    if (!images.length) return;
 
-    if (!images.length) {
-      try { images = await fetchUnsplashImages(herbName); }
-      catch (e) { /* Unsplash lookup failed too — placeholder stays as-is */ }
-    }
-
-    if (!images.length) return; // No image found from either source
-
-    // Only replace if we haven't already rendered an image (e.g. from stored herb data)
-    const existingImg = imgEl.querySelector('img');
-    if (!existingImg) {
-      renderImageBox(imgEl, images);
-    }
+    // Only set if the backdrop isn't already showing an image from stored data
+    const bd = document.getElementById('ph-backdrop');
+    if (bd && !bd.dataset.has) renderImageBox(null, images.slice(0, 1));
   } catch (e) {
-    // Silent fail — no console spam, profile still renders fine
+    // Silent fail — profile still renders fine
   }
 }
 
