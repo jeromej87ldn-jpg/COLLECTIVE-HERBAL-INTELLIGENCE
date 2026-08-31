@@ -244,6 +244,15 @@ footer{background:var(--night);padding:3rem 0 2rem;border-top:1px solid rgba(200
 /* NAV */
 nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:var(--forest);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:100;}
 .nav-logo{text-decoration:none;display:flex;flex-direction:column;}
+.nav-left{display:flex;align-items:center;gap:1.25rem;}
+.nav-search{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:.42rem .75rem;color:rgba(245,240,232,.5);transition:border-color .2s;}
+.nav-search:focus-within{border-color:rgba(200,149,42,.55);}
+.nav-search input{background:none;border:none;outline:none;color:var(--parchment);font-family:'DM Sans',sans-serif;font-size:12.5px;width:150px;}
+.nav-search input::placeholder{color:rgba(245,240,232,.4);}
+@media(max-width:900px){.nav-search{display:none;}}
+.mobile-search input{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);border-radius:6px;padding:.65rem .85rem;color:var(--parchment);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;}
+.mobile-search input::placeholder{color:rgba(245,240,232,.4);}
+.mobile-search{padding:.25rem 1rem .5rem;}
 .nav-chi{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-light);letter-spacing:.1em;}
 .nav-full{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.5);}
 .nav-right{display:flex;align-items:center;gap:1.5rem;}
@@ -459,6 +468,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 <!-- Mobile sidebar menu -->
 <div class="mobile-menu" id="mobile-menu">
   <div class="mobile-menu-section">
+    <div class="mobile-menu-title">Search the Herbadex</div>
+    <div class="mobile-search"><input id="mobile-herb-search" list="nav-stack-list" placeholder="Search any herb…" autocomplete="off"></div>
+  </div>
+  <div class="mobile-menu-section">
     <div class="mobile-menu-title">Tools</div>
     <a href="herb-match.html"><span class="mobile-menu-icon">🌿</span>Herb Match</a>
     <a href="supreme.html"><span class="mobile-menu-icon">📖</span>Herbadex</a>
@@ -488,10 +501,17 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 </div>
 
   
-  <a href="index.html" class="nav-logo">
-    <span class="nav-chi">Herbadex</span>
-    <span class="nav-full">Collective Herbal Intelligence</span>
-  </a>
+  <div class="nav-left">
+    <a href="index.html" class="nav-logo">
+      <span class="nav-chi">Herbadex</span>
+      <span class="nav-full">Collective Herbal Intelligence</span>
+    </a>
+    <div class="nav-search" title="Search the Herbadex">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <input id="nav-herb-search" list="nav-stack-list" placeholder="Search any herb…" autocomplete="off">
+      <datalist id="nav-stack-list"></datalist>
+    </div>
+  </div>
   <div class="nav-right">
     <a href="herb-match.html">Herb Match</a>
     <a href="supreme.html" class="active">Herbadex</a>
@@ -1074,15 +1094,18 @@ function renderProfile(h) {
   // The gold Sources row appears ONLY when real recorded citations exist.
   // Without them, the text above stands as a plain educational summary —
   // no citation row, so nothing implies a source that was never recorded.
-  const sourcesRowHTML = realSources.length
-    ? `<div style="font-size:11.5px;color:var(--charcoal-mid);border-top:1px solid rgba(200,149,42,.2);padding-top:.75rem;"><span style="text-transform:uppercase;letter-spacing:.08em;color:var(--gold);font-weight:600;">Sources</span><span style="margin-left:.5rem;">${realSources.map(s => `<a href="${escHtml(s.url)}" target="_blank" rel="noopener noreferrer" style="color:var(--gold);text-decoration:underline;">${escHtml(s.title || s.url)}</a>`).join(' &middot; ')}</span></div>`
-    : `<div style="font-size:10px;color:var(--charcoal-mid);opacity:.55;border-top:1px solid var(--parchment-deep);padding-top:.6rem;letter-spacing:.12em;text-transform:uppercase;">Summary — educational reference</div>`;
+  // The gold-edged box is reserved for real recorded citations ONLY.
+  // Without them nothing renders — the summary stands as plain text.
+  const sourcesBoxHTML = realSources.length
+    ? `<div style="background:rgba(200,149,42,.07);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:1rem 1.25rem;margin-top:1.1rem;font-size:12.5px;color:var(--charcoal-mid);"><span style="font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);font-weight:600;">Cited sources</span><span style="margin-left:.6rem;">${realSources.map(s => `<a href="${escHtml(s.url)}" target="_blank" rel="noopener noreferrer" style="color:var(--gold);text-decoration:underline;">${escHtml(s.title || s.url)}</a>`).join(' &middot; ')}</span></div>`
+    : '';
 
 
   document.getElementById('profile-main-content').innerHTML = `
-    <div style="background:rgba(200,149,42,.07);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
-      <div style="font-size:14px;line-height:1.8;color:var(--charcoal);margin-bottom:1rem;${F.has(h.functionalOverview) ? '' : 'opacity:.62;font-style:italic;'}">${F.text(h.functionalOverview, 'functionalOverview')}</div>
-${sourcesRowHTML}
+    <div class="content-section">
+      <h2><span class="cs-icon">📜</span>Summary</h2>
+      <p style="${F.has(h.functionalOverview) ? '' : 'opacity:.62;font-style:italic;'}">${F.text(h.functionalOverview, 'functionalOverview')}</p>
+      ${sourcesBoxHTML}
     </div>
 
     <div class="content-section">
@@ -1399,6 +1422,31 @@ async function fetchHerbImage(herbName, latinName) {
     // Silent fail — no console spam, profile still renders fine
   }
 }
+
+// Nav + mobile herb search — type any herb, or pick one of your stack herbs
+// from the dropdown (datalist). Enter or picking a stack herb opens it.
+(function wireNavSearch(){
+  let stack = [];
+  try { stack = JSON.parse(localStorage.getItem('chi_phyto_stack') || '[]'); } catch(e) {}
+  const dl = document.getElementById('nav-stack-list');
+  if (dl) dl.innerHTML = stack.map(s => `<option value="${String(s).replace(/"/g,'&quot;')}">`).join('');
+  const go = el => {
+    const v = el.value.trim();
+    if (!v) return;
+    el.value = '';
+    el.blur();
+    try { if (typeof closeMobileMenu === 'function') closeMobileMenu(); } catch(e) {}
+    searchHerbByName(v);
+  };
+  ['nav-herb-search','mobile-herb-search'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') go(el); });
+    el.addEventListener('change', () => {
+      if (stack.some(s => String(s).toLowerCase() === el.value.trim().toLowerCase())) go(el);
+    });
+  });
+})();
 
 // Deep link — open a specific herb directly from supreme.html?herb=name
 (function openHerbFromURL(){

@@ -109,6 +109,60 @@ async function requestProfile(anthropic, name, attempt = 1, priorMissing = null)
   return herb;
 }
 
+// ── Verified sources ──────────────────────────────────────────────────
+// Fetch REAL citation links (Wikipedia + PubMed) for a herb. Only URLs that
+// actually resolved get attached — nothing is invented. Every lookup fails
+// silently and returns [], so profile delivery is never blocked by this.
+function fetchJsonQuick(url, ms) {
+  return new Promise((resolve) => {
+    let done = false;
+    const finish = v => { if (!done) { done = true; resolve(v); } };
+    try {
+      const ctrl = new AbortController();
+      const t = setTimeout(() => { try { ctrl.abort(); } catch (e) {} finish(null); }, ms);
+      fetch(url, { signal: ctrl.signal, headers: { accept: 'application/json' } })
+        .then(r => (r && r.ok ? r.json() : null))
+        .then(j => { clearTimeout(t); finish(j); })
+        .catch(() => { clearTimeout(t); finish(null); });
+    } catch (e) { finish(null); }
+  });
+}
+
+async function fetchVerifiedSources(commonName, latinName) {
+  const out = [];
+  try {
+    // Wikipedia — try the latin binomial first, fall back to the common name
+    for (const title of [latinName, commonName].filter(Boolean)) {
+      const j = await fetchJsonQuick('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(title), 3000);
+      if (j && j.type !== 'disambiguation' && j.content_urls && j.content_urls.desktop && j.content_urls.desktop.page) {
+        out.push({ url: j.content_urls.desktop.page, title: 'Wikipedia — ' + (j.title || title) });
+        break;
+      }
+    }
+    // PubMed — up to 2 relevant papers naming the herb in title/abstract
+    const term = encodeURIComponent('"' + (latinName || commonName) + '"[Title/Abstract]');
+    const es = await fetchJsonQuick('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&retmode=json&retmax=2&sort=relevance&term=' + term, 3000);
+    const ids = es && es.esearchresult && Array.isArray(es.esearchresult.idlist) ? es.esearchresult.idlist : [];
+    if (ids.length) {
+      const sum = await fetchJsonQuick('https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=json&id=' + ids.join(','), 3000);
+      for (const id of ids) {
+        const rec = sum && sum.result && sum.result[id];
+        out.push({ url: 'https://pubmed.ncbi.nlm.nih.gov/' + id + '/', title: rec && rec.title ? String(rec.title).replace(/<[^>]+>/g, '').slice(0, 90) : 'PubMed ' + id });
+      }
+    }
+  } catch (e) { /* best-effort only */ }
+  return out;
+}
+
+// Merge verified links into existing sources without overwriting anything —
+// keeps every existing entry that already has a URL, then appends new ones.
+function mergeSources(existing, verified) {
+  const kept = Array.isArray(existing) ? existing.filter(s => s && s.url) : [];
+  const seen = new Set(kept.map(s => s.url));
+  for (const v of verified || []) { if (!seen.has(v.url)) { kept.push(v); seen.add(v.url); } }
+  return kept;
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
@@ -154,6 +208,17 @@ exports.handler = async (event) => {
         deriveFunctionalOverview(cachedRow.data);
         validateCompounds(cachedRow.data);
         let healed = cachedRow.data.functionalOverview !== before;
+
+        // Backfill verified citation links (Wikipedia/PubMed) for cached
+        // rows that have none — runs once per herb, then it's saved.
+        const hasLinkedSources = Array.isArray(cachedRow.data.sources) && cachedRow.data.sources.some(s => s && s.url);
+        if (!hasLinkedSources) {
+          const verified = await fetchVerifiedSources(name, cachedRow.data.latin);
+          if (verified.length) {
+            cachedRow.data.sources = mergeSources(cachedRow.data.sources, verified);
+            healed = true;
+          }
+        }
 
         if (healed) {
           supabase.from('herbs').upsert({ name, status: 'complete', data: cachedRow.data }).then(
@@ -216,6 +281,10 @@ Answer ONLY "yes" or "no", nothing else.`
 
     deriveFunctionalOverview(herb);
     validateCompounds(herb);
+
+    // Attach verified citation links — only URLs that actually resolved.
+    // Existing linked sources are kept; nothing is overwritten.
+    try { herb.sources = mergeSources(herb.sources, await fetchVerifiedSources(name, herb.latin)); } catch (e) {}
 
     if (!herb.disclaimer) {
       herb.disclaimer = 'Educational reference only. Not medical advice. Consult healthcare provider before use.';
