@@ -110,16 +110,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ch
 .ct-item::before{content:'!';color:#e8863f;font-weight:700;font-size:12px;}
 @keyframes ct-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 @media (prefers-reduced-motion: reduce){.caution-ticker{height:auto;padding:.4rem 0;}.ct-track{animation:none;white-space:normal;flex-wrap:wrap;width:auto;}.ct-item.ct-dup{display:none;}}
-.ph-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1;display:grid;grid-template-columns:1fr auto;gap:3rem;align-items:start;}
+.ph-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:2.5rem;align-items:start;}
 .ph-cat{display:inline-flex;align-items:center;gap:7px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:5px 14px;border-radius:2px;margin-bottom:1rem;border:1px solid;}
-.ph-name{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,5vw,62px);font-weight:300;line-height:1.06;color:var(--parchment);margin-bottom:.4rem;}
+.ph-name{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,5vw,62px);font-weight:300;line-height:1.06;color:var(--parchment);margin-bottom:.4rem;overflow-wrap:break-word;}
 .ph-latin{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:rgba(245,240,232,.42);margin-bottom:1rem;}
 .ph-origin{font-size:13px;color:rgba(245,240,232,.5);display:flex;align-items:center;gap:7px;}
 .ph-origin::before{content:'◦';color:var(--gold);}
-.ph-aside{min-width:200px;}
+.ph-aside{min-width:0;}
 .ph-aside-card{background:transparent;border:none;padding:0;margin-bottom:1.25rem;overflow:hidden;height:24px;display:flex;align-items:center;}
 .ph-image{width:100%;border-radius:6px;overflow:hidden;margin-bottom:.85rem;border:1px solid rgba(255,255,255,.1);}
-.ph-image img{width:100%;height:160px;object-fit:cover;display:block;}
+.ph-image img{width:100%;height:140px;object-fit:cover;display:block;}
 .ph-image-credit{font-size:9.5px;color:rgba(245,240,232,.4);padding:.35rem .1rem 0;line-height:1.4;}
 .ph-image-empty{font-size:11px;color:rgba(245,240,232,.35);font-style:italic;padding:.9rem;text-align:center;background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.12);border-radius:6px;margin-bottom:.85rem;}
 .ph-slideshow{position:relative;}
@@ -1027,7 +1027,7 @@ function renderProfile(h) {
   // Compound science section (formerly a separate full-card section).
   const actionRow = (name, system, desc) => {
     const col = colorFor(SYS_COLORS, system);
-    return `<div style="display:flex;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--parchment-deep);font-size:13.5px;flex-wrap:wrap;">
+    return `<div style="display:flex;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--parchment-deep);font-size:13px;flex-wrap:wrap;">
       <span style="font-weight:600;color:var(--charcoal);">${name}</span>
       <span class="sci-sys-tag" style="background:${col}1a;color:${col};flex-shrink:0;">${F.has(system) ? system : '—'}</span>
       <span style="color:var(--charcoal-mid);line-height:1.55;flex:1;min-width:200px;">${F.has(desc) ? desc : ''}</span>
@@ -1043,7 +1043,7 @@ function renderProfile(h) {
     ? matchedActions.map(a => a.name)
     : (F.has(h.herbalActions) ? h.herbalActions.map(a => a.name).filter(Boolean) : []);
   const simpleActionsHTML = actionNames.length
-    ? `<div style="display:flex;flex-wrap:wrap;gap:.5rem;">${actionNames.map(n => `<span style="background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-radius:6px;padding:.45rem .95rem;font-size:13.5px;font-weight:600;color:var(--charcoal);">${n}</span>`).join('')}</div>`
+    ? `<div style="display:flex;flex-wrap:wrap;gap:.5rem;">${actionNames.map(n => `<span style="background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-radius:6px;padding:.45rem .95rem;font-size:13px;font-weight:600;color:var(--charcoal);">${n}</span>`).join('')}</div>`
     : '';
 
   // Body effects
@@ -1059,10 +1059,10 @@ function renderProfile(h) {
   const prepHTML = Object.keys(prepLabels).map(k => {
     const v = prepData[k];
     const body = F.has(v)
-      ? `<div style="font-size:13.5px;color:var(--charcoal-mid);line-height:1.7;">${v}</div>`
+      ? `<div style="font-size:13px;color:var(--charcoal-mid);line-height:1.7;">${v}</div>`
       : `<div style="font-size:12.5px;color:var(--charcoal-mid);line-height:1.7;opacity:.62;font-style:italic;">${F.message('dosage')}</div>`;
     return `<div style="padding:1.1rem 1.35rem;background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-radius:6px;">
-      <div style="font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:8px;">${prepLabels[k]}</div>
+      <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:8px;">${prepLabels[k]}</div>
       ${body}
     </div>`;
   }).join('');
@@ -1076,19 +1076,19 @@ function renderProfile(h) {
   // no citation row, so nothing implies a source that was never recorded.
   const sourcesRowHTML = realSources.length
     ? `<div style="font-size:11.5px;color:var(--charcoal-mid);border-top:1px solid rgba(200,149,42,.2);padding-top:.75rem;"><span style="text-transform:uppercase;letter-spacing:.08em;color:var(--gold);font-weight:600;">Sources</span><span style="margin-left:.5rem;">${realSources.map(s => `<a href="${escHtml(s.url)}" target="_blank" rel="noopener noreferrer" style="color:var(--gold);text-decoration:underline;">${escHtml(s.title || s.url)}</a>`).join(' &middot; ')}</span></div>`
-    : `<div style="font-size:10.5px;color:var(--charcoal-mid);opacity:.55;border-top:1px solid var(--parchment-deep);padding-top:.6rem;letter-spacing:.06em;text-transform:uppercase;">Summary — educational reference</div>`;
+    : `<div style="font-size:10px;color:var(--charcoal-mid);opacity:.55;border-top:1px solid var(--parchment-deep);padding-top:.6rem;letter-spacing:.12em;text-transform:uppercase;">Summary — educational reference</div>`;
 
 
   document.getElementById('profile-main-content').innerHTML = `
     <div style="background:rgba(200,149,42,.07);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
-      <div style="font-size:14.5px;line-height:1.8;color:var(--charcoal);margin-bottom:1rem;${F.has(h.functionalOverview) ? '' : 'opacity:.62;font-style:italic;'}">${F.text(h.functionalOverview, 'functionalOverview')}</div>
+      <div style="font-size:14px;line-height:1.8;color:var(--charcoal);margin-bottom:1rem;${F.has(h.functionalOverview) ? '' : 'opacity:.62;font-style:italic;'}">${F.text(h.functionalOverview, 'functionalOverview')}</div>
 ${sourcesRowHTML}
     </div>
 
     <div class="content-section">
       <h2><span class="cs-icon">🌿</span>What this herb does</h2>
       ${simpleActionsHTML || `<div style="font-size:13px;color:var(--charcoal-mid);opacity:.7;font-style:italic;">Actions for this herb haven't been recorded yet.</div>`}
-      <div style="font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:1.4rem 0 .75rem;">Effects on body systems</div>
+      <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:1.4rem 0 .75rem;">Effects on body systems</div>
       ${bodyHTML}
     </div>
 
@@ -1127,7 +1127,7 @@ ${sourcesRowHTML}
       ${compClasses.length ? `<div class="sci-pill-row" style="margin-bottom:1rem;">${compoundClassesHTML}</div>` : ''}
       ${compoundsHTML}
       <div style="margin-top:1.5rem;background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-radius:6px;padding:1.1rem 1.35rem;">
-        <div style="font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:.5rem;">✦ Herbal actions</div>
+        <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:.5rem;">✦ Herbal actions</div>
         ${herbalActionsHTML}
       </div>
     </div>`;
