@@ -1,6 +1,6 @@
 const Anthropic = require('@anthropic-ai/sdk');
 const { createClient } = require('@supabase/supabase-js');
-const { findMissing, deriveFunctionalOverview, validateCompounds } = require('../profile-validation');
+const { findMissing, deriveFunctionalOverview, validateCompounds } = require('./profile-validation');
 
 // Batch generation function for Netlify scheduled events
 // Runs on a schedule to proactively generate herb profiles from the pending list
