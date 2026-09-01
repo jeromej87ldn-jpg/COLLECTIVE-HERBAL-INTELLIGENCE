@@ -1,0 +1,810 @@
+{
+  "metadata": {
+    "total_herbs": 113,
+    "version": "1.0.0",
+    "date_consolidated": "2026-09-01T21:38:16.623449",
+    "status": "production_ready",
+    "sources": [
+      "CHIHerbadexDay4Herbs6011000.pdf (400 herbs, #601-1000)",
+      "CHI_Herbs_1001_1500_Session5.pdf (500 herbs, #1001-1500)",
+      "final_herbadex_database.json (140 herbs)",
+      "Wikipedia List of plants used in herbalism",
+      "HerbalHaven A-Z of herbs",
+      "DrAxe Best 101 Herbs and Spices",
+      "HerbalGram HerbMedPro"
+    ]
+  },
+  "herbs": [
+    {
+      "id": 1,
+      "name": "Ginger",
+      "latin_name": "Zingiber officinale",
+      "tradition": "TCM",
+      "summary": "Warming digestive herb with anti-inflammatory and circulation-supporting properties"
+    },
+    {
+      "id": 2,
+      "name": "Turmeric",
+      "latin_name": "Curcuma longa",
+      "tradition": "Ayurveda",
+      "summary": "Golden spice with powerful anti-inflammatory and antioxidant properties for joint and liver support"
+    },
+    {
+      "id": 3,
+      "name": "Ashwagandha",
+      "latin_name": "Withania somnifera",
+      "tradition": "Ayurveda",
+      "summary": "Adaptogenic herb for stress resilience and nervous system support"
+    },
+    {
+      "id": 4,
+      "name": "Licorice",
+      "latin_name": "Glycyrrhiza glabra",
+      "tradition": "TCM",
+      "summary": "Sweet root herb for digestive support and respiratory health"
+    },
+    {
+      "id": 5,
+      "name": "Echinacea",
+      "latin_name": "Echinacea purpurea",
+      "tradition": "Western Herbalism",
+      "summary": "Immune-supporting herb traditionally used during cold and flu season"
+    },
+    {
+      "id": 6,
+      "name": "Ginkgo",
+      "latin_name": "Ginkgo biloba",
+      "tradition": "TCM",
+      "summary": "Brain-supporting herb for memory, focus, and cognitive function"
+    },
+    {
+      "id": 7,
+      "name": "St. John's Wort",
+      "latin_name": "Hypericum perforatum",
+      "tradition": "European Folk",
+      "summary": "Mood-supporting herb traditionally used for emotional resilience"
+    },
+    {
+      "id": 8,
+      "name": "Valerian",
+      "latin_name": "Valeriana officinalis",
+      "tradition": "European Folk",
+      "summary": "Calming herb for sleep support and nervous system relaxation"
+    },
+    {
+      "id": 9,
+      "name": "Milk Thistle",
+      "latin_name": "Silybum marianum",
+      "tradition": "Western Herbalism",
+      "summary": "Liver-supporting seed herb for detoxification and cellular health"
+    },
+    {
+      "id": 10,
+      "name": "Peppermint",
+      "latin_name": "Mentha piperita",
+      "tradition": "Western Herbalism",
+      "summary": "Cooling digestive herb for stomach comfort and mental clarity"
+    },
+    {
+      "id": 601,
+      "name": "Galangal",
+      "latin_name": "Alpinia galanga",
+      "tradition": "Southeast Asian",
+      "summary": "Pungent root used in Southeast Asian traditional medicine for digestive support"
+    },
+    {
+      "id": 602,
+      "name": "Cardamom",
+      "latin_name": "Elettaria cardamomum",
+      "tradition": "Southeast Asian",
+      "summary": "Aromatic seed with warming digestive and respiratory properties"
+    },
+    {
+      "id": 603,
+      "name": "Lemongrass",
+      "latin_name": "Cymbopogon citratus",
+      "tradition": "Southeast Asian",
+      "summary": "Lemony herb traditionally used for digestion and nervous system support"
+    },
+    {
+      "id": 604,
+      "name": "Holy Basil",
+      "latin_name": "Ocimum sanctum",
+      "tradition": "Southeast Asian",
+      "summary": "Sacred adaptogenic herb for stress resilience and spiritual practice"
+    },
+    {
+      "id": 605,
+      "name": "Turmeric Root",
+      "latin_name": "Curcuma domestica",
+      "tradition": "Southeast Asian",
+      "summary": "Fresh turmeric root with enhanced bioavailability and anti-inflammatory power"
+    },
+    {
+      "id": 681,
+      "name": "Mango Bark",
+      "latin_name": "Mangifera indica",
+      "tradition": "Caribbean",
+      "summary": "Bark traditionally used in Caribbean herbalism for digestion and skin health"
+    },
+    {
+      "id": 682,
+      "name": "Guava Leaf",
+      "latin_name": "Psidium guajava",
+      "tradition": "Caribbean",
+      "summary": "Leaf from guava tree used traditionally for digestive and immune support"
+    },
+    {
+      "id": 683,
+      "name": "Soursop",
+      "latin_name": "Annona muricata",
+      "tradition": "Caribbean",
+      "summary": "Tropical fruit tree leaf used in Caribbean traditions for immune support"
+    },
+    {
+      "id": 741,
+      "name": "Sage",
+      "latin_name": "Salvia officinalis",
+      "tradition": "European Folk",
+      "summary": "Wise herb traditionally used for throat support and nervous system health"
+    },
+    {
+      "id": 742,
+      "name": "Thyme",
+      "latin_name": "Thymus vulgaris",
+      "tradition": "European Folk",
+      "summary": "Aromatic herb with respiratory and digestive supporting properties"
+    },
+    {
+      "id": 743,
+      "name": "Feverfew",
+      "latin_name": "Tanacetum parthenium",
+      "tradition": "European Folk",
+      "summary": "Traditional herb for headache relief and pain management"
+    },
+    {
+      "id": 821,
+      "name": "Maca",
+      "latin_name": "Lepidium meyenii",
+      "tradition": "Andean",
+      "summary": "Energizing root from Andes for vitality and stamina support"
+    },
+    {
+      "id": 822,
+      "name": "Yacon",
+      "latin_name": "Smallanthus sonchifolius",
+      "tradition": "Andean",
+      "summary": "Inulin-rich tuber for metabolic and digestive support"
+    },
+    {
+      "id": 823,
+      "name": "Baobab",
+      "latin_name": "Adansonia digitata",
+      "tradition": "African Traditional",
+      "summary": "Nutrient-dense African tree for immune and energy support"
+    },
+    {
+      "id": 901,
+      "name": "Coconut Oil",
+      "latin_name": "Cocos nucifera",
+      "tradition": "Global",
+      "summary": "Versatile oil used traditionally for skin and digestive health"
+    },
+    {
+      "id": 902,
+      "name": "Frankincense",
+      "latin_name": "Boswellia carterii",
+      "tradition": "Middle Eastern",
+      "summary": "Sacred resin traditionally used for inflammation and spiritual practice"
+    },
+    {
+      "id": 903,
+      "name": "Myrrh",
+      "latin_name": "Commiphora myrrha",
+      "tradition": "Middle Eastern",
+      "summary": "Ancient resin for immune support and skin health"
+    },
+    {
+      "id": 1001,
+      "name": "Brahmi",
+      "latin_name": "Bacopa monnieri",
+      "tradition": "Ayurveda",
+      "summary": "Cognitive support herb used in Ayurvedic tradition for memory and nervous system health"
+    },
+    {
+      "id": 1002,
+      "name": "Triphala",
+      "latin_name": "Three-fruit blend",
+      "tradition": "Ayurveda",
+      "summary": "Three-fruit cleansing formula for digestive balance and detoxification"
+    },
+    {
+      "id": 1003,
+      "name": "Neem",
+      "latin_name": "Azadirachta indica",
+      "tradition": "Ayurveda",
+      "summary": "Bitter detoxifying herb traditionally used for skin and immune support"
+    },
+    {
+      "id": 1004,
+      "name": "Haritaki",
+      "latin_name": "Terminalia chebula",
+      "tradition": "Ayurveda",
+      "summary": "Rejuvenative fruit used in Ayurveda for digestion and longevity"
+    },
+    {
+      "id": 1005,
+      "name": "Shatavari",
+      "latin_name": "Asparagus racemosus",
+      "tradition": "Ayurveda",
+      "summary": "Nourishing herb traditionally used for reproductive and immune health"
+    },
+    {
+      "id": 1051,
+      "name": "Goji Berry",
+      "latin_name": "Lycium barbarum",
+      "tradition": "TCM",
+      "summary": "Immune-supporting berry traditionally used for vitality and vision"
+    },
+    {
+      "id": 1052,
+      "name": "Astragalus",
+      "latin_name": "Astragalus membranaceus",
+      "tradition": "TCM",
+      "summary": "Immune-fortifying root used in TCM for stamina and vitality"
+    },
+    {
+      "id": 1053,
+      "name": "Reishi",
+      "latin_name": "Ganoderma lucidum",
+      "tradition": "TCM",
+      "summary": "Medicinal mushroom for stress resilience and sleep support"
+    },
+    {
+      "id": 1054,
+      "name": "Cordyceps",
+      "latin_name": "Cordyceps sinensis",
+      "tradition": "TCM",
+      "summary": "Energy-enhancing fungus traditionally used for stamina and athletic performance"
+    },
+    {
+      "id": 1055,
+      "name": "Angelica",
+      "latin_name": "Angelica sinensis",
+      "tradition": "TCM",
+      "summary": "Female-supportive root herb for hormonal balance and circulation"
+    },
+    {
+      "id": 1176,
+      "name": "Rooibos",
+      "latin_name": "Aspalathus linearis",
+      "tradition": "African Traditional",
+      "summary": "Caffeine-free tea with antioxidant properties used in South African tradition"
+    },
+    {
+      "id": 1177,
+      "name": "Marula",
+      "latin_name": "Sclerocarya birrea",
+      "tradition": "African Traditional",
+      "summary": "Vitamin C-rich fruit used traditionally for immune support"
+    },
+    {
+      "id": 1178,
+      "name": "Moringa",
+      "latin_name": "Moringa oleifera",
+      "tradition": "African Traditional",
+      "summary": "Nutrient-dense tree traditionally used for vitality and nutritional support"
+    },
+    {
+      "id": 1226,
+      "name": "Hibiscus",
+      "latin_name": "Hibiscus sabdariffa",
+      "tradition": "Caribbean",
+      "summary": "Tart flower used in Caribbean and African traditions for circulation support"
+    },
+    {
+      "id": 1227,
+      "name": "Aloe Vera",
+      "latin_name": "Aloe barbadensis",
+      "tradition": "Caribbean",
+      "summary": "Cooling gel plant used topically and internally for digestive and skin health"
+    },
+    {
+      "id": 1251,
+      "name": "Cat's Claw",
+      "latin_name": "Uncaria tomentosa",
+      "tradition": "South American",
+      "summary": "Immune-supporting vine from Amazon rainforest for joint and gut health"
+    },
+    {
+      "id": 1252,
+      "name": "Pau d'Arco",
+      "latin_name": "Tabebuia impetiginosa",
+      "tradition": "South American",
+      "summary": "Antifungal and antimicrobial bark traditionally used for immune support"
+    },
+    {
+      "id": 1253,
+      "name": "Camu Camu",
+      "latin_name": "Myrciaria dubia",
+      "tradition": "South American",
+      "summary": "Vitamin C powerhouse berry from Amazon for immune support"
+    },
+    {
+      "id": 1301,
+      "name": "Lavender",
+      "latin_name": "Lavandula angustifolia",
+      "tradition": "Western Herbalism",
+      "summary": "Calming aromatic herb for sleep support and stress relief, used topically and as tea"
+    },
+    {
+      "id": 1302,
+      "name": "Chamomile",
+      "latin_name": "Matricaria chamomilla",
+      "tradition": "Western Herbalism",
+      "summary": "Gentle relaxing flower traditionally used for sleep and digestive comfort"
+    },
+    {
+      "id": 1303,
+      "name": "Calendula",
+      "latin_name": "Calendula officinalis",
+      "tradition": "Western Herbalism",
+      "summary": "Skin-supporting flower traditionally used topically for wound and skin health"
+    },
+    {
+      "id": 1304,
+      "name": "Nettle",
+      "latin_name": "Urtica dioica",
+      "tradition": "Western Herbalism",
+      "summary": "Nutrient-dense herb traditionally used for energy and mineral supplementation"
+    },
+    {
+      "id": 1305,
+      "name": "Red Clover",
+      "latin_name": "Trifolium pratense",
+      "tradition": "Western Herbalism",
+      "summary": "Phytoestrogen-rich herb traditionally used for women's health and vitality"
+    },
+    {
+      "id": 1476,
+      "name": "Arnica",
+      "latin_name": "Arnica montana",
+      "tradition": "European Folk",
+      "summary": "Alpine flower traditionally used topically for bruising and muscle soreness"
+    },
+    {
+      "id": 1477,
+      "name": "Comfrey",
+      "latin_name": "Symphytum officinale",
+      "tradition": "European Folk",
+      "summary": "Bone-supporting herb traditionally used topically for bruises and joint support"
+    },
+    {
+      "id": 1478,
+      "name": "Plantain",
+      "latin_name": "Plantago major",
+      "tradition": "European Folk",
+      "summary": "Wound-healing herb traditionally used topically and as tea for lung support"
+    },
+    {
+      "id": 1501,
+      "name": "Acacia",
+      "latin_name": "Acacia senegal",
+      "tradition": "Traditional Medicine",
+      "summary": "Natural gum used for various medicinal purposes and as a binder"
+    },
+    {
+      "id": 1502,
+      "name": "Acacia Catechu",
+      "latin_name": "Acacia catechu",
+      "tradition": "Ayurveda",
+      "summary": "Cutch tree product used in traditional medicine for astringent properties"
+    },
+    {
+      "id": 1503,
+      "name": "Andrographis",
+      "latin_name": "Andrographis paniculata",
+      "tradition": "Ayurveda",
+      "summary": "King of bitters - traditional immune support herb"
+    },
+    {
+      "id": 1504,
+      "name": "Aralia",
+      "latin_name": "Aralia spp.",
+      "tradition": "Traditional Asian Medicine",
+      "summary": "Spikenard - traditional aromatic and medicinal plant"
+    },
+    {
+      "id": 1505,
+      "name": "Arnica Chamissonis",
+      "latin_name": "Arnica chamissonis",
+      "tradition": "Western Herbalism",
+      "summary": "Mountain arnica variant - topical anti-inflammatory for bruising"
+    },
+    {
+      "id": 1506,
+      "name": "Atractylodes",
+      "latin_name": "Atractylodes spp.",
+      "tradition": "TCM",
+      "summary": "Traditional Chinese herb for digestive support and spleen health"
+    },
+    {
+      "id": 1507,
+      "name": "Baobab",
+      "latin_name": "Adansonia digitata",
+      "tradition": "African Traditional Medicine",
+      "summary": "African superfood tree with multiple medicinal uses"
+    },
+    {
+      "id": 1508,
+      "name": "Barberry",
+      "latin_name": "Berberis aquifolium",
+      "tradition": "Western Herbalism",
+      "summary": "Oregon grape - liver and skin support herb"
+    },
+    {
+      "id": 1509,
+      "name": "Berberine Extract",
+      "latin_name": "Extracted from Berberis spp.",
+      "tradition": "Western Herbalism",
+      "summary": "Concentrated alkaloid for metabolic and immune support"
+    },
+    {
+      "id": 1510,
+      "name": "Black Currant",
+      "latin_name": "Ribes nigrum",
+      "tradition": "Western Herbalism",
+      "summary": "Nutrient-dense berries with antioxidant and immune properties"
+    },
+    {
+      "id": 1511,
+      "name": "Black Walnut",
+      "latin_name": "Juglans nigra",
+      "tradition": "Western Herbalism",
+      "summary": "Antifungal and antimicrobial hull traditionally used for parasitic support"
+    },
+    {
+      "id": 1512,
+      "name": "Blessed Thistle",
+      "latin_name": "Cnicus benedictus",
+      "tradition": "European Folk",
+      "summary": "Bitter herb traditionally used for digestion and lactation support"
+    },
+    {
+      "id": 1513,
+      "name": "Blueberry",
+      "latin_name": "Vaccinium myrtillus",
+      "tradition": "Western Herbalism",
+      "summary": "Antioxidant berry for vision and cognitive support"
+    },
+    {
+      "id": 1514,
+      "name": "Boneset",
+      "latin_name": "Eupatorium perfoliatum",
+      "tradition": "Native American",
+      "summary": "Immune-supporting herb traditionally used during cold season"
+    },
+    {
+      "id": 1515,
+      "name": "Boswellia",
+      "latin_name": "Boswellia serrata",
+      "tradition": "Ayurveda",
+      "summary": "Joint-supporting resin traditionally used for inflammation management"
+    },
+    {
+      "id": 1516,
+      "name": "Burdock",
+      "latin_name": "Arctium lappa",
+      "tradition": "TCM",
+      "summary": "Root vegetable herb traditionally used for blood purification and detox"
+    },
+    {
+      "id": 1517,
+      "name": "Butterbur",
+      "latin_name": "Petasites hybridus",
+      "tradition": "European Folk",
+      "summary": "Historically used for respiratory support and migraine relief"
+    },
+    {
+      "id": 1518,
+      "name": "Cacao",
+      "latin_name": "Theobroma cacao",
+      "tradition": "Central American",
+      "summary": "Mood-enhancing superfood with cardiovascular supporting properties"
+    },
+    {
+      "id": 1519,
+      "name": "Calendula",
+      "latin_name": "Calendula arvensis",
+      "tradition": "Western Herbalism",
+      "summary": "Golden flower for topical wound healing and skin support"
+    },
+    {
+      "id": 1520,
+      "name": "Camphor",
+      "latin_name": "Cinnamomum camphora",
+      "tradition": "TCM",
+      "summary": "Cooling aromatic traditionally used topically for pain relief"
+    },
+    {
+      "id": 1521,
+      "name": "Capillus Veneris",
+      "latin_name": "Adiantum capillus-veneris",
+      "tradition": "European Folk",
+      "summary": "Delicate fern traditionally used for respiratory health"
+    },
+    {
+      "id": 1522,
+      "name": "Cascara Sagrada",
+      "latin_name": "Rhamnus purshiana",
+      "tradition": "Native American",
+      "summary": "Bark traditionally used as gentle bowel support"
+    },
+    {
+      "id": 1523,
+      "name": "Catnip",
+      "latin_name": "Nepeta cataria",
+      "tradition": "Western Herbalism",
+      "summary": "Calming herb traditionally used for sleep and digestive comfort"
+    },
+    {
+      "id": 1524,
+      "name": "Cayenne",
+      "latin_name": "Capsicum annuum",
+      "tradition": "Central American",
+      "summary": "Heating pepper for circulation and pain support"
+    },
+    {
+      "id": 1525,
+      "name": "Celandine",
+      "latin_name": "Chelidonium majus",
+      "tradition": "European Folk",
+      "summary": "Yellow flower traditionally used for liver and skin support"
+    },
+    {
+      "id": 1526,
+      "name": "Celery Seed",
+      "latin_name": "Apium graveolens",
+      "tradition": "Western Herbalism",
+      "summary": "Aromatic seed traditionally used for joint and kidney support"
+    },
+    {
+      "id": 1527,
+      "name": "Centaury",
+      "latin_name": "Centaurium erythraea",
+      "tradition": "European Folk",
+      "summary": "Bitter herb traditionally used for digestion and liver support"
+    },
+    {
+      "id": 1528,
+      "name": "Chaga",
+      "latin_name": "Inonotus obliquus",
+      "tradition": "Siberian",
+      "summary": "Immune-supporting mushroom growing on birch trees"
+    },
+    {
+      "id": 1529,
+      "name": "Chamomile German",
+      "latin_name": "Matricaria recutita",
+      "tradition": "Western Herbalism",
+      "summary": "Gentle relaxing flower for sleep and digestive support"
+    },
+    {
+      "id": 1530,
+      "name": "Chamomile Roman",
+      "latin_name": "Chamaemelum nobile",
+      "tradition": "European Folk",
+      "summary": "Calming flower traditionally used for anxiety and sleep"
+    },
+    {
+      "id": 1531,
+      "name": "Chantarelle",
+      "latin_name": "Cantharellus spp.",
+      "tradition": "Global",
+      "summary": "Culinary mushroom with immune-supporting properties"
+    },
+    {
+      "id": 1532,
+      "name": "Chapparal",
+      "latin_name": "Larrea tridentata",
+      "tradition": "Native American",
+      "summary": "Desert shrub traditionally used as powerful antioxidant and cleanser"
+    },
+    {
+      "id": 1533,
+      "name": "Charcoal Activated",
+      "latin_name": "Activated carbon",
+      "tradition": "Western",
+      "summary": "Binding agent traditionally used for detoxification support"
+    },
+    {
+      "id": 1534,
+      "name": "Chaste Tree",
+      "latin_name": "Vitex agnus-castus",
+      "tradition": "European Folk",
+      "summary": "Hormone-balancing berry for women's reproductive health"
+    },
+    {
+      "id": 1535,
+      "name": "Chickweed",
+      "latin_name": "Stellaria media",
+      "tradition": "Western Herbalism",
+      "summary": "Cooling herb traditionally used for skin and respiratory support"
+    },
+    {
+      "id": 1536,
+      "name": "Chicory",
+      "latin_name": "Cichorium intybus",
+      "tradition": "European Folk",
+      "summary": "Bitter root traditionally used for liver and digestive support"
+    },
+    {
+      "id": 1537,
+      "name": "Chili Pepper",
+      "latin_name": "Capsicum frutescens",
+      "tradition": "Global",
+      "summary": "Heating spice for circulation and metabolic support"
+    },
+    {
+      "id": 1538,
+      "name": "China Root",
+      "latin_name": "Smilax china",
+      "tradition": "TCM",
+      "summary": "Traditional Chinese herb for joint and skin support"
+    },
+    {
+      "id": 1539,
+      "name": "Chinese Skullcap",
+      "latin_name": "Scutellaria baicalensis",
+      "tradition": "TCM",
+      "summary": "Cooling herb traditionally used for inflammation and liver support"
+    },
+    {
+      "id": 1540,
+      "name": "Chives",
+      "latin_name": "Allium schoenoprasum",
+      "tradition": "Global",
+      "summary": "Culinary herb with mild immune-supporting properties"
+    },
+    {
+      "id": 1541,
+      "name": "Chlorella",
+      "latin_name": "Chlorella pyrenoidosa",
+      "tradition": "Asian",
+      "summary": "Protein-rich algae for detoxification and nutritional support"
+    },
+    {
+      "id": 1542,
+      "name": "Chokeberry",
+      "latin_name": "Aronia melanocarpa",
+      "tradition": "Native American",
+      "summary": "Antioxidant berry for immune and cardiovascular support"
+    },
+    {
+      "id": 1543,
+      "name": "Chrysanthemum",
+      "latin_name": "Chrysanthemum morifolium",
+      "tradition": "TCM",
+      "summary": "Cooling flower tea traditionally used for eye and liver support"
+    },
+    {
+      "id": 1544,
+      "name": "Cinnamon",
+      "latin_name": "Cinnamomum verum",
+      "tradition": "TCM",
+      "summary": "Warming spice for circulation and blood sugar support"
+    },
+    {
+      "id": 1545,
+      "name": "Clary Sage",
+      "latin_name": "Salvia sclarea",
+      "tradition": "European Folk",
+      "summary": "Hormone-balancing herb for women's health"
+    },
+    {
+      "id": 1546,
+      "name": "Cleavers",
+      "latin_name": "Galium aparine",
+      "tradition": "Western Herbalism",
+      "summary": "Lymph-supporting herb traditionally used for detoxification"
+    },
+    {
+      "id": 1547,
+      "name": "Clove",
+      "latin_name": "Syzygium aromaticum",
+      "tradition": "Global",
+      "summary": "Warming spice with antimicrobial properties for oral and digestive health"
+    },
+    {
+      "id": 1548,
+      "name": "Clubmoss",
+      "latin_name": "Lycopodium spp.",
+      "tradition": "Asian Traditional",
+      "summary": "Ancient plant traditionally used for energy and cognition"
+    },
+    {
+      "id": 1549,
+      "name": "Cocoa",
+      "latin_name": "Theobroma cacao",
+      "tradition": "Central American",
+      "summary": "Mood-enhancing superfood with cardiovascular benefits"
+    },
+    {
+      "id": 1550,
+      "name": "Coffee",
+      "latin_name": "Coffea arabica",
+      "tradition": "Global",
+      "summary": "Energizing bean traditionally used for mental clarity and vitality"
+    },
+    {
+      "id": 1551,
+      "name": "Coleus",
+      "latin_name": "Plectranthus barbatus",
+      "tradition": "Ayurveda",
+      "summary": "Root herb traditionally used for cardiovascular and metabolic support"
+    },
+    {
+      "id": 1552,
+      "name": "Coltsfoot",
+      "latin_name": "Tussilago farfara",
+      "tradition": "European Folk",
+      "summary": "Expectorant herb traditionally used for respiratory support"
+    },
+    {
+      "id": 1553,
+      "name": "Comfrey Leaf",
+      "latin_name": "Symphytum officinale",
+      "tradition": "Western Herbalism",
+      "summary": "Bone and joint-supporting herb traditionally used topically"
+    },
+    {
+      "id": 1554,
+      "name": "Condurango",
+      "latin_name": "Gonolobus condurango",
+      "tradition": "South American",
+      "summary": "Bark traditionally used for digestive and immune support"
+    },
+    {
+      "id": 1555,
+      "name": "Coneflower",
+      "latin_name": "Echinacea angustifolia",
+      "tradition": "Native American",
+      "summary": "Purple flower traditionally used for immune support"
+    },
+    {
+      "id": 1556,
+      "name": "Coriander",
+      "latin_name": "Coriandrum sativum",
+      "tradition": "Global",
+      "summary": "Cooling seed traditionally used for digestive and heavy metal support"
+    },
+    {
+      "id": 1557,
+      "name": "Corn Silk",
+      "latin_name": "Zea mays",
+      "tradition": "Native American",
+      "summary": "Diuretic herb traditionally used for urinary and kidney support"
+    },
+    {
+      "id": 1558,
+      "name": "Cornus",
+      "latin_name": "Cornus officinalis",
+      "tradition": "TCM",
+      "summary": "Berry traditionally used for kidney and adrenal support"
+    },
+    {
+      "id": 1559,
+      "name": "Corydalis",
+      "latin_name": "Corydalis yanhusuo",
+      "tradition": "TCM",
+      "summary": "Root traditionally used for pain relief and blood circulation"
+    },
+    {
+      "id": 1560,
+      "name": "Cough Root",
+      "latin_name": "Marsdenia cundurango",
+      "tradition": "South American",
+      "summary": "Traditional South American herb for respiratory support"
+    }
+  ]
+}
