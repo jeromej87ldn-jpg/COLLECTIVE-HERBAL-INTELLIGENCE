@@ -919,5 +919,148 @@
       "summary": "Traditional South American herb for respiratory support",
       "status": "insufficient_data"
     }
-  ]
+  ]   {
+    "id": 2001,
+    "name": "Black Sesame",
+    "latin_name": "Sesamum indicum var. nigrum",
+    "tradition": "TCM",
+    "summary": "Nutrient-dense black seeds used to support bone health, kidney function, and overall vitality",
+    "status": "verified"
+  },
+  {
+    "id": 2002,
+    "name": "Pumpkin Seeds",
+    "latin_name": "Cucurbita pepo",
+    "tradition": "Traditional",
+    "summary": "Rich in minerals and antioxidants, traditionally used for prostate support and immune function",
+    "status": "verified"
+  },
+  {
+    "id": 2003,
+    "name": "Sunflower Seeds",
+    "latin_name": "Helianthus annuus",
+    "tradition": "Traditional",
+    "summary": "Vitamin E-rich seeds supporting heart health and antioxidant protection",
+    "status": "verified"
+  },
+  {
+    "id": 2004,
+    "name": "Flax Seeds",
+    "latin_name": "Linum usitatissimum",
+    "tradition": "Traditional",
+    "summary": "Omega-3 rich seeds traditionally used for digestive and cardiovascular support",
+    "status": "verified"
+  },
+  {
+    "id": 2005,
+    "name": "Chia Seeds",
+    "latin_name": "Salvia hispanica",
+    "tradition": "Mesoamerican",
+    "summary": "Ancient seeds high in omega-3s, fiber, and nutrients for energy and digestive support",
+    "status": "verified"
+  },
+  {
+    "id": 2006,
+    "name": "Fennel Seeds",
+    "latin_name": "Foeniculum vulgare",
+    "tradition": "Ayurveda",
+    "summary": "Aromatic digestive seeds used to support digestion, reduce bloating, and freshen breath",
+    "status": "verified"
+  },
+  {
+    "id": 2007,
+    "name": "Cumin Seeds",
+    "latin_name": "Cuminum cyminum",
+    "tradition": "Ayurveda",
+    "summary": "Warming spice used to support digestive fire, nutrient absorption, and metabolism",
+    "status": "verified"
+  },
+  {
+    "id": 2008,
+    "name": "Coriander Seeds",
+    "latin_name": "Coriandrum sativum",
+    "tradition": "Ayurveda",
+    "summary": "Cooling digestive spice used for detox support and to reduce inflammation",
+    "status": "verified"
+  },
+  {
+    "id": 2009,
+    "name": "Mustard Seeds",
+    "latin_name": "Sinapis alba",
+    "tradition": "Traditional",
+    "summary": "Pungent seeds used topically for warmth and internally to support circulation and metabolism",
+    "status": "verified"
+  },
+  {
+    "id": 2010,
+    "name": "Fenugreek Seeds",
+    "latin_name": "Trigonella foenum-graecum",
+    "tradition": "Ayurveda",
+    "summary": "Sweet-smelling seeds traditionally used for blood sugar balance, lactation, and hormone support",
+    "status": "verified"
+  },
+  {
+    "id": 2011,
+    "name": "Nigella Seeds",
+    "latin_name": "Nigella sativa",
+    "tradition": "Ayurveda",
+    "summary": "Peppery seeds used for immune support, respiratory health, and general wellness",
+    "status": "verified"
+  },
+  {
+    "id": 2012,
+    "name": "White Sesame",
+    "latin_name": "Sesamum indicum",
+    "tradition": "TCM",
+    "summary": "Classic sesame seeds used for nutritive support and to strengthen bones and joints",
+    "status": "verified"
+  },
+  {
+    "id": 2013,
+    "name": "Hemp Seeds",
+    "latin_name": "Cannabis sativa",
+    "tradition": "Traditional",
+    "summary": "Complete protein seeds rich in omega-3s and amino acids for nutritional support",
+    "status": "verified"
+  },
+  {
+    "id": 2014,
+    "name": "Grape Seed",
+    "latin_name": "Vitis vinifera",
+    "tradition": "Traditional",
+    "summary": "Antioxidant-rich extract used for cardiovascular support and antioxidant protection",
+    "status": "verified"
+  },
+  {
+    "id": 2015,
+    "name": "Caraway Seeds",
+    "latin_name": "Carum carvi",
+    "tradition": "Traditional",
+    "summary": "Warming digestive seed used to support digestion and reduce gas and bloating",
+    "status": "verified"
+  },
+  {
+    "id": 2016,
+    "name": "Anise Seeds",
+    "latin_name": "Pimpinella anisum",
+    "tradition": "Traditional",
+    "summary": "Sweet aromatic seed used to support digestion, ease respiratory comfort, and freshen breath",
+    "status": "verified"
+  },
+  {
+    "id": 2017,
+    "name": "Dill Seeds",
+    "latin_name": "Anethum graveolens",
+    "tradition": "Traditional",
+    "summary": "Mild digestive seed used to soothe digestion, support nursing mothers, and freshen breath",
+    "status": "verified"
+  },
+  {
+    "id": 2018,
+    "name": "Poppy Seeds",
+    "latin_name": "Papaver somniferum",
+    "tradition": "Ayurveda",
+    "summary": "Cooling seeds traditionally used for nerve support and mild sleep support",
+    "status": "verified"
+  }
 }
