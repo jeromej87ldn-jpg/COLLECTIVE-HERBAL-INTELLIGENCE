@@ -1063,4 +1063,163 @@
     "summary": "Cooling seeds traditionally used for nerve support and mild sleep support",
     "status": "verified"
   }
-}
+  {
+    "id": 2019,
+    "name": "Reishi",
+    "latin_name": "Ganoderma lucidum",
+    "tradition": "TCM",
+    "summary": "Sacred mushroom used for stress resilience, sleep support, and immune function",
+    "status": "verified"
+  },
+  {
+    "id": 2020,
+    "name": "Shiitake",
+    "latin_name": "Lentinula edodes",
+    "tradition": "TCM",
+    "summary": "Culinary mushroom with immune-supporting compounds and cardiovascular benefits",
+    "status": "verified"
+  },
+  {
+    "id": 2021,
+    "name": "Lion's Mane",
+    "latin_name": "Hericium erinaceus",
+    "tradition": "TCM",
+    "summary": "Brain-supporting mushroom used for cognitive function and nervous system health",
+    "status": "verified"
+  },
+  {
+    "id": 2022,
+    "name": "Cordyceps",
+    "latin_name": "Cordyceps sinensis",
+    "tradition": "TCM",
+    "summary": "Energy and stamina mushroom traditionally used for athletic performance and vitality",
+    "status": "verified"
+  },
+  {
+    "id": 2023,
+    "name": "Maitake",
+    "latin_name": "Grifola frondosa",
+    "tradition": "TCM",
+    "summary": "Dancing mushroom with immune-supporting polysaccharides and wellness benefits",
+    "status": "verified"
+  },
+  {
+    "id": 2024,
+    "name": "Chaga",
+    "latin_name": "Inonotus obliquus",
+    "tradition": "Russian Traditional",
+    "summary": "Birch tree mushroom prized for antioxidant support and immune resilience",
+    "status": "verified"
+  },
+  {
+    "id": 2025,
+    "name": "Turkey Tail",
+    "latin_name": "Trametes versicolor",
+    "tradition": "TCM",
+    "summary": "Colorful shelf mushroom used for gut health, immune support, and vitality",
+    "status": "verified"
+  },
+  {
+    "id": 2026,
+    "name": "Oyster Mushroom",
+    "latin_name": "Pleurotus ostreatus",
+    "tradition": "Traditional",
+    "summary": "Culinary and medicinal mushroom with immune and cardiovascular support",
+    "status": "verified"
+  },
+  {
+    "id": 2027,
+    "name": "Tremella",
+    "latin_name": "Tremella mesenterica",
+    "tradition": "TCM",
+    "summary": "White jelly mushroom used for skin hydration, lung support, and beauty",
+    "status": "verified"
+  },
+  {
+    "id": 2028,
+    "name": "Poria",
+    "latin_name": "Poria cocos",
+    "tradition": "TCM",
+    "summary": "Earth mushroom used for digestion, water balance, and nervous system calm",
+    "status": "verified"
+  },
+  {
+    "id": 2029,
+    "name": "Enoki",
+    "latin_name": "Flammulina velutipes",
+    "tradition": "Traditional",
+    "summary": "Delicate culinary mushroom with immune and nutritive properties",
+    "status": "verified"
+  },
+  {
+    "id": 2030,
+    "name": "King Trumpet",
+    "latin_name": "Pleurotus eryngii",
+    "tradition": "Traditional",
+    "summary": "Meaty culinary mushroom with immune-supporting compounds",
+    "status": "verified"
+  },
+  {
+    "id": 2031,
+    "name": "Morel",
+    "latin_name": "Morchella esculenta",
+    "tradition": "Traditional",
+    "summary": "Prized culinary mushroom with immune and nutritive support",
+    "status": "verified"
+  },
+  {
+    "id": 2032,
+    "name": "Chanterelle",
+    "latin_name": "Cantharellus cibarius",
+    "tradition": "Traditional",
+    "summary": "Golden culinary mushroom with immune and antioxidant properties",
+    "status": "verified"
+  },
+  {
+    "id": 2033,
+    "name": "Artist's Conk",
+    "latin_name": "Ganoderma applanatum",
+    "tradition": "Traditional",
+    "summary": "Shelf mushroom used for immune resilience and overall wellness support",
+    "status": "verified"
+  },
+  {
+    "id": 2034,
+    "name": "Agarikon",
+    "latin_name": "Laricifomes officinalis",
+    "tradition": "Traditional",
+    "summary": "Ancient medicinal mushroom for respiratory support and immune function",
+    "status": "verified"
+  },
+  {
+    "id": 2035,
+    "name": "Ganoderma Tsugae",
+    "latin_name": "Ganoderma tsugae",
+    "tradition": "TCM",
+    "summary": "Hemlock reishi variant used for calming and immune support",
+    "status": "verified"
+  },
+  {
+    "id": 2036,
+    "name": "Black Fungus",
+    "latin_name": "Auricularia polytricha",
+    "tradition": "TCM",
+    "summary": "Jelly ear mushroom used for blood circulation and nutritive support",
+    "status": "verified"
+  },
+  {
+    "id": 2037,
+    "name": "White Fungus",
+    "latin_name": "Tremella fuciformis",
+    "tradition": "TCM",
+    "summary": "Snow fungus used for hydration, respiratory support, and beauty",
+    "status": "verified"
+  },
+  {
+    "id": 2038,
+    "name": "Maitake Extract",
+    "latin_name": "Grifola frondosa extract",
+    "tradition": "TCM",
+    "summary": "Concentrated extract of maitake for potent immune and wellness support",
+    "status": "verified"
+  } 
