@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "total_herbs": 113,
+    "total_herbs": 259,
     "version": "1.0.0",
     "date_consolidated": "2026-09-01T21:38:16.623449",
     "status": "production_ready",
@@ -488,14 +488,6 @@
       "status": "insufficient_data"
     },
     {
-      "id": 1507,
-      "name": "Baobab",
-      "latin_name": "Adansonia digitata",
-      "tradition": "African Traditional Medicine",
-      "summary": "African superfood tree with multiple medicinal uses",
-      "status": "insufficient_data"
-    },
-    {
       "id": 1508,
       "name": "Barberry",
       "latin_name": "Berberis aquifolium",
@@ -581,14 +573,6 @@
       "latin_name": "Theobroma cacao",
       "tradition": "Central American",
       "summary": "Mood-enhancing superfood with cardiovascular supporting properties",
-      "status": "insufficient_data"
-    },
-    {
-      "id": 1519,
-      "name": "Calendula",
-      "latin_name": "Calendula arvensis",
-      "tradition": "Western Herbalism",
-      "summary": "Golden flower for topical wound healing and skin support",
       "status": "insufficient_data"
     },
     {
@@ -918,308 +902,1190 @@
       "tradition": "South American",
       "summary": "Traditional South American herb for respiratory support",
       "status": "insufficient_data"
+    },
+    {
+      "id": 2001,
+      "name": "Black Sesame",
+      "latin_name": "Sesamum indicum var. nigrum",
+      "tradition": "TCM",
+      "summary": "Nutrient-dense black seeds used to support bone health, kidney function, and overall vitality",
+      "status": "verified"
+    },
+    {
+      "id": 2002,
+      "name": "Pumpkin Seeds",
+      "latin_name": "Cucurbita pepo",
+      "tradition": "Traditional",
+      "summary": "Rich in minerals and antioxidants, traditionally used for prostate support and immune function",
+      "status": "verified"
+    },
+    {
+      "id": 2003,
+      "name": "Sunflower Seeds",
+      "latin_name": "Helianthus annuus",
+      "tradition": "Traditional",
+      "summary": "Vitamin E-rich seeds supporting heart health and antioxidant protection",
+      "status": "verified"
+    },
+    {
+      "id": 2004,
+      "name": "Flax Seeds",
+      "latin_name": "Linum usitatissimum",
+      "tradition": "Traditional",
+      "summary": "Omega-3 rich seeds traditionally used for digestive and cardiovascular support",
+      "status": "verified"
+    },
+    {
+      "id": 2005,
+      "name": "Chia Seeds",
+      "latin_name": "Salvia hispanica",
+      "tradition": "Mesoamerican",
+      "summary": "Ancient seeds high in omega-3s, fiber, and nutrients for energy and digestive support",
+      "status": "verified"
+    },
+    {
+      "id": 2006,
+      "name": "Fennel Seeds",
+      "latin_name": "Foeniculum vulgare",
+      "tradition": "Ayurveda",
+      "summary": "Aromatic digestive seeds used to support digestion, reduce bloating, and freshen breath",
+      "status": "verified"
+    },
+    {
+      "id": 2007,
+      "name": "Cumin Seeds",
+      "latin_name": "Cuminum cyminum",
+      "tradition": "Ayurveda",
+      "summary": "Warming spice used to support digestive fire, nutrient absorption, and metabolism",
+      "status": "verified"
+    },
+    {
+      "id": 2008,
+      "name": "Coriander Seeds",
+      "latin_name": "Coriandrum sativum",
+      "tradition": "Ayurveda",
+      "summary": "Cooling digestive spice used for detox support and to reduce inflammation",
+      "status": "verified"
+    },
+    {
+      "id": 2009,
+      "name": "Mustard Seeds",
+      "latin_name": "Sinapis alba",
+      "tradition": "Traditional",
+      "summary": "Pungent seeds used topically for warmth and internally to support circulation and metabolism",
+      "status": "verified"
+    },
+    {
+      "id": 2010,
+      "name": "Fenugreek Seeds",
+      "latin_name": "Trigonella foenum-graecum",
+      "tradition": "Ayurveda",
+      "summary": "Sweet-smelling seeds traditionally used for blood sugar balance, lactation, and hormone support",
+      "status": "verified"
+    },
+    {
+      "id": 2011,
+      "name": "Nigella Seeds",
+      "latin_name": "Nigella sativa",
+      "tradition": "Ayurveda",
+      "summary": "Peppery seeds used for immune support, respiratory health, and general wellness",
+      "status": "verified"
+    },
+    {
+      "id": 2012,
+      "name": "White Sesame",
+      "latin_name": "Sesamum indicum",
+      "tradition": "TCM",
+      "summary": "Classic sesame seeds used for nutritive support and to strengthen bones and joints",
+      "status": "verified"
+    },
+    {
+      "id": 2013,
+      "name": "Hemp Seeds",
+      "latin_name": "Cannabis sativa",
+      "tradition": "Traditional",
+      "summary": "Complete protein seeds rich in omega-3s and amino acids for nutritional support",
+      "status": "verified"
+    },
+    {
+      "id": 2014,
+      "name": "Grape Seed",
+      "latin_name": "Vitis vinifera",
+      "tradition": "Traditional",
+      "summary": "Antioxidant-rich extract used for cardiovascular support and antioxidant protection",
+      "status": "verified"
+    },
+    {
+      "id": 2015,
+      "name": "Caraway Seeds",
+      "latin_name": "Carum carvi",
+      "tradition": "Traditional",
+      "summary": "Warming digestive seed used to support digestion and reduce gas and bloating",
+      "status": "verified"
+    },
+    {
+      "id": 2016,
+      "name": "Anise Seeds",
+      "latin_name": "Pimpinella anisum",
+      "tradition": "Traditional",
+      "summary": "Sweet aromatic seed used to support digestion, ease respiratory comfort, and freshen breath",
+      "status": "verified"
+    },
+    {
+      "id": 2017,
+      "name": "Dill Seeds",
+      "latin_name": "Anethum graveolens",
+      "tradition": "Traditional",
+      "summary": "Mild digestive seed used to soothe digestion, support nursing mothers, and freshen breath",
+      "status": "verified"
+    },
+    {
+      "id": 2018,
+      "name": "Poppy Seeds",
+      "latin_name": "Papaver somniferum",
+      "tradition": "Ayurveda",
+      "summary": "Cooling seeds traditionally used for nerve support and mild sleep support",
+      "status": "verified"
+    },
+    {
+      "id": 2020,
+      "name": "Shiitake",
+      "latin_name": "Lentinula edodes",
+      "tradition": "TCM",
+      "summary": "Nutrient-dense mushroom with immune-supporting compounds and cardiovascular benefits",
+      "status": "verified"
+    },
+    {
+      "id": 2021,
+      "name": "Maitake",
+      "latin_name": "Grifola frondosa",
+      "tradition": "TCM",
+      "summary": "Medicinal mushroom used to support immune function and overall vitality",
+      "status": "verified"
+    },
+    {
+      "id": 2024,
+      "name": "Lion's Mane",
+      "latin_name": "Hericium erinaceus",
+      "tradition": "TCM",
+      "summary": "Brain-supporting medicinal mushroom for cognitive function and nervous system health",
+      "status": "verified"
+    },
+    {
+      "id": 2025,
+      "name": "Turkey Tail",
+      "latin_name": "Trametes versicolor",
+      "tradition": "TCM",
+      "summary": "Immune-supporting mushroom with polysaccharide compounds for digestive and gut health",
+      "status": "verified"
+    },
+    {
+      "id": 2026,
+      "name": "Oyster Mushroom",
+      "latin_name": "Pleurotus species",
+      "tradition": "Traditional",
+      "summary": "Medicinal culinary mushroom with immune and antioxidant properties",
+      "status": "verified"
+    },
+    {
+      "id": 2027,
+      "name": "Cremini Mushroom",
+      "latin_name": "Agaricus bisporus",
+      "tradition": "Traditional",
+      "summary": "Common medicinal mushroom variety with B vitamins and antioxidant support",
+      "status": "verified"
+    },
+    {
+      "id": 2028,
+      "name": "Portobello Mushroom",
+      "latin_name": "Agaricus bisporus",
+      "tradition": "Traditional",
+      "summary": "Mature medicinal mushroom variety rich in selenium and antioxidants",
+      "status": "verified"
+    },
+    {
+      "id": 2029,
+      "name": "Button Mushroom",
+      "latin_name": "Agaricus bisporus",
+      "tradition": "Western",
+      "summary": "Nutrient-rich medicinal mushroom with immune-supporting and anti-inflammatory compounds",
+      "status": "verified"
+    },
+    {
+      "id": 2030,
+      "name": "Enoki Mushroom",
+      "latin_name": "Flammulina velutipes",
+      "tradition": "TCM",
+      "summary": "Delicate medicinal mushroom used for immune support and nutritional benefits",
+      "status": "verified"
+    },
+    {
+      "id": 2031,
+      "name": "Porcini Mushroom",
+      "latin_name": "Boletus edulis",
+      "tradition": "European",
+      "summary": "Nutrient-dense medicinal mushroom with immune and inflammation-supporting properties",
+      "status": "verified"
+    },
+    {
+      "id": 2032,
+      "name": "Morel Mushroom",
+      "latin_name": "Morchella species",
+      "tradition": "European Folk",
+      "summary": "Delicacy mushroom with antioxidant compounds and nutritional value",
+      "status": "verified"
+    },
+    {
+      "id": 2033,
+      "name": "Chanterelle Mushroom",
+      "latin_name": "Cantharellus cibarius",
+      "tradition": "European",
+      "summary": "Golden medicinal mushroom with immune-supporting and antioxidant properties",
+      "status": "verified"
+    },
+    {
+      "id": 2034,
+      "name": "Agarikon",
+      "latin_name": "Fomitopsis officinalis",
+      "tradition": "Western Herbalism",
+      "summary": "Ancient medicinal mushroom traditionally used for respiratory and immune support",
+      "status": "verified"
+    },
+    {
+      "id": 2035,
+      "name": "Artist's Conk",
+      "latin_name": "Ganoderma applanatum",
+      "tradition": "Western Herbalism",
+      "summary": "Medicinal bracket mushroom traditionally used for immune and digestive support",
+      "status": "verified"
+    },
+    {
+      "id": 2036,
+      "name": "Wood Ear Mushroom",
+      "latin_name": "Auricularia polytricha",
+      "tradition": "TCM",
+      "summary": "Gelatinous medicinal mushroom used for circulation support and blood vitality",
+      "status": "verified"
+    },
+    {
+      "id": 2037,
+      "name": "Mesima Mushroom",
+      "latin_name": "Phellinus linteus",
+      "tradition": "TCM",
+      "summary": "Medicinal mushroom traditionally used for immune support and cellular health",
+      "status": "verified"
+    },
+    {
+      "id": 2038,
+      "name": "Hydnum Repandum",
+      "latin_name": "Hydnum repandum",
+      "tradition": "European Folk",
+      "summary": "Lesser-known medicinal mushroom with antioxidant and immune-supporting properties",
+      "status": "verified"
+    },
+    {
+      "id": 2040,
+      "name": "Acai Berry",
+      "latin_name": "Euterpe oleracea",
+      "tradition": "Amazonian",
+      "summary": "Antioxidant-rich superfruit berry traditionally used for vitality and longevity",
+      "status": "verified"
+    },
+    {
+      "id": 2042,
+      "name": "Blackberry",
+      "latin_name": "Rubus fruticosus",
+      "tradition": "European Folk",
+      "summary": "Nutrient-dense berry with immune and antioxidant properties",
+      "status": "verified"
+    },
+    {
+      "id": 2043,
+      "name": "Raspberry",
+      "latin_name": "Rubus idaeus",
+      "tradition": "Western Herbalism",
+      "summary": "Delicate berry traditionally used for women's health and vitamin C support",
+      "status": "verified"
+    },
+    {
+      "id": 2044,
+      "name": "Cranberry",
+      "latin_name": "Vaccinium macrocarpon",
+      "tradition": "Native American",
+      "summary": "Tart berry traditionally used for urinary tract health and antioxidant support",
+      "status": "verified"
+    },
+    {
+      "id": 2045,
+      "name": "Mulberry",
+      "latin_name": "Morus alba",
+      "tradition": "TCM",
+      "summary": "Sweet medicinal berry used for blood nourishment and immune support",
+      "status": "verified"
+    },
+    {
+      "id": 2046,
+      "name": "Sea Buckthorn",
+      "latin_name": "Hippophae rhamnoides",
+      "tradition": "Traditional",
+      "summary": "Nutrient-dense superfruit for skin vitality, cardiovascular, and immune support",
+      "status": "verified"
+    },
+    {
+      "id": 2047,
+      "name": "Pomegranate",
+      "latin_name": "Punica granatum",
+      "tradition": "Ayurveda",
+      "summary": "Jeweled fruit with powerful antioxidant compounds for cardiovascular and cellular health",
+      "status": "verified"
+    },
+    {
+      "id": 2048,
+      "name": "Aronia Berry",
+      "latin_name": "Aronia melanocarpa",
+      "tradition": "Eastern European Folk",
+      "summary": "Tart superfruit berry with exceptional antioxidant and immune-supporting compounds",
+      "status": "verified"
+    },
+    {
+      "id": 2049,
+      "name": "Hawthorn Berry",
+      "latin_name": "Crataegus laevigata",
+      "tradition": "European Herbalism",
+      "summary": "Heart-supporting berry traditionally used for cardiovascular health and vitality",
+      "status": "verified"
+    },
+    {
+      "id": 2050,
+      "name": "Elderberry",
+      "latin_name": "Sambucus nigra",
+      "tradition": "European Folk",
+      "summary": "Immune-supporting medicinal berry traditionally used during cold and flu season",
+      "status": "verified"
+    },
+    {
+      "id": 2051,
+      "name": "Bilberry",
+      "latin_name": "Vaccinium myrtillus",
+      "tradition": "Scandinavian",
+      "summary": "Dark berries used for eye health, circulation, and antioxidant support",
+      "status": "verified"
+    },
+    {
+      "id": 2052,
+      "name": "Schisandra Berry",
+      "latin_name": "Schisandra chinensis",
+      "tradition": "TCM",
+      "summary": "Five-flavored adaptogenic berry for stress resilience, energy, and liver support",
+      "status": "verified"
+    },
+    {
+      "id": 2053,
+      "name": "Maqui Berry",
+      "latin_name": "Aristotelia chilensis",
+      "tradition": "Andean",
+      "summary": "Purple superfruit with polyphenol compounds for antioxidant and anti-inflammatory support",
+      "status": "verified"
+    },
+    {
+      "id": 2054,
+      "name": "Noni Fruit",
+      "latin_name": "Morinda citrifolia",
+      "tradition": "Polynesian",
+      "summary": "Tropical superfruit traditionally used for immune support and overall wellness",
+      "status": "verified"
+    },
+    {
+      "id": 2055,
+      "name": "Mangosteen",
+      "latin_name": "Garcinia mangostana",
+      "tradition": "Ayurvedic",
+      "summary": "Tropical queen fruit with xanthone compounds for antioxidant and immune support",
+      "status": "verified"
+    },
+    {
+      "id": 2059,
+      "name": "Amaranth",
+      "latin_name": "Amaranthus hypochondriacus",
+      "tradition": "Aztec",
+      "summary": "Ancient grain with complete amino acid profile and calcium for bone support",
+      "status": "verified"
+    },
+    {
+      "id": 2060,
+      "name": "Quinoa",
+      "latin_name": "Chenopodium quinoa",
+      "tradition": "Incan",
+      "summary": "Complete protein grain with all nine amino acids for nutritional vitality",
+      "status": "verified"
+    },
+    {
+      "id": 2061,
+      "name": "Brown Rice",
+      "latin_name": "Oryza sativa",
+      "tradition": "Asian",
+      "summary": "Whole grain staple with B vitamins and fiber for sustained energy",
+      "status": "verified"
+    },
+    {
+      "id": 2062,
+      "name": "Black Rice",
+      "latin_name": "Oryza sativa subsp. indica",
+      "tradition": "TCM",
+      "summary": "Ancient grain with anthocyanin antioxidants for cellular and blood nourishment",
+      "status": "verified"
+    },
+    {
+      "id": 2063,
+      "name": "Millet",
+      "latin_name": "Panicum miliaceum",
+      "tradition": "African",
+      "summary": "Alkaline grain with magnesium and B vitamins for nervous system support",
+      "status": "verified"
+    },
+    {
+      "id": 2064,
+      "name": "Teff",
+      "latin_name": "Eragrostis tef",
+      "tradition": "Ethiopian",
+      "summary": "Nutrient-dense ancient grain with iron and calcium for strength and vitality",
+      "status": "verified"
+    },
+    {
+      "id": 2065,
+      "name": "Spelt",
+      "latin_name": "Triticum spelta",
+      "tradition": "European",
+      "summary": "Ancient wheat with protein and minerals for energy and endurance",
+      "status": "verified"
+    },
+    {
+      "id": 2066,
+      "name": "Farro",
+      "latin_name": "Triticum turgidum",
+      "tradition": "Mediterranean",
+      "summary": "Chewy ancient grain with fiber and antioxidants for digestive support",
+      "status": "verified"
+    },
+    {
+      "id": 2067,
+      "name": "Barley",
+      "latin_name": "Hordeum vulgare",
+      "tradition": "Traditional",
+      "summary": "Whole grain with beta-glucan fiber for cardiovascular and immune support",
+      "status": "verified"
+    },
+    {
+      "id": 2068,
+      "name": "Oats",
+      "latin_name": "Avena sativa",
+      "tradition": "Scottish Folk",
+      "summary": "Nourishing grain with beta-glucans for cholesterol and stress support",
+      "status": "verified"
+    },
+    {
+      "id": 2069,
+      "name": "Lentils",
+      "latin_name": "Lens culinaris",
+      "tradition": "Indian",
+      "summary": "Protein-rich legume with polyphenols for sustained energy and digestion",
+      "status": "verified"
+    },
+    {
+      "id": 2070,
+      "name": "Chickpeas",
+      "latin_name": "Cicer arietinum",
+      "tradition": "Mediterranean",
+      "summary": "Hearty legume rich in protein and fiber for stable energy and satiety",
+      "status": "verified"
+    },
+    {
+      "id": 2071,
+      "name": "Black Beans",
+      "latin_name": "Phaseolus vulgaris",
+      "tradition": "Latin American",
+      "summary": "Antioxidant-rich legume with anthocyanins for cellular health",
+      "status": "verified"
+    },
+    {
+      "id": 2072,
+      "name": "Kidney Beans",
+      "latin_name": "Phaseolus vulgaris",
+      "tradition": "Traditional",
+      "summary": "Fiber and mineral-rich legume for digestive and cardiovascular support",
+      "status": "verified"
+    },
+    {
+      "id": 2073,
+      "name": "Mung Beans",
+      "latin_name": "Vigna radiata",
+      "tradition": "Ayurveda",
+      "summary": "Easily-digestible legume traditionally used for detoxification and vitality",
+      "status": "verified"
+    },
+    {
+      "id": 2074,
+      "name": "Adzuki Beans",
+      "latin_name": "Vigna angularis",
+      "tradition": "TCM",
+      "summary": "Kidney-supporting legume used for water balance and digestive health",
+      "status": "verified"
+    },
+    {
+      "id": 2075,
+      "name": "Pinto Beans",
+      "latin_name": "Phaseolus vulgaris",
+      "tradition": "Mexican",
+      "summary": "Nutrient-dense legume with kaempferol antioxidants for cellular support",
+      "status": "verified"
+    },
+    {
+      "id": 2076,
+      "name": "Split Peas",
+      "latin_name": "Pisum sativum",
+      "tradition": "Northern European",
+      "summary": "Easy-cooking legume with B vitamins for energy and nervous system health",
+      "status": "verified"
+    },
+    {
+      "id": 2077,
+      "name": "Peanuts",
+      "latin_name": "Arachis hypogaea",
+      "tradition": "African",
+      "summary": "Legume with resveratrol and healthy fats for cardiovascular wellness",
+      "status": "verified"
+    },
+    {
+      "id": 2078,
+      "name": "Alfalfa Sprouts",
+      "latin_name": "Medicago sativa",
+      "tradition": "Traditional",
+      "summary": "Sprouted legume powerhouse with active enzymes for vitality and detox",
+      "status": "verified"
+    },
+    {
+      "id": 2079,
+      "name": "Kombucha",
+      "latin_name": "Scobby Culture",
+      "tradition": "Traditional",
+      "summary": "Fermented tea with probiotics and organic acids for gut and liver support",
+      "status": "verified"
+    },
+    {
+      "id": 2080,
+      "name": "Miso",
+      "latin_name": "Aspergillus oryzae",
+      "tradition": "Japanese",
+      "summary": "Fermented soybean paste with probiotics for digestive and immune support",
+      "status": "verified"
+    },
+    {
+      "id": 2081,
+      "name": "Tempeh",
+      "latin_name": "Rhizopus species",
+      "tradition": "Indonesian",
+      "summary": "Fermented soy cake with complete protein and probiotics for gut health",
+      "status": "verified"
+    },
+    {
+      "id": 2082,
+      "name": "Sauerkraut",
+      "latin_name": "Brassica oleracea",
+      "tradition": "European Folk",
+      "summary": "Fermented cabbage with live cultures for digestive vitality and probiotics",
+      "status": "verified"
+    },
+    {
+      "id": 2083,
+      "name": "Kimchi",
+      "latin_name": "Brassica rapa",
+      "tradition": "Korean",
+      "summary": "Spicy fermented vegetable with probiotics and capsaicin for digestive fire",
+      "status": "verified"
+    },
+    {
+      "id": 2084,
+      "name": "Kefir",
+      "latin_name": "Lactobacillus kefiri",
+      "tradition": "Caucasian",
+      "summary": "Fermented dairy with diverse probiotics for gut microbiome and immune health",
+      "status": "verified"
+    },
+    {
+      "id": 2085,
+      "name": "Yogurt",
+      "latin_name": "Lactobacillus bulgaricus",
+      "tradition": "Mediterranean",
+      "summary": "Cultured dairy with beneficial bacteria for digestive and bone health",
+      "status": "verified"
+    },
+    {
+      "id": 2086,
+      "name": "Soy Sauce",
+      "latin_name": "Aspergillus sojae",
+      "tradition": "Japanese",
+      "summary": "Fermented condiment with probiotics and umami for digestion and flavor",
+      "status": "verified"
+    },
+    {
+      "id": 2087,
+      "name": "Coconut Kefir",
+      "latin_name": "Cocos nucifera",
+      "tradition": "Traditional",
+      "summary": "Fermented coconut milk with probiotics for dairy-free gut support",
+      "status": "verified"
+    },
+    {
+      "id": 2088,
+      "name": "Apple Cider Vinegar",
+      "latin_name": "Malus domestica",
+      "tradition": "Folk Traditional",
+      "summary": "Fermented apple with acetic acid and enzymes for digestion and vitality",
+      "status": "verified"
+    },
+    {
+      "id": 2089,
+      "name": "Ashwagandha Root",
+      "latin_name": "Withania somnifera",
+      "tradition": "Ayurveda",
+      "summary": "Adaptogenic root for stress resilience, vitality, and restful sleep",
+      "status": "verified"
+    },
+    {
+      "id": 2090,
+      "name": "Asian Ginseng",
+      "latin_name": "Panax ginseng",
+      "tradition": "TCM",
+      "summary": "Warming energy root for stamina, immune support, and mental clarity",
+      "status": "verified"
+    },
+    {
+      "id": 2091,
+      "name": "American Ginseng",
+      "latin_name": "Panax quinquefolius",
+      "tradition": "Native American",
+      "summary": "Cooling adaptogen root for sustainable energy and immune resilience",
+      "status": "verified"
+    },
+    {
+      "id": 2092,
+      "name": "Rhodiola Root",
+      "latin_name": "Rhodiola rosea",
+      "tradition": "Scandinavian",
+      "summary": "Arctic adaptogenic root for stress support, mood, and mental endurance",
+      "status": "verified"
+    },
+    {
+      "id": 2093,
+      "name": "Burdock Root",
+      "latin_name": "Arctium lappa",
+      "tradition": "Japanese",
+      "summary": "Deep-nourishing root traditionally used for blood purification and vitality",
+      "status": "verified"
+    },
+    {
+      "id": 2094,
+      "name": "Dandelion Root",
+      "latin_name": "Taraxacum officinale",
+      "tradition": "European Herbalism",
+      "summary": "Liver-supporting root for gentle detoxification and digestive health",
+      "status": "verified"
+    },
+    {
+      "id": 2095,
+      "name": "Angelica Root",
+      "latin_name": "Angelica archangelica",
+      "tradition": "European Folk",
+      "summary": "Warming aromatic root traditionally used for women's cycles and circulation",
+      "status": "verified"
+    },
+    {
+      "id": 2096,
+      "name": "Dong Quai",
+      "latin_name": "Angelica sinensis",
+      "tradition": "TCM",
+      "summary": "Blood-nourishing root traditionally used for women's wellness and vitality",
+      "status": "verified"
+    },
+    {
+      "id": 2097,
+      "name": "Marshmallow Root",
+      "latin_name": "Althaea officinalis",
+      "tradition": "Western Herbalism",
+      "summary": "Soothing demulcent root for respiratory tract and mucous membrane support",
+      "status": "verified"
+    },
+    {
+      "id": 2098,
+      "name": "Valerian Root",
+      "latin_name": "Valeriana officinalis",
+      "tradition": "European Folk",
+      "summary": "Calming root for restful sleep and nervous system relaxation",
+      "status": "verified"
+    },
+    {
+      "id": 2099,
+      "name": "Goldenseal Root",
+      "latin_name": "Hydrastis canadensis",
+      "tradition": "Native American",
+      "summary": "Antimicrobial root traditionally used for immune and mucous membrane support",
+      "status": "verified"
+    },
+    {
+      "id": 2100,
+      "name": "Sarsaparilla Root",
+      "latin_name": "Smilax officinalis",
+      "tradition": "Mesoamerican",
+      "summary": "Warming blood-moving root for circulation and skin health support",
+      "status": "verified"
+    },
+    {
+      "id": 2101,
+      "name": "Astragalus Root",
+      "latin_name": "Astragalus membranaceus",
+      "tradition": "TCM",
+      "summary": "Qi-building root traditionally used for immune fortification and stamina",
+      "status": "verified"
+    },
+    {
+      "id": 2103,
+      "name": "Olive Oil",
+      "latin_name": "Olea europaea",
+      "tradition": "Mediterranean",
+      "summary": "Heart-supporting oil with polyphenols for cardiovascular and antioxidant health",
+      "status": "verified"
+    },
+    {
+      "id": 2104,
+      "name": "Sesame Oil",
+      "latin_name": "Sesamum indicum",
+      "tradition": "Ayurveda",
+      "summary": "Warming oil traditionally used for joint support and internal nourishment",
+      "status": "verified"
+    },
+    {
+      "id": 2105,
+      "name": "Hemp Oil",
+      "latin_name": "Cannabis sativa",
+      "tradition": "Traditional",
+      "summary": "Omega-rich oil with amino acids for skin, joints, and nervous system support",
+      "status": "verified"
+    },
+    {
+      "id": 2106,
+      "name": "Flax Oil",
+      "latin_name": "Linum usitatissimum",
+      "tradition": "Traditional",
+      "summary": "Omega-3 rich oil for cardiovascular support and hormonal balance",
+      "status": "verified"
+    },
+    {
+      "id": 2107,
+      "name": "Chia Oil",
+      "latin_name": "Salvia hispanica",
+      "tradition": "Aztec",
+      "summary": "Nutrient-dense oil with omega-3s for brain and cellular health",
+      "status": "verified"
+    },
+    {
+      "id": 2108,
+      "name": "Argan Oil",
+      "latin_name": "Argania spinosa",
+      "tradition": "Moroccan",
+      "summary": "Golden oil with vitamin E and antioxidants for skin vitality and nourishment",
+      "status": "verified"
+    },
+    {
+      "id": 2109,
+      "name": "Jojoba Oil",
+      "latin_name": "Simmondsia chinensis",
+      "tradition": "Traditional",
+      "summary": "Skin-balancing oil similar to skin sebum for hydration and barrier support",
+      "status": "verified"
+    },
+    {
+      "id": 2110,
+      "name": "Rosehip Oil",
+      "latin_name": "Rosa canina",
+      "tradition": "European",
+      "summary": "Regenerating oil with vitamin A for skin renewal and scar support",
+      "status": "verified"
+    },
+    {
+      "id": 2111,
+      "name": "Evening Primrose Oil",
+      "latin_name": "Oenothera biennis",
+      "tradition": "Western Herbalism",
+      "summary": "GLA-rich oil for hormonal balance and skin health support",
+      "status": "verified"
+    },
+    {
+      "id": 2112,
+      "name": "Borage Oil",
+      "latin_name": "Borago officinalis",
+      "tradition": "European",
+      "summary": "Inflammation-soothing oil with GLA for joint and skin wellness",
+      "status": "verified"
+    },
+    {
+      "id": 2113,
+      "name": "Black Cumin Oil",
+      "latin_name": "Nigella sativa",
+      "tradition": "Middle Eastern",
+      "summary": "Immune-supporting oil with thymoquinone for respiratory and general wellness",
+      "status": "verified"
+    },
+    {
+      "id": 2114,
+      "name": "MCT Oil",
+      "latin_name": "Cocos nucifera",
+      "tradition": "Modern",
+      "summary": "Rapid-energy oil for brain function and sustained mental clarity",
+      "status": "verified"
+    },
+    {
+      "id": 2117,
+      "name": "Copal",
+      "latin_name": "Protium copal",
+      "tradition": "Mesoamerican",
+      "summary": "Sacred tree resin used for purification and spiritual ceremonial practices",
+      "status": "verified"
+    },
+    {
+      "id": 2118,
+      "name": "Dragon's Blood",
+      "latin_name": "Daemonorops draco",
+      "tradition": "Traditional",
+      "summary": "Deep-red resin for wound healing and powerful antioxidant support",
+      "status": "verified"
+    },
+    {
+      "id": 2119,
+      "name": "Propolis",
+      "latin_name": "Bee-produced",
+      "tradition": "Beekeeping",
+      "summary": "Bee resin with antimicrobial compounds for immune and oral health",
+      "status": "verified"
+    },
+    {
+      "id": 2120,
+      "name": "Pine Resin",
+      "latin_name": "Pinus sylvestris",
+      "tradition": "Northern European",
+      "summary": "Forest resin traditionally used for respiratory support and circulation",
+      "status": "verified"
+    },
+    {
+      "id": 2121,
+      "name": "Mastic Gum",
+      "latin_name": "Pistacia lentiscus",
+      "tradition": "Mediterranean",
+      "summary": "Antimicrobial gum traditionally used for digestive and oral wellness",
+      "status": "verified"
+    },
+    {
+      "id": 2123,
+      "name": "Shilajit",
+      "latin_name": "Mineral-resin complex",
+      "tradition": "Ayurveda",
+      "summary": "Mountain resin with fulvic acid for vitality, energy, and mineral bioavailability",
+      "status": "verified"
+    },
+    {
+      "id": 2124,
+      "name": "Gum Arabic",
+      "latin_name": "Acacia senegal",
+      "tradition": "African",
+      "summary": "Tree gum traditionally used for digestive support and gut health",
+      "status": "verified"
+    },
+    {
+      "id": 2125,
+      "name": "Benzoin Resin",
+      "latin_name": "Styrax benzoin",
+      "tradition": "Asian",
+      "summary": "Aromatic resin traditionally used for respiratory and skin support",
+      "status": "verified"
+    },
+    {
+      "id": 2126,
+      "name": "Boswellia Extract",
+      "latin_name": "Boswellia carterii",
+      "tradition": "Ayurveda",
+      "summary": "Concentrated resin extract for anti-inflammatory and joint health support",
+      "status": "verified"
+    },
+    {
+      "id": 2127,
+      "name": "Amber Resin",
+      "latin_name": "Fossilized tree resin",
+      "tradition": "Traditional",
+      "summary": "Ancient resin with protective and warming properties for energetic support",
+      "status": "verified"
+    },
+    {
+      "id": 2128,
+      "name": "Raw Honey",
+      "latin_name": "Apis mellifera",
+      "tradition": "Beekeeping",
+      "summary": "Golden bee product with enzymes and antioxidants for immune and throat support",
+      "status": "verified"
+    },
+    {
+      "id": 2129,
+      "name": "Maca Root",
+      "latin_name": "Lepidium meyenii",
+      "tradition": "Peruvian",
+      "summary": "Andean adaptogen for vitality, stamina, and hormonal balance support",
+      "status": "verified"
+    },
+    {
+      "id": 2130,
+      "name": "Tribulus",
+      "latin_name": "Tribulus terrestris",
+      "tradition": "Ayurveda",
+      "summary": "Traditional herb for vitality, athletic performance, and wellness support",
+      "status": "verified"
+    },
+    {
+      "id": 2132,
+      "name": "Spirulina",
+      "latin_name": "Arthrospira platensis",
+      "tradition": "Traditional",
+      "summary": "Nutrient-dense algae with complete protein for energy and immune support",
+      "status": "verified"
+    },
+    {
+      "id": 2134,
+      "name": "Wheatgrass",
+      "latin_name": "Triticum aestivum",
+      "tradition": "Western Herbalism",
+      "summary": "Young wheat plant juice with chlorophyll for detox and immune boost",
+      "status": "verified"
+    },
+    {
+      "id": 2135,
+      "name": "Barley Grass",
+      "latin_name": "Hordeum vulgare",
+      "tradition": "Japanese",
+      "summary": "Green grass powder with enzymes and antioxidants for vitality",
+      "status": "verified"
+    },
+    {
+      "id": 2136,
+      "name": "Kelp",
+      "latin_name": "Laminaria japonica",
+      "tradition": "TCM",
+      "summary": "Sea vegetable rich in iodine for thyroid and metabolic support",
+      "status": "verified"
+    },
+    {
+      "id": 2137,
+      "name": "Bladderwrack",
+      "latin_name": "Fucus vesiculosus",
+      "tradition": "Atlantic Coastal",
+      "summary": "Seaweed traditionally used for thyroid support and mineral nourishment",
+      "status": "verified"
+    },
+    {
+      "id": 2138,
+      "name": "Nutritional Yeast",
+      "latin_name": "Saccharomyces cerevisiae",
+      "tradition": "Modern",
+      "summary": "Deactivated yeast with B vitamins for energy and immune support",
+      "status": "verified"
+    },
+    {
+      "id": 2139,
+      "name": "Turmeric Powder",
+      "latin_name": "Curcuma longa",
+      "tradition": "Ayurveda",
+      "summary": "Golden spice with curcumin for inflammation and cellular health",
+      "status": "verified"
+    },
+    {
+      "id": 2142,
+      "name": "Cloves",
+      "latin_name": "Syzygium aromaticum",
+      "tradition": "Ayurveda",
+      "summary": "Warming spice with antioxidants for immune and dental health",
+      "status": "verified"
+    },
+    {
+      "id": 2143,
+      "name": "Black Pepper",
+      "latin_name": "Piper nigrum",
+      "tradition": "Ayurveda",
+      "summary": "Pungent spice that enhances nutrient absorption and digestion",
+      "status": "verified"
+    },
+    {
+      "id": 2145,
+      "name": "Cumin",
+      "latin_name": "Cuminum cyminum",
+      "tradition": "Ayurveda",
+      "summary": "Digestive spice that supports enzyme production and gut health",
+      "status": "verified"
+    },
+    {
+      "id": 2146,
+      "name": "Fenugreek",
+      "latin_name": "Trigonella foenum-graecum",
+      "tradition": "Middle Eastern",
+      "summary": "Warming spice traditionally used for blood sugar and lactation support",
+      "status": "verified"
+    },
+    {
+      "id": 2147,
+      "name": "Star Anise",
+      "latin_name": "Illicium verum",
+      "tradition": "TCM",
+      "summary": "Sweet-licorice spice for digestion, respiratory support, and freshness",
+      "status": "verified"
+    },
+    {
+      "id": 2148,
+      "name": "Nutmeg",
+      "latin_name": "Myristica fragrans",
+      "tradition": "Ayurveda",
+      "summary": "Warming aromatic spice for sleep support and digestive comfort",
+      "status": "verified"
+    },
+    {
+      "id": 2149,
+      "name": "Rose Petals",
+      "latin_name": "Rosa damascena",
+      "tradition": "Persian",
+      "summary": "Delicate flower for heart opening, beauty, and cooling support",
+      "status": "verified"
+    },
+    {
+      "id": 2150,
+      "name": "Hibiscus Flowers",
+      "latin_name": "Hibiscus sabdariffa",
+      "tradition": "African",
+      "summary": "Tart flower with vitamin C for cardiovascular and beauty support",
+      "status": "verified"
+    },
+    {
+      "id": 2151,
+      "name": "Chamomile Flowers",
+      "latin_name": "Matricaria chamomilla",
+      "tradition": "European",
+      "summary": "Gentle calming flower for sleep, digestion, and nervous support",
+      "status": "verified"
+    },
+    {
+      "id": 2152,
+      "name": "Lavender Flowers",
+      "latin_name": "Lavandula angustifolia",
+      "tradition": "European",
+      "summary": "Aromatic flower for relaxation, sleep, and emotional balance",
+      "status": "verified"
+    },
+    {
+      "id": 2155,
+      "name": "Jasmine Flowers",
+      "latin_name": "Jasminum officinale",
+      "tradition": "Persian",
+      "summary": "Fragrant flower for mood lifting, elegance, and nervous system calm",
+      "status": "verified"
+    },
+    {
+      "id": 2156,
+      "name": "Violet Flowers",
+      "latin_name": "Viola odorata",
+      "tradition": "European Folk",
+      "summary": "Delicate flower for respiratory support and gentle lymph drainage",
+      "status": "verified"
+    },
+    {
+      "id": 2157,
+      "name": "Pansy Flowers",
+      "latin_name": "Viola tricolor",
+      "tradition": "European Folk",
+      "summary": "Colorful flower traditionally used for skin and respiratory support",
+      "status": "verified"
+    },
+    {
+      "id": 2158,
+      "name": "Cornflower",
+      "latin_name": "Centaurea cyanus",
+      "tradition": "European",
+      "summary": "Bright blue flower for eye health and anti-inflammatory support",
+      "status": "verified"
+    },
+    {
+      "id": 2159,
+      "name": "Stevia",
+      "latin_name": "Stevia rebaudiana",
+      "tradition": "South American",
+      "summary": "Natural sweetener with zero calories for sugar-free wellness",
+      "status": "verified"
+    },
+    {
+      "id": 2160,
+      "name": "Monk Fruit",
+      "latin_name": "Siraitia grosvenorii",
+      "tradition": "TCM",
+      "summary": "Ancient sweetener with antioxidants for balanced energy naturally",
+      "status": "verified"
+    },
+    {
+      "id": 2161,
+      "name": "Lucuma",
+      "latin_name": "Pouteria lucuma",
+      "tradition": "Peruvian",
+      "summary": "Golden superfruit powder for natural sweetness and mineral content",
+      "status": "verified"
+    },
+    {
+      "id": 2162,
+      "name": "Mesquite",
+      "latin_name": "Prosopis pallida",
+      "tradition": "Southwestern",
+      "summary": "Sweet desert pod for mineral density and natural sweetening",
+      "status": "verified"
+    },
+    {
+      "id": 2163,
+      "name": "Yacon Root",
+      "latin_name": "Smallanthus sonchifolius",
+      "tradition": "Peruvian",
+      "summary": "Sweet root with prebiotic fiber for gut health and balanced energy",
+      "status": "verified"
+    },
+    {
+      "id": 2164,
+      "name": "Wakame",
+      "latin_name": "Undaria pinnatifida",
+      "tradition": "Japanese",
+      "summary": "Mineral-rich seaweed for thyroid support and nutritional wellness",
+      "status": "verified"
+    },
+    {
+      "id": 2165,
+      "name": "Dulse",
+      "latin_name": "Palmaria palmata",
+      "tradition": "Atlantic Coastal",
+      "summary": "Red seaweed with iodine and minerals for thyroid and skin health",
+      "status": "verified"
+    },
+    {
+      "id": 2166,
+      "name": "Nori",
+      "latin_name": "Porphyra umbilicalis",
+      "tradition": "Japanese",
+      "summary": "Purple seaweed rich in iodine and amino acids for wellness",
+      "status": "verified"
+    },
+    {
+      "id": 2167,
+      "name": "Amasake",
+      "latin_name": "Oryza sativa",
+      "tradition": "Japanese",
+      "summary": "Sweet fermented rice drink for gentle energy and digestive support",
+      "status": "verified"
     }
-  ]   {
-    "id": 2001,
-    "name": "Black Sesame",
-    "latin_name": "Sesamum indicum var. nigrum",
-    "tradition": "TCM",
-    "summary": "Nutrient-dense black seeds used to support bone health, kidney function, and overall vitality",
-    "status": "verified"
-  },
-  {
-    "id": 2002,
-    "name": "Pumpkin Seeds",
-    "latin_name": "Cucurbita pepo",
-    "tradition": "Traditional",
-    "summary": "Rich in minerals and antioxidants, traditionally used for prostate support and immune function",
-    "status": "verified"
-  },
-  {
-    "id": 2003,
-    "name": "Sunflower Seeds",
-    "latin_name": "Helianthus annuus",
-    "tradition": "Traditional",
-    "summary": "Vitamin E-rich seeds supporting heart health and antioxidant protection",
-    "status": "verified"
-  },
-  {
-    "id": 2004,
-    "name": "Flax Seeds",
-    "latin_name": "Linum usitatissimum",
-    "tradition": "Traditional",
-    "summary": "Omega-3 rich seeds traditionally used for digestive and cardiovascular support",
-    "status": "verified"
-  },
-  {
-    "id": 2005,
-    "name": "Chia Seeds",
-    "latin_name": "Salvia hispanica",
-    "tradition": "Mesoamerican",
-    "summary": "Ancient seeds high in omega-3s, fiber, and nutrients for energy and digestive support",
-    "status": "verified"
-  },
-  {
-    "id": 2006,
-    "name": "Fennel Seeds",
-    "latin_name": "Foeniculum vulgare",
-    "tradition": "Ayurveda",
-    "summary": "Aromatic digestive seeds used to support digestion, reduce bloating, and freshen breath",
-    "status": "verified"
-  },
-  {
-    "id": 2007,
-    "name": "Cumin Seeds",
-    "latin_name": "Cuminum cyminum",
-    "tradition": "Ayurveda",
-    "summary": "Warming spice used to support digestive fire, nutrient absorption, and metabolism",
-    "status": "verified"
-  },
-  {
-    "id": 2008,
-    "name": "Coriander Seeds",
-    "latin_name": "Coriandrum sativum",
-    "tradition": "Ayurveda",
-    "summary": "Cooling digestive spice used for detox support and to reduce inflammation",
-    "status": "verified"
-  },
-  {
-    "id": 2009,
-    "name": "Mustard Seeds",
-    "latin_name": "Sinapis alba",
-    "tradition": "Traditional",
-    "summary": "Pungent seeds used topically for warmth and internally to support circulation and metabolism",
-    "status": "verified"
-  },
-  {
-    "id": 2010,
-    "name": "Fenugreek Seeds",
-    "latin_name": "Trigonella foenum-graecum",
-    "tradition": "Ayurveda",
-    "summary": "Sweet-smelling seeds traditionally used for blood sugar balance, lactation, and hormone support",
-    "status": "verified"
-  },
-  {
-    "id": 2011,
-    "name": "Nigella Seeds",
-    "latin_name": "Nigella sativa",
-    "tradition": "Ayurveda",
-    "summary": "Peppery seeds used for immune support, respiratory health, and general wellness",
-    "status": "verified"
-  },
-  {
-    "id": 2012,
-    "name": "White Sesame",
-    "latin_name": "Sesamum indicum",
-    "tradition": "TCM",
-    "summary": "Classic sesame seeds used for nutritive support and to strengthen bones and joints",
-    "status": "verified"
-  },
-  {
-    "id": 2013,
-    "name": "Hemp Seeds",
-    "latin_name": "Cannabis sativa",
-    "tradition": "Traditional",
-    "summary": "Complete protein seeds rich in omega-3s and amino acids for nutritional support",
-    "status": "verified"
-  },
-  {
-    "id": 2014,
-    "name": "Grape Seed",
-    "latin_name": "Vitis vinifera",
-    "tradition": "Traditional",
-    "summary": "Antioxidant-rich extract used for cardiovascular support and antioxidant protection",
-    "status": "verified"
-  },
-  {
-    "id": 2015,
-    "name": "Caraway Seeds",
-    "latin_name": "Carum carvi",
-    "tradition": "Traditional",
-    "summary": "Warming digestive seed used to support digestion and reduce gas and bloating",
-    "status": "verified"
-  },
-  {
-    "id": 2016,
-    "name": "Anise Seeds",
-    "latin_name": "Pimpinella anisum",
-    "tradition": "Traditional",
-    "summary": "Sweet aromatic seed used to support digestion, ease respiratory comfort, and freshen breath",
-    "status": "verified"
-  },
-  {
-    "id": 2017,
-    "name": "Dill Seeds",
-    "latin_name": "Anethum graveolens",
-    "tradition": "Traditional",
-    "summary": "Mild digestive seed used to soothe digestion, support nursing mothers, and freshen breath",
-    "status": "verified"
-  },
-  {
-    "id": 2018,
-    "name": "Poppy Seeds",
-    "latin_name": "Papaver somniferum",
-    "tradition": "Ayurveda",
-    "summary": "Cooling seeds traditionally used for nerve support and mild sleep support",
-    "status": "verified"
-  }
-  {
-    "id": 2019,
-    "name": "Reishi",
-    "latin_name": "Ganoderma lucidum",
-    "tradition": "TCM",
-    "summary": "Sacred mushroom used for stress resilience, sleep support, and immune function",
-    "status": "verified"
-  },
-  {
-    "id": 2020,
-    "name": "Shiitake",
-    "latin_name": "Lentinula edodes",
-    "tradition": "TCM",
-    "summary": "Culinary mushroom with immune-supporting compounds and cardiovascular benefits",
-    "status": "verified"
-  },
-  {
-    "id": 2021,
-    "name": "Lion's Mane",
-    "latin_name": "Hericium erinaceus",
-    "tradition": "TCM",
-    "summary": "Brain-supporting mushroom used for cognitive function and nervous system health",
-    "status": "verified"
-  },
-  {
-    "id": 2022,
-    "name": "Cordyceps",
-    "latin_name": "Cordyceps sinensis",
-    "tradition": "TCM",
-    "summary": "Energy and stamina mushroom traditionally used for athletic performance and vitality",
-    "status": "verified"
-  },
-  {
-    "id": 2023,
-    "name": "Maitake",
-    "latin_name": "Grifola frondosa",
-    "tradition": "TCM",
-    "summary": "Dancing mushroom with immune-supporting polysaccharides and wellness benefits",
-    "status": "verified"
-  },
-  {
-    "id": 2024,
-    "name": "Chaga",
-    "latin_name": "Inonotus obliquus",
-    "tradition": "Russian Traditional",
-    "summary": "Birch tree mushroom prized for antioxidant support and immune resilience",
-    "status": "verified"
-  },
-  {
-    "id": 2025,
-    "name": "Turkey Tail",
-    "latin_name": "Trametes versicolor",
-    "tradition": "TCM",
-    "summary": "Colorful shelf mushroom used for gut health, immune support, and vitality",
-    "status": "verified"
-  },
-  {
-    "id": 2026,
-    "name": "Oyster Mushroom",
-    "latin_name": "Pleurotus ostreatus",
-    "tradition": "Traditional",
-    "summary": "Culinary and medicinal mushroom with immune and cardiovascular support",
-    "status": "verified"
-  },
-  {
-    "id": 2027,
-    "name": "Tremella",
-    "latin_name": "Tremella mesenterica",
-    "tradition": "TCM",
-    "summary": "White jelly mushroom used for skin hydration, lung support, and beauty",
-    "status": "verified"
-  },
-  {
-    "id": 2028,
-    "name": "Poria",
-    "latin_name": "Poria cocos",
-    "tradition": "TCM",
-    "summary": "Earth mushroom used for digestion, water balance, and nervous system calm",
-    "status": "verified"
-  },
-  {
-    "id": 2029,
-    "name": "Enoki",
-    "latin_name": "Flammulina velutipes",
-    "tradition": "Traditional",
-    "summary": "Delicate culinary mushroom with immune and nutritive properties",
-    "status": "verified"
-  },
-  {
-    "id": 2030,
-    "name": "King Trumpet",
-    "latin_name": "Pleurotus eryngii",
-    "tradition": "Traditional",
-    "summary": "Meaty culinary mushroom with immune-supporting compounds",
-    "status": "verified"
-  },
-  {
-    "id": 2031,
-    "name": "Morel",
-    "latin_name": "Morchella esculenta",
-    "tradition": "Traditional",
-    "summary": "Prized culinary mushroom with immune and nutritive support",
-    "status": "verified"
-  },
-  {
-    "id": 2032,
-    "name": "Chanterelle",
-    "latin_name": "Cantharellus cibarius",
-    "tradition": "Traditional",
-    "summary": "Golden culinary mushroom with immune and antioxidant properties",
-    "status": "verified"
-  },
-  {
-    "id": 2033,
-    "name": "Artist's Conk",
-    "latin_name": "Ganoderma applanatum",
-    "tradition": "Traditional",
-    "summary": "Shelf mushroom used for immune resilience and overall wellness support",
-    "status": "verified"
-  },
-  {
-    "id": 2034,
-    "name": "Agarikon",
-    "latin_name": "Laricifomes officinalis",
-    "tradition": "Traditional",
-    "summary": "Ancient medicinal mushroom for respiratory support and immune function",
-    "status": "verified"
-  },
-  {
-    "id": 2035,
-    "name": "Ganoderma Tsugae",
-    "latin_name": "Ganoderma tsugae",
-    "tradition": "TCM",
-    "summary": "Hemlock reishi variant used for calming and immune support",
-    "status": "verified"
-  },
-  {
-    "id": 2036,
-    "name": "Black Fungus",
-    "latin_name": "Auricularia polytricha",
-    "tradition": "TCM",
-    "summary": "Jelly ear mushroom used for blood circulation and nutritive support",
-    "status": "verified"
-  },
-  {
-    "id": 2037,
-    "name": "White Fungus",
-    "latin_name": "Tremella fuciformis",
-    "tradition": "TCM",
-    "summary": "Snow fungus used for hydration, respiratory support, and beauty",
-    "status": "verified"
-  },
-  {
-    "id": 2038,
-    "name": "Maitake Extract",
-    "latin_name": "Grifola frondosa extract",
-    "tradition": "TCM",
-    "summary": "Concentrated extract of maitake for potent immune and wellness support",
-    "status": "verified"
-  } 
+  ]
+}
