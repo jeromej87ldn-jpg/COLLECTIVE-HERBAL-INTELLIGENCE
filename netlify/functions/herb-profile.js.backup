@@ -164,21 +164,6 @@ function mergeSources(existing, verified) {
 }
 
 exports.handler = async (event) => {
-
-  // Load herb catalog to check status
-  const getCatalogStatus = (herbName) => {
-    try {
-      const catalogPath = `${__dirname}/../../herbadex_master_catalog.json`;
-      if (fs.existsSync(catalogPath)) {
-        const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
-        const herb = catalog.herbs.find(h => h.name.toLowerCase() === herbName.toLowerCase());
-        return herb ? { status: herb.status || 'unknown', herb } : null;
-      }
-    } catch (e) {
-      console.error('Catalog load failed:', e.message);
-    }
-    return null;
-  };
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
   }
@@ -189,12 +174,6 @@ exports.handler = async (event) => {
       return { statusCode: 400, body: JSON.stringify({ error: 'herbName is required' }) };
     }
     const name = herbName.trim().toLowerCase();
-
-    // Check catalog status
-    const catalogInfo = getCatalogStatus(herbName);
-    if (catalogInfo) {
-      console.log(`[CATALOG STATUS] ${herbName}: ${catalogInfo.status}`);
-    }
     const serverKey = process.env.ANTHROPIC_API_KEY;
     const apiKey = serverKey || previewApiKey;
     if (!apiKey) {
