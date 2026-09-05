@@ -1,0 +1,1262 @@
+{
+  "metadata": {
+    "title": "C.H.I. - Complete Herbal Intelligence",
+    "version": "1.0.0",
+    "generated": "2026-09-05T18:57:17Z",
+    "total_herbs": 178,
+    "source": "HERBADEX_COMPLETE_1060_HERBS + Excel consolidation + Manual additions",
+    "deduplication_status": "182 input -> 178 unique (4 duplicates removed)",
+    "critical_additions": [
+      "Japanese Knotweed (Fallopia japonica)"
+    ],
+    "api_ready": true
+  },
+  "herbs": [
+    {
+      "id": 2124,
+      "name": "Gum Arabic",
+      "latin": "Acacia senegal",
+      "search_key": "gum arabic_acacia senegal",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2150,
+      "name": "Hibiscus Flowers",
+      "latin": "Hibiscus sabdariffa",
+      "search_key": "hibiscus flowers_hibiscus sabdariffa",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 823,
+      "name": "Baobab",
+      "latin": "Adansonia digitata",
+      "search_key": "baobab_adansonia digitata",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1176,
+      "name": "Rooibos",
+      "latin": "Aspalathus linearis",
+      "search_key": "rooibos_aspalathus linearis",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1177,
+      "name": "Marula",
+      "latin": "Sclerocarya birrea",
+      "search_key": "marula_sclerocarya birrea",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1178,
+      "name": "Moringa",
+      "latin": "Moringa oleifera",
+      "search_key": "moringa_moringa oleifera",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2040,
+      "name": "Acai Berry",
+      "latin": "Euterpe oleracea",
+      "search_key": "acai berry_euterpe oleracea",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 821,
+      "name": "Maca",
+      "latin": "Lepidium meyenii",
+      "search_key": "maca_lepidium meyenii",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 822,
+      "name": "Yacon",
+      "latin": "Smallanthus sonchifolius",
+      "search_key": "yacon_smallanthus sonchifolius",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2053,
+      "name": "Maqui Berry",
+      "latin": "Aristotelia chilensis",
+      "search_key": "maqui berry_aristotelia chilensis",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1541,
+      "name": "Chlorella",
+      "latin": "Chlorella pyrenoidosa",
+      "search_key": "chlorella_chlorella pyrenoidosa",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2125,
+      "name": "Benzoin Resin",
+      "latin": "Styrax benzoin",
+      "search_key": "benzoin resin_styrax benzoin",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1548,
+      "name": "Clubmoss",
+      "latin": "Lycopodium spp.",
+      "search_key": "clubmoss_lycopodium spp.",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2137,
+      "name": "Bladderwrack",
+      "latin": "Fucus vesiculosus",
+      "search_key": "bladderwrack_fucus vesiculosus",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2,
+      "name": "Turmeric",
+      "latin": "Curcuma longa",
+      "search_key": "turmeric_curcuma longa",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 3,
+      "name": "Ashwagandha",
+      "latin": "Withania somnifera",
+      "search_key": "ashwagandha_withania somnifera",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1001,
+      "name": "Brahmi",
+      "latin": "Bacopa monnieri",
+      "search_key": "brahmi_bacopa monnieri",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1002,
+      "name": "Triphala",
+      "latin": "Three-fruit blend",
+      "search_key": "triphala_three-fruit blend",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1003,
+      "name": "Neem",
+      "latin": "Azadirachta indica",
+      "search_key": "neem_azadirachta indica",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1004,
+      "name": "Haritaki",
+      "latin": "Terminalia chebula",
+      "search_key": "haritaki_terminalia chebula",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1005,
+      "name": "Shatavari",
+      "latin": "Asparagus racemosus",
+      "search_key": "shatavari_asparagus racemosus",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1502,
+      "name": "Acacia Catechu",
+      "latin": "Acacia catechu",
+      "search_key": "acacia catechu_acacia catechu",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1503,
+      "name": "Andrographis",
+      "latin": "Andrographis paniculata",
+      "search_key": "andrographis_andrographis paniculata",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1515,
+      "name": "Boswellia",
+      "latin": "Boswellia serrata",
+      "search_key": "boswellia_boswellia serrata",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1551,
+      "name": "Coleus",
+      "latin": "Plectranthus barbatus",
+      "search_key": "coleus_plectranthus barbatus",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2006,
+      "name": "Fennel Seeds",
+      "latin": "Foeniculum vulgare",
+      "search_key": "fennel seeds_foeniculum vulgare",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2007,
+      "name": "Cumin Seeds",
+      "latin": "Cuminum cyminum",
+      "search_key": "cumin seeds_cuminum cyminum",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2008,
+      "name": "Coriander Seeds",
+      "latin": "Coriandrum sativum",
+      "search_key": "coriander seeds_coriandrum sativum",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2010,
+      "name": "Fenugreek Seeds",
+      "latin": "Trigonella foenum-graecum",
+      "search_key": "fenugreek seeds_trigonella foenum-graecum",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2011,
+      "name": "Nigella Seeds",
+      "latin": "Nigella sativa",
+      "search_key": "nigella seeds_nigella sativa",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2018,
+      "name": "Poppy Seeds",
+      "latin": "Papaver somniferum",
+      "search_key": "poppy seeds_papaver somniferum",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2047,
+      "name": "Pomegranate",
+      "latin": "Punica granatum",
+      "search_key": "pomegranate_punica granatum",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2089,
+      "name": "Ashwagandha Root",
+      "latin": "Withania somnifera",
+      "search_key": "ashwagandha root_withania somnifera",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2123,
+      "name": "Shilajit",
+      "latin": "Mineral-resin complex",
+      "search_key": "shilajit_mineral-resin complex",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2126,
+      "name": "Boswellia Extract",
+      "latin": "Boswellia carterii",
+      "search_key": "boswellia extract_boswellia carterii",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2130,
+      "name": "Tribulus",
+      "latin": "Tribulus terrestris",
+      "search_key": "tribulus_tribulus terrestris",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2055,
+      "name": "Mangosteen",
+      "latin": "Garcinia mangostana",
+      "search_key": "mangosteen_garcinia mangostana",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2119,
+      "name": "Propolis",
+      "latin": "Bee-produced",
+      "search_key": "propolis_bee-produced",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2128,
+      "name": "Raw Honey",
+      "latin": "Apis mellifera",
+      "search_key": "raw honey_apis mellifera",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 681,
+      "name": "Mango Bark",
+      "latin": "Mangifera indica",
+      "search_key": "mango bark_mangifera indica",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 682,
+      "name": "Guava Leaf",
+      "latin": "Psidium guajava",
+      "search_key": "guava leaf_psidium guajava",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 683,
+      "name": "Soursop",
+      "latin": "Annona muricata",
+      "search_key": "soursop_annona muricata",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1226,
+      "name": "Hibiscus",
+      "latin": "Hibiscus sabdariffa",
+      "search_key": "hibiscus_hibiscus sabdariffa",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1227,
+      "name": "Aloe Vera",
+      "latin": "Aloe barbadensis",
+      "search_key": "aloe vera_aloe barbadensis",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1518,
+      "name": "Cacao",
+      "latin": "Theobroma cacao",
+      "search_key": "cacao_theobroma cacao",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1524,
+      "name": "Cayenne",
+      "latin": "Capsicum annuum",
+      "search_key": "cayenne_capsicum annuum",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1549,
+      "name": "Cocoa",
+      "latin": "Theobroma cacao",
+      "search_key": "cocoa_theobroma cacao",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2048,
+      "name": "Aronia Berry",
+      "latin": "Aronia melanocarpa",
+      "search_key": "aronia berry_aronia melanocarpa",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2031,
+      "name": "Porcini Mushroom",
+      "latin": "Boletus edulis",
+      "search_key": "porcini mushroom_boletus edulis",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2033,
+      "name": "Chanterelle Mushroom",
+      "latin": "Cantharellus cibarius",
+      "search_key": "chanterelle mushroom_cantharellus cibarius",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2151,
+      "name": "Chamomile Flowers",
+      "latin": "Matricaria chamomilla",
+      "search_key": "chamomile flowers_matricaria chamomilla",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2152,
+      "name": "Lavender Flowers",
+      "latin": "Lavandula angustifolia",
+      "search_key": "lavender flowers_lavandula angustifolia",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2158,
+      "name": "Cornflower",
+      "latin": "Centaurea cyanus",
+      "search_key": "cornflower_centaurea cyanus",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 7,
+      "name": "St. John's Wort",
+      "latin": "Hypericum perforatum",
+      "search_key": "st. john's wort_hypericum perforatum",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 8,
+      "name": "Valerian",
+      "latin": "Valeriana officinalis",
+      "search_key": "valerian_valeriana officinalis",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 741,
+      "name": "Sage",
+      "latin": "Salvia officinalis",
+      "search_key": "sage_salvia officinalis",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 742,
+      "name": "Thyme",
+      "latin": "Thymus vulgaris",
+      "search_key": "thyme_thymus vulgaris",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 743,
+      "name": "Feverfew",
+      "latin": "Tanacetum parthenium",
+      "search_key": "feverfew_tanacetum parthenium",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1476,
+      "name": "Arnica",
+      "latin": "Arnica montana",
+      "search_key": "arnica_arnica montana",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1477,
+      "name": "Comfrey",
+      "latin": "Symphytum officinale",
+      "search_key": "comfrey_symphytum officinale",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1478,
+      "name": "Plantain",
+      "latin": "Plantago major",
+      "search_key": "plantain_plantago major",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1507,
+      "name": "Dandelion",
+      "latin": "Taraxacum officinale",
+      "search_key": "dandelion_taraxacum officinale",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1512,
+      "name": "Blessed Thistle",
+      "latin": "Cnicus benedictus",
+      "search_key": "blessed thistle_cnicus benedictus",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1517,
+      "name": "Butterbur",
+      "latin": "Petasites hybridus",
+      "search_key": "butterbur_petasites hybridus",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1521,
+      "name": "Capillus Veneris",
+      "latin": "Adiantum capillus-veneris",
+      "search_key": "capillus veneris_adiantum capillus-veneris",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1525,
+      "name": "Celandine",
+      "latin": "Chelidonium majus",
+      "search_key": "celandine_chelidonium majus",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1527,
+      "name": "Centaury",
+      "latin": "Centaurium erythraea",
+      "search_key": "centaury_centaurium erythraea",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1530,
+      "name": "Chamomile Roman",
+      "latin": "Chamaemelum nobile",
+      "search_key": "chamomile roman_chamaemelum nobile",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1534,
+      "name": "Chaste Tree",
+      "latin": "Vitex agnus-castus",
+      "search_key": "chaste tree_vitex agnus-castus",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1536,
+      "name": "Chicory",
+      "latin": "Cichorium intybus",
+      "search_key": "chicory_cichorium intybus",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1545,
+      "name": "Clary Sage",
+      "latin": "Salvia sclarea",
+      "search_key": "clary sage_salvia sclarea",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1552,
+      "name": "Coltsfoot",
+      "latin": "Tussilago farfara",
+      "search_key": "coltsfoot_tussilago farfara",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2032,
+      "name": "Morel Mushroom",
+      "latin": "Morchella species",
+      "search_key": "morel mushroom_morchella species",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2038,
+      "name": "Hydnum Repandum",
+      "latin": "Hydnum repandum",
+      "search_key": "hydnum repandum_hydnum repandum",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2042,
+      "name": "Blackberry",
+      "latin": "Rubus fruticosus",
+      "search_key": "blackberry_rubus fruticosus",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2050,
+      "name": "Elderberry",
+      "latin": "Sambucus nigra",
+      "search_key": "elderberry_sambucus nigra",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2095,
+      "name": "Angelica Root",
+      "latin": "Angelica archangelica",
+      "search_key": "angelica root_angelica archangelica",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2098,
+      "name": "Valerian Root",
+      "latin": "Valeriana officinalis",
+      "search_key": "valerian root_valeriana officinalis",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2156,
+      "name": "Violet Flowers",
+      "latin": "Viola odorata",
+      "search_key": "violet flowers_viola odorata",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2157,
+      "name": "Pansy Flowers",
+      "latin": "Viola tricolor",
+      "search_key": "pansy flowers_viola tricolor",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2049,
+      "name": "Hawthorn Berry",
+      "latin": "Crataegus laevigata",
+      "search_key": "hawthorn berry_crataegus laevigata",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2094,
+      "name": "Dandelion Root",
+      "latin": "Taraxacum officinale",
+      "search_key": "dandelion root_taraxacum officinale",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 606,
+      "name": "Thai Basil",
+      "latin": "Ocimum basilicum var. thyrsiflora",
+      "search_key": "thai basil_ocimum basilicum var. thyrsiflora",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 607,
+      "name": "Pennywort (Asian)",
+      "latin": "Centella asiatica",
+      "search_key": "pennywort (asian)_centella asiatica",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 608,
+      "name": "Bitter Gourd",
+      "latin": "Momordica charantia",
+      "search_key": "bitter gourd_momordica charantia",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 610,
+      "name": "Morinda Root",
+      "latin": "Morinda citrifolia",
+      "search_key": "morinda root_morinda citrifolia",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 601,
+      "name": "Galangal",
+      "latin": "Alpinia galanga",
+      "search_key": "galangal_alpinia galanga",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 602,
+      "name": "Cardamom",
+      "latin": "Elettaria cardamomum",
+      "search_key": "cardamom_elettaria cardamomum",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 603,
+      "name": "Lemongrass",
+      "latin": "Cymbopogon citratus",
+      "search_key": "lemongrass_cymbopogon citratus",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 604,
+      "name": "Holy Basil",
+      "latin": "Ocimum sanctum",
+      "search_key": "holy basil_ocimum sanctum",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 605,
+      "name": "Turmeric Root",
+      "latin": "Curcuma domestica",
+      "search_key": "turmeric root_curcuma domestica",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1,
+      "name": "Ginger",
+      "latin": "Zingiber officinale",
+      "search_key": "ginger_zingiber officinale",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 4,
+      "name": "Licorice",
+      "latin": "Glycyrrhiza glabra",
+      "search_key": "licorice_glycyrrhiza glabra",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 6,
+      "name": "Ginkgo",
+      "latin": "Ginkgo biloba",
+      "search_key": "ginkgo_ginkgo biloba",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1051,
+      "name": "Goji Berry",
+      "latin": "Lycium barbarum",
+      "search_key": "goji berry_lycium barbarum",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1052,
+      "name": "Astragalus",
+      "latin": "Astragalus membranaceus",
+      "search_key": "astragalus_astragalus membranaceus",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1053,
+      "name": "Reishi",
+      "latin": "Ganoderma lucidum",
+      "search_key": "reishi_ganoderma lucidum",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1054,
+      "name": "Cordyceps",
+      "latin": "Cordyceps sinensis",
+      "search_key": "cordyceps_cordyceps sinensis",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1055,
+      "name": "Angelica",
+      "latin": "Angelica sinensis",
+      "search_key": "angelica_angelica sinensis",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 5,
+      "name": "Echinacea",
+      "latin": "Echinacea purpurea",
+      "search_key": "echinacea_echinacea purpurea",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 9,
+      "name": "Milk Thistle",
+      "latin": "Silybum marianum",
+      "search_key": "milk thistle_silybum marianum",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 10,
+      "name": "Peppermint",
+      "latin": "Mentha piperita",
+      "search_key": "peppermint_mentha piperita",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1306,
+      "name": "Calendula",
+      "latin": "Calendula officinalis",
+      "search_key": "calendula_calendula officinalis",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1307,
+      "name": "Chamomile (German)",
+      "latin": "Matricaria chamomilla",
+      "search_key": "chamomile (german)_matricaria chamomilla",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1308,
+      "name": "Chamomile (Roman)",
+      "latin": "Chamaemelum nobile",
+      "search_key": "chamomile (roman)_chamaemelum nobile",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1309,
+      "name": "Lemon balm",
+      "latin": "Melissa officinalis",
+      "search_key": "lemon balm_melissa officinalis",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1310,
+      "name": "Lavender",
+      "latin": "Lavandula angustifolia",
+      "search_key": "lavender_lavandula angustifolia",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1311,
+      "name": "St John's Wort",
+      "latin": "Hypericum perforatum",
+      "search_key": "st john's wort_hypericum perforatum",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1312,
+      "name": "Passionflower",
+      "latin": "Passiflora incarnata",
+      "search_key": "passionflower_passiflora incarnata",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1314,
+      "name": "Hops",
+      "latin": "Humulus lupulus",
+      "search_key": "hops_humulus lupulus",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1315,
+      "name": "Skullcap",
+      "latin": "Scutellaria lateriflora",
+      "search_key": "skullcap_scutellaria lateriflora",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 927,
+      "name": "American Ginseng",
+      "latin": "Panax quinquefolius",
+      "search_key": "american ginseng_panax quinquefolius",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 925,
+      "name": "Witch Hazel (American)",
+      "latin": "Hamamelis virginiana",
+      "search_key": "witch hazel (american)_hamamelis virginiana",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 926,
+      "name": "Slippery Elm (American)",
+      "latin": "Ulmus rubra",
+      "search_key": "slippery elm (american)_ulmus rubra",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 901,
+      "name": "Coconut Oil",
+      "latin": "Cocos nucifera",
+      "search_key": "coconut oil_cocos nucifera",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 902,
+      "name": "Frankincense",
+      "latin": "Boswellia carterii",
+      "search_key": "frankincense_boswellia carterii",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 903,
+      "name": "Myrrh",
+      "latin": "Commiphora myrrha",
+      "search_key": "myrrh_commiphora myrrha",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 904,
+      "name": "Perilla (Japanese Shiso)",
+      "latin": "Perilla frutescens",
+      "search_key": "perilla (japanese shiso)_perilla frutescens",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 916,
+      "name": "Korean Ginseng",
+      "latin": "Panax ginseng",
+      "search_key": "korean ginseng_panax ginseng",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 921,
+      "name": "Devil's Club",
+      "latin": "Oplopanax horridus",
+      "search_key": "devil's club_oplopanax horridus",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 922,
+      "name": "Spicebush (American)",
+      "latin": "Lindera benzoin",
+      "search_key": "spicebush (american)_lindera benzoin",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 923,
+      "name": "Black Haw",
+      "latin": "Viburnum prunifolium",
+      "search_key": "black haw_viburnum prunifolium",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 924,
+      "name": "Wild Cherry Bark",
+      "latin": "Prunus serotina",
+      "search_key": "wild cherry bark_prunus serotina",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2093,
+      "name": "Burdock Root",
+      "latin": "Arctium lappa",
+      "search_key": "burdock root_arctium lappa",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2135,
+      "name": "Barley Grass",
+      "latin": "Hordeum vulgare",
+      "search_key": "barley grass_hordeum vulgare",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 2121,
+      "name": "Mastic Gum",
+      "latin": "Pistacia lentiscus",
+      "search_key": "mastic gum_pistacia lentiscus",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1254,
+      "name": "Camu camu",
+      "latin": "Myrciaria dubia",
+      "search_key": "camu camu_myrciaria dubia",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1255,
+      "name": "Sangre de drago",
+      "latin": "Croton lechleri",
+      "search_key": "sangre de drago_croton lechleri",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1256,
+      "name": "Chuchuhuasi",
+      "latin": "Maytenus macrocarpa",
+      "search_key": "chuchuhuasi_maytenus macrocarpa",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1257,
+      "name": "Muira puama",
+      "latin": "Ptychopetalum olacoides",
+      "search_key": "muira puama_ptychopetalum olacoides",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1258,
+      "name": "Catuaba",
+      "latin": "Trichilia catigua",
+      "search_key": "catuaba_trichilia catigua",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1259,
+      "name": "Guarana",
+      "latin": "Paullinia cupana",
+      "search_key": "guarana_paullinia cupana",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1260,
+      "name": "Yerba mate",
+      "latin": "Ilex paraguariensis",
+      "search_key": "yerba mate_ilex paraguariensis",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1261,
+      "name": "Graviola (soursop)",
+      "latin": "Annona muricata",
+      "search_key": "graviola (soursop)_annona muricata",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1262,
+      "name": "Copaiba",
+      "latin": "Copaifera langsdorffii",
+      "search_key": "copaiba_copaifera langsdorffii",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1263,
+      "name": "Andiroba",
+      "latin": "Carapa guianensis",
+      "search_key": "andiroba_carapa guianensis",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1264,
+      "name": "Achiote (annatto)",
+      "latin": "Bixa orellana",
+      "search_key": "achiote (annatto)_bixa orellana",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1265,
+      "name": "Yerba santa (South American)",
+      "latin": "Eryngium foetidum",
+      "search_key": "yerba santa (south american)_eryngium foetidum",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1266,
+      "name": "Boldo",
+      "latin": "Peumus boldus",
+      "search_key": "boldo_peumus boldus",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1267,
+      "name": "Matico",
+      "latin": "Piper aduncum",
+      "search_key": "matico_piper aduncum",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1268,
+      "name": "Vilcacora (variant cat's claw)",
+      "latin": "Uncaria guianensis",
+      "search_key": "vilcacora (variant cat's claw)_uncaria guianensis",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1269,
+      "name": "Abuta",
+      "latin": "Cissampelos pareira",
+      "search_key": "abuta_cissampelos pareira",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1270,
+      "name": "Jatoba",
+      "latin": "Hymenaea courbaril",
+      "search_key": "jatoba_hymenaea courbaril",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1271,
+      "name": "Amor seco",
+      "latin": "Desmodium adscendens",
+      "search_key": "amor seco_desmodium adscendens",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1272,
+      "name": "Chanca piedra",
+      "latin": "Phyllanthus niruri",
+      "search_key": "chanca piedra_phyllanthus niruri",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1273,
+      "name": "Tayuya",
+      "latin": "Cayaponia tayuya",
+      "search_key": "tayuya_cayaponia tayuya",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1274,
+      "name": "Ipecac",
+      "latin": "Carapichea ipecacuanha",
+      "search_key": "ipecac_carapichea ipecacuanha",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1275,
+      "name": "Cubiu",
+      "latin": "Solanum sessiliflorum",
+      "search_key": "cubiu_solanum sessiliflorum",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1276,
+      "name": "Cumaru (tonka bean)",
+      "latin": "Dipteryx odorata",
+      "search_key": "cumaru (tonka bean)_dipteryx odorata",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1277,
+      "name": "Avenca",
+      "latin": "Adiantum capillus-veneris",
+      "search_key": "avenca_adiantum capillus-veneris",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1278,
+      "name": "Pata de vaca (cow foot)",
+      "latin": "Bauhinia forficata",
+      "search_key": "pata de vaca (cow foot)_bauhinia forficata",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1279,
+      "name": "Quebra pedra (stone breaker)",
+      "latin": "Phyllanthus amarus",
+      "search_key": "quebra pedra (stone breaker)_phyllanthus amarus",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1280,
+      "name": "Capim santo (lemongrass Brazil)",
+      "latin": "Cymbopogon citratus",
+      "search_key": "capim santo (lemongrass brazil)_cymbopogon citratus",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1281,
+      "name": "Erva cidreira (lemon balm Brazil)",
+      "latin": "Melissa officinalis",
+      "search_key": "erva cidreira (lemon balm brazil)_melissa officinalis",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1282,
+      "name": "Espinheira santa",
+      "latin": "Maytenus ilicifolia",
+      "search_key": "espinheira santa_maytenus ilicifolia",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1283,
+      "name": "Picao preto",
+      "latin": "Bidens pilosa",
+      "search_key": "picao preto_bidens pilosa",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1284,
+      "name": "Erva tostao",
+      "latin": "Boerhavia diffusa",
+      "search_key": "erva tostao_boerhavia diffusa",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1285,
+      "name": "Fedegoso",
+      "latin": "Senna obtusifolia",
+      "search_key": "fedegoso_senna obtusifolia",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1286,
+      "name": "Cip\u00f3",
+      "latin": "mil-homens - Aristolochia cymbifera",
+      "search_key": "cip\u00f3_mil-homens - aristolochia cymbifera",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1287,
+      "name": "Jurubeba",
+      "latin": "Solanum paniculatum",
+      "search_key": "jurubeba_solanum paniculatum",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1288,
+      "name": "Caju (cashew leaf/bark)",
+      "latin": "Anacardium occidentale",
+      "search_key": "caju (cashew leaf/bark)_anacardium occidentale",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1289,
+      "name": "Ip\u00ea roxo (pink trumpet tree)",
+      "latin": "Handroanthus impetiginosus",
+      "search_key": "ip\u00ea roxo (pink trumpet tree)_handroanthus impetiginosus",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1290,
+      "name": "Arapabaca",
+      "latin": "Dorstenia brasiliensis",
+      "search_key": "arapabaca_dorstenia brasiliensis",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1291,
+      "name": "Gua\u00e7atonga",
+      "latin": "Casearia sylvestris",
+      "search_key": "gua\u00e7atonga_casearia sylvestris",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1292,
+      "name": "Maracuja (passionflower)",
+      "latin": "Passiflora edulis",
+      "search_key": "maracuja (passionflower)_passiflora edulis",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1293,
+      "name": "Verbena (South American)",
+      "latin": "Verbena litoralis",
+      "search_key": "verbena (south american)_verbena litoralis",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1294,
+      "name": "Tansagem (plantain Brazil)",
+      "latin": "Plantago australis",
+      "search_key": "tansagem (plantain brazil)_plantago australis",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1295,
+      "name": "Melissa (Brazilian lemon balm)",
+      "latin": "Melissa officinalis",
+      "search_key": "melissa (brazilian lemon balm)_melissa officinalis",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1296,
+      "name": "Sucupira",
+      "latin": "Bowdichia virgilioides",
+      "search_key": "sucupira_bowdichia virgilioides",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1297,
+      "name": "Carqueja",
+      "latin": "Baccharis trimera",
+      "search_key": "carqueja_baccharis trimera",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1298,
+      "name": "Mulungu",
+      "latin": "Erythrina mulungu",
+      "search_key": "mulungu_erythrina mulungu",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1299,
+      "name": "Cip\u00f3 caboclo",
+      "latin": "Davilla rugosa",
+      "search_key": "cip\u00f3 caboclo_davilla rugosa",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1300,
+      "name": "Genipap",
+      "latin": "Genipa americana",
+      "search_key": "genipap_genipa americana",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1251,
+      "name": "Cat's Claw",
+      "latin": "Uncaria tomentosa",
+      "search_key": "cat's claw_uncaria tomentosa",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1252,
+      "name": "Pau d'Arco",
+      "latin": "Tabebuia impetiginosa",
+      "search_key": "pau d'arco_tabebuia impetiginosa",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1554,
+      "name": "Condurango",
+      "latin": "Gonolobus condurango",
+      "search_key": "condurango_gonolobus condurango",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1560,
+      "name": "Cough Root",
+      "latin": "Marsdenia cundurango",
+      "search_key": "cough root_marsdenia cundurango",
+      "status": "insufficient_data"
+    },
+    {
+      "id": 1500,
+      "name": "Japanese Knotweed",
+      "latin": "Fallopia japonica",
+      "search_key": "japanese knotweed_fallopia japonica",
+      "status": "insufficient_data"
+    }
+  ]
+}

@@ -1,0 +1,356 @@
+name,latin,english_name,family,status,source,tradition
+Tulsi,Ocimum sanctum,Holy Basil,Lamiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Amla,Emblica officinalis,Indian Gooseberry,Euphorbiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Giloy,Tinospora cordifolia,Heart-leaved Moonseed,Menispermaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Nagarmotha,Cyperus rotundus,Nut Grass,Cyperaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Agnimantha,Premna integrifolia,Dusky Fire Brand,Verbenaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Rohitaka,Tecomella undulata,Desert Teak,Bignoniaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Chopchini,Smilax china,China Root,Smilacaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Bhringraj,Eclipta alba,False Daisy,Asteraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Jatamansi,Nardostachys jatamansi,Spikenard,Valerianaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Chandana,Santalum album,White Sandalwood,Santalaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kutaj,Holarrhena antidysenterica,Conessi Tree,Apocynaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Rasona (Garlic),Allium sativum,Garlic,Amaryllidaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kanchanar,Bauhinia variegata,Orchid Tree,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Karpura (Camphor),Cinnamomum camphora,Camphor,Lauraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Pushkarmool,Inula racemosa,Indian Elecampane,Asteraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Bakuchi,Psoralea corylifolia,Purple Fleabane,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Vidarikand,Pueraria tuberosa,Indian Kudzu,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Ajmoda,Apium graveolens,Wild Celery,Apiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Patola,Trichosanthes dioica,Pointed Gourd,Cucurbitaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Vrikshamla,Garcinia indica,Kokum,Clusiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kumuda,Nymphaea alba,White Water Lily,Nymphaeaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Shigru,Moringa oleifera,Drumstick Tree,Moringaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Parpataka,Fumaria indica,Fine-leaved Fumitory,Papaveraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Indrayava,Holarrhena antidysenterica,Conessi Seeds,Apocynaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kapikachhu,Mucuna pruriens,Velvet Bean,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Bala,Sida cordifolia,Country Mallow,Malvaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Tamalpatra,Cinnamomum tamala,Indian Bay Leaf,Lauraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Chitrak,Plumbago zeylanica,Leadwort,Plumbaginaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Tagar,Valeriana wallichii,Indian Valerian,Caprifoliaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Khadira,Acacia catechu,Cutch Tree,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Twak (Cinnamon),Cinnamomum verum,Cinnamon,Lauraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Ela,Elettaria cardamomum,Cardamom,Zingiberaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Sariva,Hemidesmus indicus,Indian Sarsaparilla,Apocynaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Gorakhmundi,Sphaeranthus indicus,East Indian Globe Thistle,Asteraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kokilaksha,Asteracantha longifolia,Marsh Barbel,Acanthaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Yavani,Trachyspermum ammi,Carom Seeds,Apiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Bhunimba,Andrographis paniculata,King of Bitters,Acanthaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Chavya,Piper retrofractum,Java Long Pepper,Piperaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Palasha,Butea monosperma,Flame of the Forest,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Karanja,Pongamia pinnata,Indian Beech,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Ahiphena,Papaver somniferum,Opium Poppy,Papaveraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Danti,Baliospermum montanum,Red Physic Nut,Euphorbiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Eranda,Ricinus communis,Castor,Euphorbiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Guggulu,Commiphora mukul,Indian Bdellium,Burseraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Bhallataka,Semecarpus anacardium,Marking Nut,Anacardiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Vasaka,Adhatoda vasica,Malabar Nut,Acanthaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Laksha,Laccifer lacca,Lac,Kerriidae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Talisapatra,Abies webbiana,Himalayan Silver Fir,Pinaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Tamalaki,Phyllanthus niruri,Stonebreaker,Euphorbiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Shirisha,Albizia lebbeck,Lebbeck Tree,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Babbula,Acacia nilotica,Gum Arabic Tree,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kumkuma,Crocus sativus,Saffron,Iridaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Bilva,Aegle marmelos,Bael Tree,Rutaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Ashoka,Saraca asoca,Ashoka Tree,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Devadaru,Cedrus deodara,Himalayan Cedar,Pinaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Patala,Stereospermum suaveolens,Trumpet Flower,Bignoniaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Dhataki,Woodfordia fruticosa,Fire Flame Bush,Lythraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Yava,Hordeum vulgare,Barley,Poaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Masha,Vigna mungo,Black Gram,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Chana,Cicer arietinum,Bengal Gram,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Matulunga,Citrus medica,Citron,Rutaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Dadima,Punica granatum,Pomegranate,Lythraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Tinduka,Diospyros peregrina,Indian Persimmon,Ebenaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Draksha,Vitis vinifera,Grape,Vitaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Chakramarda,Cassia tora,Ringworm Plant,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Pashanabheda,Bergenia ligulata,Stone Breaker,Saxifragaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Lodhra,Symplocos racemosa,Symplocos Tree,Symplocaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Jati,Jasminum grandiflorum,Spanish Jasmine,Oleaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Shalparni,Desmodium gangeticum,Sal-leaved Desmodium,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kantakari,Solanum surattense,Yellow-berried Nightshade,Solanaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Gambhari,Gmelina arborea,Beechwood,Lamiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Gojihva,Onosma bracteata,Sedge,Boraginaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Aparajita,Clitoria ternatea,Butterfly Pea,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Meshashringi,Gymnema sylvestre,Gymnema,Apocynaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Ikshu,Saccharum officinarum,Sugarcane,Poaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Amrita,Tinospora cordifolia,Heart-leaved Moonseed,Menispermaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Shigru Patra,Moringa oleifera,Drumstick Tree Leaves,Moringaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Mandukparni,Centella asiatica,Gotu Kola,Apiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Vatsanabha,Aconitum ferox,Indian Aconite,Ranunculaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Ushira,Chrysopogon zizanioides,Vetiver,Poaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kiratatikta,Swertia chirata,Chiretta,Gentianaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Shilajit,Asphaltum punjabianum,Mineral Pitch,N/A,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kusha,Desmostachya bipinnata,Halfa Grass,Poaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Bimbi,Coccinia grandis,Ivy Gourd,Cucurbitaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Nirgundi,Vitex negundo,Five-leaved Chaste Tree,Lamiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Tagetes,Tagetes erecta,Marigold,Asteraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kachura,Curcuma zedoaria,Zedoary,Zingiberaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Shati,Hedychium spicatum,Spiked Ginger Lily,Zingiberaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Bhanga,Cannabis sativa,Cannabis,Cannabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Mochras,Bombax ceiba,Silk Cotton Tree Resin,Malvaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Jivanti,Leptadenia reticulata,Cork Swallow-wort,Apocynaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Makoy,Solanum nigrum,Black Nightshade,Solanaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kampillaka,Mallotus philippensis,Kamala Tree,Euphorbiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Amlavetasa,Garcinia pedunculata,Assam Gamboge,Clusiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Ardraka,Zingiber officinale,Fresh Ginger,Zingiberaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Parijata,Nyctanthes arbor-tristis,Night-flowering Jasmine,Oleaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Rajika,Brassica juncea,Indian Mustard,Brassicaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Rakta Chandana,Pterocarpus santalinus,Red Sandalwood,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Surana,Amorphophallus paeoniifolius,Elephant Foot Yam,Araceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Vasa,Adhatoda vasica,Malabar Nut,Acanthaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Lajjalu,Mimosa pudica,Touch-Me-Not,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Manjistha,Rubia cordifolia,Indian Madder,Rubiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Atibala,Abutilon indicum,Indian Mallow,Malvaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Karvellaka,Momordica charantia,Bitter Gourd,Cucurbitaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Katuki,Picrorhiza kurroa,Kutki,Plantaginaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Yastimadhu,Glycyrrhiza glabra,Licorice,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Bibhitaki,Terminalia bellirica,Beleric Myrobalan,Combretaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Pippali,Piper longum,Long Pepper,Piperaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Maricha,Piper nigrum,Black Pepper,Piperaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Shunthi,Zingiber officinale,Dry Ginger,Zingiberaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Vidanga,Embelia ribes,False Black Pepper,Primulaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Arjuna,Terminalia arjuna,Arjuna Tree,Combretaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Punarnava,Boerhavia diffusa,Spreading Hogweed,Nyctaginaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Vacha,Acorus calamus,Sweet Flag,Acoraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Hingu,Ferula assa-foetida,Asafoetida,Apiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Jeeraka,Cuminum cyminum,Cumin Seeds,Apiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Dhanyaka,Coriandrum sativum,Coriander,Apiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Methi,Trigonella foenum-graecum,Fenugreek,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Shallaki,Boswellia serrata,Indian Olibanum,Burseraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Jyotishmati,Celastrus paniculatus,Intellect Tree,Celastraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Japa,Hibiscus rosa-sinensis,Hibiscus,Malvaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kamala,Nelumbo nucifera,Sacred Lotus,Nelumbonaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Ketaki,Pandanus odorifer,Fragrant Screw Pine,Pandanaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Atasi,Linum usitatissimum,Flaxseed,Linaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Tila,Sesamum indicum,Sesame,Pedaliaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Brihati,Solanum indicum,Indian Nightshade,Solanaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Gokshura,Tribulus terrestris,Puncture Vine,Zygophyllaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Hamsapadi,Adiantum lunulatum,Walking Maidenhair Fern,Pteridaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Lavanga,Syzygium aromaticum,Clove,Myrtaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Nagakesara,Mesua ferrea,Ironwood Tree,Calophyllaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Sarpagandha,Rauvolfia serpentina,Indian Snakeroot,Apocynaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Varuna,Crateva nurvala,Three-leaved Caper,Capparaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Aragwadha,Cassia fistula,Indian Laburnum,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Apamarga,Achyranthes aspera,Prickly Chaff Flower,Amaranthaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Trivrit,Operculina turpethum,Indian Jalap,Convolvulaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Durva,Cynodon dactylon,Bermuda Grass,Poaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Jatiphala,Myristica fragrans,Nutmeg,Myristicaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kulattha,Macrotyloma uniflorum,Horse Gram,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Amra,Mangifera indica,Mango,Anacardiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Jambu,Syzygium cumini,Black Plum,Myrtaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Snuhi,Euphorbia neriifolia,Indian Spurge Tree,Euphorbiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kasani,Cichorium intybus,Chicory,Asteraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Sharapunkha,Tephrosia purpurea,Purple Tephrosia,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Prishniparni,Uraria picta,Pointed-leaved Uraria,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Jayapala,Croton tiglium,Purging Croton,Euphorbiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Gunja,Abrus precatorius,Rosary Pea,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Karavira,Nerium oleander,Oleander,Apocynaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kadamba,Neolamarckia cadamba,Burflower Tree,Rubiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Badara,Ziziphus mauritiana,Indian Jujube,Rhamnaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kapittha,Limonia acidissima,Wood Apple,Rutaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kharjura,Phoenix dactylifera,Date Palm,Arecaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Langali,Gloriosa superba,Flame Lily,Colchicaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kankola,Piper cubeba,Cubeb Pepper,Piperaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Mudga,Vigna radiata,Green Gram,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Masura,Lens culinaris,Lentil,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Ishwari,Aristolochia indica,Indian Birthwort,Aristolochiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Priyangu,Callicarpa macrophylla,Beautyberry,Lamiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Dhattura,Datura metel,Jimsonweed,Solanaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Ativisha,Aconitum heterophyllum,Indian Atees,Ranunculaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Vamsha,Bambusa bambos,Thorny Bamboo,Poaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Palandu,Allium cepa,Onion,Amaryllidaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Trapusha,Cucumis sativus,Cucumber,Cucurbitaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Hrivera,Coleus vettiveroides,Black Vetiver,Lamiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Plaksha,Ficus infectoria,White Fig,Moraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Udumbara,Ficus racemosa,Cluster Fig,Moraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Ashwattha,Ficus religiosa,Sacred Fig,Moraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Puga,Areca catechu,Areca Nut,Arecaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kakamachi,Solanum nigrum,Black Nightshade,Solanaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Mishreya,Foeniculum vulgare,Fennel,Apiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Shankhpushpi,Convolvulus pluricaulis,Shankhpushpi,Convolvulaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kushtha,Saussurea costus,Costus,Asteraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Madanaphala,Catunaregam spinosa,Emetic Nut,Rubiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Patha,Cissampelos pareira,Velvetleaf,Menispermaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Saptaparna,Alstonia scholaris,Devil's Tree,Apocynaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Prasarini,Paederia foetida,Stinkvine,Rubiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Asana,Pterocarpus marsupium,Indian Kino Tree,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kushmanda,Benincasa hispida,Ash Gourd,Cucurbitaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Vartaku,Solanum melongena,Brinjal,Solanaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Dronapushpi,Leucas cephalotes,Leucas,Lamiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Swarnapatri,Cassia angustifolia,Senna,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Chandrashura,Lepidium sativum,Garden Cress,Brassicaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Chirabilva,Holoptelea integrifolia,Indian Elm,Ulmaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Himsra,Capparis sepiaria,Caper Bush,Capparaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Karkatashringi,Pistacia integerrima,Crab's Claw,Anacardiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Katphala,Myrica esculenta,Bayberry,Myricaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Krishna Jeeraka,Carum carvi,Black Cumin,Apiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Murva,Marsdenia tenacissima,Marsdenia,Apocynaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Paribhadra,Erythrina variegata,Indian Coral Tree,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Shyonaka,Oroxylum indicum,Broken Bones Plant,Bignoniaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Alabu,Lagenaria siceraria,Bottle Gourd,Cucurbitaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Vriddhadaru,Argyreia nervosa,Elephant Creeper,Convolvulaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Narikela,Cocos nucifera,Coconut,Arecaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Talamuli,Curculigo orchioides,Golden Eye Grass,Hypoxidaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Saireyaka,Barleria prionitis,Yellow Barleria,Acanthaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Varahikanda,Dioscorea bulbifera,Air Potato,Dioscoreaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Ankola,Alangium salviifolium,Sage-leaved Alangium,Alangiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Changeri,Oxalis corniculata,Indian Sorrel,Oxalidaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Koshataki,Luffa acutangula,Angled Luffa,Cucurbitaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Tanduliyaka,Amaranthus spinosus,Spiny Amaranth,Amaranthaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Ingudi,Balanites aegyptiaca,Desert Date,Balanitaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Jivaka,Malaxis acuminata,Jivaka Orchid,Orchidaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Rishabhaka,Malaxis muscifera,Rishabhaka Orchid,Orchidaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Meda,Polygonatum cirrhifolium,Tendril-leaved Solomon's Seal,Asparagaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kakoli,Fritillaria roylei,Roscoe's Lily,Liliaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Dhamasa,Fagonia indica,Fagonia,Zygophyllaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Rohisha,Cymbopogon martinii,Palmarosa Grass,Poaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Suryavarta,Cleome gynandra,Spiderwisp,Cleomaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Gangeruki,Grewia tenax,White Crossberry,Malvaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kumbhika,Pistia stratiotes,Water Lettuce,Araceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Sthuneyaka,Taxus baccata,Common Yew,Taxaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Utingana,Blepharis edulis,Utangan Seeds,Acanthaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kumari,Aloe vera,Aloe Vera,Asphodelaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Asthishrinkhala,Cissus quadrangularis,Veldt Grape,Vitaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Bharangi,Rotheca serrata,Blue Fountain Bush,Lamiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Arka,Calotropis gigantea,Giant Calotrope,Apocynaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Indravaruni,Citrullus colocynthis,Colocynth,Cucurbitaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kadali,Musa paradisiaca,Banana,Musaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Tintidika,Tamarindus indica,Tamarind,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Rudraksha,Elaeocarpus ganitrus,Utrasum Bead Tree,Elaeocarpaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Putranjivaka,Putranjiva roxburghii,Child Life Tree,Putranjivaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Padmaka,Prunus cerasoides,Himalayan Wild Cherry,Rosaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Pilu,Salvadora persica,Toothbrush Tree,Salvadoraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Simsapa,Dalbergia sissoo,Indian Rosewood,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Arishtaka,Sapindus mukorossi,Soapnut,Sapindaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Visha Tinduka,Strychnos nux-vomica,Nux Vomica,Loganiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Devadali,Luffa echinata,Bristly Luffa,Cucurbitaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Dhava,Anogeissus latifolia,Axlewood Tree,Combretaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Gajapippali,Scindapsus officinalis,Official Elephant Pepper,Araceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Granthiparni,Angelica glauca,Angelica,Apiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Hapusa,Juniperus communis,Juniper Berry,Cupressaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kakajangha,Peristrophe paniculata,Panicled Peristrophe,Acanthaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Karmaranga,Averrhoa carambola,Star Fruit,Oxalidaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kasheruka,Scirpus grossus,Greater Club Rush,Cyperaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kembuka,Hellenia speciosa,Crepe Ginger,Costaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Koshamra,Schleichera oleosa,Ceylon Oak,Sapindaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Latakaranja,Caesalpinia crista,Fever Nut,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Lavali,Phyllanthus acidus,Malay Gooseberry,Phyllanthaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Mahanimba,Melia azedarach,Persian Lilac,Meliaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Nagabala,Grewia hirsuta,Snake Mallow,Malvaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Pattanga,Biancaea sappan,Sappanwood,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Sarja,Vateria indica,White Dammar,Dipterocarpaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Somavalli,Sarcostemma acidum,Leafless East Indian Vine,Apocynaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Vyaghranakhi,Capparis zeylanica,Ceylon Caper,Capparaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Akshotaka,Juglans regia,Walnut,Juglandaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Chakshushya,Cassia absus,Jasmeelang,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Dadrughna,Senna alata,Ringworm Bush,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Bandhuka,Pentapetes phoenicea,Scarlet Mallow,Malvaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Bhutakeshi,Selinum wallichianum,Wallich Celery,Apiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Riddhi,Habenaria intermedia,Riddhi Orchid,Orchidaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Vriddhi,Habenaria edgeworthii,Vriddhi Orchid,Orchidaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Akarakarabha,Anacyclus pyrethrum,Pellitory,Asteraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Mahabala,Sida rhombifolia,Arrowleaf Sida,Malvaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Chirayata,Swertia chirayita,East Indian Balmony,Gentianaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Jalapippali,Phyla nodiflora,Frog Fruit,Verbenaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kasamarda,Senna occidentalis,Coffee Senna,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Bhumyamalaki,Phyllanthus niruri,Gale of the Wind,Phyllanthaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Dugdhika,Euphorbia hirta,Asthma Plant,Euphorbiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Grinjana,Daucus carota,Carrot,Apiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Ishabgula,Plantago ovata,Psyllium Husk,Plantaginaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kalajaji,Nigella sativa,Black Caraway,Ranunculaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Karira,Capparis decidua,Caperberry,Capparaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Karpasa,Gossypium herbaceum,Levant Cotton,Malvaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kataka,Strychnos potatorum,Clearing Nut Tree,Loganiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kovidara,Bauhinia variegata,Orchid Tree,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Madayantika,Lawsonia inermis,Henna,Lythraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Madhukarkati,Citrus maxima,Pomelo,Rutaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Mulaka,Raphanus sativus,Radish,Brassicaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Nimbu,Citrus limon,Lemon,Rutaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Palankya,Spinacia oleracea,Spinach,Amaranthaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Panasa,Artocarpus heterophyllus,Jackfruit,Moraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Parnayavani,Coleus amboinicus,Indian Borage,Lamiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Priyala,Buchanania lanzan,Almondette,Anacardiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Rasna,Pluchea lanceolata,Indian Fleabane,Asteraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Satyanashi,Argemone mexicana,Mexican Prickly Poppy,Papaveraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Shvet Musli,Chlorophytum borivilianum,White Musli,Asparagaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Taruni,Rosa centifolia,Cabbage Rose,Rosaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Vanapsa,Viola odorata,Sweet Violet,Violaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Vathada,Prunus dulcis,Almond,Rosaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Vetasa,Salix caprea,Goat Willow,Salicaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Yuthika,Jasminum auriculatum,Needle-flower Jasmine,Oleaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Agastya,Sesbania grandiflora,Hummingbird Tree,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Amra Haridra,Curcuma amada,Mango Ginger,Zingiberaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Chavika,Piper chaba,Long Pepper Stem,Piperaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Raktamoola,Plumbago indica,Indian Leadwort,Plumbaginaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Mudgaparni,Vigna trilobata,Three-lobed Kidney Bean,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Mashaparni,Teramnus labialis,Horse Vine,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Nili,Indigofera tinctoria,True Indigo,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Vrihi,Oryza sativa,Rice,Poaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Yavasa,Alhagi maurorum,Camel Thorn,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Utpala,Nymphaea nouchali,Blue Water Lily,Nymphaeaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Shara,Saccharum munja,Munja Grass,Poaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Shankhini,Canscora decussata,Canscora,Gentianaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Shana,Crotalaria juncea,Sunn Hemp,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Shaka,Tectona grandis,Teak Tree,Lamiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Renuka,Vitex agnus-castus,Chaste Tree,Lamiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Prativisha,Aconitum palmatum,Aconite Alternative,Ranunculaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Prapunnada,Senna tora,Sickle Senna,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Nadi Hingu,Gardenia gummifera,Gummy Gardenia,Rubiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Lata Kasturi,Abelmoschus moschatus,Musk Mallow,Malvaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Lakuca,Artocarpus lacoocha,Monkey Jack,Moraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Karnikara,Pterospermum acerifolium,Dinner Plate Tree,Malvaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kankataka,Flacourtia indica,Governor's Plum,Salicaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kalamba,Ipomoea aquatica,Water Spinach,Convolvulaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kakatikta,Luffa amara,Wild Bitter Luffa,Cucurbitaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kadara,Senegalia suma,White Cutch Tree,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Jalavetasa,Salix tetrasperma,Indian Willow,Salicaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Hijal,Barringtonia acutangula,Indian Oak,Lecythidaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Hastikarna Palasha,Leea macrophylla,Large-leaved Leea,Vitaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Ambasthaki,Hibiscus sabdariffa,Roselle,Malvaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kharbhuja,Cucumis melo,Muskmelon,Cucurbitaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Shrigataka,Trapa natans,Water Chestnut,Lythraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Tala,Borassus flabellifer,Palmyra Palm,Arecaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Tilaparni,Cleome gynandra,Spiderwisp,Cleomaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Varshabhu,Trianthema portulacastrum,Desert Horse Purslane,Aizoaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Godhuma,Triticum aestivum,Wheat,Poaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Adhaki,Cajanus cajan,Pigeon Pea,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Bakula,Mimusops elengi,Bullet Wood Tree,Sapotaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Bhurja,Betula utilis,Himalayan Birch,Betulaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Bijapura,Citrus medica,Citron,Rutaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Matsyakshi,Alternanthera sessilis,Sessile Joyweed,Amaranthaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Mayurashikha,Actiniopteris radiata,Ray Fern,Pteridaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Nagadanti,Heliotropium indicum,Indian Turnsole,Boraginaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Nikochaka,Pistacia vera,Pistachio,Anacardiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Rajamasha,Vigna unguiculata,Cowpea,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Sarpaksi,Ophiorrhiza mungos,Mongoose Plant,Rubiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Satina,Pisum sativum,Pea,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Upodika,Basella alba,Malabar Spinach,Basellaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Saptala,Senegalia rugata,Soap Pod,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Suranjana,Colchicum luteum,Golden Colchicum,Colchicaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Tumburu,Zanthoxylum armatum,Winged Prickly Ash,Rutaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Alarka,Calotropis procera,White Crown Flower,Apocynaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kusumbha,Carthamus tinctorius,Safflower,Asteraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Akhuparni,Ipomoea reniformis,Kidney Leaf Morning Glory,Convolvulaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Putikaranja,Caesalpinia bonduc,Fever Nut,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Amlaparni,Rheum emodi,Indian Rhubarb,Polygonaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Aranya Jeeraka,Centratherum anthelminticum,Wild Cumin,Asteraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Bhadra,Aerva lanata,Mountain Knot Grass,Amaranthaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Bhumi Jambuka,Premna herbacea,Pygmy Premna,Lamiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Bhutika,Cymbopogon citratus,Lemongrass,Poaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Chakragaja,Celosia argentea,White Cockscomb,Amaranthaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Chhatraka,Agaricus campestris,Mushroom,Agaricaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Dhamargava,Luffa cylindrica,Sponge Gourd,Cucurbitaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Gavedhuka,Coix lacryma-jobi,Job's Tears,Poaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kshavaka,Centipeda minima,Sneezewort,Asteraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kurabaka,Barleria cristata,Crested Philippine Violet,Acanthaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Mamsarohini,Soymida febrifuga,Indian Redwood,Meliaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Medasaka,Litsea glutinosa,Glabrous Laurel,Lauraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Aivana,Hyoscyamus niger,Henbane,Solanaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Asphota,Clitoria ternatea,Butterfly Pea,Fabaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Abhishuka,Pistacia vera,Pistachio,Anacardiaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Muranji,Moringa concanensis,Konkan Moringa,Moringaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Mayaphala,Quercus infectoria,Magic Nut / Oak Gall,Fagaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Kankra,Bruguiera gymnorhiza,Large-leafed Mangrove,Rhizophoraceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Sadapushpi,Catharanthus roseus,Madagascar Periwinkle,Apocynaceae,insufficient_data,amidha-ayurveda-github,Ayurveda
+Sahachara,Barleria prionitis,Porcupine Flower,Acanthaceae,insufficient_data,amidha-ayurveda-github,Ayurveda

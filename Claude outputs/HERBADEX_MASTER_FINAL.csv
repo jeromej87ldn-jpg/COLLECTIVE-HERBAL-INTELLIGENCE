@@ -1,0 +1,179 @@
+id,name,latin,search_key,status
+2124,Gum Arabic,Acacia senegal,gum arabic_acacia senegal,insufficient_data
+2150,Hibiscus Flowers,Hibiscus sabdariffa,hibiscus flowers_hibiscus sabdariffa,insufficient_data
+823,Baobab,Adansonia digitata,baobab_adansonia digitata,insufficient_data
+1176,Rooibos,Aspalathus linearis,rooibos_aspalathus linearis,insufficient_data
+1177,Marula,Sclerocarya birrea,marula_sclerocarya birrea,insufficient_data
+1178,Moringa,Moringa oleifera,moringa_moringa oleifera,insufficient_data
+2040,Acai Berry,Euterpe oleracea,acai berry_euterpe oleracea,insufficient_data
+821,Maca,Lepidium meyenii,maca_lepidium meyenii,insufficient_data
+822,Yacon,Smallanthus sonchifolius,yacon_smallanthus sonchifolius,insufficient_data
+2053,Maqui Berry,Aristotelia chilensis,maqui berry_aristotelia chilensis,insufficient_data
+1541,Chlorella,Chlorella pyrenoidosa,chlorella_chlorella pyrenoidosa,insufficient_data
+2125,Benzoin Resin,Styrax benzoin,benzoin resin_styrax benzoin,insufficient_data
+1548,Clubmoss,Lycopodium spp.,clubmoss_lycopodium spp.,insufficient_data
+2137,Bladderwrack,Fucus vesiculosus,bladderwrack_fucus vesiculosus,insufficient_data
+2,Turmeric,Curcuma longa,turmeric_curcuma longa,insufficient_data
+3,Ashwagandha,Withania somnifera,ashwagandha_withania somnifera,insufficient_data
+1001,Brahmi,Bacopa monnieri,brahmi_bacopa monnieri,insufficient_data
+1002,Triphala,Three-fruit blend,triphala_three-fruit blend,insufficient_data
+1003,Neem,Azadirachta indica,neem_azadirachta indica,insufficient_data
+1004,Haritaki,Terminalia chebula,haritaki_terminalia chebula,insufficient_data
+1005,Shatavari,Asparagus racemosus,shatavari_asparagus racemosus,insufficient_data
+1502,Acacia Catechu,Acacia catechu,acacia catechu_acacia catechu,insufficient_data
+1503,Andrographis,Andrographis paniculata,andrographis_andrographis paniculata,insufficient_data
+1515,Boswellia,Boswellia serrata,boswellia_boswellia serrata,insufficient_data
+1551,Coleus,Plectranthus barbatus,coleus_plectranthus barbatus,insufficient_data
+2006,Fennel Seeds,Foeniculum vulgare,fennel seeds_foeniculum vulgare,insufficient_data
+2007,Cumin Seeds,Cuminum cyminum,cumin seeds_cuminum cyminum,insufficient_data
+2008,Coriander Seeds,Coriandrum sativum,coriander seeds_coriandrum sativum,insufficient_data
+2010,Fenugreek Seeds,Trigonella foenum-graecum,fenugreek seeds_trigonella foenum-graecum,insufficient_data
+2011,Nigella Seeds,Nigella sativa,nigella seeds_nigella sativa,insufficient_data
+2018,Poppy Seeds,Papaver somniferum,poppy seeds_papaver somniferum,insufficient_data
+2047,Pomegranate,Punica granatum,pomegranate_punica granatum,insufficient_data
+2089,Ashwagandha Root,Withania somnifera,ashwagandha root_withania somnifera,insufficient_data
+2123,Shilajit,Mineral-resin complex,shilajit_mineral-resin complex,insufficient_data
+2126,Boswellia Extract,Boswellia carterii,boswellia extract_boswellia carterii,insufficient_data
+2130,Tribulus,Tribulus terrestris,tribulus_tribulus terrestris,insufficient_data
+2055,Mangosteen,Garcinia mangostana,mangosteen_garcinia mangostana,insufficient_data
+2119,Propolis,Bee-produced,propolis_bee-produced,insufficient_data
+2128,Raw Honey,Apis mellifera,raw honey_apis mellifera,insufficient_data
+681,Mango Bark,Mangifera indica,mango bark_mangifera indica,insufficient_data
+682,Guava Leaf,Psidium guajava,guava leaf_psidium guajava,insufficient_data
+683,Soursop,Annona muricata,soursop_annona muricata,insufficient_data
+1226,Hibiscus,Hibiscus sabdariffa,hibiscus_hibiscus sabdariffa,insufficient_data
+1227,Aloe Vera,Aloe barbadensis,aloe vera_aloe barbadensis,insufficient_data
+1518,Cacao,Theobroma cacao,cacao_theobroma cacao,insufficient_data
+1524,Cayenne,Capsicum annuum,cayenne_capsicum annuum,insufficient_data
+1549,Cocoa,Theobroma cacao,cocoa_theobroma cacao,insufficient_data
+2048,Aronia Berry,Aronia melanocarpa,aronia berry_aronia melanocarpa,insufficient_data
+2031,Porcini Mushroom,Boletus edulis,porcini mushroom_boletus edulis,insufficient_data
+2033,Chanterelle Mushroom,Cantharellus cibarius,chanterelle mushroom_cantharellus cibarius,insufficient_data
+2151,Chamomile Flowers,Matricaria chamomilla,chamomile flowers_matricaria chamomilla,insufficient_data
+2152,Lavender Flowers,Lavandula angustifolia,lavender flowers_lavandula angustifolia,insufficient_data
+2158,Cornflower,Centaurea cyanus,cornflower_centaurea cyanus,insufficient_data
+7,St. John's Wort,Hypericum perforatum,st. john's wort_hypericum perforatum,insufficient_data
+8,Valerian,Valeriana officinalis,valerian_valeriana officinalis,insufficient_data
+741,Sage,Salvia officinalis,sage_salvia officinalis,insufficient_data
+742,Thyme,Thymus vulgaris,thyme_thymus vulgaris,insufficient_data
+743,Feverfew,Tanacetum parthenium,feverfew_tanacetum parthenium,insufficient_data
+1476,Arnica,Arnica montana,arnica_arnica montana,insufficient_data
+1477,Comfrey,Symphytum officinale,comfrey_symphytum officinale,insufficient_data
+1478,Plantain,Plantago major,plantain_plantago major,insufficient_data
+1507,Dandelion,Taraxacum officinale,dandelion_taraxacum officinale,insufficient_data
+1512,Blessed Thistle,Cnicus benedictus,blessed thistle_cnicus benedictus,insufficient_data
+1517,Butterbur,Petasites hybridus,butterbur_petasites hybridus,insufficient_data
+1521,Capillus Veneris,Adiantum capillus-veneris,capillus veneris_adiantum capillus-veneris,insufficient_data
+1525,Celandine,Chelidonium majus,celandine_chelidonium majus,insufficient_data
+1527,Centaury,Centaurium erythraea,centaury_centaurium erythraea,insufficient_data
+1530,Chamomile Roman,Chamaemelum nobile,chamomile roman_chamaemelum nobile,insufficient_data
+1534,Chaste Tree,Vitex agnus-castus,chaste tree_vitex agnus-castus,insufficient_data
+1536,Chicory,Cichorium intybus,chicory_cichorium intybus,insufficient_data
+1545,Clary Sage,Salvia sclarea,clary sage_salvia sclarea,insufficient_data
+1552,Coltsfoot,Tussilago farfara,coltsfoot_tussilago farfara,insufficient_data
+2032,Morel Mushroom,Morchella species,morel mushroom_morchella species,insufficient_data
+2038,Hydnum Repandum,Hydnum repandum,hydnum repandum_hydnum repandum,insufficient_data
+2042,Blackberry,Rubus fruticosus,blackberry_rubus fruticosus,insufficient_data
+2050,Elderberry,Sambucus nigra,elderberry_sambucus nigra,insufficient_data
+2095,Angelica Root,Angelica archangelica,angelica root_angelica archangelica,insufficient_data
+2098,Valerian Root,Valeriana officinalis,valerian root_valeriana officinalis,insufficient_data
+2156,Violet Flowers,Viola odorata,violet flowers_viola odorata,insufficient_data
+2157,Pansy Flowers,Viola tricolor,pansy flowers_viola tricolor,insufficient_data
+2049,Hawthorn Berry,Crataegus laevigata,hawthorn berry_crataegus laevigata,insufficient_data
+2094,Dandelion Root,Taraxacum officinale,dandelion root_taraxacum officinale,insufficient_data
+606,Thai Basil,Ocimum basilicum var. thyrsiflora,thai basil_ocimum basilicum var. thyrsiflora,insufficient_data
+607,Pennywort (Asian),Centella asiatica,pennywort (asian)_centella asiatica,insufficient_data
+608,Bitter Gourd,Momordica charantia,bitter gourd_momordica charantia,insufficient_data
+610,Morinda Root,Morinda citrifolia,morinda root_morinda citrifolia,insufficient_data
+601,Galangal,Alpinia galanga,galangal_alpinia galanga,insufficient_data
+602,Cardamom,Elettaria cardamomum,cardamom_elettaria cardamomum,insufficient_data
+603,Lemongrass,Cymbopogon citratus,lemongrass_cymbopogon citratus,insufficient_data
+604,Holy Basil,Ocimum sanctum,holy basil_ocimum sanctum,insufficient_data
+605,Turmeric Root,Curcuma domestica,turmeric root_curcuma domestica,insufficient_data
+1,Ginger,Zingiber officinale,ginger_zingiber officinale,insufficient_data
+4,Licorice,Glycyrrhiza glabra,licorice_glycyrrhiza glabra,insufficient_data
+6,Ginkgo,Ginkgo biloba,ginkgo_ginkgo biloba,insufficient_data
+1051,Goji Berry,Lycium barbarum,goji berry_lycium barbarum,insufficient_data
+1052,Astragalus,Astragalus membranaceus,astragalus_astragalus membranaceus,insufficient_data
+1053,Reishi,Ganoderma lucidum,reishi_ganoderma lucidum,insufficient_data
+1054,Cordyceps,Cordyceps sinensis,cordyceps_cordyceps sinensis,insufficient_data
+1055,Angelica,Angelica sinensis,angelica_angelica sinensis,insufficient_data
+5,Echinacea,Echinacea purpurea,echinacea_echinacea purpurea,insufficient_data
+9,Milk Thistle,Silybum marianum,milk thistle_silybum marianum,insufficient_data
+10,Peppermint,Mentha piperita,peppermint_mentha piperita,insufficient_data
+1306,Calendula,Calendula officinalis,calendula_calendula officinalis,insufficient_data
+1307,Chamomile (German),Matricaria chamomilla,chamomile (german)_matricaria chamomilla,insufficient_data
+1308,Chamomile (Roman),Chamaemelum nobile,chamomile (roman)_chamaemelum nobile,insufficient_data
+1309,Lemon balm,Melissa officinalis,lemon balm_melissa officinalis,insufficient_data
+1310,Lavender,Lavandula angustifolia,lavender_lavandula angustifolia,insufficient_data
+1311,St John's Wort,Hypericum perforatum,st john's wort_hypericum perforatum,insufficient_data
+1312,Passionflower,Passiflora incarnata,passionflower_passiflora incarnata,insufficient_data
+1314,Hops,Humulus lupulus,hops_humulus lupulus,insufficient_data
+1315,Skullcap,Scutellaria lateriflora,skullcap_scutellaria lateriflora,insufficient_data
+927,American Ginseng,Panax quinquefolius,american ginseng_panax quinquefolius,insufficient_data
+925,Witch Hazel (American),Hamamelis virginiana,witch hazel (american)_hamamelis virginiana,insufficient_data
+926,Slippery Elm (American),Ulmus rubra,slippery elm (american)_ulmus rubra,insufficient_data
+901,Coconut Oil,Cocos nucifera,coconut oil_cocos nucifera,insufficient_data
+902,Frankincense,Boswellia carterii,frankincense_boswellia carterii,insufficient_data
+903,Myrrh,Commiphora myrrha,myrrh_commiphora myrrha,insufficient_data
+904,Perilla (Japanese Shiso),Perilla frutescens,perilla (japanese shiso)_perilla frutescens,insufficient_data
+916,Korean Ginseng,Panax ginseng,korean ginseng_panax ginseng,insufficient_data
+921,Devil's Club,Oplopanax horridus,devil's club_oplopanax horridus,insufficient_data
+922,Spicebush (American),Lindera benzoin,spicebush (american)_lindera benzoin,insufficient_data
+923,Black Haw,Viburnum prunifolium,black haw_viburnum prunifolium,insufficient_data
+924,Wild Cherry Bark,Prunus serotina,wild cherry bark_prunus serotina,insufficient_data
+2093,Burdock Root,Arctium lappa,burdock root_arctium lappa,insufficient_data
+2135,Barley Grass,Hordeum vulgare,barley grass_hordeum vulgare,insufficient_data
+2121,Mastic Gum,Pistacia lentiscus,mastic gum_pistacia lentiscus,insufficient_data
+1254,Camu camu,Myrciaria dubia,camu camu_myrciaria dubia,insufficient_data
+1255,Sangre de drago,Croton lechleri,sangre de drago_croton lechleri,insufficient_data
+1256,Chuchuhuasi,Maytenus macrocarpa,chuchuhuasi_maytenus macrocarpa,insufficient_data
+1257,Muira puama,Ptychopetalum olacoides,muira puama_ptychopetalum olacoides,insufficient_data
+1258,Catuaba,Trichilia catigua,catuaba_trichilia catigua,insufficient_data
+1259,Guarana,Paullinia cupana,guarana_paullinia cupana,insufficient_data
+1260,Yerba mate,Ilex paraguariensis,yerba mate_ilex paraguariensis,insufficient_data
+1261,Graviola (soursop),Annona muricata,graviola (soursop)_annona muricata,insufficient_data
+1262,Copaiba,Copaifera langsdorffii,copaiba_copaifera langsdorffii,insufficient_data
+1263,Andiroba,Carapa guianensis,andiroba_carapa guianensis,insufficient_data
+1264,Achiote (annatto),Bixa orellana,achiote (annatto)_bixa orellana,insufficient_data
+1265,Yerba santa (South American),Eryngium foetidum,yerba santa (south american)_eryngium foetidum,insufficient_data
+1266,Boldo,Peumus boldus,boldo_peumus boldus,insufficient_data
+1267,Matico,Piper aduncum,matico_piper aduncum,insufficient_data
+1268,Vilcacora (variant cat's claw),Uncaria guianensis,vilcacora (variant cat's claw)_uncaria guianensis,insufficient_data
+1269,Abuta,Cissampelos pareira,abuta_cissampelos pareira,insufficient_data
+1270,Jatoba,Hymenaea courbaril,jatoba_hymenaea courbaril,insufficient_data
+1271,Amor seco,Desmodium adscendens,amor seco_desmodium adscendens,insufficient_data
+1272,Chanca piedra,Phyllanthus niruri,chanca piedra_phyllanthus niruri,insufficient_data
+1273,Tayuya,Cayaponia tayuya,tayuya_cayaponia tayuya,insufficient_data
+1274,Ipecac,Carapichea ipecacuanha,ipecac_carapichea ipecacuanha,insufficient_data
+1275,Cubiu,Solanum sessiliflorum,cubiu_solanum sessiliflorum,insufficient_data
+1276,Cumaru (tonka bean),Dipteryx odorata,cumaru (tonka bean)_dipteryx odorata,insufficient_data
+1277,Avenca,Adiantum capillus-veneris,avenca_adiantum capillus-veneris,insufficient_data
+1278,Pata de vaca (cow foot),Bauhinia forficata,pata de vaca (cow foot)_bauhinia forficata,insufficient_data
+1279,Quebra pedra (stone breaker),Phyllanthus amarus,quebra pedra (stone breaker)_phyllanthus amarus,insufficient_data
+1280,Capim santo (lemongrass Brazil),Cymbopogon citratus,capim santo (lemongrass brazil)_cymbopogon citratus,insufficient_data
+1281,Erva cidreira (lemon balm Brazil),Melissa officinalis,erva cidreira (lemon balm brazil)_melissa officinalis,insufficient_data
+1282,Espinheira santa,Maytenus ilicifolia,espinheira santa_maytenus ilicifolia,insufficient_data
+1283,Picao preto,Bidens pilosa,picao preto_bidens pilosa,insufficient_data
+1284,Erva tostao,Boerhavia diffusa,erva tostao_boerhavia diffusa,insufficient_data
+1285,Fedegoso,Senna obtusifolia,fedegoso_senna obtusifolia,insufficient_data
+1286,Cipó,mil-homens - Aristolochia cymbifera,cipó_mil-homens - aristolochia cymbifera,insufficient_data
+1287,Jurubeba,Solanum paniculatum,jurubeba_solanum paniculatum,insufficient_data
+1288,Caju (cashew leaf/bark),Anacardium occidentale,caju (cashew leaf/bark)_anacardium occidentale,insufficient_data
+1289,Ipê roxo (pink trumpet tree),Handroanthus impetiginosus,ipê roxo (pink trumpet tree)_handroanthus impetiginosus,insufficient_data
+1290,Arapabaca,Dorstenia brasiliensis,arapabaca_dorstenia brasiliensis,insufficient_data
+1291,Guaçatonga,Casearia sylvestris,guaçatonga_casearia sylvestris,insufficient_data
+1292,Maracuja (passionflower),Passiflora edulis,maracuja (passionflower)_passiflora edulis,insufficient_data
+1293,Verbena (South American),Verbena litoralis,verbena (south american)_verbena litoralis,insufficient_data
+1294,Tansagem (plantain Brazil),Plantago australis,tansagem (plantain brazil)_plantago australis,insufficient_data
+1295,Melissa (Brazilian lemon balm),Melissa officinalis,melissa (brazilian lemon balm)_melissa officinalis,insufficient_data
+1296,Sucupira,Bowdichia virgilioides,sucupira_bowdichia virgilioides,insufficient_data
+1297,Carqueja,Baccharis trimera,carqueja_baccharis trimera,insufficient_data
+1298,Mulungu,Erythrina mulungu,mulungu_erythrina mulungu,insufficient_data
+1299,Cipó caboclo,Davilla rugosa,cipó caboclo_davilla rugosa,insufficient_data
+1300,Genipap,Genipa americana,genipap_genipa americana,insufficient_data
+1251,Cat's Claw,Uncaria tomentosa,cat's claw_uncaria tomentosa,insufficient_data
+1252,Pau d'Arco,Tabebuia impetiginosa,pau d'arco_tabebuia impetiginosa,insufficient_data
+1554,Condurango,Gonolobus condurango,condurango_gonolobus condurango,insufficient_data
+1560,Cough Root,Marsdenia cundurango,cough root_marsdenia cundurango,insufficient_data
+1500,Japanese Knotweed,Fallopia japonica,japanese knotweed_fallopia japonica,insufficient_data
