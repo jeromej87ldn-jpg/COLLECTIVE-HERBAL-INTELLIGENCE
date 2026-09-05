@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herb Discovery - C.H.I.</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #2c3e50;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #27ae60;
+        }
+
+        header p {
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        .search-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .search-input-group {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .search-input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .search-input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input-group input:focus {
+            outline: none;
+            border-color: #27ae60;
+            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+        }
+
+        .search-input-group input::placeholder {
+            color: #95a5a6;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .filter-group select {
+            padding: 10px 12px;
+            border: 2px solid #ecf0f1;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-group select:focus {
+            outline: none;
+            border-color: #27ae60;
+        }
+
+        .search-button {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .search-button:active {
+            transform: translateY(0);
+        }
+
+        .options-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .options-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+
+        .options-header h2 {
+            font-size: 1.3em;
+            color: #2c3e50;
+        }
+
+        .confidence-badge {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .confidence-badge.high {
+            background: #27ae60;
+        }
+
+        .confidence-badge.medium {
+            background: #f39c12;
+        }
+
+        .confidence-badge.low {
+            background: #e74c3c;
+        }
+
+        .suggestions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .suggestion-card {
+            background: #f8f9fa;
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .suggestion-card:hover {
+            border-color: #27ae60;
+            background: #f0f8f5;
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .suggestion-card.selected {
+            border-color: #27ae60;
+            background: #d4edda;
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .suggestion-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #27ae60;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .herb-name {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .herb-latin {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+
+        .herb-tradition {
+            display: inline-block;
+            background: #ecf0f1;
+            color: #2c3e50;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            margin-bottom: 10px;
+        }
+
+        .match-reason {
+            font-size: 0.85em;
+            color: #95a5a6;
+            margin-bottom: 8px;
+            padding: 8px;
+            background: white;
+            border-left: 3px solid #3498db;
+            border-radius: 2px;
+        }
+
+        .confidence-score {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .confidence-bar {
+            flex: 1;
+            height: 6px;
+            background: #ecf0f1;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .confidence-bar-fill {
+            height: 100%;
+            background: #27ae60;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .confidence-number {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #2c3e50;
+            min-width: 35px;
+        }
+
+        .action-button {
+            width: 100%;
+            padding: 12px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .action-button:hover {
+            background: #229954;
+        }
+
+        .action-button:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .results-section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .herb-card {
+            background: #f8f9fa;
+            border: 1px solid #ecf0f1;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .herb-card:hover {
+            background: #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .herb-card h3 {
+            color: #27ae60;
+            margin-bottom: 8px;
+            font-size: 1.3em;
+        }
+
+        .herb-card em {
+            color: #7f8c8d;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .herb-card p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .herb-card a {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .herb-card a:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .status-badge.insufficient {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .status-badge.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-badge.verified {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #95a5a6;
+        }
+
+        .empty-state svg {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #95a5a6;
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% {
+                content: '';
+            }
+            40% {
+                content: '.';
+            }
+            60% {
+                content: '..';
+            }
+            80%, 100% {
+                content: '...';
+            }
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #f5c6cb;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .suggestions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌿 Herb Discovery</h1>
+            <p>Search through 1,060+ herbs from global herbal traditions</p>
+        </header>
+
+        <div class="search-section">
+            <div class="search-input-group">
+                <label for="herbSearch">Search for an herb</label>
+                <input
+                    type="text"
+                    id="herbSearch"
+                    placeholder="e.g., 'ginger', 'turmeric', 'st johns wort', 'japanese knotweed'..."
+                    autocomplete="off"
+                >
+            </div>
+
+            <div class="filter-group">
+                <select id="traditionFilter">
+                    <option value="">All Traditions</option>
+                    <option value="Ayurveda">Ayurveda</option>
+                    <option value="Traditional Chinese Medicine">Traditional Chinese Medicine</option>
+                    <option value="Western Herbalism">Western Herbalism</option>
+                    <option value="Native American">Native American</option>
+                </select>
+                <button class="search-button" onclick="performSearch()">Search</button>
+            </div>
+        </div>
+
+        <div id="suggestionsContainer" class="options-section" style="display: none;">
+            <div class="options-header">
+                <h2>Did you mean one of these?</h2>
+                <span class="confidence-badge" id="confidenceBadge"></span>
+            </div>
+            <div id="suggestionsGrid" class="suggestions-grid"></div>
+            <button class="action-button" onclick="viewSelectedHerb()" id="selectButton" disabled>
+                View Profile
+            </button>
+        </div>
+
+        <div id="resultsContainer" class="results-section" style="display: none;">
+            <h2>Search Results</h2>
+            <div id="resultsList"></div>
+        </div>
+
+        <div id="emptyState" class="empty-state" style="display: none;">
+            <p>🔍 Enter an herb name to get started</p>
+        </div>
+
+        <div id="errorMessage" style="display: none;"></div>
+    </div>
+
+    <script>
+        let selectedHerbId = null;
+        let currentResults = [];
+
+        // Handle Enter key in search input
+        document.getElementById('herbSearch').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // Real-time suggestions as user types
+        document.getElementById('herbSearch').addEventListener('input', debounce(() => {
+            const query = document.getElementById('herbSearch').value.trim();
+            if (query.length >= 2) {
+                performSearch();
+            } else {
+                clearResults();
+            }
+        }, 300));
+
+        async function performSearch() {
+            const query = document.getElementById('herbSearch').value.trim();
+            const tradition = document.getElementById('traditionFilter').value;
+
+            if (query.length < 2) {
+                clearResults();
+                return;
+            }
+
+            showLoading(true);
+            hideError();
+
+            try {
+                // Build API URL
+                let url = `/.netlify/functions/herb-search?q=${encodeURIComponent(query)}`;
+                if (tradition) {
+                    url += `&tradition=${encodeURIComponent(tradition)}`;
+                }
+                url += '&fuzzy=true&confidence=30';
+
+                const response = await fetch(url);
+                const data = await response.json();
+
+                showLoading(false);
+
+                if (!data.success) {
+                    showError(data.error || 'Search failed');
+                    return;
+                }
+
+                currentResults = data.results || [];
+
+                if (currentResults.length === 0) {
+                    showError('No herbs found matching "' + query + '". Try another search term.');
+                    clearResults();
+                    return;
+                }
+
+                // Show suggestions if we have them
+                if (data.suggestions && data.suggestions.length > 0) {
+                    displaySuggestions(data.suggestions, data.confidence);
+                }
+
+                // Display full results below
+                if (currentResults.length > 0) {
+                    displayResults(currentResults);
+                }
+            } catch (error) {
+                showLoading(false);
+                showError('Error searching herbs: ' + error.message);
+            }
+        }
+
+        function displaySuggestions(suggestions, confidence) {
+            const container = document.getElementById('suggestionsContainer');
+            const grid = document.getElementById('suggestionsGrid');
+            const badge = document.getElementById('confidenceBadge');
+
+            // Set confidence badge
+            if (confidence >= 85) {
+                badge.className = 'confidence-badge high';
+                badge.textContent = 'High Confidence (' + confidence + '%)';
+            } else if (confidence >= 60) {
+                badge.className = 'confidence-badge medium';
+                badge.textContent = 'Medium Confidence (' + confidence + '%)';
+            } else {
+                badge.className = 'confidence-badge low';
+                badge.textContent = 'Low Confidence (' + confidence + '%)';
+            }
+
+            // Clear grid
+            grid.innerHTML = '';
+
+            // Add suggestion cards
+            suggestions.forEach(suggestion => {
+                const card = document.createElement('div');
+                card.className = 'suggestion-card';
+                card.onclick = () => selectSuggestion(card, suggestion.id);
+
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'herb-name';
+                nameDiv.textContent = suggestion.name;
+
+                const latinDiv = document.createElement('div');
+                latinDiv.className = 'herb-latin';
+                latinDiv.textContent = suggestion.latin_name;
+
+                const traditionDiv = document.createElement('div');
+                traditionDiv.className = 'herb-tradition';
+                traditionDiv.textContent = suggestion.tradition || 'Unknown Tradition';
+
+                const reasonDiv = document.createElement('div');
+                reasonDiv.className = 'match-reason';
+                reasonDiv.textContent = suggestion.reason;
+
+                const scoreDiv = document.createElement('div');
+                scoreDiv.className = 'confidence-score';
+
+                const barDiv = document.createElement('div');
+                barDiv.className = 'confidence-bar';
+
+                const fillDiv = document.createElement('div');
+                fillDiv.className = 'confidence-bar-fill';
+                fillDiv.style.width = suggestion.confidence + '%';
+
+                const numDiv = document.createElement('div');
+                numDiv.className = 'confidence-number';
+                numDiv.textContent = suggestion.confidence + '%';
+
+                barDiv.appendChild(fillDiv);
+                scoreDiv.appendChild(barDiv);
+                scoreDiv.appendChild(numDiv);
+
+                card.appendChild(nameDiv);
+                card.appendChild(latinDiv);
+                card.appendChild(traditionDiv);
+                card.appendChild(reasonDiv);
+                card.appendChild(scoreDiv);
+
+                grid.appendChild(card);
+            });
+
+            container.style.display = 'block';
+        }
+
+        function selectSuggestion(cardElement, herbId) {
+            // Remove selection from all cards
+            document.querySelectorAll('.suggestion-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Add selection to clicked card
+            cardElement.classList.add('selected');
+            selectedHerbId = herbId;
+
+            // Enable select button
+            document.getElementById('selectButton').disabled = false;
+        }
+
+        function viewSelectedHerb() {
+            if (selectedHerbId) {
+                // Navigate to herb profile
+                window.location.href = '/herb-profile.html?id=' + selectedHerbId;
+            }
+        }
+
+        function displayResults(results) {
+            const container = document.getElementById('resultsContainer');
+            const list = document.getElementById('resultsList');
+
+            list.innerHTML = '';
+
+            results.forEach(herb => {
+                const card = document.createElement('div');
+                card.className = 'herb-card';
+
+                const statusClass = 'status-badge ' + (herb.status || 'insufficient').replace('_', ' ');
+
+                card.innerHTML = `
+                    <h3>
+                        ${herb.name}
+                        <span class="${statusClass}">${herb.status_badge || '?'}</span>
+                    </h3>
+                    <em>${herb.latin_name || 'Scientific name unknown'}</em>
+                    <p><strong>Tradition:</strong> ${herb.tradition || 'Unknown'}</p>
+                    <p>${herb.summary || 'No description available'}</p>
+                    <p><strong>Keywords:</strong> ${(herb.keywords || []).join(', ') || 'None'}</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <a href="/herb-profile.html?id=${herb.id}">View Full Profile →</a>
+                        <span style="font-size: 0.85em; color: #95a5a6;">
+                            Match: ${herb.relevance_score}% (${herb.match_reason})
+                        </span>
+                    </div>
+                `;
+
+                list.appendChild(card);
+            });
+
+            container.style.display = 'block';
+        }
+
+        function clearResults() {
+            document.getElementById('suggestionsContainer').style.display = 'none';
+            document.getElementById('resultsContainer').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'block';
+            selectedHerbId = null;
+            currentResults = [];
+        }
+
+        function showLoading(show) {
+            // You could add a loading spinner here
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.innerHTML = `<div class="error-message">${message}</div>`;
+            errorDiv.style.display = 'block';
+        }
+
+        function hideError() {
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        function debounce(func, delay) {
+            let timeoutId;
+            return function (...args) {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => func(...args), delay);
+            };
+        }
+
+        // Initialize
+        clearResults();
+    </script>
+</body>
+</html>

@@ -456,7 +456,67 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .btn-submit{background:var(--gold);color:var(--forest);transition:background .2s;}
 .btn-submit:hover{background:var(--gold-light);}
 .btn-submit:disabled{opacity:.5;cursor:not-allowed;}
-</style>
+
+    /* Fuzzy Search Suggestions */
+    .herb-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #ddd;
+      border-top: none;
+      border-radius: 0 0 6px 6px;
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .herb-suggestions-item {
+      padding: 10px 15px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    
+    .herb-suggestions-item:hover {
+      background: #f5f5f5;
+    }
+    
+    .herb-suggestions-item:last-child {
+      border-bottom: none;
+    }
+    
+    .herb-suggestions-item strong {
+      display: block;
+      color: #27ae60;
+      font-weight: 600;
+    }
+    
+    .herb-suggestions-item em {
+      display: block;
+      color: #999;
+      font-size: 0.9em;
+      margin-top: 2px;
+    }
+    
+    .herb-suggestions-item .confidence {
+      display: inline-block;
+      background: #e8f5e9;
+      color: #27ae60;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.75em;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    
+    .herb-suggestions-item .confidence.high { background: #c8e6c9; color: #2e7d32; }
+    .herb-suggestions-item .confidence.medium { background: #fff9c4; color: #f57f17; }
+    .herb-suggestions-item .confidence.low { background: #ffccbc; color: #d84315; }
+
+    </style>
 </head>
 <body>
 
@@ -518,6 +578,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
       <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
       <input id="nav-herb-search" list="nav-stack-list" placeholder="Search any herb…" autocomplete="off">
       <datalist id="nav-stack-list"></datalist>
+      <div id="nav-herb-suggestions" class="herb-suggestions" style="display:none;"></div>
     </div>
   </div>
   <div class="nav-right">
@@ -1377,6 +1438,83 @@ async function fetchHerbImage(herbName, latinName) {
     // Silent fail — profile still renders fine
   }
 }
+
+
+// Fuzzy Herb Search — Real-time suggestions with confidence scoring
+(function initFuzzySearch(){
+  const searchInputs = ['nav-herb-search', 'mobile-herb-search'];
+  let fuzzyTimeout = null;
+  
+  searchInputs.forEach(inputId => {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    
+    input.addEventListener('input', async (e) => {
+      const query = e.target.value.trim();
+      
+      clearTimeout(fuzzyTimeout);
+      if (query.length < 2) {
+        hideSuggestions(inputId);
+        return;
+      }
+      
+      fuzzyTimeout = setTimeout(async () => {
+        try {
+          const url = `/.netlify/functions/herb-search?q=${encodeURIComponent(query)}&limit=5&fuzzy=true`;
+          const response = await fetch(url);
+          const data = await response.json();
+          
+          if (data.success && data.suggestions && data.suggestions.length > 0) {
+            showSuggestions(inputId, data.suggestions);
+          } else {
+            hideSuggestions(inputId);
+          }
+        } catch (error) {
+          console.error('Fuzzy search error:', error);
+          hideSuggestions(inputId);
+        }
+      }, 300);
+    });
+    
+    // Close suggestions on blur
+    input.addEventListener('blur', () => {
+      setTimeout(() => hideSuggestions(inputId), 200);
+    });
+  });
+  
+  function showSuggestions(inputId, suggestions) {
+    // For nav search, create suggestions container
+    let container = document.getElementById('nav-herb-suggestions');
+    if (!container && inputId === 'nav-herb-search') {
+      const navSearch = document.querySelector('.nav-search');
+      container = document.createElement('div');
+      container.id = 'nav-herb-suggestions';
+      container.className = 'herb-suggestions';
+      navSearch.appendChild(container);
+    }
+    
+    if (!container) return;
+    
+    container.innerHTML = suggestions.map((s, idx) => `
+      <div class="herb-suggestions-item" onclick="searchHerbByName('${s.name.replace(/'/g, "\'")}'); this.closest('.herb-suggestions').style.display='none';">
+        <strong>${s.name}</strong>
+        <em>${s.latin_name || ''}</em>
+        ${s.tradition ? `<em>${s.tradition}</em>` : ''}
+        <div class="confidence ${s.confidence >= 85 ? 'high' : s.confidence >= 60 ? 'medium' : 'low'}">
+          ${s.confidence}% - ${s.reason}
+        </div>
+      </div>
+    `).join('');
+    
+    container.style.display = 'block';
+  }
+  
+  function hideSuggestions(inputId) {
+    const container = document.getElementById('nav-herb-suggestions');
+    if (container) container.style.display = 'none';
+  }
+})();
+
 
 // Nav + mobile herb search — type any herb, or pick one of your stack herbs
 // from the dropdown (datalist). Enter or picking a stack herb opens it.
