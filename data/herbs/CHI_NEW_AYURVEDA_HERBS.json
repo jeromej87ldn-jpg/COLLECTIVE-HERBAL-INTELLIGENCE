@@ -8,7 +8,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Stimulant, Immune-boosting, Anti-inflammatory, Stress-relief, Respiratory support",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Amla",
@@ -19,7 +21,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Cooling, Rejuvenating, Vitamin C source, Immune support, Digestive",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Giloy",
@@ -30,7 +34,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Immune support, Anti-fever, Digestive, Detoxifying, Anti-inflammatory",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Nagarmotha",
@@ -41,7 +47,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Cyperaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Agnimantha",
@@ -52,7 +60,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Verbenaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Rohitaka",
@@ -63,7 +73,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Bignoniaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Chopchini",
@@ -74,7 +86,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Smilacaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Bhringraj",
@@ -85,7 +99,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Hair health, Cooling, Liver support, Nervine, Rejuvenating",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Jatamansi",
@@ -96,7 +112,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Valerianaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Chandana",
@@ -107,7 +125,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Santalaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kutaj",
@@ -118,7 +138,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apocynaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Rasona (Garlic)",
@@ -129,7 +151,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Amaryllidaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kanchanar",
@@ -140,7 +164,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Karpura (Camphor)",
@@ -151,7 +177,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Lauraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Pushkarmool",
@@ -162,7 +190,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Asteraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Bakuchi",
@@ -173,7 +203,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Vidarikand",
@@ -184,7 +216,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Ajmoda",
@@ -195,7 +229,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Patola",
@@ -206,7 +242,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Cucurbitaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Vrikshamla",
@@ -217,7 +255,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Clusiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kumuda",
@@ -228,7 +268,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Nymphaeaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Shigru",
@@ -239,7 +281,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Moringaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Parpataka",
@@ -250,7 +294,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Papaveraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Indrayava",
@@ -261,7 +307,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apocynaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kapikachhu",
@@ -272,7 +320,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Bala",
@@ -283,7 +333,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Malvaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Tamalpatra",
@@ -294,7 +346,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Lauraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Chitrak",
@@ -305,7 +359,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Plumbaginaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Tagar",
@@ -316,7 +372,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Caprifoliaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Khadira",
@@ -327,7 +385,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Twak (Cinnamon)",
@@ -338,7 +398,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Lauraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Ela",
@@ -349,7 +411,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Zingiberaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Sariva",
@@ -360,7 +424,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apocynaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Gorakhmundi",
@@ -371,7 +437,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Asteraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kokilaksha",
@@ -382,7 +450,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Acanthaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Yavani",
@@ -393,7 +463,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Bhunimba",
@@ -404,7 +476,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Acanthaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Chavya",
@@ -415,7 +489,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Piperaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Palasha",
@@ -426,7 +502,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Karanja",
@@ -437,7 +515,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Ahiphena",
@@ -448,7 +528,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Papaveraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Danti",
@@ -459,7 +541,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Euphorbiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Eranda",
@@ -470,7 +554,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Euphorbiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Guggulu",
@@ -481,7 +567,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Burseraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Bhallataka",
@@ -492,7 +580,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Anacardiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Vasaka",
@@ -503,7 +593,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Acanthaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Laksha",
@@ -514,7 +606,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Kerriidae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Talisapatra",
@@ -525,7 +619,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Pinaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Tamalaki",
@@ -536,7 +632,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Euphorbiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Shirisha",
@@ -547,7 +645,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Babbula",
@@ -558,7 +658,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kumkuma",
@@ -569,7 +671,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Iridaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Bilva",
@@ -580,7 +684,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Rutaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Ashoka",
@@ -591,7 +697,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Devadaru",
@@ -602,7 +710,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Pinaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Patala",
@@ -613,7 +723,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Bignoniaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Dhataki",
@@ -624,7 +736,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Lythraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Yava",
@@ -635,7 +749,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Poaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Masha",
@@ -646,7 +762,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Chana",
@@ -657,7 +775,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Matulunga",
@@ -668,7 +788,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Rutaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Dadima",
@@ -679,7 +801,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Lythraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Tinduka",
@@ -690,7 +814,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Ebenaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Draksha",
@@ -701,7 +827,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Vitaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Chakramarda",
@@ -712,7 +840,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Pashanabheda",
@@ -723,7 +853,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Saxifragaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Lodhra",
@@ -734,7 +866,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Symplocaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Jati",
@@ -745,7 +879,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Oleaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Shalparni",
@@ -756,7 +892,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kantakari",
@@ -767,7 +905,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Solanaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Gambhari",
@@ -778,7 +918,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Lamiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Gojihva",
@@ -789,7 +931,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Boraginaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Aparajita",
@@ -800,7 +944,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Meshashringi",
@@ -811,7 +957,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apocynaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Ikshu",
@@ -822,7 +970,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Poaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Amrita",
@@ -833,7 +983,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Menispermaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Shigru Patra",
@@ -844,7 +996,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Moringaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Mandukparni",
@@ -855,7 +1009,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Vatsanabha",
@@ -866,7 +1022,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Ranunculaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Ushira",
@@ -877,7 +1035,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Poaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kiratatikta",
@@ -888,7 +1048,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Gentianaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Shilajit",
@@ -899,7 +1061,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Rejuvenating, Energy-boosting, Mineral-rich, Adaptogenic, Vitality",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kusha",
@@ -910,7 +1074,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Poaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Bimbi",
@@ -921,7 +1087,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Cucurbitaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Nirgundi",
@@ -932,7 +1100,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Lamiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Tagetes",
@@ -943,7 +1113,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Asteraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kachura",
@@ -954,7 +1126,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Zingiberaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Shati",
@@ -965,7 +1139,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Zingiberaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Bhanga",
@@ -976,7 +1152,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Cannabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Mochras",
@@ -987,7 +1165,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Malvaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Jivanti",
@@ -998,7 +1178,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apocynaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Makoy",
@@ -1009,7 +1191,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Solanaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kampillaka",
@@ -1020,7 +1204,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Euphorbiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Amlavetasa",
@@ -1031,7 +1217,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Clusiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Ardraka",
@@ -1042,7 +1230,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Zingiberaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Parijata",
@@ -1053,7 +1243,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Oleaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Rajika",
@@ -1064,7 +1256,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Brassicaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Rakta Chandana",
@@ -1075,7 +1269,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Surana",
@@ -1086,7 +1282,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Araceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Vasa",
@@ -1097,7 +1295,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Acanthaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Lajjalu",
@@ -1108,7 +1308,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Manjistha",
@@ -1119,7 +1321,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Rubiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Atibala",
@@ -1130,7 +1334,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Malvaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Karvellaka",
@@ -1141,7 +1347,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Cucurbitaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Katuki",
@@ -1152,7 +1360,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Plantaginaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Yastimadhu",
@@ -1163,7 +1373,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Bibhitaki",
@@ -1174,7 +1386,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Respiratory support, Digestive, Phlegm-reducing, Astringent",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Pippali",
@@ -1185,7 +1399,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Piperaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Maricha",
@@ -1196,7 +1412,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Piperaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Shunthi",
@@ -1207,7 +1425,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Zingiberaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Vidanga",
@@ -1218,7 +1438,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Digestive, Anti-parasitic, Warming, Carminative, Metabolism support",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Arjuna",
@@ -1229,7 +1451,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Combretaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Punarnava",
@@ -1240,7 +1464,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Diuretic, Detoxifying, Respiratory support, Anti-inflammatory, Circulation",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Vacha",
@@ -1251,7 +1477,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Acoraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Hingu",
@@ -1262,7 +1490,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Jeeraka",
@@ -1273,7 +1503,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Dhanyaka",
@@ -1284,7 +1516,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Methi",
@@ -1295,7 +1529,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Shallaki",
@@ -1306,7 +1542,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Burseraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Jyotishmati",
@@ -1317,7 +1555,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Celastraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Japa",
@@ -1328,7 +1568,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Malvaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kamala",
@@ -1339,7 +1581,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Nelumbonaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Ketaki",
@@ -1350,7 +1594,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Pandanaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Atasi",
@@ -1361,7 +1607,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Linaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Tila",
@@ -1372,7 +1620,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Pedaliaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Brihati",
@@ -1383,7 +1633,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Solanaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Gokshura",
@@ -1394,7 +1646,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Zygophyllaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Hamsapadi",
@@ -1405,7 +1659,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Pteridaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Lavanga",
@@ -1416,7 +1672,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Myrtaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Nagakesara",
@@ -1427,7 +1685,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Calophyllaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Sarpagandha",
@@ -1438,7 +1698,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apocynaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Varuna",
@@ -1449,7 +1711,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Capparaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Aragwadha",
@@ -1460,7 +1724,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Apamarga",
@@ -1471,7 +1737,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Amaranthaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Trivrit",
@@ -1482,7 +1750,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Convolvulaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Durva",
@@ -1493,7 +1763,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Poaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Jatiphala",
@@ -1504,7 +1776,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Myristicaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kulattha",
@@ -1515,7 +1789,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Amra",
@@ -1526,7 +1802,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Anacardiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Jambu",
@@ -1537,7 +1815,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Myrtaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Snuhi",
@@ -1548,7 +1828,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Euphorbiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kasani",
@@ -1559,7 +1841,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Asteraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Sharapunkha",
@@ -1570,7 +1854,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Prishniparni",
@@ -1581,7 +1867,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Jayapala",
@@ -1592,7 +1880,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Euphorbiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Gunja",
@@ -1603,7 +1893,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Karavira",
@@ -1614,7 +1906,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apocynaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kadamba",
@@ -1625,7 +1919,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Rubiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Badara",
@@ -1636,7 +1932,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Rhamnaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kapittha",
@@ -1647,7 +1945,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Rutaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kharjura",
@@ -1658,7 +1958,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Arecaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Langali",
@@ -1669,7 +1971,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Colchicaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kankola",
@@ -1680,7 +1984,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Piperaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Mudga",
@@ -1691,7 +1997,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Masura",
@@ -1702,7 +2010,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Ishwari",
@@ -1713,7 +2023,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Aristolochiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Priyangu",
@@ -1724,7 +2036,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Lamiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Dhattura",
@@ -1735,7 +2049,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Solanaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Ativisha",
@@ -1746,7 +2062,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Ranunculaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Vamsha",
@@ -1757,7 +2075,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Poaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Palandu",
@@ -1768,7 +2088,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Amaryllidaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Trapusha",
@@ -1779,7 +2101,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Cucurbitaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Hrivera",
@@ -1790,7 +2114,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Lamiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Plaksha",
@@ -1801,7 +2127,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Moraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Udumbara",
@@ -1812,7 +2140,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Moraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Ashwattha",
@@ -1823,7 +2153,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Moraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Puga",
@@ -1834,7 +2166,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Arecaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kakamachi",
@@ -1845,7 +2179,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Solanaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Mishreya",
@@ -1856,7 +2192,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Shankhpushpi",
@@ -1867,7 +2205,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Convolvulaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kushtha",
@@ -1878,7 +2218,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Asteraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Madanaphala",
@@ -1889,7 +2231,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Rubiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Patha",
@@ -1900,7 +2244,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Menispermaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Saptaparna",
@@ -1911,7 +2257,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apocynaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Prasarini",
@@ -1922,7 +2270,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Rubiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Asana",
@@ -1933,7 +2283,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kushmanda",
@@ -1944,7 +2296,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Cucurbitaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Vartaku",
@@ -1955,7 +2309,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Solanaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Dronapushpi",
@@ -1966,7 +2322,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Lamiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Swarnapatri",
@@ -1977,7 +2335,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Chandrashura",
@@ -1988,7 +2348,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Brassicaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Chirabilva",
@@ -1999,7 +2361,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Ulmaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Himsra",
@@ -2010,7 +2374,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Capparaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Karkatashringi",
@@ -2021,7 +2387,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Anacardiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Katphala",
@@ -2032,7 +2400,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Myricaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Krishna Jeeraka",
@@ -2043,7 +2413,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Murva",
@@ -2054,7 +2426,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apocynaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Paribhadra",
@@ -2065,7 +2439,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Shyonaka",
@@ -2076,7 +2452,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Bignoniaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Alabu",
@@ -2087,7 +2465,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Cucurbitaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Vriddhadaru",
@@ -2098,7 +2478,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Convolvulaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Narikela",
@@ -2109,7 +2491,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Arecaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Talamuli",
@@ -2120,7 +2504,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Hypoxidaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Saireyaka",
@@ -2131,7 +2517,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Acanthaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Varahikanda",
@@ -2142,7 +2530,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Dioscoreaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Ankola",
@@ -2153,7 +2543,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Alangiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Changeri",
@@ -2164,7 +2556,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Oxalidaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Koshataki",
@@ -2175,7 +2569,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Cucurbitaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Tanduliyaka",
@@ -2186,7 +2582,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Amaranthaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Ingudi",
@@ -2197,7 +2595,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Balanitaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Jivaka",
@@ -2208,7 +2608,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Orchidaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Rishabhaka",
@@ -2219,7 +2621,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Orchidaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Meda",
@@ -2230,7 +2634,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Asparagaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kakoli",
@@ -2241,7 +2647,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Liliaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Dhamasa",
@@ -2252,7 +2660,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Zygophyllaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Rohisha",
@@ -2263,7 +2673,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Poaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Suryavarta",
@@ -2274,7 +2686,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Cleomaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Gangeruki",
@@ -2285,7 +2699,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Malvaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kumbhika",
@@ -2296,7 +2712,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Araceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Sthuneyaka",
@@ -2307,7 +2725,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Taxaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Utingana",
@@ -2318,7 +2738,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Acanthaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kumari",
@@ -2329,7 +2751,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Asphodelaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Asthishrinkhala",
@@ -2340,7 +2764,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Vitaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Bharangi",
@@ -2351,7 +2777,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Lamiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Arka",
@@ -2362,7 +2790,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apocynaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Indravaruni",
@@ -2373,7 +2803,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Cucurbitaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kadali",
@@ -2384,7 +2816,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Musaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Tintidika",
@@ -2395,7 +2829,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Rudraksha",
@@ -2406,7 +2842,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Elaeocarpaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Putranjivaka",
@@ -2417,7 +2855,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Putranjivaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Padmaka",
@@ -2428,7 +2868,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Rosaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Pilu",
@@ -2439,7 +2881,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Salvadoraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Simsapa",
@@ -2450,7 +2894,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Arishtaka",
@@ -2461,7 +2907,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Sapindaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Visha Tinduka",
@@ -2472,7 +2920,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Loganiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Devadali",
@@ -2483,7 +2933,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Cucurbitaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Dhava",
@@ -2494,7 +2946,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Combretaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Gajapippali",
@@ -2505,7 +2959,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Araceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Granthiparni",
@@ -2516,7 +2972,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Hapusa",
@@ -2527,7 +2985,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Cupressaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kakajangha",
@@ -2538,7 +2998,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Acanthaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Karmaranga",
@@ -2549,7 +3011,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Oxalidaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kasheruka",
@@ -2560,7 +3024,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Cyperaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kembuka",
@@ -2571,7 +3037,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Costaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Koshamra",
@@ -2582,7 +3050,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Sapindaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Latakaranja",
@@ -2593,7 +3063,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Lavali",
@@ -2604,7 +3076,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Phyllanthaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Mahanimba",
@@ -2615,7 +3089,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Meliaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Nagabala",
@@ -2626,7 +3102,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Malvaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Pattanga",
@@ -2637,7 +3115,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Sarja",
@@ -2648,7 +3128,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Dipterocarpaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Somavalli",
@@ -2659,7 +3141,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apocynaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Vyaghranakhi",
@@ -2670,7 +3154,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Capparaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Akshotaka",
@@ -2681,7 +3167,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Juglandaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Chakshushya",
@@ -2692,7 +3180,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Dadrughna",
@@ -2703,7 +3193,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Bandhuka",
@@ -2714,7 +3206,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Malvaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Bhutakeshi",
@@ -2725,7 +3219,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Riddhi",
@@ -2736,7 +3232,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Orchidaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Vriddhi",
@@ -2747,7 +3245,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Orchidaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Akarakarabha",
@@ -2758,7 +3258,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Asteraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Mahabala",
@@ -2769,7 +3271,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Malvaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Chirayata",
@@ -2780,7 +3284,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Gentianaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Jalapippali",
@@ -2791,7 +3297,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Verbenaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kasamarda",
@@ -2802,7 +3310,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Bhumyamalaki",
@@ -2813,7 +3323,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Liver support, Cooling, Detoxifying, Digestive, Anti-inflammatory",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Dugdhika",
@@ -2824,7 +3336,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Euphorbiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Grinjana",
@@ -2835,7 +3349,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Ishabgula",
@@ -2846,7 +3362,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Plantaginaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kalajaji",
@@ -2857,7 +3375,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Ranunculaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Karira",
@@ -2868,7 +3388,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Capparaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Karpasa",
@@ -2879,7 +3401,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Malvaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kataka",
@@ -2890,7 +3414,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Loganiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kovidara",
@@ -2901,7 +3427,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Madayantika",
@@ -2912,7 +3440,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Lythraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Madhukarkati",
@@ -2923,7 +3453,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Rutaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Mulaka",
@@ -2934,7 +3466,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Brassicaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Nimbu",
@@ -2945,7 +3479,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Rutaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Palankya",
@@ -2956,7 +3492,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Amaranthaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Panasa",
@@ -2967,7 +3505,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Moraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Parnayavani",
@@ -2978,7 +3518,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Lamiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Priyala",
@@ -2989,7 +3531,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Anacardiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Rasna",
@@ -3000,7 +3544,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Asteraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Satyanashi",
@@ -3011,7 +3557,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Papaveraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Shvet Musli",
@@ -3022,7 +3570,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Asparagaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Taruni",
@@ -3033,7 +3583,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Rosaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Vanapsa",
@@ -3044,7 +3596,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Violaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Vathada",
@@ -3055,7 +3609,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Rosaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Vetasa",
@@ -3066,7 +3622,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Salicaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Yuthika",
@@ -3077,7 +3635,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Oleaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Agastya",
@@ -3088,7 +3648,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Amra Haridra",
@@ -3099,7 +3661,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Zingiberaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Chavika",
@@ -3110,7 +3674,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Piperaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Raktamoola",
@@ -3121,7 +3687,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Plumbaginaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Mudgaparni",
@@ -3132,7 +3700,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Mashaparni",
@@ -3143,7 +3713,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Nili",
@@ -3154,7 +3726,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Vrihi",
@@ -3165,7 +3739,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Poaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Yavasa",
@@ -3176,7 +3752,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Utpala",
@@ -3187,7 +3765,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Nymphaeaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Shara",
@@ -3198,7 +3778,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Poaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Shankhini",
@@ -3209,7 +3791,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Gentianaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Shana",
@@ -3220,7 +3804,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Shaka",
@@ -3231,7 +3817,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Lamiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Renuka",
@@ -3242,7 +3830,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Lamiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Prativisha",
@@ -3253,7 +3843,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Ranunculaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Prapunnada",
@@ -3264,7 +3856,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Nadi Hingu",
@@ -3275,7 +3869,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Rubiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Lata Kasturi",
@@ -3286,7 +3882,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Malvaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Lakuca",
@@ -3297,7 +3895,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Moraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Karnikara",
@@ -3308,7 +3908,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Malvaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kankataka",
@@ -3319,7 +3921,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Salicaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kalamba",
@@ -3330,7 +3934,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Convolvulaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kakatikta",
@@ -3341,7 +3947,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Cucurbitaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kadara",
@@ -3352,7 +3960,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Jalavetasa",
@@ -3363,7 +3973,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Salicaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Hijal",
@@ -3374,7 +3986,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Lecythidaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Hastikarna Palasha",
@@ -3385,7 +3999,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Vitaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Ambasthaki",
@@ -3396,7 +4012,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Malvaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kharbhuja",
@@ -3407,7 +4025,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Cucurbitaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Shrigataka",
@@ -3418,7 +4038,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Lythraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Tala",
@@ -3429,7 +4051,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Arecaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Tilaparni",
@@ -3440,7 +4064,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Cleomaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Varshabhu",
@@ -3451,7 +4077,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Aizoaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Godhuma",
@@ -3462,7 +4090,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Poaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Adhaki",
@@ -3473,7 +4103,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Bakula",
@@ -3484,7 +4116,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Sapotaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Bhurja",
@@ -3495,7 +4129,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Betulaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Bijapura",
@@ -3506,7 +4142,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Rutaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Matsyakshi",
@@ -3517,7 +4155,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Amaranthaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Mayurashikha",
@@ -3528,7 +4168,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Pteridaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Nagadanti",
@@ -3539,7 +4181,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Boraginaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Nikochaka",
@@ -3550,7 +4194,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Anacardiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Rajamasha",
@@ -3561,7 +4207,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Sarpaksi",
@@ -3572,7 +4220,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Rubiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Satina",
@@ -3583,7 +4233,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Upodika",
@@ -3594,7 +4246,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Basellaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Saptala",
@@ -3605,7 +4259,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Suranjana",
@@ -3616,7 +4272,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Colchicaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Tumburu",
@@ -3627,7 +4285,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Rutaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Alarka",
@@ -3638,7 +4298,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apocynaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kusumbha",
@@ -3649,7 +4311,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Asteraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Akhuparni",
@@ -3660,7 +4324,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Convolvulaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Putikaranja",
@@ -3671,7 +4337,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Amlaparni",
@@ -3682,7 +4350,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Polygonaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Aranya Jeeraka",
@@ -3693,7 +4363,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Asteraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Bhadra",
@@ -3704,7 +4376,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Amaranthaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Bhumi Jambuka",
@@ -3715,7 +4389,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Lamiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Bhutika",
@@ -3726,7 +4402,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Poaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Chakragaja",
@@ -3737,7 +4415,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Amaranthaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Chhatraka",
@@ -3748,7 +4428,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Agaricaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Dhamargava",
@@ -3759,7 +4441,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Cucurbitaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Gavedhuka",
@@ -3770,7 +4454,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Poaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kshavaka",
@@ -3781,7 +4467,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Asteraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kurabaka",
@@ -3792,7 +4480,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Acanthaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Mamsarohini",
@@ -3803,7 +4493,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Meliaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Medasaka",
@@ -3814,7 +4506,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Lauraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Aivana",
@@ -3825,7 +4519,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Solanaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Asphota",
@@ -3836,7 +4532,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fabaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Abhishuka",
@@ -3847,7 +4545,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Anacardiaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Muranji",
@@ -3858,7 +4558,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Moringaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Mayaphala",
@@ -3869,7 +4571,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Fagaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Kankra",
@@ -3880,7 +4584,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Rhizophoraceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Sadapushpi",
@@ -3891,7 +4597,9 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Apocynaceae)",
+    "systems": "nervous,immune,digestive"
   },
   {
     "name": "Sahachara",
@@ -3902,6 +4610,8 @@
     "status": "insufficient_data",
     "source": "amidha-ayurveda-github",
     "tradition": "Ayurveda",
-    "sanskrit_synonyms": []
+    "sanskrit_synonyms": [],
+    "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Acanthaceae)",
+    "systems": "nervous,immune,digestive"
   }
 ]
