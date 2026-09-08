@@ -1,0 +1,680 @@
+# 676 SEARCHABLE HERBS - CHI HERBADEX
+
+Generated: 2026-09-08T20:45:10.339Z
+
+001. Ginger
+002. Turmeric
+003. Ashwagandha
+004. Licorice
+005. Echinacea
+006. Ginkgo
+007. St. John's Wort
+008. Valerian
+009. Milk Thistle
+010. Peppermint
+011. Galangal
+012. Cardamom
+013. Lemongrass
+014. Holy Basil
+015. Turmeric Root
+016. Mango Bark
+017. Guava Leaf
+018. Soursop
+019. Sage
+020. Thyme
+021. Feverfew
+022. Maca
+023. Yacon
+024. Baobab
+025. Coconut Oil
+026. Frankincense
+027. Myrrh
+028. Brahmi
+029. Triphala
+030. Neem
+031. Haritaki
+032. Shatavari
+033. Goji Berry
+034. Astragalus
+035. Reishi
+036. Cordyceps
+037. Angelica
+038. Rooibos
+039. Marula
+040. Moringa
+041. Hibiscus
+042. Aloe Vera
+043. Cat's Claw
+044. Pau d'Arco
+045. Camu Camu
+046. Lavender
+047. Chamomile
+048. Calendula
+049. Nettle
+050. Red Clover
+051. Arnica
+052. Comfrey
+053. Plantain
+054. Acacia
+055. Acacia Catechu
+056. Andrographis
+057. Aralia
+058. Arnica Chamissonis
+059. Atractylodes
+060. Barberry
+061. Berberine Extract
+062. Black Currant
+063. Black Walnut
+064. Blessed Thistle
+065. Blueberry
+066. Boneset
+067. Boswellia
+068. Burdock
+069. Butterbur
+070. Cacao
+071. Camphor
+072. Capillus Veneris
+073. Cascara Sagrada
+074. Catnip
+075. Cayenne
+076. Celandine
+077. Celery Seed
+078. Centaury
+079. Chaga
+080. Chamomile German
+081. Chamomile Roman
+082. Chantarelle
+083. Chapparal
+084. Charcoal Activated
+085. Chaste Tree
+086. Chickweed
+087. Chicory
+088. Chili Pepper
+089. China Root
+090. Chinese Skullcap
+091. Chives
+092. Chlorella
+093. Chokeberry
+094. Chrysanthemum
+095. Cinnamon
+096. Clary Sage
+097. Cleavers
+098. Clove
+099. Clubmoss
+100. Cocoa
+101. Coffee
+102. Coleus
+103. Coltsfoot
+104. Comfrey Leaf
+105. Condurango
+106. Coneflower
+107. Coriander
+108. Corn Silk
+109. Cornus
+110. Corydalis
+111. Cough Root
+112. Black Sesame
+113. Pumpkin Seeds
+114. Sunflower Seeds
+115. Flax Seeds
+116. Chia Seeds
+117. Fennel Seeds
+118. Cumin Seeds
+119. Coriander Seeds
+120. Mustard Seeds
+121. Fenugreek Seeds
+122. Nigella Seeds
+123. White Sesame
+124. Hemp Seeds
+125. Grape Seed
+126. Caraway Seeds
+127. Anise Seeds
+128. Dill Seeds
+129. Poppy Seeds
+130. Shiitake
+131. Maitake
+132. Lion's Mane
+133. Turkey Tail
+134. Oyster Mushroom
+135. Cremini Mushroom
+136. Portobello Mushroom
+137. Button Mushroom
+138. Enoki Mushroom
+139. Porcini Mushroom
+140. Morel Mushroom
+141. Chanterelle Mushroom
+142. Agarikon
+143. Artist's Conk
+144. Wood Ear Mushroom
+145. Mesima Mushroom
+146. Hydnum Repandum
+147. Acai Berry
+148. Blackberry
+149. Raspberry
+150. Cranberry
+151. Mulberry
+152. Sea Buckthorn
+153. Pomegranate
+154. Aronia Berry
+155. Hawthorn Berry
+156. Elderberry
+157. Bilberry
+158. Schisandra Berry
+159. Maqui Berry
+160. Noni Fruit
+161. Mangosteen
+162. Ashwagandha Root
+163. Asian Ginseng
+164. American Ginseng
+165. Rhodiola Root
+166. Burdock Root
+167. Dandelion Root
+168. Angelica Root
+169. Dong Quai
+170. Marshmallow Root
+171. Valerian Root
+172. Goldenseal Root
+173. Sarsaparilla Root
+174. Astragalus Root
+175. Copal
+176. Dragon's Blood
+177. Propolis
+178. Pine Resin
+179. Mastic Gum
+180. Shilajit
+181. Gum Arabic
+182. Benzoin Resin
+183. Boswellia Extract
+184. Amber Resin
+185. Raw Honey
+186. Maca Root
+187. Tribulus
+188. Spirulina
+189. Wheatgrass
+190. Barley Grass
+191. Kelp
+192. Bladderwrack
+193. Nutritional Yeast
+194. Rose Petals
+195. Hibiscus Flowers
+196. Chamomile Flowers
+197. Lavender Flowers
+198. Jasmine Flowers
+199. Violet Flowers
+200. Pansy Flowers
+201. Cornflower
+202. Tulsi
+203. Amla
+204. Giloy
+205. Nagarmotha
+206. Agnimantha
+207. Rohitaka
+208. Chopchini
+209. Bhringraj
+210. Jatamansi
+211. Chandana
+212. Kutaj
+213. Rasona (Garlic)
+214. Kanchanar
+215. Karpura (Camphor)
+216. Pushkarmool
+217. Bakuchi
+218. Vidarikand
+219. Ajmoda
+220. Patola
+221. Vrikshamla
+222. Kumuda
+223. Shigru
+224. Parpataka
+225. Indrayava
+226. Kapikachhu
+227. Bala
+228. Tamalpatra
+229. Chitrak
+230. Tagar
+231. Khadira
+232. Twak (Cinnamon)
+233. Ela
+234. Sariva
+235. Gorakhmundi
+236. Kokilaksha
+237. Yavani
+238. Bhunimba
+239. Chavya
+240. Palasha
+241. Karanja
+242. Ahiphena
+243. Danti
+244. Eranda
+245. Guggulu
+246. Bhallataka
+247. Vasaka
+248. Laksha
+249. Talisapatra
+250. Tamalaki
+251. Shirisha
+252. Babbula
+253. Kumkuma
+254. Bilva
+255. Ashoka
+256. Devadaru
+257. Patala
+258. Dhataki
+259. Yava
+260. Masha
+261. Chana
+262. Matulunga
+263. Dadima
+264. Tinduka
+265. Draksha
+266. Chakramarda
+267. Pashanabheda
+268. Lodhra
+269. Jati
+270. Shalparni
+271. Kantakari
+272. Gambhari
+273. Gojihva
+274. Aparajita
+275. Meshashringi
+276. Ikshu
+277. Amrita
+278. Shigru Patra
+279. Mandukparni
+280. Vatsanabha
+281. Ushira
+282. Kiratatikta
+283. Shilajit
+284. Kusha
+285. Bimbi
+286. Nirgundi
+287. Tagetes
+288. Kachura
+289. Shati
+290. Bhanga
+291. Mochras
+292. Jivanti
+293. Makoy
+294. Kampillaka
+295. Amlavetasa
+296. Ardraka
+297. Parijata
+298. Rajika
+299. Rakta Chandana
+300. Surana
+301. Vasa
+302. Lajjalu
+303. Manjistha
+304. Atibala
+305. Karvellaka
+306. Katuki
+307. Yastimadhu
+308. Bibhitaki
+309. Pippali
+310. Maricha
+311. Shunthi
+312. Vidanga
+313. Arjuna
+314. Punarnava
+315. Vacha
+316. Hingu
+317. Jeeraka
+318. Dhanyaka
+319. Methi
+320. Shallaki
+321. Jyotishmati
+322. Japa
+323. Kamala
+324. Ketaki
+325. Atasi
+326. Tila
+327. Brihati
+328. Gokshura
+329. Hamsapadi
+330. Lavanga
+331. Nagakesara
+332. Sarpagandha
+333. Varuna
+334. Aragwadha
+335. Apamarga
+336. Trivrit
+337. Durva
+338. Jatiphala
+339. Kulattha
+340. Amra
+341. Jambu
+342. Snuhi
+343. Kasani
+344. Sharapunkha
+345. Prishniparni
+346. Jayapala
+347. Gunja
+348. Karavira
+349. Kadamba
+350. Badara
+351. Kapittha
+352. Kharjura
+353. Langali
+354. Kankola
+355. Mudga
+356. Masura
+357. Ishwari
+358. Priyangu
+359. Dhattura
+360. Ativisha
+361. Vamsha
+362. Palandu
+363. Trapusha
+364. Hrivera
+365. Plaksha
+366. Udumbara
+367. Ashwattha
+368. Puga
+369. Kakamachi
+370. Mishreya
+371. Shankhpushpi
+372. Kushtha
+373. Madanaphala
+374. Patha
+375. Saptaparna
+376. Prasarini
+377. Asana
+378. Kushmanda
+379. Vartaku
+380. Dronapushpi
+381. Swarnapatri
+382. Chandrashura
+383. Chirabilva
+384. Himsra
+385. Karkatashringi
+386. Katphala
+387. Krishna Jeeraka
+388. Murva
+389. Paribhadra
+390. Shyonaka
+391. Alabu
+392. Vriddhadaru
+393. Narikela
+394. Talamuli
+395. Saireyaka
+396. Varahikanda
+397. Ankola
+398. Changeri
+399. Koshataki
+400. Tanduliyaka
+401. Ingudi
+402. Jivaka
+403. Rishabhaka
+404. Meda
+405. Kakoli
+406. Dhamasa
+407. Rohisha
+408. Suryavarta
+409. Gangeruki
+410. Kumbhika
+411. Sthuneyaka
+412. Utingana
+413. Kumari
+414. Asthishrinkhala
+415. Bharangi
+416. Arka
+417. Indravaruni
+418. Kadali
+419. Tintidika
+420. Rudraksha
+421. Putranjivaka
+422. Padmaka
+423. Pilu
+424. Simsapa
+425. Arishtaka
+426. Visha Tinduka
+427. Devadali
+428. Dhava
+429. Gajapippali
+430. Granthiparni
+431. Hapusa
+432. Kakajangha
+433. Karmaranga
+434. Kasheruka
+435. Kembuka
+436. Koshamra
+437. Latakaranja
+438. Lavali
+439. Mahanimba
+440. Nagabala
+441. Pattanga
+442. Sarja
+443. Somavalli
+444. Vyaghranakhi
+445. Akshotaka
+446. Chakshushya
+447. Dadrughna
+448. Bandhuka
+449. Bhutakeshi
+450. Riddhi
+451. Vriddhi
+452. Akarakarabha
+453. Mahabala
+454. Chirayata
+455. Jalapippali
+456. Kasamarda
+457. Bhumyamalaki
+458. Dugdhika
+459. Grinjana
+460. Ishabgula
+461. Kalajaji
+462. Karira
+463. Karpasa
+464. Kataka
+465. Kovidara
+466. Madayantika
+467. Madhukarkati
+468. Mulaka
+469. Nimbu
+470. Palankya
+471. Panasa
+472. Parnayavani
+473. Priyala
+474. Rasna
+475. Satyanashi
+476. Shvet Musli
+477. Taruni
+478. Vanapsa
+479. Vathada
+480. Vetasa
+481. Yuthika
+482. Agastya
+483. Amra Haridra
+484. Chavika
+485. Raktamoola
+486. Mudgaparni
+487. Mashaparni
+488. Nili
+489. Vrihi
+490. Yavasa
+491. Utpala
+492. Shara
+493. Shankhini
+494. Shana
+495. Shaka
+496. Renuka
+497. Prativisha
+498. Prapunnada
+499. Nadi Hingu
+500. Lata Kasturi
+501. Lakuca
+502. Karnikara
+503. Kankataka
+504. Kalamba
+505. Kakatikta
+506. Kadara
+507. Jalavetasa
+508. Hijal
+509. Hastikarna Palasha
+510. Ambasthaki
+511. Kharbhuja
+512. Shrigataka
+513. Tala
+514. Tilaparni
+515. Varshabhu
+516. Godhuma
+517. Adhaki
+518. Bakula
+519. Bhurja
+520. Bijapura
+521. Matsyakshi
+522. Mayurashikha
+523. Nagadanti
+524. Nikochaka
+525. Rajamasha
+526. Sarpaksi
+527. Satina
+528. Upodika
+529. Saptala
+530. Suranjana
+531. Tumburu
+532. Alarka
+533. Kusumbha
+534. Akhuparni
+535. Putikaranja
+536. Amlaparni
+537. Aranya Jeeraka
+538. Bhadra
+539. Bhumi Jambuka
+540. Bhutika
+541. Chakragaja
+542. Chhatraka
+543. Dhamargava
+544. Gavedhuka
+545. Kshavaka
+546. Kurabaka
+547. Mamsarohini
+548. Medasaka
+549. Aivana
+550. Asphota
+551. Abhishuka
+552. Muranji
+553. Mayaphala
+554. Kankra
+555. Sadapushpi
+556. Sahachara
+557. Agrimony
+558. Angelica
+559. Anise
+560. Artichoke
+561. Ashwagandha
+562. Bacopa
+563. Beth Root
+564. Birch
+565. Black Cohosh
+566. Blue Cohosh
+567. Blue Flag
+568. Buchu
+569. Bugleweed
+570. Bupleurum
+571. Butcher's Broom
+572. Butternut
+573. Cayenne
+574. Chamomile
+575. Chaparral
+576. Chickweed
+577. Cinnamon
+578. Cloves
+579. Codonopsis
+580. Coleus
+581. Cordyceps
+582. Cornsilk
+583. Couch Grass
+584. Cramp Bark
+585. Crataeva
+586. Damiana
+587. Dandelion
+588. Devil's Claw
+589. Dill
+590. Echinacea
+591. Elecampane
+592. Ephedra
+593. Eyebright
+594. False Unicorn Root
+595. Gentian
+596. Ginseng
+597. Goat's Rue
+598. Golden Oyster Mushroom
+599. Goldenrod
+600. Goldenseal
+601. Gotu Kola
+602. Gravel Root
+603. Green Tea
+604. Grindelia
+605. Guaiacum
+606. Hawthorn
+607. Heartsease
+608. Hops
+609. Horehound
+610. Horse Chestnut
+611. Horseradish
+612. Horsetail
+613. Irish Moss
+614. Jujube
+615. Lady's Mantle
+616. Lavender
+617. Lemon Balm
+618. Ligustrum
+619. Linden
+620. Lobelia
+621. Marshmallow
+622. Marshmallow
+623. Meadowsweet
+624. Motherwort
+625. Mugwort
+626. Mullein
+627. Myrrh
+628. Nettles
+629. Oat Straw
+630. Olive Leaf
+631. Oregano
+632. Oregon Grape
+633. Parsley Root
+634. Partridgeberry
+635. Passionflower
+636. Pennyroyal
+637. Phyllanthus
+638. Picrorrhiza
+639. Pine Bark Extract
+640. Pipsissewa
+641. Plantain
+642. Pleurisy Root
+643. Prickly Ash
+644. Propolis
+645. Psyllium
+646. Purple Willow
+647. Raspberry Leaf
+648. Rehmannia
+649. Reishi Mushroom
+650. Rhodiola
+651. Rosemary
+652. Sarsaparilla
+653. Sassafras
+654. Saw Palmetto
+655. Schisandra
+656. Shepherd's Purse
+657. Shiitake Mushroom
+658. Siberian Ginseng
+659. Skullcap
+660. Slippery Elm
+661. Sweet Violet
+662. Tea Tree
+663. Thuja
+664. Tree Peony
+665. Turkey Rhubarb
+666. Uva Ursi
+667. Vervain
+668. White Peony
+669. White Willow
+670. Wild Cherry
+671. Wild Yam
+672. Witch Hazel
+673. Wood Betony
+674. Wormwood
+675. Yarrow
+676. Yellow Dock
