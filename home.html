@@ -23,7 +23,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--night);color:var(--text);
 /* ── NAV ── */
 nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:var(--forest);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:100;}
 .nav-logo{text-decoration:none;display:flex;flex-direction:column;}
-.nav-chi{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-light);letter-spacing:.1em;}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:var(--gold-light);letter-spacing:.1em;text-transform:uppercase;}
 .nav-full{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.5);}
 .nav-right{display:flex;align-items:center;gap:1.5rem;}
 .nav-right a{color:rgba(245,240,232,.6);text-decoration:none;font-size:13px;transition:color .2s;}
@@ -68,7 +68,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .greeting{margin-bottom:1.75rem;}
 .greeting-eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:10px;margin-bottom:.5rem;}
 .greeting-eyebrow::before{content:'';width:16px;height:1px;background:var(--gold);opacity:.6;}
-.greeting-title{font-family:'Cormorant Garamond',serif;font-size:clamp(42px,6vw,56px);font-weight:700;line-height:1.1;color:var(--parchment);text-transform:uppercase;letter-spacing:.05em;}
+.greeting-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,42px);font-weight:300;line-height:1.1;color:var(--parchment);}
 .greeting-title em{font-style:italic;color:var(--gold-light);}
 .greeting-sub{font-size:13.5px;color:var(--muted);margin-top:.4rem;}
 
@@ -177,14 +177,9 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 /* ── STATS ROW ── */
 .stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.5rem;}
 @media(max-width:680px){.stats-strip{grid-template-columns:repeat(2,1fr);}}
-.stat-card{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:.85rem 1rem;cursor:pointer;transition:all .2s;}
-.stat-card:hover{border-color:rgba(200,149,42,.3);background:rgba(200,149,42,.04);}
-.stat-card.safety-card{border-color:rgba(200,149,42,.4);background:rgba(200,149,42,.08);}
+.stat-card{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:.85rem 1rem;}
 .stat-val{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;color:var(--gold-light);line-height:1;}
 .stat-label{font-size:10.5px;color:var(--muted);margin-top:.25rem;}
-.safety-expanded{display:grid;grid-column:1/-1;background:var(--card);border:1px solid rgba(200,149,42,.3);border-radius:10px;padding:1.25rem;margin-top:.5rem;gap:1rem;}
-.safety-section{font-size:11px;color:var(--text);line-height:1.6;}
-.safety-section-title{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-light);margin-bottom:.5rem;font-weight:600;}
 
 /* ── SECTION DIVIDER ── */
 .sec-divider{display:flex;align-items:center;gap:.75rem;margin:1.5rem 0 1rem;}
@@ -479,11 +474,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
       <div class="stat-val" id="stat-community">1.2k</div>
       <div class="stat-label">Community members</div>
     </div>
-    <div class="stat-card safety-card" id="safety-toggle" onclick="toggleSafetyProfile()">
-      <div class="stat-val">⚠️</div>
-      <div class="stat-label">Health & Safety</div>
-    </div>
-    <div id="safety-expanded-content"></div>
   </div>
 
   <!-- THREE COLUMN -->
@@ -760,46 +750,6 @@ document.getElementById('discoveries-list').innerHTML = DISCOVERIES.map(d=>`
       <div style="font-size:11px;color:var(--muted);line-height:1.4">${d.desc}</div>
     </div>
   </a>`).join('');
-
-// ── HEALTH & SAFETY PROFILE ───────────────────────────────────────
-let safetyExpanded = false;
-
-function toggleSafetyProfile(){
-  safetyExpanded = !safetyExpanded;
-  const container = document.getElementById('safety-expanded-content');
-
-  if(safetyExpanded){
-    container.innerHTML = `
-      <div class="safety-expanded">
-        <div class="safety-section">
-          <div class="safety-section-title">⚠️ Contraindications</div>
-          <div>Check for interactions with current medications. Some herbs can affect blood thinners, heart medications, and diabetes drugs. Always consult your healthcare provider before adding new herbs to your routine.</div>
-        </div>
-        <div class="safety-section">
-          <div class="safety-section-title">🤰 Pregnancy & Nursing</div>
-          <div>Certain herbs are contraindicated during pregnancy and lactation. Review each herb's profile carefully. When in doubt, consult your midwife or OB/GYN before use.</div>
-        </div>
-        <div class="safety-section">
-          <div class="safety-section-title">⚡ Allergies & Reactions</div>
-          <div>Start new herbs at lower doses to monitor for sensitivity. Some people react to specific plant families. Track how you feel and stop if any adverse effects occur.</div>
-        </div>
-        <div class="safety-section">
-          <div class="safety-section-title">📋 Your Medical History</div>
-          <div>Herbs can interact with existing health conditions — kidney disease, liver disease, heart conditions, and autoimmune disorders especially. Inform your doctor about all herbs you use.</div>
-        </div>
-        <div style="font-size:10px;color:var(--gold);border-top:1px solid var(--card-border);padding-top:.75rem;margin-top:.75rem;">
-          ⚕️ <strong>Disclaimer:</strong> This platform provides educational information only. It is not a substitute for professional medical advice. Always consult qualified healthcare providers before using herbs, especially if pregnant, nursing, taking medications, or managing health conditions.
-        </div>
-      </div>
-    `;
-    document.getElementById('safety-toggle').style.borderColor = 'rgba(200,149,42,.6)';
-    document.getElementById('safety-toggle').style.background = 'rgba(200,149,42,.12)';
-  } else {
-    container.innerHTML = '';
-    document.getElementById('safety-toggle').style.borderColor = 'rgba(200,149,42,.4)';
-    document.getElementById('safety-toggle').style.background = 'rgba(200,149,42,.08)';
-  }
-}
 
 // ── HERB CHALLENGE ────────────────────────────────────────────────
 const CHALLENGE_GOALS = [
