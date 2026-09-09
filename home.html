@@ -68,7 +68,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .greeting{margin-bottom:1.75rem;}
 .greeting-eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:10px;margin-bottom:.5rem;}
 .greeting-eyebrow::before{content:'';width:16px;height:1px;background:var(--gold);opacity:.6;}
-.greeting-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,42px);font-weight:300;line-height:1.1;color:var(--parchment);}
+.greeting-title{font-family:'Cormorant Garamond',serif;font-size:clamp(42px,6vw,56px);font-weight:700;line-height:1.1;color:var(--parchment);text-transform:uppercase;letter-spacing:.05em;}
 .greeting-title em{font-style:italic;color:var(--gold-light);}
 .greeting-sub{font-size:13.5px;color:var(--muted);margin-top:.4rem;}
 
@@ -175,9 +175,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .season-why{font-size:12.5px;color:rgba(245,240,232,.6);line-height:1.6;}
 
 /* ── STATS ROW ── */
-.stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.5rem;}
-@media(max-width:680px){.stats-strip{grid-template-columns:repeat(2,1fr);}}
+.stats-strip{display:grid;grid-template-columns:1fr;gap:.75rem;margin-bottom:1.5rem;}
+@media(max-width:680px){.stats-strip{grid-template-columns:1fr;}}
 .stat-card{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:.85rem 1rem;}
+.stat-card:nth-child(-n+3){display:none;}
 .stat-val{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;color:var(--gold-light);line-height:1;}
 .stat-label{font-size:10.5px;color:var(--muted);margin-top:.25rem;}
 
@@ -502,7 +503,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
       <div class="panel" style="margin-bottom:1.25rem">
         <div class="panel-head">
           <span class="panel-title">Your active herbs</span>
-          <a href="profile.html" class="panel-action">Manage →</a>
+          <a href="herb-planner.html" class="panel-action">Plan routine →</a>
         </div>
         <div class="panel-body">
           <div id="active-herbs-list" style="display:grid;gap:8px;"></div>
@@ -536,11 +537,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
               <div class="tc-icon">📖</div>
               <div class="tc-name">Herbadex</div>
               <div class="tc-desc">Full A–Z herb library — including compounds, actions & taxonomy</div>
-            </a>
-            <a href="herb-identifier.html" class="tool-card">
-              <div class="tc-icon">🔍</div>
-              <div class="tc-name">Herb Identifier</div>
-              <div class="tc-desc">Identify from a photo</div>
             </a>
           </div>
         </div>
@@ -576,23 +572,25 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <!-- RIGHT: TRENDING + SEASONAL -->
     <div>
 
-      <!-- TRENDING -->
+      <!-- HERB DISCOVERIES -->
       <div class="panel" style="margin-bottom:1.25rem">
         <div class="panel-head">
-          <span class="panel-title">Trending this week</span>
-          <a href="community.html" class="panel-action">Community →</a>
+          <span class="panel-title">Herb discoveries</span>
+          <a href="supreme.html" class="panel-action">Explore all →</a>
         </div>
         <div class="panel-body">
-          <div class="trend-list" id="trending-list"></div>
+          <div id="discoveries-list" style="display:grid;gap:8px;"></div>
         </div>
       </div>
 
-      <!-- SEASONAL -->
+      <!-- HERB CHALLENGE -->
       <div class="panel">
         <div class="panel-head">
-          <span class="panel-title">Seasonal suggestion</span>
+          <span class="panel-title">Herb challenge</span>
         </div>
-        <div class="panel-body" id="seasonal-panel"></div>
+        <div class="panel-body">
+          <div id="herb-challenge-content"></div>
+        </div>
       </div>
 
     </div>
@@ -739,75 +737,68 @@ document.getElementById('community-feed').innerHTML = POSTS.map(p=>`
     <div class="comm-tags">${p.tags.map(t=>`<span class="comm-tag">${t}</span>`).join('')}</div>
   </div>`).join('');
 
-// ── TRENDING HERBS ────────────────────────────────────────────────
-const TRENDING = [
-  {name:'Ashwagandha', reason:'Most added to stacks this week', sparks:[2,3,4,5,5]},
-  {name:'Lion\'s Mane', reason:'Trending in community', sparks:[1,2,3,4,5]},
-  {name:'Nigella', reason:'Most Herb Match results', sparks:[3,3,4,3,5]},
-  {name:'Lemon Balm', reason:'Rising searches', sparks:[2,2,3,4,4]},
-  {name:'Moringa', reason:'Popular new addition', sparks:[1,2,2,3,4]},
+// ── HERB DISCOVERIES ──────────────────────────────────────────────
+// Recently validated herbs (newly loaded profiles)
+const DISCOVERIES = [
+  {name:'Rhodiola', latin:'Rhodiola rosea', desc:'Golden root adaptogen — stress resilience & energy', icon:'🌱'},
+  {name:'Cordyceps', latin:'Cordyceps militaris', desc:'Energy mushroom — endurance & ATP production', icon:'🍄'},
+  {name:'Bacopa', latin:'Bacopa monnieri', desc:'Memory enhancer — cognition & learning', icon:'🧠'},
+  {name:'Tribulus', latin:'Tribulus terrestris', desc:'Vitality herb — endurance & physical performance', icon:'⚡'},
+  {name:'Mucuna', latin:'Mucuna pruriens', desc:'Natural dopamine — mood & motivation', icon:'🌿'},
 ];
 
-function sparkBars(vals){
-  const max = Math.max(...vals);
-  return vals.map(v=>`<div class="spark-bar" style="height:${Math.round((v/max)*18)+2}px"></div>`).join('');
-}
-
-document.getElementById('trending-list').innerHTML = TRENDING.map((t,i)=>`
-  <a href="supreme.html?herb=${t.name.toLowerCase().replace("'",'')}" class="trend-item">
-    <div class="trend-rank">${i+1}</div>
-    <div class="trend-info">
-      <div class="trend-name">${t.name}</div>
-      <div class="trend-reason">${t.reason}</div>
+document.getElementById('discoveries-list').innerHTML = DISCOVERIES.map(d=>`
+  <a href="supreme.html?herb=${encodeURIComponent(d.name)}" style="display:flex;gap:10px;align-items:center;padding:10px;border-radius:8px;background:rgba(255,255,255,.02);border:1px solid var(--card-border);text-decoration:none;transition:all .15s" onmouseover="this.style.borderColor='rgba(200,149,42,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'">
+    <div style="font-size:20px">${d.icon}</div>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:13px;font-weight:500;color:var(--text)">${d.name}</div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.4">${d.desc}</div>
     </div>
-    <div class="trend-spark">${sparkBars(t.sparks)}</div>
   </a>`).join('');
 
-// ── SEASONAL SUGGESTION ───────────────────────────────────────────
-const month = now.getMonth(); // 0-11
-const SEASONAL = [
-  // Winter (Dec-Feb)
-  {months:[11,0,1], season:'Winter',
-   herbs:[
-     {name:'Elderberry',latin:'Sambucus nigra',why:'Antiviral flavonoids — particularly effective during cold and flu season.',color:'rgba(130,100,200,.12)'},
-     {name:'Ginger',latin:'Zingiber officinale',why:'Warming circulatory herb that combats winter stiffness and supports immune response.',color:'rgba(200,149,42,.1)'},
-   ],
-   note:'Winter herbs focus on immune resilience and warmth. Short days reduce vitamin D — consider adding nettle as a nutritive alongside your immune stack.'},
-  // Spring (Mar-May)
-  {months:[2,3,4], season:'Spring',
-   herbs:[
-     {name:'Dandelion',latin:'Taraxacum officinale',why:'Spring bitter tonic — stimulates liver detoxification after winter. Best harvested now.',color:'rgba(200,180,42,.1)'},
-     {name:'Nettle',latin:'Urtica dioica',why:'Peak nutritional value in early spring before flowering. Rich in iron, magnesium and quercetin.',color:'rgba(74,140,101,.12)'},
-   ],
-   note:'Spring is the traditional time for alterative herbs — those that support the liver and lymphatics after winter. Bitter greens and early herbs are at their most potent now.'},
-  // Summer (Jun-Aug)
-  {months:[5,6,7], season:'Summer',
-   herbs:[
-     {name:'Lemon Balm',latin:'Melissa officinalis',why:'Cooling nervine — balances summer heat and stress. Peak volatile oil content when harvested in summer.',color:'rgba(200,220,42,.08)'},
-     {name:'Hibiscus',latin:'Hibiscus sabdariffa',why:'Cooling diaphoretic and cardioprotective. Reduces blood pressure and counters summer heat.',color:'rgba(200,42,100,.1)'},
-   ],
-   note:'Summer herbs tend toward cooling and calming. Harvest lavender, lemon balm and calendula this season — they dry beautifully and retain potency.'},
-  // Autumn (Sep-Nov)
-  {months:[8,9,10], season:'Autumn',
-   herbs:[
-     {name:'Ashwagandha',latin:'Withania somnifera',why:'Roots harvested in autumn are at peak withanolide content. Begin your autumn adaptogen protocol now.',color:'rgba(74,140,101,.12)'},
-     {name:'Reishi',latin:'Ganoderma lucidum',why:'Autumn mushroom season. Fresh or freshly dried reishi has superior polysaccharide content.',color:'rgba(150,80,40,.1)'},
-   ],
-   note:'Autumn is preparation season. Build your immune stack before winter. Roots and berries reach their peak — elderberry, hawthorn, and ashwagandha root are all at their best.'},
+// ── HERB CHALLENGE ────────────────────────────────────────────────
+const CHALLENGE_GOALS = [
+  {goal:'Better Sleep', herbs:['Passionflower','Valerian','Lemon Balm'], emoji:'😴'},
+  {goal:'Energy Boost', herbs:['Lion\'s Mane','Cordyceps','Rhodiola'], emoji:'⚡'},
+  {goal:'Stress Relief', herbs:['Ashwagandha','Lemon Balm','Bacopa'], emoji:'🧘'},
+  {goal:'Immunity', herbs:['Elderberry','Nigella','Echinacea'], emoji:'🛡️'},
 ];
 
-const seasonData = SEASONAL.find(s=>s.months.includes(month)) || SEASONAL[0];
+const challengeEl = document.getElementById('herb-challenge-content');
+const selectedGoal = localStorage.getItem('chi_challenge_goal');
 
-document.getElementById('seasonal-panel').innerHTML = `
-  <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem">${seasonData.season} suggestions</div>
-  ${seasonData.herbs.map(h=>`
-    <div class="season-card" style="background:${h.color};margin-bottom:.65rem">
-      <div class="season-label">Seasonal pick</div>
-      <div class="season-name">${h.name}</div>
-      <div class="season-why">${h.why}</div>
-    </div>`).join('')}
-  <div style="font-size:12px;color:rgba(245,240,232,.45);line-height:1.65;border-top:1px solid var(--card-border);padding-top:.75rem;margin-top:.25rem">${seasonData.note}</div>
-`;
+if(!selectedGoal){
+  challengeEl.innerHTML = `
+    <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px">Pick your goal</div>
+    ${CHALLENGE_GOALS.map(c=>`
+      <button onclick="setChallengeGoal('${c.goal}')" style="width:100%;text-align:left;padding:12px;margin-bottom:8px;border-radius:8px;border:1px solid var(--card-border);background:rgba(255,255,255,.02);color:var(--text);cursor:pointer;font-size:14px;transition:all .15s;font-family:inherit" onmouseover="this.style.borderColor='rgba(200,149,42,.3)';this.style.background='rgba(200,149,42,.04)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)';this.style.background='rgba(255,255,255,.02)'">
+        <span style="font-size:16px;margin-right:8px">${c.emoji}</span> ${c.goal}
+      </button>
+    `).join('')}
+  `;
+} else {
+  const goal = CHALLENGE_GOALS.find(c=>c.goal===selectedGoal);
+  challengeEl.innerHTML = `
+    <div style="text-align:center;margin-bottom:12px">
+      <div style="font-size:28px;margin-bottom:6px">${goal.emoji}</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:2px">Your challenge</div>
+      <div style="font-size:16px;font-weight:500;color:var(--text)">${goal.goal}</div>
+    </div>
+    <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;margin-top:12px">Recommended herbs</div>
+    ${goal.herbs.map(h=>`
+      <a href="supreme.html?herb=${encodeURIComponent(h)}" style="display:flex;align-items:center;justify-content:space-between;padding:10px;margin-bottom:6px;border-radius:6px;background:rgba(200,149,42,.06);border:1px solid rgba(200,149,42,.15);text-decoration:none;color:var(--text);transition:all .15s" onmouseover="this.style.background='rgba(200,149,42,.1)'" onmouseout="this.style.background='rgba(200,149,42,.06)'">
+        <span>${h}</span>
+        <span style="font-size:12px;color:var(--muted)">→</span>
+      </a>
+    `).join('')}
+    <button onclick="localStorage.removeItem('chi_challenge_goal');location.reload()" style="width:100%;margin-top:12px;padding:10px;border-radius:6px;border:1px solid var(--card-border);background:transparent;color:var(--muted);cursor:pointer;font-size:12px;transition:all .15s;font-family:inherit" onmouseover="this.style.color='var(--text)';" onmouseout="this.style.color='var(--muted)'">Change goal</button>
+  `;
+}
+
+function setChallengeGoal(goal){
+  localStorage.setItem('chi_challenge_goal',goal);
+  location.reload();
+}
 
 // ── FACTS TICKER ──────────────────────────────────────────────────
 const ALL_FACTS = [
