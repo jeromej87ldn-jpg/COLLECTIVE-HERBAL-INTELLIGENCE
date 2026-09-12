@@ -46,12 +46,60 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ch
 .tree-wrap svg{width:100%;height:auto;}
 
 .tree-hero-content{position:relative;z-index:10;text-align:center;max-width:700px;}
-.supreme-label{font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:1.25rem;display:flex;align-items:center;justify-content:center;gap:10px;}
-.supreme-label::before,.supreme-label::after{content:'';width:40px;height:1px;background:rgba(200,149,42,.4);}
-.tree-hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4.5vw,54px);font-weight:300;line-height:1.15;color:var(--parchment);margin-bottom:.5rem;}
-.tree-hero h1 strong{font-weight:600;display:block;letter-spacing:.06em;color:var(--gold-light);}
+.supreme-label{
+  font-size:11px;letter-spacing:.25em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:1.5rem;
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  font-weight:600;
+}
+.supreme-label::before,.supreme-label::after{content:'';width:45px;height:1px;background:rgba(200,149,42,.5);}
+.tree-hero h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(48px,7vw,92px);
+  font-weight:300;line-height:1.08;
+  color:var(--parchment);
+  margin-bottom:.75rem;
+  letter-spacing:-.02em;
+}
+.tree-hero h1 strong{
+  font-weight:600;display:block;
+  letter-spacing:-.015em;
+  color:var(--gold-light);
+  font-size:1.1em;
+}
 .tree-hero h1 em{font-style:italic;}
-.tree-tagline{font-size:15px;font-weight:300;color:rgba(245,240,232,.5);margin-bottom:2.5rem;font-style:italic;font-family:'Cormorant Garamond',serif;}
+.tree-tagline{
+  font-size:16px;font-weight:300;
+  color:rgba(245,240,232,.55);
+  margin-bottom:2rem;
+  font-style:italic;
+  font-family:'Cormorant Garamond',serif;
+  letter-spacing:.01em;
+}
+
+/* Instructions */
+.herb-instructions{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:6px;
+  padding:1.25rem;
+  margin-bottom:2rem;
+  max-width:680px;
+  margin-left:auto;
+  margin-right:auto;
+}
+.herb-instructions h4{
+  font-family:'DM Sans',sans-serif;
+  font-size:11px;letter-spacing:.15em;
+  text-transform:uppercase;
+  color:var(--gold);margin:0 0 .75rem;
+  font-weight:600;
+}
+.herb-instructions p{
+  font-size:13px;color:rgba(245,240,232,.6);
+  line-height:1.7;margin:0;
+}
+.herb-instructions strong{color:var(--gold-light);}
 
 /* Search bar */
 .supreme-search{display:flex;max-width:580px;margin:0 auto;position:relative;}
@@ -62,6 +110,46 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ch
 .supreme-btn:hover{background:var(--gold-light);}
 
 .search-hint{font-size:12px;color:rgba(245,240,232,.3);margin-top:.85rem;font-style:italic;}
+
+/* Health Safety Notification Banner */
+.health-profile-banner{
+  background:linear-gradient(135deg,rgba(200,149,42,.15) 0%,rgba(74,140,101,.1) 100%);
+  border:1px solid rgba(200,149,42,.4);
+  border-radius:8px;
+  padding:1.25rem 1.5rem;
+  margin-bottom:2.5rem;
+  display:flex;align-items:flex-start;gap:1rem;
+  backdrop-filter:blur(10px);
+}
+.health-profile-banner-icon{
+  font-size:24px;flex-shrink:0;}
+.health-profile-banner-content{flex:1;}
+.health-profile-banner h3{
+  font-family:'Cormorant Garamond',serif;
+  font-size:16px;font-weight:600;
+  color:var(--parchment);margin:0 0 .35rem;
+  letter-spacing:.04em;
+}
+.health-profile-banner p{
+  font-size:13px;color:rgba(245,240,232,.7);line-height:1.6;margin:0 0 1rem;
+}
+.health-profile-banner a{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(200,149,42,.25);
+  border:1px solid rgba(200,149,42,.5);
+  color:var(--gold-light);
+  padding:.6rem 1.2rem;
+  border-radius:5px;
+  text-decoration:none;font-size:12px;
+  font-weight:600;letter-spacing:.05em;
+  text-transform:uppercase;
+  transition:all .2s;
+}
+.health-profile-banner a:hover{
+  background:rgba(200,149,42,.4);
+  border-color:rgba(200,149,42,.7);
+  color:var(--parchment);
+}
 
 /* Scroll hint */
 .scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;color:rgba(245,240,232,.25);font-size:11px;letter-spacing:.1em;text-transform:uppercase;animation:bobble 2.5s ease-in-out infinite;}
@@ -664,6 +752,22 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
       <strong>Search any herb.</strong>
     </h1>
     <p class="tree-tagline">Every plant. Every tradition. Every secret the earth has kept.</p>
+
+    <!-- Health & Safety Profile Notification -->
+    <div class="health-profile-banner">
+      <div class="health-profile-banner-icon">⚕️</div>
+      <div class="health-profile-banner-content">
+        <h3>Your Health Profile Matters</h3>
+        <p>Create a personalized health profile to see which herbs are safe for you. Instantly check safety, interactions, and cautions when you search.</p>
+        <a href="profile.html">Set Up Health Profile</a>
+      </div>
+    </div>
+
+    <!-- How to Use -->
+    <div class="herb-instructions">
+      <h4>How To Use Herbadex</h4>
+      <p><strong>Search any herb</strong> by name to explore its properties, traditions, and safety profile. <strong>Check cautions</strong> against your health profile for personalized guidance. <strong>Discover interactions</strong> with other herbs and understand the science behind traditional use.</p>
+    </div>
 
     <div class="supreme-search">
       <input class="supreme-input" type="text" id="supreme-search-input" placeholder="Enter any herb name... neem, mugwort, cat's claw...">
