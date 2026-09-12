@@ -61,17 +61,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ch
 .supreme-label::before,.supreme-label::after{display:none;}
 .tree-hero h1{
   font-family:'Cormorant Garamond',serif;
-  font-size:clamp(48px,7vw,92px);
-  font-weight:300;line-height:1.08;
+  font-size:clamp(28px,4.5vw,54px);
+  font-weight:300;line-height:1.15;
   color:var(--parchment);
-  margin-bottom:.75rem;
-  letter-spacing:-.02em;
+  margin-bottom:.5rem;
+  letter-spacing:0;
 }
 .tree-hero h1 strong{
   font-weight:600;display:block;
-  letter-spacing:-.015em;
+  letter-spacing:.06em;
   color:var(--gold-light);
-  font-size:1.1em;
+  font-size:1em;
 }
 .tree-hero h1 em{font-style:italic;}
 .tree-tagline{
@@ -119,16 +119,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ch
 
 /* Health Safety Notification Banner */
 .health-profile-banner{
-  background:linear-gradient(135deg,rgba(200,149,42,.15) 0%,rgba(74,140,101,.1) 100%);
-  border:1px solid rgba(200,149,42,.4);
-  border-radius:8px;
-  padding:1.25rem 1.5rem;
-  margin-bottom:2.5rem;
-  display:flex;align-items:flex-start;gap:1rem;
-  backdrop-filter:blur(10px);
+  background:linear-gradient(135deg,rgba(200,149,42,.18) 0%,rgba(74,140,101,.12) 100%);
+  border:1.5px solid rgba(200,149,42,.5);
+  border-radius:10px;
+  padding:2rem 2rem;
+  margin-bottom:3rem;
+  margin-top:1rem;
+  display:flex;align-items:flex-start;gap:1.5rem;
+  backdrop-filter:blur(12px);
+  box-shadow:0 8px 32px rgba(0,0,0,.15);
 }
 .health-profile-banner-icon{
-  font-size:24px;flex-shrink:0;}
+  font-size:36px;flex-shrink:0;margin-top:.25rem;}
 .health-profile-banner-content{flex:1;}
 .health-profile-banner h3{
   font-family:'Cormorant Garamond',serif;
@@ -755,14 +757,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 
   <!-- Content -->
   <div class="tree-hero-content">
-    <div class="supreme-label">HERBADEX</div>
-    <h1>
-      <em>Ancient wisdom.</em><br>
-      <strong>Search any herb.</strong>
-    </h1>
-    <p class="tree-tagline">Every plant. Every tradition. Every secret the earth has kept.</p>
-
-    <!-- Health & Safety Profile Notification -->
+    <!-- Health & Safety Profile Notification - FIRST -->
     <div class="health-profile-banner">
       <div class="health-profile-banner-icon">⚕️</div>
       <div class="health-profile-banner-content">
@@ -771,6 +766,13 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
         <a href="profile.html">Set Up Health Profile</a>
       </div>
     </div>
+
+    <div class="supreme-label">HERBADEX</div>
+    <h1>
+      <em>Ancient wisdom.</em><br>
+      <strong>Search any herb.</strong>
+    </h1>
+    <p class="tree-tagline">Every plant. Every tradition. Every secret the earth has kept.</p>
 
     <!-- How to Use -->
     <div class="herb-instructions">
