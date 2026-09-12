@@ -47,12 +47,18 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ch
 
 .tree-hero-content{position:relative;z-index:10;text-align:center;max-width:700px;}
 .supreme-label{
-  font-size:11px;letter-spacing:.25em;text-transform:uppercase;
-  color:var(--gold);margin-bottom:1.5rem;
-  display:flex;align-items:center;justify-content:center;gap:12px;
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(64px,9vw,120px);
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--gold-light);
+  margin-bottom:1.5rem;
+  margin-top:2rem;
+  display:block;
   font-weight:600;
+  line-height:1.1;
 }
-.supreme-label::before,.supreme-label::after{content:'';width:45px;height:1px;background:rgba(200,149,42,.5);}
+.supreme-label::before,.supreme-label::after{display:none;}
 .tree-hero h1{
   font-family:'Cormorant Garamond',serif;
   font-size:clamp(48px,7vw,92px);
@@ -126,9 +132,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ch
 .health-profile-banner-content{flex:1;}
 .health-profile-banner h3{
   font-family:'Cormorant Garamond',serif;
-  font-size:16px;font-weight:600;
-  color:var(--parchment);margin:0 0 .35rem;
-  letter-spacing:.04em;
+  font-size:clamp(20px,4vw,32px);
+  font-weight:700;
+  color:var(--parchment);
+  margin:0 0 .6rem;
+  letter-spacing:.02em;
+  line-height:1.2;
 }
 .health-profile-banner p{
   font-size:13px;color:rgba(245,240,232,.7);line-height:1.6;margin:0 0 1rem;
