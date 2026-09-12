@@ -27,25 +27,31 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ch
 
 /* ─── TREE HERO ─── */
 .tree-hero{
-  background:var(--night);
+  background:linear-gradient(135deg,var(--night) 0%,var(--forest) 100%);
   min-height:100vh;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  position:relative;overflow:hidden;padding:4rem 2rem;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  position:relative;overflow:hidden;padding:80px 60px;
 }
 
-/* Stars */
-.stars{position:absolute;inset:0;pointer-events:none;}
-.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--dur,3s) ease-in-out infinite var(--delay,0s);}
+.tree-hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 80% 20%,rgba(74,140,101,0.1) 0%,transparent 50%);
+  pointer-events:none;
+}
+
+/* Stars - hidden */
+.stars{display:none;}
+.star{display:none;}
 @keyframes twinkle{0%,100%{opacity:.15;transform:scale(1)}50%{opacity:.8;transform:scale(1.2)}}
 
-/* Ground mist */
-.mist{position:absolute;bottom:0;left:0;right:0;height:220px;background:linear-gradient(to top,rgba(26,58,42,.4) 0%,transparent 100%);pointer-events:none;}
+/* Ground mist - hidden */
+.mist{display:none;}
 
-/* Ancient tree SVG */
-.tree-wrap{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:min(600px,90vw);pointer-events:none;opacity:.85;}
-.tree-wrap svg{width:100%;height:auto;}
+/* Ancient tree SVG - hidden */
+.tree-wrap{display:none;}
+.tree-wrap svg{display:none;}
 
-.tree-hero-content{position:relative;z-index:10;text-align:center;max-width:700px;}
+.tree-hero-content{position:relative;z-index:10;text-align:center;max-width:900px;width:100%;margin:0 auto;}
 .supreme-label{
   font-family:'Cormorant Garamond',serif;
   font-size:clamp(64px,9vw,120px);
@@ -85,81 +91,139 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ch
 
 /* Instructions */
 .herb-instructions{
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:6px;
-  padding:1.25rem;
-  margin-bottom:2rem;
-  max-width:680px;
+  background:transparent;
+  border:none;
+  border-radius:0;
+  padding:1.5rem 0;
+  margin-bottom:2.5rem;
+  max-width:740px;
   margin-left:auto;
   margin-right:auto;
 }
 .herb-instructions h4{
   font-family:'DM Sans',sans-serif;
-  font-size:11px;letter-spacing:.15em;
+  font-size:10px;
+  letter-spacing:.13em;
   text-transform:uppercase;
-  color:var(--gold);margin:0 0 .75rem;
+  color:rgba(245,240,232,.45);
+  margin:0 0 .7rem;
   font-weight:600;
 }
 .herb-instructions p{
-  font-size:13px;color:rgba(245,240,232,.6);
-  line-height:1.7;margin:0;
+  font-size:13px;
+  color:rgba(245,240,232,.6);
+  line-height:1.7;
+  margin:0;
 }
 .herb-instructions strong{color:var(--gold-light);}
 
 /* Search bar */
-.supreme-search{display:flex;max-width:580px;margin:0 auto;position:relative;}
-.supreme-input{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(200,149,42,.35);border-radius:4px 0 0 4px;padding:16px 22px;font-size:16px;color:var(--parchment);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s,background .2s;}
-.supreme-input::placeholder{color:rgba(245,240,232,.28);font-style:italic;}
-.supreme-input:focus{border-color:rgba(200,149,42,.6);background:rgba(255,255,255,.08);}
-.supreme-btn{background:var(--gold);border:none;border-radius:0 4px 4px 0;padding:16px 24px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--forest);font-family:'DM Sans',sans-serif;transition:background .2s;}
-.supreme-btn:hover{background:var(--gold-light);}
+.supreme-search{
+  display:flex;
+  max-width:740px;
+  margin:0 auto;
+  position:relative;
+  gap:0;
+}
+.supreme-input{
+  flex:1;
+  background:rgba(255,255,255,.08);
+  border:2px solid var(--gold);
+  border-radius:12px 0 0 12px;
+  padding:24px 32px;
+  font-size:18px;
+  color:var(--parchment);
+  font-family:'DM Sans',sans-serif;
+  outline:none;
+  transition:all .3s;
+}
+.supreme-input::placeholder{color:rgba(245,240,232,.4);font-style:italic;}
+.supreme-input:focus{
+  border-color:var(--gold-light);
+  background:rgba(255,255,255,.15);
+  box-shadow:0 0 24px rgba(200,149,42,.35);
+}
+.supreme-btn{
+  background:var(--gold);
+  border:2px solid var(--gold);
+  border-radius:0 12px 12px 0;
+  padding:24px 40px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  font-size:14px;
+  font-weight:600;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--forest);
+  font-family:'DM Sans',sans-serif;
+  transition:all .3s;
+  flex-shrink:0;
+}
+.supreme-btn:hover{
+  background:var(--gold-light);
+  border-color:var(--gold-light);
+  transform:translateY(-3px);
+  box-shadow:0 12px 32px rgba(200,149,42,.4);
+}
 
-.search-hint{font-size:12px;color:rgba(245,240,232,.3);margin-top:.85rem;font-style:italic;}
+.search-hint{
+  font-size:12px;
+  color:rgba(245,240,232,.3);
+  margin-top:1.2rem;
+  font-style:italic;
+}
 
 /* Health Safety Notification Banner */
 .health-profile-banner{
-  background:linear-gradient(135deg,rgba(200,149,42,.18) 0%,rgba(74,140,101,.12) 100%);
-  border:1.5px solid rgba(200,149,42,.5);
+  background:linear-gradient(135deg,rgba(200,149,42,.15) 0%,rgba(74,140,101,.1) 100%);
+  border:1px solid rgba(200,149,42,.4);
   border-radius:10px;
-  padding:2rem 2rem;
-  margin-bottom:3rem;
-  margin-top:1rem;
-  display:flex;align-items:flex-start;gap:1.5rem;
-  backdrop-filter:blur(12px);
-  box-shadow:0 8px 32px rgba(0,0,0,.15);
+  padding:1.75rem 2rem;
+  margin-bottom:2.5rem;
+  margin-top:0;
+  display:flex;
+  align-items:flex-start;
+  gap:1.5rem;
+  backdrop-filter:blur(10px);
 }
 .health-profile-banner-icon{
-  font-size:36px;flex-shrink:0;margin-top:.25rem;}
+  font-size:32px;
+  flex-shrink:0;
+  margin-top:.2rem;
+}
 .health-profile-banner-content{flex:1;}
 .health-profile-banner h3{
   font-family:'Cormorant Garamond',serif;
-  font-size:clamp(20px,4vw,32px);
+  font-size:19px;
   font-weight:700;
   color:var(--parchment);
   margin:0 0 .6rem;
   letter-spacing:.02em;
-  line-height:1.2;
+  line-height:1.3;
 }
 .health-profile-banner p{
-  font-size:13px;color:rgba(245,240,232,.7);line-height:1.6;margin:0 0 1rem;
+  font-size:13px;color:rgba(245,240,232,.72);line-height:1.65;margin:0 0 1.1rem;
 }
 .health-profile-banner a{
   display:inline-flex;align-items:center;gap:8px;
-  background:rgba(200,149,42,.25);
-  border:1px solid rgba(200,149,42,.5);
+  background:rgba(200,149,42,.3);
+  border:1px solid rgba(200,149,42,.55);
   color:var(--gold-light);
-  padding:.6rem 1.2rem;
-  border-radius:5px;
+  padding:.7rem 1.35rem;
+  border-radius:6px;
   text-decoration:none;font-size:12px;
-  font-weight:600;letter-spacing:.05em;
+  font-weight:600;letter-spacing:.06em;
   text-transform:uppercase;
   transition:all .2s;
 }
 .health-profile-banner a:hover{
-  background:rgba(200,149,42,.4);
-  border-color:rgba(200,149,42,.7);
+  background:rgba(200,149,42,.45);
+  border-color:rgba(200,149,42,.75);
   color:var(--parchment);
+  transform:translateY(-1px);
 }
 
 /* Scroll hint */
