@@ -1,0 +1,851 @@
+{
+  "timestamp": "2026-09-12T20:49:01.095Z",
+  "materiaHerbsCount": 170,
+  "catalogueHerbsCount": 676,
+  "overlapsCount": 148,
+  "missingCount": 22,
+  "overlaps": [
+    {
+      "materiaName": "agrimony",
+      "catalogueName": "Agrimony",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "aloe-vera",
+      "catalogueName": "Aloe Vera",
+      "latinName": "Aloe barbadensis",
+      "catalogueId": 1227,
+      "tradition": "Caribbean"
+    },
+    {
+      "materiaName": "andrographis",
+      "catalogueName": "Andrographis",
+      "latinName": "Andrographis paniculata",
+      "catalogueId": 1503,
+      "tradition": "Ayurveda"
+    },
+    {
+      "materiaName": "angelica",
+      "catalogueName": "Angelica",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "anise",
+      "catalogueName": "Anise",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "arnica",
+      "catalogueName": "Arnica",
+      "latinName": "Arnica montana",
+      "catalogueId": 1476,
+      "tradition": "European Folk"
+    },
+    {
+      "materiaName": "artichoke",
+      "catalogueName": "Artichoke",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "ashwagandha",
+      "catalogueName": "Ashwagandha",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "astragalus",
+      "catalogueName": "Astragalus",
+      "latinName": "Astragalus membranaceus",
+      "catalogueId": 1052,
+      "tradition": "TCM"
+    },
+    {
+      "materiaName": "bacopa",
+      "catalogueName": "Bacopa",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "beth-root",
+      "catalogueName": "Beth Root",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "bilberry",
+      "catalogueName": "Bilberry",
+      "latinName": "Vaccinium myrtillus",
+      "catalogueId": 2051,
+      "tradition": "Scandinavian"
+    },
+    {
+      "materiaName": "birch",
+      "catalogueName": "Birch",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "black-cohosh",
+      "catalogueName": "Black Cohosh",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "bladderwrack",
+      "catalogueName": "Bladderwrack",
+      "latinName": "Fucus vesiculosus",
+      "catalogueId": 2137,
+      "tradition": "Atlantic Coastal"
+    },
+    {
+      "materiaName": "blue-cohosh",
+      "catalogueName": "Blue Cohosh",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "blue-flag",
+      "catalogueName": "Blue Flag",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "boswellia",
+      "catalogueName": "Boswellia",
+      "latinName": "Boswellia serrata",
+      "catalogueId": 1515,
+      "tradition": "Ayurveda"
+    },
+    {
+      "materiaName": "buchu",
+      "catalogueName": "Buchu",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "bugleweed",
+      "catalogueName": "Bugleweed",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "bupleurum",
+      "catalogueName": "Bupleurum",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "burdock",
+      "catalogueName": "Burdock",
+      "latinName": "Arctium lappa",
+      "catalogueId": 1516,
+      "tradition": "TCM"
+    },
+    {
+      "materiaName": "butternut",
+      "catalogueName": "Butternut",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "cacao",
+      "catalogueName": "Cacao",
+      "latinName": "Theobroma cacao",
+      "catalogueId": 1518,
+      "tradition": "Central American"
+    },
+    {
+      "materiaName": "calendula",
+      "catalogueName": "Calendula",
+      "latinName": "Calendula officinalis",
+      "catalogueId": 1303,
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "cascara-sagrada",
+      "catalogueName": "Cascara Sagrada",
+      "latinName": "Rhamnus purshiana",
+      "catalogueId": 1522,
+      "tradition": "Native American"
+    },
+    {
+      "materiaName": "catnip",
+      "catalogueName": "Catnip",
+      "latinName": "Nepeta cataria",
+      "catalogueId": 1523,
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "cayenne",
+      "catalogueName": "Cayenne",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "celery-seed",
+      "catalogueName": "Celery Seed",
+      "latinName": "Apium graveolens",
+      "catalogueId": 1526,
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "chaga",
+      "catalogueName": "Chaga",
+      "latinName": "Inonotus obliquus",
+      "catalogueId": 1528,
+      "tradition": "Siberian"
+    },
+    {
+      "materiaName": "chamomile",
+      "catalogueName": "Chamomile",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "chamomile-german",
+      "catalogueName": "Chamomile German",
+      "latinName": "Matricaria recutita",
+      "catalogueId": 1529,
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "chaparral",
+      "catalogueName": "Chaparral",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "chickweed",
+      "catalogueName": "Chickweed",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "chinese-skullcap",
+      "catalogueName": "Chinese Skullcap",
+      "latinName": "Scutellaria baicalensis",
+      "catalogueId": 1539,
+      "tradition": "TCM"
+    },
+    {
+      "materiaName": "cinnamon",
+      "catalogueName": "Cinnamon",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "cleavers",
+      "catalogueName": "Cleavers",
+      "latinName": "Galium aparine",
+      "catalogueId": 1546,
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "cloves",
+      "catalogueName": "Cloves",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "codonopsis",
+      "catalogueName": "Codonopsis",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "coleus",
+      "catalogueName": "Coleus",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "coltsfoot",
+      "catalogueName": "Coltsfoot",
+      "latinName": "Tussilago farfara",
+      "catalogueId": 1552,
+      "tradition": "European Folk"
+    },
+    {
+      "materiaName": "comfrey",
+      "catalogueName": "Comfrey",
+      "latinName": "Symphytum officinale",
+      "catalogueId": 1477,
+      "tradition": "European Folk"
+    },
+    {
+      "materiaName": "cordyceps",
+      "catalogueName": "Cordyceps",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "cornsilk",
+      "catalogueName": "Cornsilk",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "couch-grass",
+      "catalogueName": "Couch Grass",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "cramp-bark",
+      "catalogueName": "Cramp Bark",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "cranberry",
+      "catalogueName": "Cranberry",
+      "latinName": "Vaccinium macrocarpon",
+      "catalogueId": 2044,
+      "tradition": "Native American"
+    },
+    {
+      "materiaName": "crataeva",
+      "catalogueName": "Crataeva",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "damiana",
+      "catalogueName": "Damiana",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "dandelion",
+      "catalogueName": "Dandelion",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "dill",
+      "catalogueName": "Dill",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "dong-quai",
+      "catalogueName": "Dong Quai",
+      "latinName": "Angelica sinensis",
+      "catalogueId": 2096,
+      "tradition": "TCM"
+    },
+    {
+      "materiaName": "echinacea",
+      "catalogueName": "Echinacea",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "elderberry",
+      "catalogueName": "Elderberry",
+      "latinName": "Sambucus nigra",
+      "catalogueId": 2050,
+      "tradition": "European Folk"
+    },
+    {
+      "materiaName": "elecampane",
+      "catalogueName": "Elecampane",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "ephedra",
+      "catalogueName": "Ephedra",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "eyebright",
+      "catalogueName": "Eyebright",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "false-unicorn-root",
+      "catalogueName": "False Unicorn Root",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "feverfew",
+      "catalogueName": "Feverfew",
+      "latinName": "Tanacetum parthenium",
+      "catalogueId": 743,
+      "tradition": "European Folk"
+    },
+    {
+      "materiaName": "gentian",
+      "catalogueName": "Gentian",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "ginger",
+      "catalogueName": "Ginger",
+      "latinName": "Zingiber officinale",
+      "catalogueId": 1,
+      "tradition": "TCM"
+    },
+    {
+      "materiaName": "ginkgo",
+      "catalogueName": "Ginkgo",
+      "latinName": "Ginkgo biloba",
+      "catalogueId": 6,
+      "tradition": "TCM"
+    },
+    {
+      "materiaName": "ginseng",
+      "catalogueName": "Ginseng",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "goldenrod",
+      "catalogueName": "Goldenrod",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "goldenseal",
+      "catalogueName": "Goldenseal",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "gotu-kola",
+      "catalogueName": "Gotu Kola",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "grape-seed",
+      "catalogueName": "Grape Seed",
+      "latinName": "Vitis vinifera",
+      "catalogueId": 2014,
+      "tradition": "Traditional"
+    },
+    {
+      "materiaName": "gravel-root",
+      "catalogueName": "Gravel Root",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "green-tea",
+      "catalogueName": "Green Tea",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "grindelia",
+      "catalogueName": "Grindelia",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "guaiacum",
+      "catalogueName": "Guaiacum",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "hawthorn",
+      "catalogueName": "Hawthorn",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "heartsease",
+      "catalogueName": "Heartsease",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "hops",
+      "catalogueName": "Hops",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "horehound",
+      "catalogueName": "Horehound",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "horse-chestnut",
+      "catalogueName": "Horse Chestnut",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "horseradish",
+      "catalogueName": "Horseradish",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "horsetail",
+      "catalogueName": "Horsetail",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "irish-moss",
+      "catalogueName": "Irish Moss",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "jujube",
+      "catalogueName": "Jujube",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "lavender",
+      "catalogueName": "Lavender",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "lemon-balm",
+      "catalogueName": "Lemon Balm",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "licorice",
+      "catalogueName": "Licorice",
+      "latinName": "Glycyrrhiza glabra",
+      "catalogueId": 4,
+      "tradition": "TCM"
+    },
+    {
+      "materiaName": "ligustrum",
+      "catalogueName": "Ligustrum",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "linden",
+      "catalogueName": "Linden",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "lobelia",
+      "catalogueName": "Lobelia",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "marshmallow",
+      "catalogueName": "Marshmallow",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "marshmallow-root",
+      "catalogueName": "Marshmallow Root",
+      "latinName": "Althaea officinalis",
+      "catalogueId": 2097,
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "meadowsweet",
+      "catalogueName": "Meadowsweet",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "milk-thistle",
+      "catalogueName": "Milk Thistle",
+      "latinName": "Silybum marianum",
+      "catalogueId": 9,
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "motherwort",
+      "catalogueName": "Motherwort",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "mugwort",
+      "catalogueName": "Mugwort",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "mullein",
+      "catalogueName": "Mullein",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "myrrh",
+      "catalogueName": "Myrrh",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "nettles",
+      "catalogueName": "Nettles",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "oat-straw",
+      "catalogueName": "Oat Straw",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "olive-leaf",
+      "catalogueName": "Olive Leaf",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "oregano",
+      "catalogueName": "Oregano",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "oregon-grape",
+      "catalogueName": "Oregon Grape",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "parsley-root",
+      "catalogueName": "Parsley Root",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "partridgeberry",
+      "catalogueName": "Partridgeberry",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "passionflower",
+      "catalogueName": "Passionflower",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "pennyroyal",
+      "catalogueName": "Pennyroyal",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "peppermint",
+      "catalogueName": "Peppermint",
+      "latinName": "Mentha piperita",
+      "catalogueId": 10,
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "phyllanthus",
+      "catalogueName": "Phyllanthus",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "picrorrhiza",
+      "catalogueName": "Picrorrhiza",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "pipsissewa",
+      "catalogueName": "Pipsissewa",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "plantain",
+      "catalogueName": "Plantain",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "prickly-ash",
+      "catalogueName": "Prickly Ash",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "propolis",
+      "catalogueName": "Propolis",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "psyllium",
+      "catalogueName": "Psyllium",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "pumpkin-seeds",
+      "catalogueName": "Pumpkin Seeds",
+      "latinName": "Cucurbita pepo",
+      "catalogueId": 2002,
+      "tradition": "Traditional"
+    },
+    {
+      "materiaName": "purple-willow",
+      "catalogueName": "Purple Willow",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "raspberry-leaf",
+      "catalogueName": "Raspberry Leaf",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "red-clover",
+      "catalogueName": "Red Clover",
+      "latinName": "Trifolium pratense",
+      "catalogueId": 1305,
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "rehmannia",
+      "catalogueName": "Rehmannia",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "reishi",
+      "catalogueName": "Reishi",
+      "latinName": "Ganoderma lucidum",
+      "catalogueId": 1053,
+      "tradition": "TCM"
+    },
+    {
+      "materiaName": "rhodiola",
+      "catalogueName": "Rhodiola",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "rosemary",
+      "catalogueName": "Rosemary",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "sage",
+      "catalogueName": "Sage",
+      "latinName": "Salvia officinalis",
+      "catalogueId": 741,
+      "tradition": "European Folk"
+    },
+    {
+      "materiaName": "sarsaparilla",
+      "catalogueName": "Sarsaparilla",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "sassafras",
+      "catalogueName": "Sassafras",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "saw-palmetto",
+      "catalogueName": "Saw Palmetto",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "schisandra",
+      "catalogueName": "Schisandra",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "shiitake",
+      "catalogueName": "Shiitake",
+      "latinName": "Lentinula edodes",
+      "catalogueId": 2020,
+      "tradition": "TCM"
+    },
+    {
+      "materiaName": "siberian-ginseng",
+      "catalogueName": "Siberian Ginseng",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "skullcap",
+      "catalogueName": "Skullcap",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "slippery-elm",
+      "catalogueName": "Slippery Elm",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "sweet-violet",
+      "catalogueName": "Sweet Violet",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "tea-tree",
+      "catalogueName": "Tea Tree",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "thuja",
+      "catalogueName": "Thuja",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "thyme",
+      "catalogueName": "Thyme",
+      "latinName": "Thymus vulgaris",
+      "catalogueId": 742,
+      "tradition": "European Folk"
+    },
+    {
+      "materiaName": "tree-peony",
+      "catalogueName": "Tree Peony",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "turkey-rhubarb",
+      "catalogueName": "Turkey Rhubarb",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "turmeric",
+      "catalogueName": "Turmeric",
+      "latinName": "Curcuma longa",
+      "catalogueId": 2,
+      "tradition": "Ayurveda"
+    },
+    {
+      "materiaName": "uva-ursi",
+      "catalogueName": "Uva Ursi",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "valerian",
+      "catalogueName": "Valerian",
+      "latinName": "Valeriana officinalis",
+      "catalogueId": 8,
+      "tradition": "European Folk"
+    },
+    {
+      "materiaName": "valerian-root",
+      "catalogueName": "Valerian Root",
+      "latinName": "Valeriana officinalis",
+      "catalogueId": 2098,
+      "tradition": "European Folk"
+    },
+    {
+      "materiaName": "vervain",
+      "catalogueName": "Vervain",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "white-peony",
+      "catalogueName": "White Peony",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "white-willow",
+      "catalogueName": "White Willow",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "wild-cherry",
+      "catalogueName": "Wild Cherry",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "wild-yam",
+      "catalogueName": "Wild Yam",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "witch-hazel",
+      "catalogueName": "Witch Hazel",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "wood-betony",
+      "catalogueName": "Wood Betony",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "wormwood",
+      "catalogueName": "Wormwood",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "yarrow",
+      "catalogueName": "Yarrow",
+      "tradition": "Western Herbalism"
+    },
+    {
+      "materiaName": "yellow-dock",
+      "catalogueName": "Yellow Dock",
+      "tradition": "Western Herbalism"
+    }
+  ],
+  "missing": [
+    "butchers-broom",
+    "calamus",
+    "cats-claw",
+    "devils-claw",
+    "euphorbia",
+    "fennel",
+    "fenugreek",
+    "flax",
+    "garlic",
+    "goats-rue",
+    "golden-oyster",
+    "indian-sarsaparilla",
+    "juniper-berries",
+    "ladys-mantle",
+    "lions-mane",
+    "pau-darco",
+    "pine-bark",
+    "pleurisy",
+    "senna",
+    "shepherds-purse",
+    "st-johns-wort",
+    "vitex"
+  ]
+}
