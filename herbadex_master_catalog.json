@@ -1,9 +1,9 @@
 {
   "metadata": {
-    "total_herbs": 676,
+    "total_herbs": 678,
     "version": "2.1.0",
     "date_consolidated": "2026-09-05T22:16:54.548Z",
-    "last_updated": "2026-09-05T22:16:54.548Z",
+    "last_updated": "2026-09-13T13:20:07.195293Z",
     "features": "Fuzzy matching (0.45 threshold), Property search, System search, Keyword search",
     "notes": "Enhanced with searchable properties. Ayurveda: 355, Materia Medica: 120"
   },
@@ -7550,6 +7550,44 @@
       "source": "materia-medica-github",
       "tradition": "Western Herbalism",
       "search_key": "yellowdock"
+    },
+    {
+      "id": 2159,
+      "name": "Japanese Knotweed",
+      "latin_name": "Reynoutria japonica",
+      "tradition": "Western Herbalism",
+      "summary": "Aggressive detoxifier and anti-inflammatory herb traditionally used for Lyme disease, joint inflammation, and systemic detoxification",
+      "status": "insufficient_data",
+      "systems": [
+        "detoxification",
+        "anti-inflammatory",
+        "circulation"
+      ],
+      "properties": [
+        "anti-inflammatory",
+        "antibiotic",
+        "detoxifying",
+        "astringent"
+      ]
+    },
+    {
+      "id": 2162,
+      "name": "Eluthero",
+      "latin_name": "Eleutherococcus senticosus",
+      "tradition": "TCM",
+      "summary": "Adaptogenic root herb for stress resilience and energy support similar to ginseng",
+      "status": "insufficient_data",
+      "systems": [
+        "energy",
+        "stress",
+        "immune"
+      ],
+      "properties": [
+        "adaptogen",
+        "energizing",
+        "immune support",
+        "stress"
+      ]
     }
   ]
 }
