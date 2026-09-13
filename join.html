@@ -692,6 +692,14 @@ const SUPABASE_URL = 'https://fspofcdsraldxnnqqyfn.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_iGOFOZLHE4h5jBjl9i3BuQ_Cu7nYDVg';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// If we land here with a just-confirmed session (from the email link),
+// skip the signup form entirely and go straight to the profile.
+sb.auth.getSession().then(({ data }) => {
+  if (data.session) {
+    window.location.href = 'profile.html';
+  }
+});
+
 function showSignupError(msg) {
   let el = document.getElementById('signup-error');
   if (!el) {
@@ -729,7 +737,8 @@ async function handleSignup() {
       data: {
         username: username || undefined,
         display_name: displayName || undefined
-      }
+      },
+      emailRedirectTo: 'https://collectiveherbal.netlify.app/join.html'
     }
   });
 
