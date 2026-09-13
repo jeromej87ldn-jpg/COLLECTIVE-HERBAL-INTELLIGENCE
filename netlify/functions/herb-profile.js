@@ -261,6 +261,11 @@ exports.handler = async (event) => {
       // Fall through to generation logic below
     }
 
+    // VALIDATION TEMPORARILY DISABLED (Sept 13, 2026)
+    // Allowing all items to generate profiles. Re-apply validation as exception
+    // only for items that genuinely cannot produce herbal content.
+    // Original validation check kept below for reference / re-enablement:
+    /*
     let isHerb = true;
     try {
       const check = await anthropic.messages.create({
@@ -294,6 +299,8 @@ Answer ONLY "yes" or "no", nothing else.`
         })
       };
     }
+    */
+    // END DISABLED VALIDATION
 
     const herb = await requestProfile(anthropic, name);
 

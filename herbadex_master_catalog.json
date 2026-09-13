@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "total_herbs": 678,
+    "total_herbs": 612,
     "version": "2.1.0",
     "date_consolidated": "2026-09-05T22:16:54.548Z",
     "last_updated": "2026-09-13T13:20:07.195293Z",
@@ -30,14 +30,6 @@
       "latin_name": "Withania somnifera",
       "tradition": "Ayurveda",
       "summary": "Adaptogenic herb for stress resilience and nervous system support",
-      "status": "insufficient_data"
-    },
-    {
-      "id": 4,
-      "name": "Licorice",
-      "latin_name": "Glycyrrhiza glabra",
-      "tradition": "TCM",
-      "summary": "Sweet root herb for digestive support and respiratory health",
       "status": "insufficient_data"
     },
     {
@@ -73,14 +65,6 @@
       "status": "insufficient_data"
     },
     {
-      "id": 9,
-      "name": "Milk Thistle",
-      "latin_name": "Silybum marianum",
-      "tradition": "Western Herbalism",
-      "summary": "Liver-supporting seed herb for detoxification and cellular health",
-      "status": "insufficient_data"
-    },
-    {
       "id": 10,
       "name": "Peppermint",
       "latin_name": "Mentha piperita",
@@ -105,14 +89,6 @@
       "status": "insufficient_data"
     },
     {
-      "id": 603,
-      "name": "Lemongrass",
-      "latin_name": "Cymbopogon citratus",
-      "tradition": "Southeast Asian",
-      "summary": "Lemony herb traditionally used for digestion and nervous system support",
-      "status": "insufficient_data"
-    },
-    {
       "id": 604,
       "name": "Holy Basil",
       "latin_name": "Ocimum sanctum",
@@ -126,14 +102,6 @@
       "latin_name": "Curcuma domestica",
       "tradition": "Southeast Asian",
       "summary": "Fresh turmeric root with enhanced bioavailability and anti-inflammatory power",
-      "status": "insufficient_data"
-    },
-    {
-      "id": 681,
-      "name": "Mango Bark",
-      "latin_name": "Mangifera indica",
-      "tradition": "Caribbean",
-      "summary": "Bark traditionally used in Caribbean herbalism for digestion and skin health",
       "status": "insufficient_data"
     },
     {
@@ -201,14 +169,6 @@
       "status": "insufficient_data"
     },
     {
-      "id": 901,
-      "name": "Coconut Oil",
-      "latin_name": "Cocos nucifera",
-      "tradition": "Global",
-      "summary": "Versatile oil used traditionally for skin and digestive health",
-      "status": "insufficient_data"
-    },
-    {
       "id": 902,
       "name": "Frankincense",
       "latin_name": "Boswellia carterii",
@@ -265,35 +225,11 @@
       "status": "insufficient_data"
     },
     {
-      "id": 1051,
-      "name": "Goji Berry",
-      "latin_name": "Lycium barbarum",
-      "tradition": "TCM",
-      "summary": "Immune-supporting berry traditionally used for vitality and vision",
-      "status": "insufficient_data"
-    },
-    {
       "id": 1052,
       "name": "Astragalus",
       "latin_name": "Astragalus membranaceus",
       "tradition": "TCM",
       "summary": "Immune-fortifying root used in TCM for stamina and vitality",
-      "status": "insufficient_data"
-    },
-    {
-      "id": 1053,
-      "name": "Reishi",
-      "latin_name": "Ganoderma lucidum",
-      "tradition": "TCM",
-      "summary": "Medicinal mushroom for stress resilience and sleep support",
-      "status": "insufficient_data"
-    },
-    {
-      "id": 1054,
-      "name": "Cordyceps",
-      "latin_name": "Cordyceps sinensis",
-      "tradition": "TCM",
-      "summary": "Energy-enhancing fungus traditionally used for stamina and athletic performance",
       "status": "insufficient_data"
     },
     {
@@ -358,14 +294,6 @@
       "latin_name": "Tabebuia impetiginosa",
       "tradition": "South American",
       "summary": "Antifungal and antimicrobial bark traditionally used for immune support",
-      "status": "insufficient_data"
-    },
-    {
-      "id": 1253,
-      "name": "Camu Camu",
-      "latin_name": "Myrciaria dubia",
-      "tradition": "South American",
-      "summary": "Vitamin C powerhouse berry from Amazon for immune support",
       "status": "insufficient_data"
     },
     {
@@ -481,14 +409,6 @@
       "status": "insufficient_data"
     },
     {
-      "id": 1508,
-      "name": "Barberry",
-      "latin_name": "Berberis aquifolium",
-      "tradition": "Western Herbalism",
-      "summary": "Oregon grape - liver and skin support herb",
-      "status": "insufficient_data"
-    },
-    {
       "id": 1509,
       "name": "Berberine Extract",
       "latin_name": "Extracted from Berberis spp.",
@@ -521,14 +441,6 @@
       "status": "insufficient_data"
     },
     {
-      "id": 1513,
-      "name": "Blueberry",
-      "latin_name": "Vaccinium myrtillus",
-      "tradition": "Western Herbalism",
-      "summary": "Antioxidant berry for vision and cognitive support",
-      "status": "insufficient_data"
-    },
-    {
       "id": 1514,
       "name": "Boneset",
       "latin_name": "Eupatorium perfoliatum",
@@ -550,22 +462,6 @@
       "latin_name": "Arctium lappa",
       "tradition": "TCM",
       "summary": "Root vegetable herb traditionally used for blood purification and detox",
-      "status": "insufficient_data"
-    },
-    {
-      "id": 1517,
-      "name": "Butterbur",
-      "latin_name": "Petasites hybridus",
-      "tradition": "European Folk",
-      "summary": "Historically used for respiratory support and migraine relief",
-      "status": "insufficient_data"
-    },
-    {
-      "id": 1518,
-      "name": "Cacao",
-      "latin_name": "Theobroma cacao",
-      "tradition": "Central American",
-      "summary": "Mood-enhancing superfood with cardiovascular supporting properties",
       "status": "insufficient_data"
     },
     {
@@ -617,27 +513,11 @@
       "status": "insufficient_data"
     },
     {
-      "id": 1526,
-      "name": "Celery Seed",
-      "latin_name": "Apium graveolens",
-      "tradition": "Western Herbalism",
-      "summary": "Aromatic seed traditionally used for joint and kidney support",
-      "status": "insufficient_data"
-    },
-    {
       "id": 1527,
       "name": "Centaury",
       "latin_name": "Centaurium erythraea",
       "tradition": "European Folk",
       "summary": "Bitter herb traditionally used for digestion and liver support",
-      "status": "insufficient_data"
-    },
-    {
-      "id": 1528,
-      "name": "Chaga",
-      "latin_name": "Inonotus obliquus",
-      "tradition": "Siberian",
-      "summary": "Immune-supporting mushroom growing on birch trees",
       "status": "insufficient_data"
     },
     {
@@ -657,14 +537,6 @@
       "status": "insufficient_data"
     },
     {
-      "id": 1531,
-      "name": "Chantarelle",
-      "latin_name": "Cantharellus spp.",
-      "tradition": "Global",
-      "summary": "Culinary mushroom with immune-supporting properties",
-      "status": "insufficient_data"
-    },
-    {
       "id": 1532,
       "name": "Chapparal",
       "latin_name": "Larrea tridentata",
@@ -678,14 +550,6 @@
       "latin_name": "Activated carbon",
       "tradition": "Western",
       "summary": "Binding agent traditionally used for detoxification support",
-      "status": "insufficient_data"
-    },
-    {
-      "id": 1534,
-      "name": "Chaste Tree",
-      "latin_name": "Vitex agnus-castus",
-      "tradition": "European Folk",
-      "summary": "Hormone-balancing berry for women's reproductive health",
       "status": "insufficient_data"
     },
     {
@@ -745,14 +609,6 @@
       "status": "insufficient_data"
     },
     {
-      "id": 1542,
-      "name": "Chokeberry",
-      "latin_name": "Aronia melanocarpa",
-      "tradition": "Native American",
-      "summary": "Antioxidant berry for immune and cardiovascular support",
-      "status": "insufficient_data"
-    },
-    {
       "id": 1543,
       "name": "Chrysanthemum",
       "latin_name": "Chrysanthemum morifolium",
@@ -798,14 +654,6 @@
       "latin_name": "Lycopodium spp.",
       "tradition": "Asian Traditional",
       "summary": "Ancient plant traditionally used for energy and cognition",
-      "status": "insufficient_data"
-    },
-    {
-      "id": 1549,
-      "name": "Cocoa",
-      "latin_name": "Theobroma cacao",
-      "tradition": "Central American",
-      "summary": "Mood-enhancing superfood with cardiovascular benefits",
       "status": "insufficient_data"
     },
     {
@@ -865,22 +713,6 @@
       "status": "insufficient_data"
     },
     {
-      "id": 1557,
-      "name": "Corn Silk",
-      "latin_name": "Zea mays",
-      "tradition": "Native American",
-      "summary": "Diuretic herb traditionally used for urinary and kidney support",
-      "status": "insufficient_data"
-    },
-    {
-      "id": 1558,
-      "name": "Cornus",
-      "latin_name": "Cornus officinalis",
-      "tradition": "TCM",
-      "summary": "Berry traditionally used for kidney and adrenal support",
-      "status": "insufficient_data"
-    },
-    {
       "id": 1559,
       "name": "Corydalis",
       "latin_name": "Corydalis yanhusuo",
@@ -902,14 +734,6 @@
       "latin_name": "Sesamum indicum var. nigrum",
       "tradition": "TCM",
       "summary": "Nutrient-dense black seeds used to support bone health, kidney function, and overall vitality",
-      "status": "verified"
-    },
-    {
-      "id": 2002,
-      "name": "Pumpkin Seeds",
-      "latin_name": "Cucurbita pepo",
-      "tradition": "Traditional",
-      "summary": "Rich in minerals and antioxidants, traditionally used for prostate support and immune function",
       "status": "verified"
     },
     {
@@ -1001,14 +825,6 @@
       "status": "verified"
     },
     {
-      "id": 2014,
-      "name": "Grape Seed",
-      "latin_name": "Vitis vinifera",
-      "tradition": "Traditional",
-      "summary": "Antioxidant-rich extract used for cardiovascular support and antioxidant protection",
-      "status": "verified"
-    },
-    {
       "id": 2015,
       "name": "Caraway Seeds",
       "latin_name": "Carum carvi",
@@ -1041,182 +857,6 @@
       "status": "verified"
     },
     {
-      "id": 2020,
-      "name": "Shiitake",
-      "latin_name": "Lentinula edodes",
-      "tradition": "TCM",
-      "summary": "Nutrient-dense mushroom with immune-supporting compounds and cardiovascular benefits",
-      "status": "verified"
-    },
-    {
-      "id": 2021,
-      "name": "Maitake",
-      "latin_name": "Grifola frondosa",
-      "tradition": "TCM",
-      "summary": "Medicinal mushroom used to support immune function and overall vitality",
-      "status": "verified"
-    },
-    {
-      "id": 2024,
-      "name": "Lion's Mane",
-      "latin_name": "Hericium erinaceus",
-      "tradition": "TCM",
-      "summary": "Brain-supporting medicinal mushroom for cognitive function and nervous system health",
-      "status": "verified"
-    },
-    {
-      "id": 2025,
-      "name": "Turkey Tail",
-      "latin_name": "Trametes versicolor",
-      "tradition": "TCM",
-      "summary": "Immune-supporting mushroom with polysaccharide compounds for digestive and gut health",
-      "status": "verified"
-    },
-    {
-      "id": 2026,
-      "name": "Oyster Mushroom",
-      "latin_name": "Pleurotus species",
-      "tradition": "Traditional",
-      "summary": "Medicinal culinary mushroom with immune and antioxidant properties",
-      "status": "verified"
-    },
-    {
-      "id": 2027,
-      "name": "Cremini Mushroom",
-      "latin_name": "Agaricus bisporus",
-      "tradition": "Traditional",
-      "summary": "Common medicinal mushroom variety with B vitamins and antioxidant support",
-      "status": "verified"
-    },
-    {
-      "id": 2028,
-      "name": "Portobello Mushroom",
-      "latin_name": "Agaricus bisporus",
-      "tradition": "Traditional",
-      "summary": "Mature medicinal mushroom variety rich in selenium and antioxidants",
-      "status": "verified"
-    },
-    {
-      "id": 2029,
-      "name": "Button Mushroom",
-      "latin_name": "Agaricus bisporus",
-      "tradition": "Western",
-      "summary": "Nutrient-rich medicinal mushroom with immune-supporting and anti-inflammatory compounds",
-      "status": "verified"
-    },
-    {
-      "id": 2030,
-      "name": "Enoki Mushroom",
-      "latin_name": "Flammulina velutipes",
-      "tradition": "TCM",
-      "summary": "Delicate medicinal mushroom used for immune support and nutritional benefits",
-      "status": "verified"
-    },
-    {
-      "id": 2031,
-      "name": "Porcini Mushroom",
-      "latin_name": "Boletus edulis",
-      "tradition": "European",
-      "summary": "Nutrient-dense medicinal mushroom with immune and inflammation-supporting properties",
-      "status": "verified"
-    },
-    {
-      "id": 2032,
-      "name": "Morel Mushroom",
-      "latin_name": "Morchella species",
-      "tradition": "European Folk",
-      "summary": "Delicacy mushroom with antioxidant compounds and nutritional value",
-      "status": "verified"
-    },
-    {
-      "id": 2033,
-      "name": "Chanterelle Mushroom",
-      "latin_name": "Cantharellus cibarius",
-      "tradition": "European",
-      "summary": "Golden medicinal mushroom with immune-supporting and antioxidant properties",
-      "status": "verified"
-    },
-    {
-      "id": 2034,
-      "name": "Agarikon",
-      "latin_name": "Fomitopsis officinalis",
-      "tradition": "Western Herbalism",
-      "summary": "Ancient medicinal mushroom traditionally used for respiratory and immune support",
-      "status": "verified"
-    },
-    {
-      "id": 2035,
-      "name": "Artist's Conk",
-      "latin_name": "Ganoderma applanatum",
-      "tradition": "Western Herbalism",
-      "summary": "Medicinal bracket mushroom traditionally used for immune and digestive support",
-      "status": "verified"
-    },
-    {
-      "id": 2036,
-      "name": "Wood Ear Mushroom",
-      "latin_name": "Auricularia polytricha",
-      "tradition": "TCM",
-      "summary": "Gelatinous medicinal mushroom used for circulation support and blood vitality",
-      "status": "verified"
-    },
-    {
-      "id": 2037,
-      "name": "Mesima Mushroom",
-      "latin_name": "Phellinus linteus",
-      "tradition": "TCM",
-      "summary": "Medicinal mushroom traditionally used for immune support and cellular health",
-      "status": "verified"
-    },
-    {
-      "id": 2038,
-      "name": "Hydnum Repandum",
-      "latin_name": "Hydnum repandum",
-      "tradition": "European Folk",
-      "summary": "Lesser-known medicinal mushroom with antioxidant and immune-supporting properties",
-      "status": "verified"
-    },
-    {
-      "id": 2040,
-      "name": "Acai Berry",
-      "latin_name": "Euterpe oleracea",
-      "tradition": "Amazonian",
-      "summary": "Antioxidant-rich superfruit berry traditionally used for vitality and longevity",
-      "status": "verified"
-    },
-    {
-      "id": 2042,
-      "name": "Blackberry",
-      "latin_name": "Rubus fruticosus",
-      "tradition": "European Folk",
-      "summary": "Nutrient-dense berry with immune and antioxidant properties",
-      "status": "verified"
-    },
-    {
-      "id": 2043,
-      "name": "Raspberry",
-      "latin_name": "Rubus idaeus",
-      "tradition": "Western Herbalism",
-      "summary": "Delicate berry traditionally used for women's health and vitamin C support",
-      "status": "verified"
-    },
-    {
-      "id": 2044,
-      "name": "Cranberry",
-      "latin_name": "Vaccinium macrocarpon",
-      "tradition": "Native American",
-      "summary": "Tart berry traditionally used for urinary tract health and antioxidant support",
-      "status": "verified"
-    },
-    {
-      "id": 2045,
-      "name": "Mulberry",
-      "latin_name": "Morus alba",
-      "tradition": "TCM",
-      "summary": "Sweet medicinal berry used for blood nourishment and immune support",
-      "status": "verified"
-    },
-    {
       "id": 2046,
       "name": "Sea Buckthorn",
       "latin_name": "Hippophae rhamnoides",
@@ -1233,67 +873,11 @@
       "status": "verified"
     },
     {
-      "id": 2048,
-      "name": "Aronia Berry",
-      "latin_name": "Aronia melanocarpa",
-      "tradition": "Eastern European Folk",
-      "summary": "Tart superfruit berry with exceptional antioxidant and immune-supporting compounds",
-      "status": "verified"
-    },
-    {
-      "id": 2049,
-      "name": "Hawthorn Berry",
-      "latin_name": "Crataegus laevigata",
-      "tradition": "European Herbalism",
-      "summary": "Heart-supporting berry traditionally used for cardiovascular health and vitality",
-      "status": "verified"
-    },
-    {
-      "id": 2050,
-      "name": "Elderberry",
-      "latin_name": "Sambucus nigra",
-      "tradition": "European Folk",
-      "summary": "Immune-supporting medicinal berry traditionally used during cold and flu season",
-      "status": "verified"
-    },
-    {
-      "id": 2051,
-      "name": "Bilberry",
-      "latin_name": "Vaccinium myrtillus",
-      "tradition": "Scandinavian",
-      "summary": "Dark berries used for eye health, circulation, and antioxidant support",
-      "status": "verified"
-    },
-    {
-      "id": 2052,
-      "name": "Schisandra Berry",
-      "latin_name": "Schisandra chinensis",
-      "tradition": "TCM",
-      "summary": "Five-flavored adaptogenic berry for stress resilience, energy, and liver support",
-      "status": "verified"
-    },
-    {
-      "id": 2053,
-      "name": "Maqui Berry",
-      "latin_name": "Aristotelia chilensis",
-      "tradition": "Andean",
-      "summary": "Purple superfruit with polyphenol compounds for antioxidant and anti-inflammatory support",
-      "status": "verified"
-    },
-    {
       "id": 2054,
       "name": "Noni Fruit",
       "latin_name": "Morinda citrifolia",
       "tradition": "Polynesian",
       "summary": "Tropical superfruit traditionally used for immune support and overall wellness",
-      "status": "verified"
-    },
-    {
-      "id": 2055,
-      "name": "Mangosteen",
-      "latin_name": "Garcinia mangostana",
-      "tradition": "Ayurvedic",
-      "summary": "Tropical queen fruit with xanthone compounds for antioxidant and immune support",
       "status": "verified"
     },
     {
@@ -1513,22 +1097,6 @@
       "status": "verified"
     },
     {
-      "id": 2134,
-      "name": "Wheatgrass",
-      "latin_name": "Triticum aestivum",
-      "tradition": "Western Herbalism",
-      "summary": "Young wheat plant juice with chlorophyll for detox and immune boost",
-      "status": "verified"
-    },
-    {
-      "id": 2135,
-      "name": "Barley Grass",
-      "latin_name": "Hordeum vulgare",
-      "tradition": "Japanese",
-      "summary": "Green grass powder with enzymes and antioxidants for vitality",
-      "status": "verified"
-    },
-    {
       "id": 2136,
       "name": "Kelp",
       "latin_name": "Laminaria japonica",
@@ -1606,14 +1174,6 @@
       "latin_name": "Viola tricolor",
       "tradition": "European Folk",
       "summary": "Colorful flower traditionally used for skin and respiratory support",
-      "status": "verified"
-    },
-    {
-      "id": 2158,
-      "name": "Cornflower",
-      "latin_name": "Centaurea cyanus",
-      "tradition": "European",
-      "summary": "Bright blue flower for eye health and anti-inflammatory support",
       "status": "verified"
     },
     {
@@ -5543,19 +5103,6 @@
       "systems": "nervous,immune,digestive"
     },
     {
-      "name": "Kalamba",
-      "latin": "Ipomoea aquatica",
-      "english_name": "Water Spinach",
-      "search_key": "kalamba",
-      "family": "Convolvulaceae",
-      "status": "insufficient_data",
-      "source": "amidha-ayurveda-github",
-      "tradition": "Ayurveda",
-      "sanskrit_synonyms": [],
-      "properties": "Ayurvedic remedy, Traditional medicine, Medicinal herb (Convolvulaceae)",
-      "systems": "nervous,immune,digestive"
-    },
-    {
       "name": "Kakatikta",
       "latin": "Luffa amara",
       "english_name": "Wild Bitter Luffa",
@@ -6397,17 +5944,6 @@
       "search_key": "butcher'sbroom"
     },
     {
-      "name": "Butternut",
-      "latin": "Juglans cinerea",
-      "family": "Juglandaceae (Walnut family)",
-      "systems": "digestive",
-      "properties": "Laxative",
-      "status": "insufficient_data",
-      "source": "materia-medica-github",
-      "tradition": "Western Herbalism",
-      "search_key": "butternut"
-    },
-    {
       "name": "Cayenne",
       "latin": "Capsicum minimum and related species",
       "family": "Solanaceae (Nightshade family)",
@@ -6505,17 +6041,6 @@
       "source": "materia-medica-github",
       "tradition": "Western Herbalism",
       "search_key": "cordyceps"
-    },
-    {
-      "name": "Cornsilk",
-      "latin": "Zea mays",
-      "family": "Poaceae (Grass family)",
-      "systems": "urinary",
-      "properties": "Anti-inflammatory (urinary), Emollient",
-      "status": "insufficient_data",
-      "source": "materia-medica-github",
-      "tradition": "Western Herbalism",
-      "search_key": "cornsilk"
     },
     {
       "name": "Couch Grass",
@@ -6639,17 +6164,6 @@
       "search_key": "eyebright"
     },
     {
-      "name": "False Unicorn Root",
-      "latin": "Chamaelirium luteum",
-      "family": "Melanthiaceae (False hellebore family)",
-      "systems": "woman-reproductive",
-      "properties": "Woman tonic, Uterine tonic, Emmenagogue, Estrogen regulating",
-      "status": "insufficient_data",
-      "source": "materia-medica-github",
-      "tradition": "Western Herbalism",
-      "search_key": "falseunicornroot"
-    },
-    {
       "name": "Gentian",
       "latin": "Gentiana lutea",
       "family": "Gentianaceae (Gentian family)",
@@ -6681,17 +6195,6 @@
       "source": "materia-medica-github",
       "tradition": "Western Herbalism",
       "search_key": "goat'srue"
-    },
-    {
-      "name": "Golden Oyster Mushroom",
-      "latin": "Pleurotus citrinopileatus",
-      "family": "Pleurotaceae (Mushroom)",
-      "systems": "immune",
-      "properties": "Antioxidant, Immunomodulating, Aldose reductase inhibitor, Antibacterial, Anticancer preventive, Antidepressant, Anti-inflammatory (general), Anti-inflammatory (musculoskeletal), Anti-inflammatory (brain), Anti-inflammatory (cardiovascular), Anti-inflammatory (digestive/mucous membranes/skin), Anti-inflammatory (external), Antimicrobial, Sedative, Connective tissue strengthening, Blood pressure regulating, Blood pressure lowering, Heart tonic, Hypnotic, Nerve tonic, Antiparasitic, Antifungal",
-      "status": "insufficient_data",
-      "source": "materia-medica-github",
-      "tradition": "Western Herbalism",
-      "search_key": "goldenoystermushroom"
     },
     {
       "name": "Goldenrod",
@@ -6892,17 +6395,6 @@
       "search_key": "lavender"
     },
     {
-      "name": "Lemon Balm",
-      "latin": "Melissa officinalis",
-      "family": "Lamiaceae (Mint family)",
-      "systems": "nervous, digestive, skin",
-      "properties": "Antiviral (external), Carminative, Sedative, Antispasmodic, Hypnotic, Diaphoretic",
-      "status": "insufficient_data",
-      "source": "materia-medica-github",
-      "tradition": "Western Herbalism",
-      "search_key": "lemonbalm"
-    },
-    {
       "name": "Ligustrum",
       "latin": "Ligustrum lucidum",
       "family": "Oleaceae (Olive family)",
@@ -7057,17 +6549,6 @@
       "search_key": "oregano"
     },
     {
-      "name": "Oregon Grape",
-      "latin": "Berberis aquifolium and related species",
-      "family": "Berberidaceae (Barberry family)",
-      "systems": "digestive",
-      "properties": "Blood purifier, Choleretic, Anti-inflammatory (respiratory), Anti-inflammatory (digestive/mucous membranes/skin), Antimicrobial, Bitter tonic, Cholagogue",
-      "status": "insufficient_data",
-      "source": "materia-medica-github",
-      "tradition": "Western Herbalism",
-      "search_key": "oregongrape"
-    },
-    {
       "name": "Parsley Root",
       "latin": "Petroselinum crispum",
       "family": "Apiaceae (Carrot family)",
@@ -7077,17 +6558,6 @@
       "source": "materia-medica-github",
       "tradition": "Western Herbalism",
       "search_key": "parsleyroot"
-    },
-    {
-      "name": "Partridgeberry",
-      "latin": "Mitchella repens",
-      "family": "Rubiaceae (Coffee family)",
-      "systems": "woman-reproductive",
-      "properties": "Astringent, Uterine relaxant, Uterine contracting, Galactagogue, Uterine tonic",
-      "status": "insufficient_data",
-      "source": "materia-medica-github",
-      "tradition": "Western Herbalism",
-      "search_key": "partridgeberry"
     },
     {
       "name": "Passionflower",
@@ -7222,17 +6692,6 @@
       "search_key": "purplewillow"
     },
     {
-      "name": "Raspberry Leaf",
-      "latin": "Rubus idaeus",
-      "family": "Rosaceae (Rose family)",
-      "systems": "woman-reproductive",
-      "properties": "Astringent, Emmenagogue, Uterine contracting, Galactagogue, Anti-inflammatory (female reproductive)",
-      "status": "insufficient_data",
-      "source": "materia-medica-github",
-      "tradition": "Western Herbalism",
-      "search_key": "raspberryleaf"
-    },
-    {
       "name": "Rehmannia",
       "latin": "Rehmannia glutinosa",
       "family": "Orobanchaceae (Broomrape family)",
@@ -7242,17 +6701,6 @@
       "source": "materia-medica-github",
       "tradition": "Western Herbalism",
       "search_key": "rehmannia"
-    },
-    {
-      "name": "Reishi Mushroom",
-      "latin": "Ganoderma lucidum",
-      "family": "Ganodermataceae (Mushroom)",
-      "systems": "immune, respiratory, nervous, endocrine",
-      "properties": "Adaptogen, Aldose reductase inhibitor, Antiallergic, Antibacterial, Anticancer preventive, Antidepressant, Anti-inflammatory (general), Anti-inflammatory (respiratory), Anti-inflammatory (digestive/mucous membranes/skin), Antimicrobial, Antioxidant, Antiviral (internal), Blood pressure regulating, Blood pressure lowering, Bronchial spasmolytic, Choleretic, Cholesterol lowering, Immunomodulating, Hepatoprotective, Mucous membrane strengthening, Mucous membrane tonic, Mucostatic (lower respiratory), Nerve tonic, Tonic, Vasodilator, Mucostatic (upper respiratory)",
-      "status": "insufficient_data",
-      "source": "materia-medica-github",
-      "tradition": "Western Herbalism",
-      "search_key": "reishimushroom"
     },
     {
       "name": "Rhodiola",
@@ -7330,17 +6778,6 @@
       "source": "materia-medica-github",
       "tradition": "Western Herbalism",
       "search_key": "shepherd'spurse"
-    },
-    {
-      "name": "Shiitake Mushroom",
-      "latin": "Lentinula edodes",
-      "family": "Marasmiaceae (Mushroom)",
-      "systems": "immune",
-      "properties": "Immunomodulating, Anticancer preventive, Cholesterol lowering, Antiviral",
-      "status": "insufficient_data",
-      "source": "materia-medica-github",
-      "tradition": "Western Herbalism",
-      "search_key": "shiitakemushroom"
     },
     {
       "name": "Siberian Ginseng",
