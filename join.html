@@ -497,29 +497,28 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
           </div>
         </label>
 
-        <label class="plan-tab" id="tab-monthly" onclick="selectPlan('monthly')">
-          <input type="radio" name="plan" value="monthly">
+        <label class="plan-tab" id="tab-monthly" style="opacity:.4;cursor:not-allowed;position:relative;">
+          <input type="radio" name="plan" value="monthly" disabled>
           <div class="plan-tab-inner">
             <span class="plan-tab-name">Monthly</span>
             <span class="plan-tab-price">£9</span>
-            <span class="plan-tab-period">per month</span>
+            <span class="plan-tab-period">Coming soon</span>
           </div>
         </label>
 
-        <label class="plan-tab" id="tab-annual" onclick="selectPlan('annual')">
-          <input type="radio" name="plan" value="annual">
+        <label class="plan-tab" id="tab-annual" style="opacity:.4;cursor:not-allowed;position:relative;">
+          <input type="radio" name="plan" value="annual" disabled>
           <div class="plan-tab-inner">
             <span class="plan-tab-name">Annual</span>
             <span class="plan-tab-price">£75</span>
-            <span class="plan-tab-period">per year</span>
-            <span class="plan-tab-save">Save £33</span>
+            <span class="plan-tab-period">Coming soon</span>
           </div>
         </label>
 
       </div>
 
       <div class="plan-detail free-detail" id="plan-detail">
-        <span class="highlight">100 seeds on signup</span> — use them across all three CHI tools. <strong>Every week, 5 minutes of full unlimited access</strong> so you can experience what membership feels like. Seeds you purchase never expire.
+        <span class="highlight">100 seeds on signup</span> — use them across all three CHI tools. Paid plans are launching soon — free accounts are fully live today.
       </div>
     </div>
 
@@ -567,21 +566,20 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
           <span class="seed-price">Free</span>
           <span class="seed-ppp">Signup seeds</span>
         </label>
-        <label class="seed-option" onclick="selectSeed(this, '500')">
-          <input type="radio" name="seeds" value="500">
+        <label class="seed-option" style="opacity:.4;cursor:not-allowed;">
+          <input type="radio" name="seeds" value="500" disabled>
           <span class="seed-amount">500</span>
-          <span class="seed-price">£5</span>
-          <span class="seed-ppp">1p per seed</span>
+          <span class="seed-price">Coming soon</span>
+          <span class="seed-ppp">Seed purchases launching soon</span>
         </label>
-        <label class="seed-option" onclick="selectSeed(this, '1000')">
-          <div class="seed-badge">Best value</div>
-          <input type="radio" name="seeds" value="1000">
+        <label class="seed-option" style="opacity:.4;cursor:not-allowed;">
+          <input type="radio" name="seeds" value="1000" disabled>
           <span class="seed-amount">1,000</span>
-          <span class="seed-price">£10</span>
-          <span class="seed-ppp">Or subscribe for £9/mo</span>
+          <span class="seed-price">Coming soon</span>
+          <span class="seed-ppp">Seed purchases launching soon</span>
         </label>
       </div>
-      <div style="font-size:11px;color:rgba(245,240,232,0.28);margin-top:.65rem;line-height:1.6;">Free seeds expire after 32 days. Seeds you purchase never expire — they stay until you use them.</div>
+      <div style="font-size:11px;color:rgba(245,240,232,0.28);margin-top:.65rem;line-height:1.6;">Free seeds expire after 32 days. Paid seed top-ups are launching soon.</div>
     </div>
 
     <!-- LEGAL -->
@@ -623,6 +621,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 let currentPlan = 'free';
 
@@ -689,15 +688,66 @@ function checkSubmit() {
   btn.style.cursor = ok ? 'pointer' : 'not-allowed';
 }
 
-function handleSignup() {
+const SUPABASE_URL = 'https://fspofcdsraldxnnqqyfn.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_iGOFOZLHE4h5jBjl9i3BuQ_Cu7nYDVg';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+function showSignupError(msg) {
+  let el = document.getElementById('signup-error');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'signup-error';
+    el.style.cssText = 'color:#e8856a;font-size:12px;margin-top:.75rem;line-height:1.6;';
+    document.getElementById('submit-btn').insertAdjacentElement('beforebegin', el);
+  }
+  el.textContent = msg;
+}
+
+async function handleSignup() {
   const btn = document.getElementById('submit-btn');
   const text = document.getElementById('btn-text');
+
+  const displayName = document.querySelector('input[placeholder="Your name"]').value.trim();
+  let username = document.querySelector('input[placeholder="@username"]').value.trim();
+  username = username.replace(/^@/, '');
+  const email = document.getElementById('email-input').value.trim();
+  const password = document.getElementById('password-input').value;
+
+  if (password.length < 8) {
+    showSignupError('Password must be at least 8 characters.');
+    return;
+  }
+
   btn.disabled = true;
   text.textContent = 'Creating your account...';
-  // In production — call Supabase auth here
-  setTimeout(() => {
+  showSignupError('');
+
+  const { data, error } = await sb.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        username: username || undefined,
+        display_name: displayName || undefined
+      }
+    }
+  });
+
+  if (error) {
+    btn.disabled = false;
+    text.textContent = 'Create my account';
+    showSignupError(error.message);
+    return;
+  }
+
+  if (data.session) {
+    // Signed in immediately (email confirmation disabled)
     window.location.href = 'profile.html';
-  }, 1500);
+  } else {
+    // Email confirmation required before they can sign in
+    text.textContent = 'Check your email';
+    showSignupError('We sent a confirmation link to ' + email + ' — click it to activate your account, then sign in.');
+  }
 }
 
 // Initialise
