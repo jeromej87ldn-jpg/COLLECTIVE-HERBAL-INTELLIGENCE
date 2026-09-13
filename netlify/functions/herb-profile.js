@@ -285,19 +285,34 @@ exports.handler = async (event) => {
       'vegetable_staple'
     ];
 
-    const itemType = catalogInfo && catalogInfo.herb ? (catalogInfo.herb.type || 'unknown') : 'unknown';
+    // Direct blocklist — catches obvious non-herbal items even when they
+    // aren't in the catalog at all (so an "unknown" type can't slip through).
+    // Exact-word match only, to avoid false positives on compound herb names
+    // (e.g. "Turkey Rhubarb" must not match "turkey").
+    const NON_HERBAL_EXACT = [
+      'chicken','beef','pork','turkey','lamb','fish','salmon','tuna','shrimp','egg','eggs',
+      'rice','wheat','corn','oats','oat','barley','quinoa','rye','millet',
+      'potato','potatoes','onion','onions','garlic','tomato','tomatoes','lettuce','spinach','cabbage',
+      'milk','cheese','yogurt','butter','bread','pasta','sugar','salt'
+      // Extend this list as new false positives turn up
+    ];
 
-    if (BLOCKED_TYPES.includes(itemType)) {
+    const itemType = catalogInfo && catalogInfo.herb ? (catalogInfo.herb.type || 'unknown') : 'unknown';
+    const isBlockedByType = BLOCKED_TYPES.includes(itemType);
+    const isBlockedByName = NON_HERBAL_EXACT.includes(name);
+
+    if (isBlockedByType || isBlockedByName) {
       if (supabase) {
         supabase.from('herbs').delete().eq('name', name).then(
           () => {}, e => console.error('bad-cache cleanup failed:', e.message)
         );
       }
+      const reason = isBlockedByType ? itemType.replace(/_/g, ' ') : 'staple food';
       return {
         statusCode: 400,
         body: JSON.stringify({
           error: 'not_an_herb',
-          message: `"${herbName.trim()}" is categorized as a ${itemType.replace(/_/g, ' ')} — Herbadex only generates profiles for medicinal herbs, culinary herbs, and herbal products. If this is an herbal remedy, please use its herbal name.`
+          message: `"${herbName.trim()}" is categorized as a ${reason} — Herbadex only generates profiles for medicinal herbs, culinary herbs, and herbal products. If this is an herbal remedy, please use its herbal name.`
         })
       };
     }
