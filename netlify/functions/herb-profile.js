@@ -261,31 +261,33 @@ exports.handler = async (event) => {
       // Fall through to generation logic below
     }
 
-    // VALIDATION TEMPORARILY DISABLED (Sept 13, 2026)
-    // Allowing all items to generate profiles. Re-apply validation as exception
-    // only for items that genuinely cannot produce herbal content.
-    // Original validation check kept below for reference / re-enablement:
-    /*
-    let isHerb = true;
-    try {
-      const check = await anthropic.messages.create({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 10,
-        messages: [{
-          role: 'user',
-          content: `Is "${name}" primarily known and used as a medicinal herb, culinary herb/spice, or traditional herbal remedy plant (examples: ashwagandha, chamomile, turmeric, echinacea, ginger, rosemary)?
-Answer "no" if it is mainly a staple food eaten as a vegetable, fruit, grain, meat, or everyday produce item rather than for herbal/medicinal use (examples: cabbage, potato, chicken, apple, rice, lettuce) — even if it has a minor folk remedy use.
-Answer ONLY "yes" or "no", nothing else.`
-        }]
-      });
-      const verdictBlock = check.content.find(b => b.type === 'text');
-      const verdict = (verdictBlock && verdictBlock.text || '').trim().toLowerCase();
-      if (verdict.startsWith('no')) isHerb = false;
-    } catch (validationErr) {
-      console.error('Herb validation check failed, proceeding anyway:', validationErr.message);
-    }
+    // ── TYPE-BASED VALIDATION (Sept 13, 2026) ──
+    // Validate by item type field. Allowed types are medicinal categories.
+    // Blocked types are staple foods and non-medicinal items.
 
-    if (!isHerb) {
+    const ALLOWED_TYPES = [
+      'medicinal_herb',
+      'culinary_herb',
+      'medicinal_mushroom',
+      'spice',
+      'adaptogen',
+      'tonic_root',
+      'medicinal_berry',
+      'flower_herb',
+      'fruit'  // Low priority - medicinal fruits like goji, schisandra, etc.
+      // Easy to extend: just add new categories here as the database grows
+    ];
+
+    const BLOCKED_TYPES = [
+      'staple_food',
+      'meat',
+      'grain',
+      'vegetable_staple'
+    ];
+
+    const itemType = catalogInfo && catalogInfo.herb ? (catalogInfo.herb.type || 'unknown') : 'unknown';
+
+    if (BLOCKED_TYPES.includes(itemType)) {
       if (supabase) {
         supabase.from('herbs').delete().eq('name', name).then(
           () => {}, e => console.error('bad-cache cleanup failed:', e.message)
@@ -295,12 +297,15 @@ Answer ONLY "yes" or "no", nothing else.`
         statusCode: 400,
         body: JSON.stringify({
           error: 'not_an_herb',
-          message: `"${herbName.trim()}" doesn't look like a recognized herb, spice, or traditional herbal remedy plant — it reads more like a staple food item. Herbadex only generates profiles for herbal/medicinal plants. If this looks wrong, try the plant's common herbal name.`
+          message: `"${herbName.trim()}" is categorized as a ${itemType.replace(/_/g, ' ')} — Herbadex only generates profiles for medicinal herbs, culinary herbs, and herbal products. If this is an herbal remedy, please use its herbal name.`
         })
       };
     }
-    */
-    // END DISABLED VALIDATION
+
+    if (itemType === 'unknown') {
+      console.warn(`[WARNING] ${herbName} has unknown type — allowing profile generation. Update categorization if needed.`);
+    }
+    // END TYPE-BASED VALIDATION
 
     const herb = await requestProfile(anthropic, name);
 
