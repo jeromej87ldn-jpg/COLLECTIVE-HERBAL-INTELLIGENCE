@@ -83,6 +83,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .pmeta{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;margin:.5rem 0 .9rem;}
 .rank-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--gold-light);background:rgba(200,149,42,.12);border:1px solid rgba(200,149,42,.3);border-radius:999px;padding:.28rem .7rem;}
 .level-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--forest);background:var(--gold);border-radius:999px;padding:.28rem .7rem;}
+.seed-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.03em;color:#7acca0;background:rgba(74,140,101,.15);border:1px solid rgba(74,140,101,.3);border-radius:999px;padding:.28rem .7rem;}
+.seed-badge.premium{color:var(--gold-light);background:rgba(200,149,42,.15);border-color:rgba(200,149,42,.35);}
+.tier-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;border-radius:999px;padding:.28rem .75rem;}
+.tier-badge.free{color:rgba(245,240,232,.55);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);}
+.tier-badge.premium{color:var(--night);background:linear-gradient(135deg,var(--gold-light),var(--gold));border:1px solid var(--gold);}
+.premium-locked{position:relative;opacity:.55;filter:grayscale(.3);pointer-events:none;}
+.premium-lock-note{font-size:11.5px;color:rgba(245,240,232,.4);margin-top:.5rem;display:flex;align-items:center;gap:6px;}
+.premium-lock-note a{color:var(--gold-light);text-decoration:none;border-bottom:1px dashed rgba(200,149,42,.4);}
 .psince{font-size:12px;color:var(--muted);}
 .pbio{font-size:14.5px;line-height:1.7;color:rgba(245,240,232,.78);max-width:46ch;}
 .phead-journey{margin-top:1rem;max-width:340px;}
@@ -581,6 +589,14 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   </div>
   <span class="demo-note">Same profile, two perspectives — this bar wouldn't appear on the live site.</span>
 </div>
+<div class="demo-bar">
+  <span class="demo-label">Demo</span>
+  <div class="demo-toggle">
+    <button id="t-free" class="on" onclick="setTier('free')">Free tier</button>
+    <button id="t-premium" onclick="setTier('premium')">Premium tier</button>
+  </div>
+  <span class="demo-note">Previewing seeds, XP and what's unlocked at each tier — this bar wouldn't appear on the live site.</span>
+</div>
 
 <div class="wrap">
 
@@ -604,8 +620,11 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
       <div class="pmeta">
         <span class="level-badge" id="hdr-level">★ Level 5</span>
         <span class="rank-badge">🌿 <span id="hdr-rank">Sprout</span></span>
+        <span class="tier-badge" id="hdr-tier">Free</span>
+        <span class="seed-badge" id="hdr-seeds">🌰 84 seeds</span>
         <span class="psince">Member since March 2024</span>
       </div>
+      <div class="premium-lock-note" id="premium-upsell">🔒 Founding herbs and unlimited generations are a <a href="join.html">Premium</a> perk — £6.99/mo.</div>
       <div class="pbio">Kitchen-garden herbalist working through the nervines and adaptogens. Slow mornings, bitter teas, and a deep love of anything in the mint family.</div>
       <div class="phead-journey owner-only" id="phead-journey"></div>
     </div>
@@ -664,6 +683,19 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   <div class="panel" id="panel-ach">
     <div class="sec-sub">Complete tasks across CHI to earn XP and level up. Your level is a badge of how deep you've gone — into the herbs and into the community.</div>
     <div class="level-card" id="level-card"></div>
+
+    <div class="section premium-only" id="founder-card" style="margin:1.25rem 0;">
+      <div class="level-card" style="background:linear-gradient(150deg,rgba(200,149,42,.18),rgba(26,58,42,.2));">
+        <div style="font-size:32px;line-height:1;">🏆</div>
+        <div class="level-info">
+          <div class="level-rank">Become a Herbadex Founder</div>
+          <div class="level-sub">Submit a herb that's missing from Herbadex. Once the community corroborates it, it joins the main catalog — permanently credited to you as its founder.</div>
+          <button class="btn btn-ghost" style="margin-top:.5rem;" onclick="alert('Unclassified Herbal submission form — coming soon.')">Submit an unclassified herb</button>
+        </div>
+      </div>
+    </div>
+    <div class="premium-lock-note" id="founder-locked-note" style="margin:0 0 1.25rem;">🔒 Founding herbs is a <a href="join.html">Premium</a> perk. Free members can still <strong>corroborate</strong> other people's submissions and earn seeds for it.</div>
+
     <div class="ach-grid" id="ach-grid"></div>
   </div>
 
@@ -961,6 +993,46 @@ function levelInfo(){
   const rank = level >= 7 ? 'The Root' : level >= 4 ? 'Sprout' : 'Seed';
   const emoji = level >= 7 ? '🌳' : level >= 4 ? '🌿' : '🌱';
   return {xp, level, into, pct: Math.round(into/XP_PER_LEVEL*100), rank, emoji};
+}
+
+// ── SEEDS / TIER ──
+// Mock balance for the free-tier demo view. Premium never spends seeds, so
+// this number is irrelevant once tier === 'premium'.
+const MOCK_SEED_BALANCE = 84;
+const MOCK_SEED_DAYS_LEFT = 12;
+
+function renderTierBadges(){
+  const tier = document.body.dataset.tier || 'free';
+  const tierEl = document.getElementById('hdr-tier');
+  const seedEl = document.getElementById('hdr-seeds');
+  const upsell = document.getElementById('premium-upsell');
+
+  tierEl.textContent = tier === 'premium' ? 'Premium' : 'Free';
+  tierEl.className = 'tier-badge ' + tier;
+
+  if (tier === 'premium') {
+    seedEl.textContent = '🌰 Unlimited';
+    seedEl.className = 'seed-badge premium';
+    upsell.style.display = 'none';
+  } else {
+    seedEl.textContent = `🌰 ${MOCK_SEED_BALANCE} seeds · ${MOCK_SEED_DAYS_LEFT}d left`;
+    seedEl.className = 'seed-badge';
+    upsell.style.display = 'flex';
+  }
+
+  // Gate anything premium-only that's rendered elsewhere on the page
+  document.querySelectorAll('.premium-only').forEach(el => {
+    el.classList.toggle('premium-locked', tier !== 'premium');
+  });
+  const lockedNote = document.getElementById('founder-locked-note');
+  if (lockedNote) lockedNote.style.display = tier === 'premium' ? 'none' : 'flex';
+}
+
+function setTier(tier){
+  document.body.dataset.tier = tier;
+  document.getElementById('t-free').classList.toggle('on', tier === 'free');
+  document.getElementById('t-premium').classList.toggle('on', tier === 'premium');
+  renderTierBadges();
 }
 
 // ── VIEW ──
@@ -1357,6 +1429,7 @@ renderGallery();
 renderPosts();
 loadSettings();
 setView('owner');
+setTier('free');
 
 // Handle #achievements / #settings deep links from nav dropdown
 (function(){
