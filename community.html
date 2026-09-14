@@ -361,7 +361,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   <div class="mobile-menu-section">
     <div class="mobile-menu-title">Tools</div>
     <a href="herb-match.html"><span class="mobile-menu-icon">🌿</span>Herb Match</a>
-    <a href="supreme.html"><span class="mobile-menu-icon">📖</span>Herbadex</a>
+    <a href="supreme.html"><span class="mobile-menu-icon">📖</span>The Herbarium</a>
     <a href="herb-identifier.html"><span class="mobile-menu-icon">🔍</span>Herb Identifier</a>
     <a href="herb-planner.html"><span class="mobile-menu-icon">🗓️</span>Herb Planner</a>
     <a href="resources.html"><span class="mobile-menu-icon">📚</span>Resources</a>
@@ -383,7 +383,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <a href="privacy-policy.html"><span class="mobile-menu-icon">🔒</span>Privacy</a>
     <a href="terms.html"><span class="mobile-menu-icon">📄</span>Terms</a>
     <a href="disclaimer.html"><span class="mobile-menu-icon">⚠️</span>Disclaimer</a>
-    <a href="index.html" onclick="localStorage.clear()"><span class="mobile-menu-icon">↩</span>Sign Out</a>
+    <a href="index.html" onclick="event.preventDefault();chiSignOut()"><span class="mobile-menu-icon">↩</span>Sign Out</a>
   </div>
 </div>
 
@@ -401,7 +401,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 
         <a href="herb-planner.html"><span class="nav-dd-icon">🗓️</span>Herb Planner</a>
 
-        <a href="supreme.html"><span class="nav-dd-icon">📖</span>Herbadex</a>
+        <a href="supreme.html"><span class="nav-dd-icon">📖</span>The Herbarium</a>
       </div>
     </div>
     <div class="nav-dd" id="dd-community" onclick="toggleDD('community')">
@@ -424,7 +424,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
         <a href="terms.html"><span class="nav-dd-icon">📄</span>Terms</a>
         <a href="disclaimer.html"><span class="nav-dd-icon">⚠️</span>Disclaimer</a>
         <div class="nav-dd-divider"></div>
-        <a href="index.html" onclick="localStorage.clear()"><span class="nav-dd-icon">↩</span>Sign out</a>
+        <a href="index.html" onclick="event.preventDefault();chiSignOut()"><span class="nav-dd-icon">↩</span>Sign out</a>
       </div>
     </div>
     <a href="inbox.html" class="nav-inbox" title="Inbox">
@@ -493,7 +493,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <div class="garden-promo-left">
       <div class="garden-promo-eyebrow">New · Herbal Garden</div>
       <div class="garden-promo-title">Help us build the world's<br><em>first community herb gallery.</em></div>
-      <div class="garden-promo-desc">Share photos of your herbs, plants and collections. Every verified photo links directly to the Herbadex and builds CHI's visual herb database — one plant at a time.</div>
+      <div class="garden-promo-desc">Share photos of your herbs, plants and collections. Every verified photo links directly to the Herbarium and builds CHI's visual herb database — one plant at a time.</div>
       <div class="garden-promo-stats">
         <div class="gps"><strong id="garden-photo-count">247</strong> photos contributed</div>
         <div class="gps"><strong id="garden-herb-count">83</strong> herbs identified</div>
@@ -615,16 +615,43 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 <footer>
   <div class="fi">
     <div class="fi-logo"><span>Herbadex</span></div>
-    <div class="fi-links"><a href="herb-match.html">Herb Match</a><a href="supreme.html">Herbadex</a><a href="about.html">About</a></div>
+    <div class="fi-links"><a href="herb-match.html">Herb Match</a><a href="supreme.html">The Herbarium</a><a href="about.html">About</a></div>
     <p class="fi-disc">CHI provides educational herbal information only. Nothing on this platform constitutes medical advice. Community posts represent personal experiences and opinions, not professional advice.</p>
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
+// ── REAL AUTH ─────────────────────────────────────────────────────
+const SUPABASE_URL = 'https://fspofcdsraldxnnqqyfn.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_iGOFOZLHE4h5jBjl9i3BuQ_Cu7nYDVg';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
 const st = localStorage.getItem('chi_theme') || 'forest';
 document.body.setAttribute('data-theme', st);
-const ME_NAME = localStorage.getItem('chi_display_name') || 'Jerome';
-const ME_INIT = ME_NAME.charAt(0).toUpperCase();
+let ME_NAME = localStorage.getItem('chi_display_name') || 'Jerome'; // placeholder until live profile loads
+let ME_INIT = ME_NAME.charAt(0).toUpperCase();
+
+(async function requireAuth(){
+  const { data: { session } } = await sb.auth.getSession();
+  if(!session){
+    window.location.href = 'index.html';
+    return;
+  }
+  window.CHI_SESSION = session;
+  const { data: profile } = await sb.from('profiles')
+    .select('username,display_name')
+    .eq('id', session.user.id)
+    .single();
+  if(profile){
+    ME_NAME = profile.display_name || profile.username || ME_NAME;
+    ME_INIT = ME_NAME.charAt(0).toUpperCase();
+  }
+})();
+
+function chiSignOut(){
+  sb.auth.signOut().finally(() => { localStorage.clear(); window.location.href = 'index.html'; });
+}
 // Identity shared with profile.html — same avatar and level everywhere
 let ME_AVATAR = null, ME_RANK = '🌱 Seed', ME_LEVEL = null;
 try{
@@ -1269,10 +1296,10 @@ function runSearch(q){
     results.push({type:'person', icon:'🌿', main:n, sub:'Member', action:`closeSearch()`});
   });
 
-  // Search herbs (link to Herbadex)
+  // Search herbs (link to The Herbarium)
   const herbs = ['Ashwagandha','Lion\'s Mane','Nigella','Olive Leaf','Nettle','Dandelion','Milk Thistle','Moringa','Passionflower','Lemon Balm','Mugwort','Hibiscus','Calendula','Marshmallow','Shilajit'];
   herbs.filter(h=>h.toLowerCase().includes(val)).slice(0,3).forEach(h=>{
-    results.push({type:'herb', icon:'🌱', main:h, sub:'Herbadex', action:`window.location='supreme.html?herb=${h.toLowerCase().replace(/[^a-z0-9]/g,'-')}';closeSearch()`});
+    results.push({type:'herb', icon:'🌱', main:h, sub:'The Herbarium', action:`window.location='supreme.html?herb=${h.toLowerCase().replace(/[^a-z0-9]/g,'-')}';closeSearch()`});
   });
 
   if(!results.length){ out.innerHTML='<div class="search-empty">No results found</div>'; return; }

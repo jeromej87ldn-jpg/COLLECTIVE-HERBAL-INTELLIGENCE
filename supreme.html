@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Herbadex — the Collective Herbal Intelligence</title>
+<title>The Herbarium — Collective Herbal Intelligence</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
@@ -699,13 +699,13 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 <!-- Mobile sidebar menu -->
 <div class="mobile-menu" id="mobile-menu">
   <div class="mobile-menu-section">
-    <div class="mobile-menu-title">Search the Herbadex</div>
+    <div class="mobile-menu-title">Search The Herbarium</div>
     <div class="mobile-search"><input id="mobile-herb-search" list="nav-stack-list" placeholder="Search any herb…" autocomplete="off"></div>
   </div>
   <div class="mobile-menu-section">
     <div class="mobile-menu-title">Tools</div>
     <a href="herb-match.html"><span class="mobile-menu-icon">🌿</span>Herb Match</a>
-    <a href="supreme.html"><span class="mobile-menu-icon">📖</span>Herbadex</a>
+    <a href="supreme.html"><span class="mobile-menu-icon">📖</span>The Herbarium</a>
     <a href="herb-identifier.html"><span class="mobile-menu-icon">🔍</span>Herb Identifier</a>
     <a href="herb-planner.html"><span class="mobile-menu-icon">🗓️</span>Herb Planner</a>
     <a href="resources.html"><span class="mobile-menu-icon">📚</span>Resources</a>
@@ -737,7 +737,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
       <span class="nav-chi">Herbadex</span>
       <span class="nav-full">Collective Herbal Intelligence</span>
     </a>
-    <div class="nav-search" title="Search the Herbadex">
+    <div class="nav-search" title="Search The Herbarium">
       <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
       <input id="nav-herb-search" list="nav-stack-list" placeholder="Search any herb…" autocomplete="off">
       <datalist id="nav-stack-list"></datalist>
@@ -746,7 +746,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   </div>
   <div class="nav-right">
     <a href="herb-match.html">Herb Match</a>
-    <a href="supreme.html" class="active">Herbadex</a>
+    <a href="supreme.html" class="active">The Herbarium</a>
     <a href="herb-planner.html">Herb Planner</a>
     <a href="resources.html">Resources</a>
     <a href="community.html">Community</a>
@@ -762,7 +762,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 <div class="breadcrumb">
   <a href="index.html">Home</a>
   <span class="sep">›</span>
-  <span class="cur" id="bc-current">Herbadex</span>
+  <span class="cur" id="bc-current">The Herbarium</span>
 </div>
 
 <!-- TREE HERO -->
@@ -840,7 +840,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 
     <!-- How to Use -->
     <div class="herb-instructions">
-      <h4>How To Use Herbadex</h4>
+      <h4>How To Use The Herbarium</h4>
       <p><strong>Search any herb</strong> by name to explore its properties, traditions, and safety profile. <strong>Check cautions</strong> against your health profile for personalized guidance. <strong>Discover interactions</strong> with other herbs and understand the science behind traditional use.</p>
     </div>
 
@@ -877,7 +877,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   <div class="profile-nav">
     <button onclick="closeProfile()">
       <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M7 4l-4 4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-      Back to Herbadex
+      Back to The Herbarium
     </button>
     <span class="sep2">›</span>
     <span class="cur" id="profile-bc-name">Loading...</span>
@@ -922,7 +922,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <div class="footer-logo"><span>Herbadex</span><small>Collective Herbal Intelligence</small></div>
     <div class="footer-links">
       <a href="herb-match.html">Herb Match</a>
-      <a href="supreme.html">Herbadex</a>
+      <a href="supreme.html">The Herbarium</a>
       <a href="about.html">About</a>
       <a href="join.html">Join CHI</a>
     </div>
@@ -1130,7 +1130,7 @@ async function loadHerbProfile(herbName) {
         `<div style="padding:2.5rem 1.5rem;text-align:center;max-width:480px;margin:0 auto;">
           <div style="font-size:32px;margin-bottom:.75rem;">🌿</div>
           <p style="color:var(--charcoal);font-weight:500;margin-bottom:.5rem;" id="not-herb-msg"></p>
-          <a href="supreme.html" style="color:var(--forest);font-size:13px;text-decoration:underline;">Browse the Herbadex instead</a>
+          <a href="supreme.html" style="color:var(--forest);font-size:13px;text-decoration:underline;">Browse The Herbarium instead</a>
         </div>`;
       // Set via textContent, not the template above, so a search term
       // containing HTML/script can't get echoed back and executed.
@@ -1555,7 +1555,7 @@ function closeProfile() {
   document.getElementById('herb-profile').style.display = 'none';
   document.getElementById('tree-hero').style.display = 'flex';
   document.getElementById('rankings-section').style.display = 'block';
-  document.getElementById('bc-current').textContent = 'Herbadex';
+  document.getElementById('bc-current').textContent = 'The Herbarium';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -1811,7 +1811,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="modal-overlay" id="upload-modal-profile">
   <div class="modal">
     <div class="modal-head">
-      <h3>Add a photo to Herbadex</h3>
+      <h3>Add a photo to The Herbarium</h3>
       <button class="modal-close" onclick="closeProfileUpload()">×</button>
     </div>
     <div class="modal-body">

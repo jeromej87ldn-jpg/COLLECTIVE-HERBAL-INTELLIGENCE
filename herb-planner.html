@@ -474,7 +474,7 @@ input:focus,select:focus{border-color:rgba(200,149,42,.4);}
   <div class="mobile-menu-section">
     <div class="mobile-menu-title">Tools</div>
     <a href="herb-match.html"><span class="mobile-menu-icon">🌿</span>Herb Match</a>
-    <a href="supreme.html"><span class="mobile-menu-icon">📖</span>Herbadex</a>
+    <a href="supreme.html"><span class="mobile-menu-icon">📖</span>The Herbarium</a>
     <a href="herb-identifier.html"><span class="mobile-menu-icon">🔍</span>Herb Identifier</a>
     <a href="herb-planner.html"><span class="mobile-menu-icon">🗓️</span>Herb Planner</a>
     <a href="resources.html"><span class="mobile-menu-icon">📚</span>Resources</a>
@@ -515,7 +515,7 @@ input:focus,select:focus{border-color:rgba(200,149,42,.4);}
 
         <a href="herb-planner.html" class="active"><span class="nav-dd-icon">🗓️</span>Herb Planner</a>
 
-        <a href="supreme.html"><span class="nav-dd-icon">📖</span>Herbadex</a>
+        <a href="supreme.html"><span class="nav-dd-icon">📖</span>The Herbarium</a>
       </div>
     </div>
 
@@ -626,7 +626,7 @@ input:focus,select:focus{border-color:rgba(200,149,42,.4);}
       </div>
 
       <h1>Build your herb batch</h1>
-      <p class="step-intro">Pick from herbs you've already saved elsewhere in C.H.I, browse Herbadex's safety-reviewed list, or add any herb by name. Everything is checked against your safety profile as you go.</p>
+      <p class="step-intro">Pick from herbs you've already saved elsewhere in C.H.I, browse The Herbarium's safety-reviewed list, or add any herb by name. Everything is checked against your safety profile as you go.</p>
 
       <div class="pool-tabs">
         <button type="button" class="pool-tab is-active" id="tab-all-herbs" data-filter="all">All Herbs</button>
@@ -780,7 +780,7 @@ const CONDITIONS = {
   underage: 'Under 18'
 };
 
-// Herbadex's safety-reviewed core list. General, widely-cited wellness cautions —
+// The Herbarium's safety-reviewed core list. General, widely-cited wellness cautions —
 // not medical advice. When in doubt, entries lean conservative and point back to
 // "confirm with your provider."
 let HERB_DATA = [
@@ -1072,7 +1072,7 @@ const TAG_CLASH_MESSAGES = {
 
 /**
  * Turns a herb name typed by the user (or pulled in from chi_saved_herbs)
- * into a minimal usable entry when it isn't in Herbadex's safety-reviewed
+ * into a minimal usable entry when it isn't in The Herbarium's safety-reviewed
  * core list above. Clearly marked as unreviewed so the UI never implies
  * more confidence than the data supports.
  */
@@ -1090,7 +1090,7 @@ function buildStubHerb(rawName) {
     latin: '',
     category: 'Other',
     color,
-    blurb: 'Added from your own collection — not yet on Herbadex\u2019s safety-reviewed list.',
+    blurb: 'Added from your own collection — not yet on The Herbarium\u2019s safety-reviewed list.',
     prepMethods: ['tea', 'capsule', 'tincture'],
     onWeeks: 4, offWeeks: 1, minOffWeeks: 1,
     rationale: 'General guidance — cycling periodically helps you gauge whether it\u2019s still adding value.',
@@ -1098,8 +1098,8 @@ function buildStubHerb(rawName) {
     standardDose: 'Follow product label guidance, or a qualified practitioner\u2019s recommendation.',
     onsetGuidance: 'Varies by herb — track how you feel over the first few weeks.',
     calorieRich: false, fastingNote: '',
-    pregnancyLevel: 'caution', pregnancyNote: 'Not yet safety-reviewed by Herbadex — confirm with your provider before use in pregnancy.',
-    medicationCaution: 'caution', medicationNote: 'Not yet safety-reviewed by Herbadex — confirm with your provider before combining with medication.',
+    pregnancyLevel: 'caution', pregnancyNote: 'Not yet safety-reviewed by The Herbarium — confirm with your provider before use in pregnancy.',
+    medicationCaution: 'caution', medicationNote: 'Not yet safety-reviewed by The Herbarium — confirm with your provider before combining with medication.',
     tags: [],
     conditionFlags: {},
     unreviewed: true
@@ -1114,7 +1114,7 @@ function hashCode(str) {
 
 // Fuzzy herb-name matching, consistent with the substring-matching convention
 // already used elsewhere in C.H.I (see phytochemistry.html's isy()) — so
-// "Nettle" (as saved via Plant Intelligence) and "Nettle Leaf" (Herbadex's
+// "Nettle" (as saved via Plant Intelligence) and "Nettle Leaf" (The Herbarium's
 // reviewed entry) are recognized as the same herb instead of duplicating.
 function normalizeHerbName(name) {
   return String(name).toLowerCase().trim()
@@ -1133,7 +1133,7 @@ function herbNameMatches(a, b) {
   return na === nb || na.includes(nb) || nb.includes(na);
 }
 
-// Deep link into Herbadex's own encyclopedia entry for a herb — same slug
+// Deep link into The Herbarium's own encyclopedia entry for a herb — same slug
 // convention garden.html already uses (supreme.html?herb=...), so every
 // herb name in the planner can link straight to its full profile.
 function herbProfileUrl(herb) {
@@ -1396,7 +1396,7 @@ function formatLongDate(date) { return date.toLocaleDateString(undefined, { week
 
 document.addEventListener('DOMContentLoaded', () => {
   // Merge in any herbs already saved elsewhere in C.H.I (e.g. via Plant
-  // Intelligence) that aren't part of Herbadex's reviewed core list yet.
+  // Intelligence) that aren't part of The Herbarium's reviewed core list yet.
   state.savedHerbNames.forEach((name) => {
     const exists = HERB_DATA.some((h) => herbNameMatches(h.name, name));
     if (!exists) HERB_DATA.push(buildStubHerb(name));
@@ -1601,7 +1601,7 @@ function renderHerbGrid() {
         </div>
         <div class="herb-name">${h.name}${selected ? ' <span class="herb-check-inline">✓ In routine</span>' : ''}</div>
         ${h.latin ? `<div class="herb-latin">${h.latin}</div>` : ''}
-        <a class="herb-profile-link" href="${herbProfileUrl(h)}" onclick="event.stopPropagation()">📖 View full profile in Herbadex →</a>
+        <a class="herb-profile-link" href="${herbProfileUrl(h)}" onclick="event.stopPropagation()">📖 View full profile in The Herbarium →</a>
         <div class="herb-blurb">${h.blurb}</div>
         <div class="herb-dose">Typical dose: ${h.standardDose}</div>
         <div class="herb-tags">
@@ -1709,7 +1709,7 @@ function renderPrepStep() {
           <div>
             <div class="prep-herb-name">${h.name}</div>
             ${h.latin ? `<div class="prep-herb-latin">${h.latin}</div>` : ''}
-            <a class="herb-profile-link" href="${herbProfileUrl(h)}">📖 View full profile in Herbadex →</a>
+            <a class="herb-profile-link" href="${herbProfileUrl(h)}">📖 View full profile in The Herbarium →</a>
           </div>
         </div>
 
@@ -1816,7 +1816,7 @@ function renderExplanation(herbs) {
   panel.innerHTML = `
     <details class="explain-details" open>
       <summary>Why this schedule looks the way it does</summary>
-      <p class="explain-intro">Herbadex spreads each herb across "on" and "off" weeks so your body doesn't build tolerance and keeps getting the full benefit. Where possible, herbs are also spread across the day so you're not stacking too much on your system at once. None of this replaces advice from a healthcare provider — it's a starting point to help you make informed, safer choices.</p>
+      <p class="explain-intro">The Herbarium spreads each herb across "on" and "off" weeks so your body doesn't build tolerance and keeps getting the full benefit. Where possible, herbs are also spread across the day so you're not stacking too much on your system at once. None of this replaces advice from a healthcare provider — it's a starting point to help you make informed, safer choices.</p>
       ${herbItems}${safetyBlock}${clashBlock}${timingBlock}${allClear}
     </details>`;
 }

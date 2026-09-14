@@ -153,18 +153,43 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <p class="privacy-note">CHI uses email and password only. We do not offer Google or Facebook login — your health information stays on CHI.</p>
   </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-function signIn() {
+const SUPABASE_URL = 'https://fspofcdsraldxnnqqyfn.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_iGOFOZLHE4h5jBjl9i3BuQ_Cu7nYDVg';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+function showError(msg){
+  const el = document.getElementById('error-msg');
+  if(msg) el.textContent = msg;
+  el.classList.add('show');
+}
+
+async function signIn() {
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
-  if (!email || !password) { document.getElementById('error-msg').classList.add('show'); return; }
-  // In production — Supabase auth here
-  localStorage.setItem('chi_logged_in','true');
-  localStorage.setItem('chi_display_name', email.split('@')[0]);
+  if (!email || !password) { showError('Enter your email and password to continue.'); return; }
+
+  const btn = document.querySelector('.btn-signin');
+  btn.disabled = true;
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+  if (error) {
+    btn.disabled = false;
+    showError('That email and password combination does not match our records. Please try again.');
+    return;
+  }
+
+  // Clean up any leftover mock-mode flags from before real auth existed
+  localStorage.removeItem('chi_logged_in');
   window.location.href = 'home.html';
 }
-// If already logged in, redirect
-if (localStorage.getItem('chi_logged_in') === 'true') window.location.href = 'home.html';
+
+// If already signed in, skip straight to the dashboard
+sb.auth.getSession().then(({ data: { session } }) => {
+  if (session) window.location.href = 'home.html';
+});
 </script>
 <!-- Shared C.H.I glossary — auto-tags known terms (tincture, capsule, infusion,
      adaptogen, etc) anywhere in the page text with a hover definition. -->

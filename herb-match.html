@@ -130,10 +130,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 /* PROFILE VIEW TOGGLE */
 
 
-/* Herb profile content — ported to match Herbadex's presentation exactly
+/* Herb profile content — ported to match The Herbarium's presentation exactly
    (same section layout/typography), with a Plant Intelligence compound
    science section appended after it. Scoped light/parchment theme so it
-   reads correctly against this page's dark chrome. Herbadex (supreme.html)
+   reads correctly against this page's dark chrome. The Herbarium (supreme.html)
    itself is not modified — these rules are a deliberate duplicate. */
 #profile-content{
   --parchment-dark:#ede5d0;--parchment-deep:#e0d5b8;
@@ -369,7 +369,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   <div class="mobile-menu-section">
     <div class="mobile-menu-title">Tools</div>
     <a href="herb-match.html"><span class="mobile-menu-icon">🌿</span>Herb Match</a>
-    <a href="supreme.html"><span class="mobile-menu-icon">📖</span>Herbadex</a>
+    <a href="supreme.html"><span class="mobile-menu-icon">📖</span>The Herbarium</a>
     <a href="herb-identifier.html"><span class="mobile-menu-icon">🔍</span>Herb Identifier</a>
     <a href="herb-planner.html"><span class="mobile-menu-icon">🗓️</span>Herb Planner</a>
     <a href="resources.html"><span class="mobile-menu-icon">📚</span>Resources</a>
@@ -401,7 +401,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <span class="nav-full">Collective Herbal Intelligence</span>
   </a>
   <div class="nav-right">
-    <a href="supreme.html">Herbadex</a>
+    <a href="supreme.html">The Herbarium</a>
     <a href="herb-match.html" class="active">Herb Match</a>
     <a href="herb-planner.html">Herb Planner</a>
   </div>
@@ -827,7 +827,7 @@ function backToPyramid() {
 
 // ─── PROFILE VIEWER (real AI call, reuses herb-profile.js) ──
 async function viewProfile(herbName) {
-  // One profile everywhere -- open the herb's real Herbadex profile page
+  // One profile everywhere -- open the herb's real Herbarium profile page
   // (supreme.html) instead of the ported local copy, so profile changes
   // only ever need to be made in one place. Match results are kept in
   // sessionStorage, so the browser back button returns to them intact.
@@ -965,8 +965,8 @@ function renderProfileContent(profile) {
   document.getElementById('profile-content').innerHTML = buildHerbadexStyleProfileHtml(profile);
 }
 
-// Ported from Herbadex's renderProfile() (supreme.html) so a herb viewed
-// from Herb Match reads identically to its Herbadex entry — same sections,
+// Ported from The Herbarium's renderProfile() (supreme.html) so a herb viewed
+// from Herb Match reads identically to its Herbarium entry — same sections,
 // same layout — with Plant Intelligence's compound-mechanism/herbal-action
 // detail appended after it. Deliberately duplicated here rather than
 // shared, since supreme.html itself is not to be modified. There is no
@@ -1016,7 +1016,7 @@ function buildHerbadexStyleProfileHtml(h) {
   }).join('');
 
   // Plant Intelligence — compound mechanism & evidence, and full herbal
-  // actions, appended after the Herbadex-style profile rather than
+  // actions, appended after the Herbarium-style profile rather than
   // replacing any of it.
   const piCompoundsHTML = F.has(h.compounds) ? h.compounds.map(c => `
     <div style="padding:.9rem 0;border-bottom:1px solid var(--parchment-dark);">

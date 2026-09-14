@@ -506,7 +506,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   <div class="mobile-menu-section">
     <div class="mobile-menu-title">Tools</div>
     <a href="herb-match.html"><span class="mobile-menu-icon">🌿</span>Herb Match</a>
-    <a href="supreme.html"><span class="mobile-menu-icon">📖</span>Herbadex</a>
+    <a href="supreme.html"><span class="mobile-menu-icon">📖</span>The Herbarium</a>
     <a href="herb-identifier.html"><span class="mobile-menu-icon">🔍</span>Herb Identifier</a>
     <a href="herb-planner.html"><span class="mobile-menu-icon">🗓️</span>Herb Planner</a>
     <a href="resources.html"><span class="mobile-menu-icon">📚</span>Resources</a>
@@ -528,7 +528,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <a href="privacy-policy.html"><span class="mobile-menu-icon">🔒</span>Privacy</a>
     <a href="terms.html"><span class="mobile-menu-icon">📄</span>Terms</a>
     <a href="disclaimer.html"><span class="mobile-menu-icon">⚠️</span>Disclaimer</a>
-    <a href="index.html" onclick="localStorage.clear()"><span class="mobile-menu-icon">↩</span>Sign Out</a>
+    <a href="index.html" onclick="event.preventDefault();chiSignOut()"><span class="mobile-menu-icon">↩</span>Sign Out</a>
   </div>
 </div>
 
@@ -546,7 +546,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 
         <a href="herb-planner.html"><span class="nav-dd-icon">🗓️</span>Herb Planner</a>
 
-        <a href="supreme.html"><span class="nav-dd-icon">📖</span>Herbadex</a>
+        <a href="supreme.html"><span class="nav-dd-icon">📖</span>The Herbarium</a>
       </div>
     </div>
     <div class="nav-dd" id="dd-community" onclick="toggleDD('community')">
@@ -571,7 +571,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
         <a href="terms.html"><span class="nav-dd-icon">📄</span>Terms</a>
         <a href="disclaimer.html"><span class="nav-dd-icon">⚠️</span>Disclaimer</a>
         <div class="nav-dd-divider"></div>
-        <a href="index.html" onclick="localStorage.clear()"><span class="nav-dd-icon">↩</span>Sign out</a>
+        <a href="index.html" onclick="event.preventDefault();chiSignOut()"><span class="nav-dd-icon">↩</span>Sign out</a>
       </div>
     </div>
     <a href="inbox.html" class="nav-inbox" title="Inbox">
@@ -688,8 +688,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
       <div class="level-card" style="background:linear-gradient(150deg,rgba(200,149,42,.18),rgba(26,58,42,.2));">
         <div style="font-size:32px;line-height:1;">🏆</div>
         <div class="level-info">
-          <div class="level-rank">Become a Herbadex Founder</div>
-          <div class="level-sub">Submit a herb that's missing from Herbadex. Once the community corroborates it, it joins the main catalog — permanently credited to you as its founder.</div>
+          <div class="level-rank">Become a Herbarium Founder</div>
+          <div class="level-sub">Submit a herb that's missing from The Herbarium. Once the community corroborates it, it joins the main catalog — permanently credited to you as its founder.</div>
           <button class="btn btn-ghost" style="margin-top:.5rem;" onclick="alert('Unclassified Herbal submission form — coming soon.')">Submit an unclassified herb</button>
         </div>
       </div>
@@ -823,7 +823,53 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
+// ── REAL AUTH ─────────────────────────────────────────────────────
+const SUPABASE_URL = 'https://fspofcdsraldxnnqqyfn.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_iGOFOZLHE4h5jBjl9i3BuQ_Cu7nYDVg';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+(async function requireAuth(){
+  // Only gate the owner's own view — a public profile (?user=...) is meant
+  // to be viewable without being signed in as that person.
+  const params = new URLSearchParams(window.location.search);
+  if(params.get('user')) return;
+  const { data: { session } } = await sb.auth.getSession();
+  if(!session){
+    window.location.href = 'index.html';
+    return;
+  }
+  window.CHI_SESSION = session;
+  try{
+    const { data: profile } = await sb.from('profiles')
+      .select('username,display_name')
+      .eq('id', session.user.id)
+      .single();
+    const liveName = profile && (profile.display_name || profile.username);
+    if(liveName){
+      localStorage.setItem('chi_display_name', liveName);
+      const gn = document.getElementById('greet-name');
+      if(gn) gn.textContent = "this is " + liveName + "'s.";
+    }
+  }catch(e){ console.warn('Could not load live profile name:', e); }
+})();
+
+function chiSignOut(){
+  sb.auth.signOut().finally(() => { localStorage.clear(); window.location.href = 'index.html'; });
+}
+
+// Sync the computed Level (from the XP/rank system below) to the shared
+// profiles table so home.html and other pages agree on the number. The
+// underlying XP inputs (stack/posts/gallery) stay local for now — full
+// backend migration is a separate later stage.
+async function syncRankToSupabase(level){
+  if(!window.CHI_SESSION) return;
+  try{
+    await sb.from('profiles').update({ rank_level: level }).eq('id', window.CHI_SESSION.user.id);
+  }catch(e){ console.warn('Could not sync rank to Supabase:', e); }
+}
+
 const PROFILE_NAME = 'Sage';
 let following = false;
 let savedPublic = true;
@@ -909,8 +955,8 @@ const achievements = [
   {icon:'🌱', name:'First Steps', desc:'Save your first herb to Saved Herbs.', progress:1, target:1, xp:20},
   {icon:'📦', name:'Stacked', desc:'Add 5 herbs to your Herb Stack.', progress:4, target:5, xp:40},
   {icon:'🖊', name:'Note Keeper', desc:'Write usage notes on 10 herbs.', progress:8, target:10, xp:50},
-  {icon:'🔍', name:'Explorer', desc:'Explore 50 herbs in the Herbadex.', progress:148, target:50, xp:40},
-  {icon:'📚', name:'Scholar', desc:'Explore 200 herbs in the Herbadex.', progress:148, target:200, xp:80},
+  {icon:'🔍', name:'Explorer', desc:'Explore 50 herbs in The Herbarium.', progress:148, target:50, xp:40},
+  {icon:'📚', name:'Scholar', desc:'Explore 200 herbs in The Herbarium.', progress:148, target:200, xp:80},
   {icon:'✍️', name:'Storyteller', desc:'Publish 10 posts to the community.', progress:23, target:10, xp:50},
   {icon:'🤝', name:'Good Company', desc:'Grow 5 companions.', progress:5, target:5, xp:40},
   {icon:'🧭', name:'Journey Maker', desc:'Document a full journey of linked posts.', progress:0, target:1, xp:60},
@@ -1042,8 +1088,8 @@ function setView(mode){
   document.getElementById('t-public').classList.toggle('on', mode==='public');
   renderActions(); renderStack(); renderSaved(); renderPosts(); renderStats();
   document.getElementById('stack-sub').textContent = mode==='owner'
-    ? 'How you use herbs in daily life. Tap any herb to open its Herbadex page; tap a note to add or edit how you use it.'
-    : `How ${PROFILE_NAME} uses herbs in daily life. Tap any herb to open its Herbadex page. Curious about a note? Send a message.`;
+    ? 'How you use herbs in daily life. Tap any herb to open its Herbarium page; tap a note to add or edit how you use it.'
+    : `How ${PROFILE_NAME} uses herbs in daily life. Tap any herb to open its Herbarium page. Curious about a note? Send a message.`;
   document.getElementById('saved-sub').textContent = mode==='owner'
     ? 'Herbs, posts and Herb Match results you\u2019ve saved to revisit.'
     : `What ${PROFILE_NAME} has saved — herbs, posts and results they\u2019re keeping.`;
@@ -1088,6 +1134,7 @@ function renderStats(){
     <div class="stat" data-tab="ach" onclick="setTab('ach',this)"><div class="stat-num">${L.level}</div><div class="stat-lbl">Level</div></div>`;
   document.getElementById('hdr-level').textContent = '★ Level ' + L.level;
   document.getElementById('hdr-rank').textContent = L.rank;
+  if(isOwner) syncRankToSupabase(L.level);
   // Journey bar in the profile header
   const j = document.getElementById('phead-journey');
   if(j) j.innerHTML = `
@@ -1196,7 +1243,7 @@ function renderSaved(){
   }
 
   if(savedSub === 'herbs'){
-    if(!savedHerbsList.length){ body.innerHTML = emptyNote('No saved herbs yet. Bookmark herbs from the Herbadex or other members\' profiles.'); return; }
+    if(!savedHerbsList.length){ body.innerHTML = emptyNote('No saved herbs yet. Bookmark herbs from The Herbarium or other members\' profiles.'); return; }
     body.innerHTML = `<div class="saved-grid">` + savedHerbsList.map((h,i)=>`
       <div class="saved">
         <div class="saved-top">
@@ -1374,9 +1421,10 @@ function loadSettings(){
 
 function signOutEverywhere(){
   if(confirm('Sign out of CHI on all devices? You will need to sign in again.')){
-    localStorage.removeItem('chi_logged_in');
-    localStorage.removeItem('chi_session');
-    window.location.href = 'index.html';
+    sb.auth.signOut({ scope: 'global' }).finally(() => {
+      localStorage.clear();
+      window.location.href = 'index.html';
+    });
   }
 }
 
@@ -1411,8 +1459,10 @@ function clearLocalData(){
     clearTimeout(lockTimer);
     if(localStorage.getItem('chi_setting_autolock')==='1'){
       lockTimer = setTimeout(()=>{
-        localStorage.removeItem('chi_logged_in');
-        window.location.href = 'index.html';
+        sb.auth.signOut().finally(() => {
+          localStorage.clear();
+          window.location.href = 'index.html';
+        });
       }, 30*60*1000);
     }
   }

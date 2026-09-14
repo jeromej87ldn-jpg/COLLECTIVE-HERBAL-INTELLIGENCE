@@ -21,10 +21,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--night);color:var(--text);
   background-image:radial-gradient(ellipse 80% 50% at 50% -5%,rgba(74,140,101,0.12),transparent 60%),radial-gradient(ellipse 40% 40% at 90% 90%,rgba(200,149,42,0.05),transparent 50%);}
 
 /* ── NAV ── */
-nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:var(--forest);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:100;}
-.nav-logo{text-decoration:none;display:flex;flex-direction:column;}
-.nav-chi{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-light);letter-spacing:.1em;}
-.nav-full{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.5);}
+nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:76px;background:var(--forest);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:100;}
+.nav-logo{text-decoration:none;display:flex;flex-direction:column;justify-content:center;}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:600;color:var(--gold-light);letter-spacing:.09em;line-height:1;}
+.nav-full{font-size:10.5px;letter-spacing:.17em;text-transform:uppercase;color:rgba(245,240,232,.5);margin-top:3px;}
 .nav-right{display:flex;align-items:center;gap:1.5rem;}
 .nav-right a{color:rgba(245,240,232,.6);text-decoration:none;font-size:13px;transition:color .2s;}
 .nav-right a:hover,.nav-right a.active{color:var(--gold-light);}
@@ -38,7 +38,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .nav-cta{background:var(--gold);color:var(--forest)!important;padding:.5rem 1rem;border-radius:4px;font-weight:500;}
 .nav-inbox{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:6px;border:1px solid rgba(255,255,255,0.08);color:rgba(245,240,232,.6);transition:all .2s;text-decoration:none;}
 .nav-inbox:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
-.nav-dd{position:relative;display:inline-flex;align-items:center;gap:4px;cursor:pointer;font-size:13px;color:rgba(245,240,232,.6);background:none;border:none;font-family:'DM Sans',sans-serif;padding:0;height:64px;}
+.nav-dd{position:relative;display:inline-flex;align-items:center;gap:4px;cursor:pointer;font-size:13px;color:rgba(245,240,232,.6);background:none;border:none;font-family:'DM Sans',sans-serif;padding:0;height:76px;}
 .nav-dd:hover,.nav-dd.open{color:var(--gold-light);}
 .nav-dd-arrow{font-size:8px;opacity:.5;transition:transform .2s;}
 .nav-dd.open .nav-dd-arrow{transform:rotate(180deg);}
@@ -65,12 +65,19 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .page{max-width:1200px;margin:0 auto;padding:2rem 2rem 5rem;}
 
 /* ── GREETING ── */
-.greeting{margin-bottom:1.75rem;}
+.greeting-row{display:flex;align-items:flex-end;justify-content:space-between;gap:1.5rem;margin-bottom:1.75rem;}
+.greeting{flex:1;min-width:0;}
 .greeting-eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:10px;margin-bottom:.5rem;}
 .greeting-eyebrow::before{content:'';width:16px;height:1px;background:var(--gold);opacity:.6;}
 .greeting-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,42px);font-weight:300;line-height:1.1;color:var(--parchment);}
 .greeting-title em{font-style:italic;color:var(--gold-light);}
 .greeting-sub{font-size:13.5px;color:var(--muted);margin-top:.4rem;}
+
+/* ── PROFILE AVATAR (matches herb-of-day fade treatment) ── */
+.profile-avatar-frame{position:relative;width:120px;height:120px;border-radius:12px;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,rgba(74,140,101,.28),rgba(200,149,42,.18));border:1px solid var(--card-border);}
+.profile-avatar-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.5) 25%,#000 65%);mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.5) 25%,#000 65%);}
+.profile-avatar-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:500;color:var(--gold-light);opacity:.6;-webkit-mask-image:linear-gradient(to right,transparent 0%,#000 55%);mask-image:linear-gradient(to right,transparent 0%,#000 55%);}
+@media(max-width:680px){.greeting-row{flex-direction:column-reverse;align-items:flex-start;}.profile-avatar-frame{width:64px;height:64px;}.profile-avatar-placeholder{font-size:24px;}}
 
 /* ── THREE COLUMN LAYOUT ── */
 .three-col{display:grid;grid-template-columns:260px 1fr 260px;gap:1.25rem;align-items:start;}
@@ -79,6 +86,13 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 
 /* ── SHARED PANEL STYLES ── */
 .panel{background:var(--card);border:1px solid var(--card-border);border-radius:12px;overflow:hidden;}
+/* Subtle colour variation per panel — same palette family, more vibrancy */
+.panel-tint-forest{background:linear-gradient(160deg,rgba(74,140,101,.1),var(--card) 65%);}
+.panel-tint-gold{background:linear-gradient(160deg,rgba(200,149,42,.09),var(--card) 65%);}
+.panel-tint-sage{background:linear-gradient(160deg,rgba(122,204,160,.08),var(--card) 65%);}
+.panel-tint-teal{background:linear-gradient(160deg,rgba(100,150,200,.09),var(--card) 65%);}
+.panel-tint-plum{background:linear-gradient(160deg,rgba(130,100,200,.08),var(--card) 65%);}
+.panel-tint-amber{background:linear-gradient(160deg,rgba(200,180,42,.08),var(--card) 65%);}
 .panel-head{padding:.9rem 1.1rem;border-bottom:1px solid var(--card-border);display:flex;align-items:center;justify-content:space-between;}
 .panel-title{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
 .panel-action{font-size:11.5px;color:var(--tag-text);text-decoration:none;transition:opacity .15s;}
@@ -110,11 +124,13 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .term-popup-action:hover{opacity:.75;}
 
 /* ── HERB OF THE DAY ── */
-.hotd-banner{border-radius:8px;padding:1rem;margin-bottom:.85rem;background:linear-gradient(135deg,rgba(26,58,42,.8),rgba(45,92,66,.4));border:1px solid rgba(200,149,42,.2);position:relative;overflow:hidden;}
-.hotd-banner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 80% 20%,rgba(200,149,42,.08),transparent 60%);}
-.hotd-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.35rem;position:relative;}
-.hotd-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:var(--parchment);line-height:1.1;margin-bottom:2px;position:relative;}
-.hotd-latin{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12.5px;color:var(--muted);position:relative;}
+.hotd-banner{border-radius:8px;padding:1rem;margin-bottom:.85rem;background:linear-gradient(135deg,rgba(26,58,42,.8),rgba(45,92,66,.4));border:1px solid rgba(200,149,42,.2);position:relative;overflow:hidden;min-height:96px;}
+.hotd-banner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 80% 20%,rgba(200,149,42,.08),transparent 60%);z-index:1;}
+.hotd-img{position:absolute;top:0;right:0;bottom:0;width:58%;object-fit:cover;opacity:.55;-webkit-mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.5) 30%,#000 75%);mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.5) 30%,#000 75%);}
+.hotd-img-placeholder{position:absolute;top:0;right:0;bottom:0;width:58%;display:flex;align-items:center;justify-content:center;font-size:64px;opacity:.16;-webkit-mask-image:linear-gradient(to right,transparent 0%,#000 55%);mask-image:linear-gradient(to right,transparent 0%,#000 55%);}
+.hotd-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.35rem;position:relative;z-index:2;}
+.hotd-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:var(--parchment);line-height:1.1;margin-bottom:2px;position:relative;z-index:2;}
+.hotd-latin{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12.5px;color:var(--muted);position:relative;z-index:2;}
 .hotd-fact{font-size:13px;color:rgba(245,240,232,.72);line-height:1.65;margin:.75rem 0;}
 .hotd-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.75rem;}
 .hotd-tag{font-size:10px;padding:2px 8px;border-radius:999px;background:var(--tag-bg);color:var(--tag-text);border:1px solid var(--tag-border);}
@@ -180,6 +196,15 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .stat-card{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:.85rem 1rem;}
 .stat-val{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;color:var(--gold-light);line-height:1;}
 .stat-label{font-size:10.5px;color:var(--muted);margin-top:.25rem;}
+.stat-tool{text-decoration:none;display:flex;align-items:center;gap:.65rem;transition:all .18s;}
+.stat-tool:hover{border-color:rgba(200,149,42,.35);background:rgba(200,149,42,.05);transform:translateY(-1px);}
+.stat-tool .stat-icon{font-size:24px;line-height:1;flex-shrink:0;}
+.stat-tool .stat-val{font-size:15px;color:var(--parchment);font-family:'Cormorant Garamond',serif;font-weight:500;}
+.stat-tool .stat-label{margin-top:2px;}
+.stat-seeds{background:linear-gradient(160deg,rgba(200,149,42,.12),var(--card) 70%);}
+.stat-seeds .stat-val{color:#e8b84b;}
+.stat-rank{background:linear-gradient(160deg,rgba(130,100,200,.1),var(--card) 70%);}
+.stat-rank .stat-val{color:var(--tag-text);}
 
 /* ── SECTION DIVIDER ── */
 .sec-divider{display:flex;align-items:center;gap:.75rem;margin:1.5rem 0 1rem;}
@@ -321,11 +346,13 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 @media (max-width: 600px) {
   nav {
     padding: 0 1.5rem;
-    height: 56px;
+    height: 62px;
   }
+  .nav-chi{font-size:26px;}
+  .nav-full{font-size:9px;}
   .mobile-menu {
     width: 260px;
-    padding-top: 56px;
+    padding-top: 62px;
   }
 }
 
@@ -360,7 +387,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   <div class="mobile-menu-section">
     <div class="mobile-menu-title">Tools</div>
     <a href="herb-match.html"><span class="mobile-menu-icon">🌿</span>Herb Match</a>
-    <a href="supreme.html"><span class="mobile-menu-icon">📖</span>Herbadex</a>
+    <a href="supreme.html"><span class="mobile-menu-icon">📖</span>The Herbarium</a>
     <a href="herb-identifier.html"><span class="mobile-menu-icon">🔍</span>Herb Identifier</a>
     <a href="herb-planner.html"><span class="mobile-menu-icon">🗓️</span>Herb Planner</a>
     <a href="resources.html"><span class="mobile-menu-icon">📚</span>Resources</a>
@@ -382,7 +409,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <a href="privacy-policy.html"><span class="mobile-menu-icon">🔒</span>Privacy</a>
     <a href="terms.html"><span class="mobile-menu-icon">📄</span>Terms</a>
     <a href="disclaimer.html"><span class="mobile-menu-icon">⚠️</span>Disclaimer</a>
-    <a href="index.html" onclick="localStorage.clear()"><span class="mobile-menu-icon">↩</span>Sign Out</a>
+    <a href="index.html" onclick="event.preventDefault();chiSignOut()"><span class="mobile-menu-icon">↩</span>Sign Out</a>
   </div>
 </div>
 
@@ -392,32 +419,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <span class="nav-full">Collective Herbal Intelligence</span>
   </a>
   <div class="nav-right">
-
-    <!-- TOOLS DROPDOWN -->
-    <div class="nav-dd" id="dd-tools" onclick="toggleDD('tools')">
-      <span style="color:inherit">Tools</span>
-      <span class="nav-dd-arrow">▼</span>
-      <div class="nav-dd-menu">
-        <a href="herb-match.html"><span class="nav-dd-icon">🌿</span>Herb Match</a>
-
-        <a href="herb-planner.html"><span class="nav-dd-icon">🗓️</span>Herb Planner</a>
-
-        <a href="supreme.html"><span class="nav-dd-icon">📖</span>Herbadex</a>
-      </div>
-    </div>
-
-    <a href="resources.html">Resources</a>
-
-    <!-- COMMUNITY DROPDOWN -->
-    <div class="nav-dd" id="dd-community" onclick="toggleDD('community')">
-      <span style="color:inherit">Community</span>
-      <span class="nav-dd-arrow">▼</span>
-      <div class="nav-dd-menu">
-        <a href="community.html"><span class="nav-dd-icon">💬</span>Community Feed</a>
-        <a href="garden.html"><span class="nav-dd-icon">🌱</span>Herbal Garden</a>
-        <a href="glossary.html"><span class="nav-dd-icon">📚</span>Glossary</a>
-      </div>
-    </div>
 
     <!-- PROFILE DROPDOWN -->
     <div class="nav-dd" id="dd-profile" onclick="toggleDD('profile')">
@@ -431,9 +432,35 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
         <a href="terms.html"><span class="nav-dd-icon">📄</span>Terms</a>
         <a href="disclaimer.html"><span class="nav-dd-icon">⚠️</span>Disclaimer</a>
         <div class="nav-dd-divider"></div>
-        <a href="index.html" onclick="localStorage.clear()"><span class="nav-dd-icon">↩</span>Sign out</a>
+        <a href="index.html" onclick="event.preventDefault();chiSignOut()"><span class="nav-dd-icon">↩</span>Sign out</a>
       </div>
     </div>
+
+    <!-- TOOLS DROPDOWN -->
+    <div class="nav-dd" id="dd-tools" onclick="toggleDD('tools')">
+      <span style="color:inherit">Tools</span>
+      <span class="nav-dd-arrow">▼</span>
+      <div class="nav-dd-menu">
+        <a href="herb-match.html"><span class="nav-dd-icon">🌿</span>Herb Match</a>
+
+        <a href="herb-planner.html"><span class="nav-dd-icon">🗓️</span>Herb Planner</a>
+
+        <a href="supreme.html"><span class="nav-dd-icon">📖</span>The Herbarium</a>
+      </div>
+    </div>
+
+    <!-- COMMUNITY DROPDOWN -->
+    <div class="nav-dd" id="dd-community" onclick="toggleDD('community')">
+      <span style="color:inherit">Community</span>
+      <span class="nav-dd-arrow">▼</span>
+      <div class="nav-dd-menu">
+        <a href="community.html"><span class="nav-dd-icon">💬</span>Community Feed</a>
+        <a href="garden.html"><span class="nav-dd-icon">🌱</span>Herbal Garden</a>
+        <a href="glossary.html"><span class="nav-dd-icon">📚</span>Glossary</a>
+      </div>
+    </div>
+
+    <a href="resources.html">Resources</a>
 
     <a href="inbox.html" class="nav-inbox" title="Inbox">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 4h12v9H2V4z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M2 4l6 5 6-5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
@@ -454,29 +481,41 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 <div class="page">
 
   <!-- GREETING -->
-  <div class="greeting">
-    <div class="greeting-eyebrow">Good <span id="time-of-day">morning</span></div>
-    <h1 class="greeting-title">Welcome back, <em id="user-name">herbalist.</em></h1>
-    <p class="greeting-sub" id="greeting-sub">Here's what's happening in your herbal world today.</p>
+  <div class="greeting-row">
+    <div class="greeting">
+      <div class="greeting-eyebrow">Good <span id="time-of-day">morning</span></div>
+      <h1 class="greeting-title">Welcome back, <em id="user-name">herbalist.</em></h1>
+      <p class="greeting-sub" id="greeting-sub">Here's what's happening in your herbal world today.</p>
+    </div>
+    <div class="profile-avatar-frame" id="profile-avatar">
+      <!-- Placeholder until a photo is provided — swap in <img class="..." src="your-photo.jpg"> -->
+      <div class="profile-avatar-placeholder" id="profile-avatar-initial">J</div>
+    </div>
   </div>
 
   <!-- STATS STRIP -->
   <div class="stats-strip">
-    <div class="stat-card">
-      <div class="stat-val" id="stat-stack">0</div>
-      <div class="stat-label">Herbs in your stack</div>
+    <a href="herb-match.html" class="stat-card stat-tool">
+      <div class="stat-icon">🌿</div>
+      <div>
+        <div class="stat-val">Herb Match</div>
+        <div class="stat-label">Find herbs for your goals</div>
+      </div>
+    </a>
+    <div class="stat-card stat-seeds">
+      <div class="stat-val" id="stat-seeds">–</div>
+      <div class="stat-label">Your seeds</div>
     </div>
-    <div class="stat-card">
-      <div class="stat-val">2,500+</div>
-      <div class="stat-label">Herbs in the Herbadex</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-val" id="stat-community">1.2k</div>
-      <div class="stat-label">Community members</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-val" id="stat-date"></div>
-      <div class="stat-label">Today's date</div>
+    <a href="supreme.html" class="stat-card stat-tool">
+      <div class="stat-icon">📖</div>
+      <div>
+        <div class="stat-val">The Herbarium</div>
+        <div class="stat-label">Full A–Z herb library</div>
+      </div>
+    </a>
+    <div class="stat-card stat-rank">
+      <div class="stat-val" id="stat-rank">–</div>
+      <div class="stat-label">Your rank</div>
     </div>
   </div>
 
@@ -487,19 +526,18 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <div>
 
       <!-- MY STACK -->
-      <div class="panel" style="margin-bottom:1.25rem">
+      <div class="panel panel-tint-forest" style="margin-bottom:1.25rem">
         <div class="panel-head">
           <span class="panel-title">My herb stack</span>
           <a href="supreme.html" class="panel-action">Explore →</a>
         </div>
         <div class="panel-body">
           <div id="stack-display"></div>
-          <div id="stack-coverage"></div>
         </div>
       </div>
 
       <!-- ACTIVE HERBS LIST -->
-      <div class="panel" style="margin-bottom:1.25rem">
+      <div class="panel panel-tint-sage" style="margin-bottom:1.25rem">
         <div class="panel-head">
           <span class="panel-title">Your active herbs</span>
           <a href="profile.html" class="panel-action">Manage →</a>
@@ -510,7 +548,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
       </div>
 
       <!-- HERBAL ACTIVITY FEED -->
-      <div class="panel" style="margin-bottom:1.25rem">
+      <div class="panel panel-tint-gold" style="margin-bottom:1.25rem">
         <div class="panel-head">
           <span class="panel-title">Your herbal journey</span>
           <a href="profile.html" class="panel-action">View all →</a>
@@ -521,7 +559,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
       </div>
 
       <!-- QUICK TOOLS -->
-      <div class="panel" style="margin-bottom:1.25rem">
+      <div class="panel panel-tint-teal" style="margin-bottom:1.25rem">
         <div class="panel-head">
           <span class="panel-title">Tools</span>
         </div>
@@ -534,7 +572,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
             </a>
             <a href="supreme.html" class="tool-card">
               <div class="tc-icon">📖</div>
-              <div class="tc-name">Herbadex</div>
+              <div class="tc-name">The Herbarium</div>
               <div class="tc-desc">Full A–Z herb library — including compounds, actions & taxonomy</div>
             </a>
             <a href="herb-identifier.html" class="tool-card">
@@ -552,7 +590,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <div>
 
       <!-- HERB OF THE DAY -->
-      <div class="panel" style="margin-bottom:1.25rem">
+      <div class="panel panel-tint-amber" style="margin-bottom:1.25rem">
         <div class="panel-head">
           <span class="panel-title">Herb of the day</span>
           <a href="supreme.html" class="panel-action">View all →</a>
@@ -563,7 +601,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
       </div>
 
       <!-- COMMUNITY LATEST -->
-      <div class="panel">
+      <div class="panel panel-tint-plum">
         <div class="panel-head">
           <span class="panel-title">Latest from community</span>
           <a href="community.html" class="panel-action">See all →</a>
@@ -577,7 +615,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <div>
 
       <!-- TRENDING -->
-      <div class="panel" style="margin-bottom:1.25rem">
+      <div class="panel panel-tint-forest" style="margin-bottom:1.25rem">
         <div class="panel-head">
           <span class="panel-title">Trending this week</span>
           <a href="community.html" class="panel-action">Community →</a>
@@ -588,7 +626,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
       </div>
 
       <!-- SEASONAL -->
-      <div class="panel">
+      <div class="panel panel-tint-teal">
         <div class="panel-head">
           <span class="panel-title">Seasonal suggestion</span>
         </div>
@@ -600,19 +638,76 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 // ── USER ──────────────────────────────────────────────────────────
-const userName = localStorage.getItem('chi_display_name') || 'herbalist';
+let userName = localStorage.getItem('chi_display_name') || 'herbalist';
 const userStack = JSON.parse(localStorage.getItem('chi_phyto_stack') || '[]');
 
 document.getElementById('user-name').textContent = userName + '.';
-document.getElementById('stat-stack').textContent = userStack.length;
+const avatarInitialEl = document.getElementById('profile-avatar-initial');
+if(avatarInitialEl) avatarInitialEl.textContent = userName.trim().charAt(0).toUpperCase() || 'J';
 
 const h = new Date().getHours();
 document.getElementById('time-of-day').textContent = h < 12 ? 'morning' : h < 17 ? 'afternoon' : 'evening';
 
 const now = new Date();
-document.getElementById('stat-date').textContent = now.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+
+// ── LIVE PROFILE (seeds / rank) via Supabase ────────────────────────
+const SUPABASE_URL = 'https://fspofcdsraldxnnqqyfn.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_iGOFOZLHE4h5jBjl9i3BuQ_Cu7nYDVg';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+function chiSignOut(){
+  sb.auth.signOut().finally(() => { localStorage.clear(); window.location.href = 'index.html'; });
+}
+
+// Same Level → rank-name thresholds as profile.html's XP system, so the
+// two pages always agree on what a given level is called.
+function rankInfo(level){
+  level = level || 1;
+  if(level >= 7) return {name:'The Root', emoji:'🌳'};
+  if(level >= 4) return {name:'Sprout', emoji:'🌿'};
+  return {name:'Seed', emoji:'🌱'};
+}
+
+async function loadLiveProfile(){
+  const seedsEl = document.getElementById('stat-seeds');
+  const rankEl = document.getElementById('stat-rank');
+  try{
+    const { data: { session } } = await sb.auth.getSession();
+    if(!session){
+      // Not signed in — demo/placeholder values so the strip isn't blank
+      seedsEl.textContent = '100';
+      const ri = rankInfo(1);
+      rankEl.textContent = `${ri.emoji} ${ri.name}`;
+      return;
+    }
+    const { data: profile, error } = await sb.from('profiles')
+      .select('username,display_name,seed_balance,rank_level')
+      .eq('id', session.user.id)
+      .single();
+    if(error || !profile){
+      seedsEl.textContent = '—';
+      rankEl.textContent = '—';
+      return;
+    }
+    seedsEl.textContent = profile.seed_balance ?? '—';
+    const ri = rankInfo(profile.rank_level);
+    rankEl.textContent = `${ri.emoji} ${ri.name}`;
+    const liveName = profile.display_name || profile.username;
+    if(liveName){
+      userName = liveName;
+      document.getElementById('user-name').textContent = userName + '.';
+      if(avatarInitialEl) avatarInitialEl.textContent = userName.trim().charAt(0).toUpperCase() || 'J';
+    }
+  }catch(err){
+    console.warn('Could not load live profile:', err);
+    seedsEl.textContent = '—';
+    rankEl.textContent = '—';
+  }
+}
+loadLiveProfile();
 
 const subs = [
   'Here\'s what\'s happening in your herbal world today.',
@@ -627,31 +722,31 @@ const HERBS_ROTA = [
   {name:'Ashwagandha', latin:'Withania somnifera', tags:['Adaptogen','Nervine','Anti-inflammatory'],
    fact:'One of Ayurveda\'s most important rasayana herbs — used for over 3,000 years to build resilience and strength. Its species name literally means "sleep-inducing" in Latin.',
    insight:'KSM-66 extract has reduced cortisol by 27% in double-blind RCTs — one of the strongest stress-reduction results in herbal research.',
-   color:'rgba(74,140,101,.12)'},
+   color:'rgba(74,140,101,.12)', icon:'🌿'},
   {name:'Lion\'s Mane', latin:'Hericium erinaceus', tags:['Nootropic','Immunomodulator','NGF'],
    fact:'The only known dietary source of hericenones and erinacines — compounds that cross the blood-brain barrier and directly stimulate nerve growth factor synthesis.',
    insight:'Regular use over 8–12 weeks shows cumulative cognitive improvements in human trials. Effects build rather than peak early.',
-   color:'rgba(130,100,200,.1)'},
+   color:'rgba(130,100,200,.1)', icon:'🍄'},
   {name:'Nigella', latin:'Nigella sativa', tags:['Antimicrobial','Anti-inflammatory','Immunomodulator'],
    fact:'Known as "habbatus sauda" in Arabic medicine — described as "a remedy for everything except death" in historical Islamic medical texts.',
    insight:'Thymoquinone simultaneously inhibits COX-1/2, 5-LOX and NF-κB — a rare triple-pathway anti-inflammatory action found in very few natural compounds.',
-   color:'rgba(200,149,42,.08)'},
+   color:'rgba(200,149,42,.08)', icon:'🌱'},
   {name:'Olive Leaf', latin:'Olea europaea', tags:['Antiviral','Hypotensive','Antioxidant'],
    fact:'Olive trees can live for thousands of years. The oldest known olive tree in the world — in Crete — is estimated to be over 3,000 years old and still produces fruit.',
    insight:'Oleuropein, the primary active compound, prevents viral entry by binding to capsid proteins before they can attach to host cell receptors.',
-   color:'rgba(74,140,101,.1)'},
+   color:'rgba(74,140,101,.1)', icon:'🫒'},
   {name:'Moringa', latin:'Moringa oleifera', tags:['Nutritive','Antioxidant','Hypoglycaemic'],
    fact:'Called the "miracle tree" across sub-Saharan Africa and South Asia. Gram for gram, moringa leaves contain more vitamin C than oranges, more calcium than milk, and more iron than spinach.',
    insight:'Glucomoringin converts to isothiocyanates via myrosinase — the same Nrf2-activating mechanism as broccoli sulforaphane. Heat destroys myrosinase, so raw powder preserves this action.',
-   color:'rgba(74,180,101,.1)'},
+   color:'rgba(74,180,101,.1)', icon:'🌳'},
   {name:'Marshmallow', latin:'Althaea officinalis', tags:['Demulcent','Emollient','Mucosal'],
    fact:'The original marshmallow sweet was made from the whipped sap of the marshmallow root. The modern confection is a descendant of a genuine herbal preparation.',
    insight:'Cold-water extraction preserves far more mucilage than hot. For maximum gut-soothing action, steep marshmallow root in cold water for 4–8 hours rather than making a standard hot tea.',
-   color:'rgba(100,150,200,.08)'},
+   color:'rgba(100,150,200,.08)', icon:'🌼'},
   {name:'Dandelion', latin:'Taraxacum officinale', tags:['Hepatoprotective','Diuretic','Bitter tonic'],
    fact:'Every part of the dandelion is edible and medicinal — root, leaf, flower, and stem all have distinct compound profiles and different therapeutic actions.',
    insight:'Unlike pharmaceutical diuretics that deplete potassium, dandelion leaf contains potassium itself — one of the few diuretic herbs that replaces the electrolyte it causes you to lose.',
-   color:'rgba(200,180,42,.08)'},
+   color:'rgba(200,180,42,.08)', icon:'🌾'},
 ];
 
 const dayIndex = now.getDate() % HERBS_ROTA.length;
@@ -659,6 +754,7 @@ const hotd = HERBS_ROTA[dayIndex];
 
 document.getElementById('hotd-content').innerHTML = `
   <div class="hotd-banner" style="background:linear-gradient(135deg,${hotd.color},rgba(26,58,42,.3))">
+    <div class="hotd-img-placeholder" id="hotd-img-slot">${hotd.icon}</div>
     <div class="hotd-label">Today · ${now.toLocaleDateString('en-GB',{weekday:'long'})}</div>
     <div class="hotd-name">${hotd.name}</div>
     <div class="hotd-latin">${hotd.latin}</div>
@@ -675,12 +771,32 @@ document.getElementById('hotd-content').innerHTML = `
   </div>
 `;
 
+// Swap in a real community-submitted photo for this herb if one's been approved
+(async function loadHotdImage(){
+  try{
+    const { data: photos, error } = await sb.from('community_photos')
+      .select('image_url')
+      .ilike('herb_name', hotd.name)
+      .eq('status','approved')
+      .limit(1);
+    if(error || !photos || !photos.length) return;
+    const slot = document.getElementById('hotd-img-slot');
+    if(!slot) return;
+    const img = document.createElement('img');
+    img.className = 'hotd-img';
+    img.alt = hotd.name;
+    img.src = photos[0].image_url;
+    slot.replaceWith(img);
+  }catch(err){
+    console.warn('Could not load herb-of-the-day photo:', err);
+  }
+})();
+
 // ── MY STACK ──────────────────────────────────────────────────────
 const stackEl = document.getElementById('stack-display');
-const covEl = document.getElementById('stack-coverage');
 
 if(!userStack.length){
-  stackEl.innerHTML = `<div class="stack-empty">No herbs added yet. <a href="supreme.html" style="color:var(--tag-text);text-decoration:none">Visit the Herbadex →</a></div>`;
+  stackEl.innerHTML = `<div class="stack-empty">No herbs added yet. <a href="supreme.html" style="color:var(--tag-text);text-decoration:none">Visit The Herbarium →</a></div>`;
 } else {
   const HERB_COLORS=['#5cab7a','#e8a840','#6aaddd','#9b8de0','#cc7a5a','#cc6a9a','#7abf6a','#dd6a6a'];
   function hc(n){let h=0;for(let i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))&0xffff;return HERB_COLORS[h%HERB_COLORS.length];}
@@ -690,40 +806,12 @@ if(!userStack.length){
     ${userStack.slice(0,12).map(h=>`<a href="supreme.html?herb=${encodeURIComponent(h)}" class="stack-pill" style="background:${hex2rgba(hc(h),.12)};color:${hc(h)};border-color:${hex2rgba(hc(h),.3)}">${h}</a>`).join('')}
     ${userStack.length>12?`<span style="font-size:12px;color:var(--muted);padding:.28rem .5rem">+${userStack.length-12} more</span>`:''}
   </div>`;
-
-  // Coverage bars based on stack
-  const SYSTEMS = ['Nervous','Immune','Digestive','Cardiovascular','Cognitive'];
-  const SYSTEM_HERBS = {
-    'Nervous':['ashwagandha','passionflower','lemon balm','damiana','st john','valerian','skullcap','mugwort'],
-    'Immune':['nigella','olive leaf','lion\'s mane','echinacea','elderberry','reishi'],
-    'Digestive':['dandelion','marshmallow','ginger','fennel','peppermint','milk thistle'],
-    'Cardiovascular':['hibiscus','hawthorn','olive leaf','garlic','nettle'],
-    'Cognitive':['lion\'s mane','lemon balm','ashwagandha','bacopa','ginkgo','moringa'],
-  };
-  const stackLower = userStack.map(h=>h.toLowerCase());
-  const bars = SYSTEMS.map(sys=>{
-    const known = SYSTEM_HERBS[sys];
-    const covered = known.filter(k=>stackLower.some(s=>s.includes(k)||k.includes(s))).length;
-    const pct = Math.round((covered/known.length)*100);
-    return {sys, pct};
-  });
-
-  covEl.innerHTML = `<div class="stack-coverage">
-    <div class="cov-label">System coverage</div>
-    <div class="cov-bars">
-      ${bars.map(b=>`<div class="cov-row">
-        <div class="cov-sys">${b.sys}</div>
-        <div class="cov-bar-wrap"><div class="cov-bar" style="width:${b.pct}%"></div></div>
-        <div class="cov-pct">${b.pct}%</div>
-      </div>`).join('')}
-    </div>
-  </div>`;
 }
 
 // ── COMMUNITY FEED ────────────────────────────────────────────────
 const POSTS = [
   {av:'R',name:'Rhea K.',time:'2h ago',text:'Two weeks on the passionflower and ashwagandha stack and I genuinely cannot believe the difference in my sleep. I\'m waking up feeling like I actually rested.',tags:['Sleep','Ashwagandha','Passionflower']},
-  {av:'T',name:'Tomas B.',time:'5h ago',text:'Finally understood why my lemon balm tea hits differently than the capsules after reading its Herbadex profile. The volatile oils — they evaporate when you heat it too much. Cold steep from now on.',tags:['Lemon balm','Extraction']},
+  {av:'T',name:'Tomas B.',time:'5h ago',text:'Finally understood why my lemon balm tea hits differently than the capsules after reading its Herbarium profile. The volatile oils — they evaporate when you heat it too much. Cold steep from now on.',tags:['Lemon balm','Extraction']},
   {av:'S',name:'Saoirse M.',time:'Yesterday',text:'Does anyone else use moringa in their smoothies? Been doing it for 3 months now and my iron levels came back normal for the first time in years at my last blood test.',tags:['Moringa','Nutrition']},
   {av:'D',name:'Dev P.',time:'2 days ago',text:'The non-obvious box in Herb Match showing why nettle appeared for skin inflammation completely changed how I think about that herb. That\'s the kind of context I\'ve been looking for.',tags:['Herb Match','Nettle']},
 ];
@@ -1001,7 +1089,7 @@ function showTermPopup(e){
   popup.innerHTML = `
     <div class="term-popup-title">${term}</div>
     <div class="term-popup-content">${def}</div>
-    <a href="supreme.html?herb=${encodeURIComponent(term)}" class="term-popup-action">View in Herbadex →</a>
+    <a href="supreme.html?herb=${encodeURIComponent(term)}" class="term-popup-action">View in the Herbarium →</a>
     <br><a onclick="searchRelatedPosts('${term}')" class="term-popup-action" style="margin-top:4px;">Find posts about this →</a>
   `;
   

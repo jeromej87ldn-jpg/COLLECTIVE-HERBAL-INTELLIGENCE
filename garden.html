@@ -345,7 +345,7 @@ input[type=file]{display:none;}
   <div class="mobile-menu-section">
     <div class="mobile-menu-title">Tools</div>
     <a href="herb-match.html"><span class="mobile-menu-icon">🌿</span>Herb Match</a>
-    <a href="supreme.html"><span class="mobile-menu-icon">📖</span>Herbadex</a>
+    <a href="supreme.html"><span class="mobile-menu-icon">📖</span>The Herbarium</a>
     <a href="herb-identifier.html"><span class="mobile-menu-icon">🔍</span>Herb Identifier</a>
     <a href="herb-planner.html"><span class="mobile-menu-icon">🗓️</span>Herb Planner</a>
     <a href="resources.html"><span class="mobile-menu-icon">📚</span>Resources</a>
@@ -367,7 +367,7 @@ input[type=file]{display:none;}
     <a href="privacy-policy.html"><span class="mobile-menu-icon">🔒</span>Privacy</a>
     <a href="terms.html"><span class="mobile-menu-icon">📄</span>Terms</a>
     <a href="disclaimer.html"><span class="mobile-menu-icon">⚠️</span>Disclaimer</a>
-    <a href="index.html" onclick="localStorage.clear()"><span class="mobile-menu-icon">↩</span>Sign Out</a>
+    <a href="index.html" onclick="event.preventDefault();chiSignOut()"><span class="mobile-menu-icon">↩</span>Sign Out</a>
   </div>
 </div>
 
@@ -378,7 +378,7 @@ input[type=file]{display:none;}
   </a>
   <div class="nav-right">
     <a href="herb-match.html">Herb Match</a>
-    <a href="supreme.html">Herbadex</a>
+    <a href="supreme.html">The Herbarium</a>
     <a href="herb-planner.html">Herb Planner</a>
     <a href="resources.html">Resources</a>
     <a href="community.html">Community</a>
@@ -412,7 +412,7 @@ input[type=file]{display:none;}
   <div class="upload-card" onclick="openUpload()" id="upload-drop-zone">
     <span class="upload-icon">📸</span>
     <div class="upload-title">Contribute to the garden</div>
-    <p class="upload-sub">Share a photo of a herb, plant, or your collection. Your photo links directly to the Herbadex once identified.</p>
+    <p class="upload-sub">Share a photo of a herb, plant, or your collection. Your photo links directly to the Herbarium once identified.</p>
     <div class="upload-rules">
       <span class="upload-rule yes">✓ Whole plants</span>
       <span class="upload-rule yes">✓ Leaves & stems</span>
@@ -512,9 +512,35 @@ input[type=file]{display:none;}
   <div class="lb-inner" onclick="event.stopPropagation()" id="lb-content"></div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-const ME = localStorage.getItem('chi_display_name') || 'Jerome';
+// ── REAL AUTH ─────────────────────────────────────────────────────
+const SUPABASE_URL = 'https://fspofcdsraldxnnqqyfn.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_iGOFOZLHE4h5jBjl9i3BuQ_Cu7nYDVg';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let ME = localStorage.getItem('chi_display_name') || 'Jerome'; // placeholder until live profile loads
 const ME_INIT = ME.charAt(0).toUpperCase();
+
+(async function requireAuth(){
+  const { data: { session } } = await sb.auth.getSession();
+  if(!session){
+    window.location.href = 'index.html';
+    return;
+  }
+  window.CHI_SESSION = session;
+  const { data: profile } = await sb.from('profiles')
+    .select('username,display_name')
+    .eq('id', session.user.id)
+    .single();
+  if(profile){
+    ME = profile.display_name || profile.username || ME;
+  }
+})();
+
+function chiSignOut(){
+  sb.auth.signOut().finally(() => { localStorage.clear(); window.location.href = 'index.html'; });
+}
 
 // ── HERB LIST FOR AUTOCOMPLETE ────────────────────────────────────
 const HERB_LIST = ['Ashwagandha','Lion\'s mane','Nigella','Olive leaf','Nettle','Dandelion','Milk thistle','Moringa','Passionflower','Lemon balm','Mugwort','Hibiscus','Calendula','Marshmallow','Shilajit','Chamomile','Lavender','Peppermint','Rosemary','Thyme','Oregano','Sage','Echinacea','Elderberry','Valerian','Hawthorn','Ginkgo','Turmeric','Ginger','Garlic','Feverfew','Yarrow','Comfrey','Plantain','Skullcap'];
@@ -645,7 +671,7 @@ function renderGallery(){
         <button class="gc-heart${p.loved?' loved':''}" onclick="lovePhoto(${p.id},event)">
           ${p.loved?'❤️':'🤍'} ${p.loves}
         </button>
-        ${p.identified ? `<a class="gc-link" href="supreme.html?herb=${p.herb.toLowerCase().replace(/[^a-z0-9]/g,'-')}" onclick="event.stopPropagation()">Herbadex →</a>` : '<span class="gc-pending">Awaiting ID</span>'}
+        ${p.identified ? `<a class="gc-link" href="supreme.html?herb=${p.herb.toLowerCase().replace(/[^a-z0-9]/g,'-')}" onclick="event.stopPropagation()">The Herbarium →</a>` : '<span class="gc-pending">Awaiting ID</span>'}
       </div>
     </div>`).join('');
 }
@@ -677,7 +703,7 @@ function openLightbox(id){
           ${p.loved?'❤️':'🤍'} ${p.loves}
         </button>
         <div style="display:flex;gap:.75rem;align-items:center">
-          ${p.identified?`<a class="lb-herbdex" href="supreme.html?herb=${p.herb.toLowerCase().replace(/[^a-z0-9]/g,'-')}"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7.5 3l4 3.5-4 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg> View in Herbadex</a>`:''}
+          ${p.identified?`<a class="lb-herbdex" href="supreme.html?herb=${p.herb.toLowerCase().replace(/[^a-z0-9]/g,'-')}"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7.5 3l4 3.5-4 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg> View in the Herbarium</a>`:''}
           <button class="lb-close" onclick="closeLightbox()">Close</button>
         </div>
       </div>

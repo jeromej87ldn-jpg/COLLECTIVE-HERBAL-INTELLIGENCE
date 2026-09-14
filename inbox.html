@@ -284,7 +284,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   <div class="mobile-menu-section">
     <div class="mobile-menu-title">Tools</div>
     <a href="herb-match.html"><span class="mobile-menu-icon">🌿</span>Herb Match</a>
-    <a href="supreme.html"><span class="mobile-menu-icon">📖</span>Herbadex</a>
+    <a href="supreme.html"><span class="mobile-menu-icon">📖</span>The Herbarium</a>
     <a href="herb-identifier.html"><span class="mobile-menu-icon">🔍</span>Herb Identifier</a>
     <a href="herb-planner.html"><span class="mobile-menu-icon">🗓️</span>Herb Planner</a>
     <a href="resources.html"><span class="mobile-menu-icon">📚</span>Resources</a>
@@ -306,7 +306,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <a href="privacy-policy.html"><span class="mobile-menu-icon">🔒</span>Privacy</a>
     <a href="terms.html"><span class="mobile-menu-icon">📄</span>Terms</a>
     <a href="disclaimer.html"><span class="mobile-menu-icon">⚠️</span>Disclaimer</a>
-    <a href="index.html" onclick="localStorage.clear()"><span class="mobile-menu-icon">↩</span>Sign Out</a>
+    <a href="index.html" onclick="event.preventDefault();chiSignOut()"><span class="mobile-menu-icon">↩</span>Sign Out</a>
   </div>
 </div>
 
@@ -317,7 +317,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   </a>
   <div class="nav-right">
     <a href="herb-match.html">Herb Match</a>
-    <a href="supreme.html">Herbadex</a>
+    <a href="supreme.html">The Herbarium</a>
     <a href="resources.html">Resources</a>
     <a href="community.html">Community</a>
     <a href="profile.html">Profile</a>
@@ -407,8 +407,34 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-const ME = localStorage.getItem('chi_display_name') || 'You';
+// ── REAL AUTH ─────────────────────────────────────────────────────
+const SUPABASE_URL = 'https://fspofcdsraldxnnqqyfn.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_iGOFOZLHE4h5jBjl9i3BuQ_Cu7nYDVg';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let ME = localStorage.getItem('chi_display_name') || 'You'; // placeholder until live profile loads
+
+(async function requireAuth(){
+  const { data: { session } } = await sb.auth.getSession();
+  if(!session){
+    window.location.href = 'index.html';
+    return;
+  }
+  window.CHI_SESSION = session;
+  const { data: profile } = await sb.from('profiles')
+    .select('username,display_name')
+    .eq('id', session.user.id)
+    .single();
+  if(profile){
+    ME = profile.display_name || profile.username || ME;
+  }
+})();
+
+function chiSignOut(){
+  sb.auth.signOut().finally(() => { localStorage.clear(); window.location.href = 'index.html'; });
+}
 
 // Demo messages
 const MESSAGES = [
@@ -425,9 +451,9 @@ const MESSAGES = [
       {from:'Carrie', text:'One thing I noticed — on screen 4 (goals) the chips are a bit small on mobile, hard to tap accurately. Might be worth making them slightly taller.', time:'Yesterday, 4:15pm'},
     ]
   },
-  {id:3, from:'CHI Community', avatar:'⬡', subject:'Welcome to C.H.I', preview:'Your account is ready. Explore the Herbadex, try Herb Match, and connect with the community...', time:'3 days ago', unread:false,
+  {id:3, from:'CHI Community', avatar:'⬡', subject:'Welcome to C.H.I', preview:'Your account is ready. Explore The Herbarium, try Herb Match, and connect with the community...', time:'3 days ago', unread:false,
     thread:[
-      {from:'CHI Community', text:'Welcome to Collective Herbal Intelligence. Your account is now active. Start by exploring the Herbadex, try the Herb Match consultation, and introduce yourself in the community. The knowledge is yours — the journey starts now.', time:'3 days ago'},
+      {from:'CHI Community', text:'Welcome to Collective Herbal Intelligence. Your account is now active. Start by exploring The Herbarium, try the Herb Match consultation, and introduce yourself in the community. The knowledge is yours — the journey starts now.', time:'3 days ago'},
     ]
   },
 ];
