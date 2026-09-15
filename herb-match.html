@@ -536,6 +536,22 @@ function buildAvoidList(extra) {
   return [...new Set(combined.filter(Boolean))];
 }
 
+// ─── SAVED HERBS (bookmark — "curious about", not owned) ───
+// Shared chi_saved_herbs key, same one Herb Planner's "My Saved Herbs"
+// filter and the profile page's Saved > Images tab read from. Separate
+// from the stack above: adding to your stack is now a deliberate action
+// you take from the herb's own profile page, after reading it.
+function getSavedHerbs() {
+  try { return JSON.parse(localStorage.getItem('chi_saved_herbs') || '[]'); } catch (e) { return []; }
+}
+function toggleSaveHerb(herbName) {
+  const saved = getSavedHerbs();
+  const idx = saved.indexOf(herbName);
+  if (idx === -1) saved.push(herbName); else saved.splice(idx, 1);
+  localStorage.setItem('chi_saved_herbs', JSON.stringify(saved));
+  updateResultsGrid();
+}
+
 // ─── STATE PERSISTENCE (survives page refresh) ──────
 // The results grid, selected issues/specifics, and whichever herb profile
 // is open all live in memory — which a full page navigation/refresh wipes
@@ -774,11 +790,11 @@ function updateResultsGrid() {
     return;
   }
 
-  const owned = getOwnedHerbs();
+  const savedHerbs = getSavedHerbs();
 
   validHerbs.forEach(herb => {
     const safeName = herb.name.replace(/'/g, "\\'");
-    const saved = owned.includes(herb.name);
+    const saved = savedHerbs.includes(herb.name);
     const card = document.createElement('div');
     card.className = 'herb-card';
     card.setAttribute('data-herb', herb.name);
@@ -787,7 +803,7 @@ function updateResultsGrid() {
       <div class="herb-card-top">
         <span class="herb-swatch"></span>
         ${herb.category ? `<span class="tag">${herb.category}</span>` : '<span></span>'}
-        <button type="button" class="stack-star ${saved ? 'is-saved' : ''}" data-stack-name="${herb.name}" title="${saved ? 'Remove from your stack' : 'Save to your stack'}">${saved ? '★' : '☆'}</button>
+        <button type="button" class="stack-star ${saved ? 'is-saved' : ''}" data-stack-name="${herb.name}" title="${saved ? 'Remove from saved' : 'Save'}">${saved ? '★' : '☆'}</button>
       </div>
       <div class="herb-name">${herb.name}</div>
       <div class="herb-latin">${herb.latin || ''}</div>
@@ -806,7 +822,7 @@ function updateResultsGrid() {
   });
 
   grid.querySelectorAll('.stack-star').forEach(btn => {
-    btn.addEventListener('click', () => toggleHerbInStack(btn.dataset.stackName));
+    btn.addEventListener('click', () => toggleSaveHerb(btn.dataset.stackName));
   });
 }
 

@@ -70,6 +70,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .greeting-sub{font-size:13.5px;color:var(--muted);margin-top:.4rem;}
 
 .phead{display:flex;gap:1.75rem;align-items:flex-start;background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:2rem;position:relative;overflow:hidden;}
+.phead-backdrop{position:absolute;top:0;right:0;bottom:0;width:42%;z-index:0;overflow:hidden;pointer-events:none;}
+.phead-backdrop img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.4;-webkit-mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.4) 30%,#000 75%);mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.4) 30%,#000 75%);}
+@media(max-width:680px){.phead-backdrop{display:none;}}
 .phead::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 0% 0%,rgba(74,140,101,.12),transparent 55%);pointer-events:none;}
 .avatar{width:96px;height:96px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:42px;color:var(--gold-light);background:linear-gradient(150deg,var(--forest-mid),var(--forest));border:2px solid var(--gold);position:relative;z-index:1;overflow:hidden;background-size:cover;background-position:center;}
 .avatar-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:rgba(12,26,16,.6);color:var(--parchment);opacity:0;cursor:pointer;transition:opacity .2s;}
@@ -104,9 +107,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 
 .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;margin-top:1.25rem;}
 @media(max-width:680px){.stats{grid-template-columns:repeat(2,1fr);}.stats .stat:last-child{grid-column:1/-1;}}
-.stat{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:.85rem 1rem;cursor:pointer;transition:all .18s;position:relative;overflow:hidden;}
+.stat{background:var(--card);border:2px solid var(--gold);border-radius:10px;padding:.85rem 1rem;cursor:pointer;transition:all .18s;position:relative;overflow:hidden;box-shadow:0 0 24px rgba(200,149,42,.18);}
+.stat:hover{box-shadow:0 0 24px rgba(200,149,42,.3);}
 .stat:hover{border-color:rgba(200,149,42,.3);background:rgba(200,149,42,.05);}
-.stat.active{background:rgba(200,149,42,.09);border-color:rgba(200,149,42,.45);}
+.stat.active{background:rgba(200,149,42,.09);border-color:var(--gold-light);box-shadow:0 0 24px rgba(200,149,42,.35);}
 .stat.active::after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--gold);}
 .stat.active .stat-num{color:var(--gold-light);}
 .stat-num{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;color:var(--gold-light);line-height:1;}
@@ -192,8 +196,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .comp-rank{font-size:10px;color:var(--muted);}
 
 /* HERB STACK */
-.stack{display:flex;flex-direction:column;gap:.9rem;}
-.herb{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:1.1rem 1.25rem;transition:border-color .2s;}
+.stack{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;align-items:start;}
+.herb{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:1.1rem 1.25rem;transition:border-color .2s;cursor:pointer;}
+.herb:hover{border-color:rgba(200,149,42,.3);}
+.herb.is-open{border-color:rgba(200,149,42,.45);}
+.herb-caret{margin-left:6px;font-size:9px;color:var(--muted);flex-shrink:0;}
+.herb-collapse{display:none;}
+.herb.is-open .herb-collapse{display:block;}
 .herb:hover{border-color:rgba(200,149,42,.35);}
 .herb-top{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;}
 .herb-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
@@ -234,6 +243,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .saved-trad{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-top:.35rem;}
 .saved-prim{font-size:13px;color:rgba(245,240,232,.7);line-height:1.55;margin-top:.5rem;}
 .saved-actions{display:flex;gap:.5rem;margin-top:.85rem;}
+.saved-img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.9rem;}
+.saved-img-card{position:relative;display:block;aspect-ratio:1/1;border-radius:10px;overflow:hidden;border:1px solid var(--card-border);text-decoration:none;background:var(--card);}
+.saved-img-card img{width:100%;height:100%;object-fit:cover;display:block;}
+.saved-img-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:32px;opacity:.6;}
+.saved-img-name{position:absolute;left:0;right:0;bottom:0;padding:.5rem .65rem .55rem;background:linear-gradient(to top,rgba(0,0,0,.72),transparent);color:var(--parchment);font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:500;}
 .locked-note{background:var(--card);border:1px dashed var(--card-border);border-radius:10px;padding:2rem;text-align:center;color:var(--muted);font-size:14px;}
 
 /* ACHIEVEMENTS */
@@ -601,13 +615,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 
 <div class="wrap">
 
-  <div class="greeting fade owner-only">
-    <div class="greeting-eyebrow">Your profile</div>
-    <h1 class="greeting-title">Every herbalist has a story — <em id="greet-name">this is yours.</em></h1>
-    <p class="greeting-sub">Your stack, your posts, your garden — everything you've grown on CHI, in one place.</p>
-  </div>
-
   <div class="phead fade">
+    <div class="phead-backdrop" id="phead-backdrop">
+      <img id="phead-backdrop-img" alt="" style="display:none">
+    </div>
     <div class="avatar" id="p-avatar">
       <span id="avatar-initial">S</span>
       <div class="avatar-overlay owner-only" onclick="document.getElementById('avatar-input').click()">
@@ -664,7 +675,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <div class="saved-subcats">
       <button class="saved-subcat active" data-sub="herbs" onclick="setSavedSub('herbs',this)">🌿 Herbs <span id="sc-herbs">0</span></button>
       <button class="saved-subcat" data-sub="posts" onclick="setSavedSub('posts',this)">📝 Posts <span id="sc-posts">0</span></button>
-      <button class="saved-subcat" data-sub="matches" onclick="setSavedSub('matches',this)">🎯 Herb Match results <span id="sc-matches">0</span></button>
+      <button class="saved-subcat" data-sub="images" onclick="setSavedSub('images',this)">🖼️ Images <span id="sc-images">0</span></button>
     </div>
     <div id="saved-body"></div>
   </div>
@@ -922,13 +933,39 @@ let stack = [
   }catch(e){}
 })();
 
-let savedHerbsList = [
-  {name:'Tulsi (Holy Basil)', color:'#5c8c4a', trad:'Ayurveda', prim:'Adaptogen that lifts mood and steadies the stress response.'},
-  {name:"Lion's Mane", color:'#5c62b8', trad:'Functional mushroom', prim:'Supports focus, memory and nerve health.'},
-  {name:'Nettle', color:'#3a8c5a', trad:'Western herbalism', prim:'Mineral-rich tonic; traditionally used for allergies and joints.'},
-  {name:'Reishi', color:'#9a3a3a', trad:'TCM', prim:'Calming immune adaptogen, the "mushroom of immortality".'},
-  {name:'Gotu Kola', color:'#4a8c8c', trad:'Ayurveda', prim:'Brahmi-adjacent; supports circulation and clear thinking.'},
-];
+// ── SAVED HERBS (chi_saved_herbs) ──
+// Shared with the save star on The Herbarium, Herb Match and Herb Planner —
+// a plain herb-name array. Saving is just "curious about this", separate
+// from the Herb Stack (which now only grows from a herb's own profile page).
+const SAVED_COLORS = ['#5cab7a','#e8a840','#6aaddd','#9b8de0','#cc7a5a','#cc6a9a','#7abf6a','#dd6a6a'];
+function colorForHerbName(name){
+  let hash=0; for(let i=0;i<name.length;i++) hash=(hash*31+name.charCodeAt(i))&0xffff;
+  return SAVED_COLORS[hash % SAVED_COLORS.length];
+}
+function loadSavedHerbNames(){
+  try{ const v = JSON.parse(localStorage.getItem('chi_saved_herbs') || '[]'); return Array.isArray(v) ? v : []; }catch(e){ return []; }
+}
+function persistSavedHerbNames(){
+  try{ localStorage.setItem('chi_saved_herbs', JSON.stringify(savedHerbsList.map(h=>h.name))); }catch(e){}
+}
+let savedHerbsList = loadSavedHerbNames().map(name => ({name, color: colorForHerbName(name)}));
+
+// Lazily-fetched photos for the Images tab — same Wikimedia source each
+// herb's own profile page uses, so nothing is uploaded or stored by us.
+let savedHerbImageCache = {};
+async function ensureSavedHerbImage(name){
+  if(savedHerbImageCache[name]) return;
+  savedHerbImageCache[name] = 'loading';
+  try{
+    const res = await fetch('/.netlify/functions/herb-images', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ herbName: name })
+    });
+    const data = await res.json();
+    savedHerbImageCache[name] = (data && data.images && data.images[0]) || 'error';
+  }catch(e){ savedHerbImageCache[name] = 'error'; }
+  if(savedSub === 'images') renderSaved();
+}
 
 // Saved posts (saved from other members' profiles / community)
 let savedPosts = JSON.parse(localStorage.getItem('chi_saved_posts') || '[]');
@@ -938,9 +975,6 @@ if(!savedPosts.length){
     {id:'demo2', title:'Why I switched from capsules to tinctures for my adaptogens', author:'The_Root_Walker', group:'Stacks', excerpt:'Bioavailability was the main reason, but the ritual of it matters more than I expected.', date:'1 month ago'},
   ];
 }
-
-// Saved Herb Match results
-let savedMatches = JSON.parse(localStorage.getItem('chi_saved_matches') || '[]');
 
 // The user's own published posts
 let myPosts = JSON.parse(localStorage.getItem('chi_my_posts') || '[]');
@@ -1092,7 +1126,7 @@ function setView(mode){
     ? 'How you use herbs in daily life. Tap any herb to open its Herbarium page; tap a note to add or edit how you use it.'
     : `How ${PROFILE_NAME} uses herbs in daily life. Tap any herb to open its Herbarium page. Curious about a note? Send a message.`;
   document.getElementById('saved-sub').textContent = mode==='owner'
-    ? 'Herbs, posts and Herb Match results you\u2019ve saved to revisit.'
+    ? 'Herbs, posts and images you\u2019ve saved to revisit.'
     : `What ${PROFILE_NAME} has saved — herbs, posts and results they\u2019re keeping.`;
   renderGallery();
 }
@@ -1155,7 +1189,7 @@ function renderStats(){
 }
 
 function savedCount(){
-  return savedHerbsList.length + savedPosts.length + savedMatches.length;
+  return savedHerbsList.length + savedPosts.length;
 }
 
 // ── COMPANIONS ──
@@ -1168,9 +1202,16 @@ function renderCompanions(){
 }
 
 // ── HERB STACK ──
+// Herb cards behave like an accordion: opening one (to see notes / how this
+// herb is used) collapses whichever other card was open, so the stack reads
+// as a scannable grid rather than a wall of expanded text.
+let openStackIndex = null;
+function toggleStackCard(i){ openStackIndex = (openStackIndex === i) ? null : i; renderStack(); }
+
 function renderStack(){
   const owner = document.body.dataset.view === 'owner';
   document.getElementById('stack').innerHTML = stack.map((h, i) => {
+    const isOpen = openStackIndex === i;
     let noteBlock;
     if(owner){
       noteBlock = `
@@ -1178,13 +1219,13 @@ function renderStack(){
           <div class="note-label">🖊 How I use this</div>
           <div class="note-display" id="nd-${i}">
             ${h.note ? `<div class="note-text">${escapeHtml(h.note)}</div>` : `<div class="note-empty">No note yet — add how you use this herb.</div>`}
-            <span class="note-editlink" onclick="editNote(${i})">${h.note?'Edit note':'+ Add note'}</span>
+            <span class="note-editlink" onclick="event.stopPropagation();editNote(${i})">${h.note?'Edit note':'+ Add note'}</span>
           </div>
           <div class="note-edit" id="ne-${i}">
-            <textarea id="nt-${i}" placeholder="e.g. One cup before bed, blended with lemon balm…">${escapeHtml(h.note)}</textarea>
+            <textarea id="nt-${i}" onclick="event.stopPropagation()" placeholder="e.g. One cup before bed, blended with lemon balm…">${escapeHtml(h.note)}</textarea>
             <div class="note-actions">
-              <button class="mini-btn mini-save" onclick="saveNote(${i})">Save note</button>
-              <button class="mini-btn mini-cancel" onclick="cancelNote(${i})">Cancel</button>
+              <button class="mini-btn mini-save" onclick="event.stopPropagation();saveNote(${i})">Save note</button>
+              <button class="mini-btn mini-cancel" onclick="event.stopPropagation();cancelNote(${i})">Cancel</button>
             </div>
           </div>
         </div>`;
@@ -1193,22 +1234,23 @@ function renderStack(){
         <div class="note-wrap">
           <div class="note-label">🌿 How ${PROFILE_NAME} uses this</div>
           <div class="note-text">${escapeHtml(h.note)}</div>
-          <span class="note-ask" onclick="openMsg('${escapeHtml(h.name)}')">Ask ${PROFILE_NAME} about this →</span>
-        </div>` : '';
+          <span class="note-ask" onclick="event.stopPropagation();openMsg('${escapeHtml(h.name)}')">Ask ${PROFILE_NAME} about this →</span>
+        </div>` : `<div class="note-wrap"><div class="note-empty">No notes shared for this herb yet.</div></div>`;
     }
     return `
-      <div class="herb">
+      <div class="herb ${isOpen ? 'is-open' : ''}" onclick="toggleStackCard(${i})">
         <div class="herb-top">
           <span class="herb-dot" style="background:${h.color}"></span>
-          <a class="herb-name" href="supreme.html?herb=${slug(h.name)}">${h.name}</a>
+          <a class="herb-name" href="supreme.html?herb=${slug(h.name)}" onclick="event.stopPropagation()">${h.name}</a>
           <span class="herb-form">${h.form}</span>
           <span class="herb-status ${({active:'st-active',break:'st-break',complete:'st-complete'})[h.status]}">${({active:'Active',break:'On break',complete:'Completed'})[h.status]}</span>
+          <span class="herb-caret">${isOpen ? '▲' : '▼'}</span>
         </div>
-        ${noteBlock}
+        <div class="herb-collapse">${noteBlock}</div>
       </div>`;
   }).join('');
 }
-function editNote(i){ document.getElementById('nd-'+i).style.display='none'; document.getElementById('ne-'+i).style.display='block'; document.getElementById('nt-'+i).focus(); }
+function editNote(i){ openStackIndex=i; renderStack(); document.getElementById('nd-'+i).style.display='none'; document.getElementById('ne-'+i).style.display='block'; document.getElementById('nt-'+i).focus(); }
 function cancelNote(i){ document.getElementById('nt-'+i).value=stack[i].note; document.getElementById('ne-'+i).style.display='none'; document.getElementById('nd-'+i).style.display='block'; }
 function saveNote(i){ stack[i].note=document.getElementById('nt-'+i).value.trim(); renderStack(); }
 
@@ -1233,10 +1275,11 @@ function renderSaved(){
   const owner = document.body.dataset.view === 'owner';
   const body = document.getElementById('saved-body');
 
-  // Update sub-category counts
+  // Update sub-category counts (Herbs and Images are two views of the same
+  // saved-herbs list, so they share a count)
   document.getElementById('sc-herbs').textContent = savedHerbsList.length;
   document.getElementById('sc-posts').textContent = savedPosts.length;
-  document.getElementById('sc-matches').textContent = savedMatches.length;
+  document.getElementById('sc-images').textContent = savedHerbsList.length;
 
   if(!owner && !savedPublic){
     body.innerHTML = `<div class="locked-note">🔒 ${PROFILE_NAME} keeps their saved items private.</div>`;
@@ -1244,17 +1287,15 @@ function renderSaved(){
   }
 
   if(savedSub === 'herbs'){
-    if(!savedHerbsList.length){ body.innerHTML = emptyNote('No saved herbs yet. Bookmark herbs from The Herbarium or other members\' profiles.'); return; }
+    if(!savedHerbsList.length){ body.innerHTML = emptyNote('No saved herbs yet. Tap the ☆ on any herb in The Herbarium, Herb Match or Herb Planner to bookmark it here.'); return; }
     body.innerHTML = `<div class="saved-grid">` + savedHerbsList.map((h,i)=>`
       <div class="saved">
         <div class="saved-top">
           <span class="herb-dot" style="background:${h.color}"></span>
           <a class="saved-name" href="supreme.html?herb=${slug(h.name)}">${h.name}</a>
         </div>
-        <div class="saved-trad">${h.trad}</div>
-        <div class="saved-prim">${h.prim}</div>
         <div class="saved-actions owner-only">
-          <button class="mini-btn mini-save" onclick="addToStack(${i})">＋ Add to stack</button>
+          <a class="mini-btn mini-save" href="supreme.html?herb=${slug(h.name)}">📖 View profile</a>
           <button class="mini-btn mini-cancel" onclick="removeSavedHerb(${i})">Remove</button>
         </div>
       </div>`).join('') + `</div>`;
@@ -1271,25 +1312,20 @@ function renderSaved(){
         </div>
       </div>`).join('');
   }
-  else if(savedSub === 'matches'){
-    if(!savedMatches.length){ body.innerHTML = emptyNote('No saved Herb Match results yet. After a consultation, tap "Save these results" to keep the full breakdown here.'); return; }
-    body.innerHTML = savedMatches.map((m,i)=>`
-      <div class="saved-match">
-        <div class="sm-head">
-          <div class="sm-date">🎯 Herb Match · ${m.date}</div>
-          <button class="mini-btn mini-cancel owner-only" onclick="removeSavedMatch(${i})">Remove</button>
-        </div>
-        <div class="sm-context">
-          <div class="sm-q"><span>Main concern:</span> ${m.concern||'—'}</div>
-          <div class="sm-q"><span>Duration:</span> ${m.duration||'—'}</div>
-          <div class="sm-q"><span>Goals:</span> ${m.goals||'—'}</div>
-          ${m.lifestyle?`<div class="sm-q"><span>Lifestyle:</span> ${m.lifestyle}</div>`:''}
-        </div>
-        <div class="sm-herbs-label">Recommended herbs</div>
-        <div class="sm-herbs">
-          ${(m.herbs||[]).map(h=>`<a class="sm-herb-link" href="supreme.html?herb=${slug(h)}">${h} →</a>`).join('')}
-        </div>
-      </div>`).join('');
+  else if(savedSub === 'images'){
+    if(!savedHerbsList.length){ body.innerHTML = emptyNote('No saved herbs yet — tap the ☆ on any herb (in The Herbarium, Herb Match or Herb Planner) to see its photo here.'); return; }
+    body.innerHTML = `<div class="saved-img-grid">` + savedHerbsList.map(h=>{
+      const img = savedHerbImageCache[h.name];
+      if(!img || img === 'loading') ensureSavedHerbImage(h.name);
+      const inner = (img && img !== 'loading' && img !== 'error')
+        ? `<img src="${img.url}" alt="${h.name}" loading="lazy">`
+        : `<div class="saved-img-placeholder" style="background:${h.color}22">🌿</div>`;
+      return `
+        <a class="saved-img-card" href="supreme.html?herb=${slug(h.name)}">
+          ${inner}
+          <div class="saved-img-name">${h.name}</div>
+        </a>`;
+    }).join('') + `</div>`;
   }
 }
 
@@ -1297,15 +1333,8 @@ function emptyNote(msg){
   return `<div style="text-align:center;padding:2.5rem 1rem;color:var(--muted);font-size:14px;line-height:1.7;font-style:italic">${msg}</div>`;
 }
 
-function addToStack(i){
-  const h = savedHerbsList[i];
-  stack.push({name:h.name, color:h.color, form:'Newly added · set a form', status:'active', note:''});
-  savedHerbsList.splice(i,1);
-  renderSaved(); renderStack(); renderStats();
-}
-function removeSavedHerb(i){ savedHerbsList.splice(i,1); renderSaved(); renderStats(); }
+function removeSavedHerb(i){ savedHerbsList.splice(i,1); persistSavedHerbNames(); renderSaved(); renderStats(); }
 function removeSavedPost(i){ savedPosts.splice(i,1); localStorage.setItem('chi_saved_posts',JSON.stringify(savedPosts)); renderSaved(); renderStats(); }
-function removeSavedMatch(i){ savedMatches.splice(i,1); localStorage.setItem('chi_saved_matches',JSON.stringify(savedMatches)); renderSaved(); renderStats(); }
 
 // ── POSTS (user's own published posts) ──
 function renderPosts(){
@@ -1379,8 +1408,14 @@ function handleAvatarFile(e){
   }; img.src=ev.target.result; };
   reader.readAsDataURL(file); e.target.value='';
 }
-function applyAvatar(d){ const a=document.getElementById('p-avatar'); a.style.backgroundImage=`url('${d}')`; a.classList.add('has-photo'); hasAvatarPhoto=true; renderActions(); }
-function removeAvatar(){ const a=document.getElementById('p-avatar'); a.style.backgroundImage=''; a.classList.remove('has-photo'); hasAvatarPhoto=false; try{localStorage.removeItem('chi_avatar');}catch(e){} renderActions(); }
+function applyAvatar(d){
+  const a=document.getElementById('p-avatar'); a.style.backgroundImage=`url('${d}')`; a.classList.add('has-photo'); hasAvatarPhoto=true; renderActions();
+  const bd=document.getElementById('phead-backdrop-img'); if(bd){ bd.src=d; bd.style.display='block'; }
+}
+function removeAvatar(){
+  const a=document.getElementById('p-avatar'); a.style.backgroundImage=''; a.classList.remove('has-photo'); hasAvatarPhoto=false; try{localStorage.removeItem('chi_avatar');}catch(e){} renderActions();
+  const bd=document.getElementById('phead-backdrop-img'); if(bd){ bd.style.display='none'; bd.src=''; }
+}
 function restoreAvatar(){ try{const d=localStorage.getItem('chi_avatar'); if(d) applyAvatar(d);}catch(e){} }
 
 // ── SETTINGS ──

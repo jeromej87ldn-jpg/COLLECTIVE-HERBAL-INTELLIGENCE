@@ -337,6 +337,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ch
 .stack-btn.in-stack{background:transparent;border:1px solid rgba(74,140,101,.4);color:var(--forest-mid);}
 .hero-stack{margin-top:1.1rem;font-size:13px;padding:.6rem 1.2rem;position:relative;z-index:1;}
 .hero-stack.in-stack{border-color:rgba(232,184,75,.55);color:var(--gold-light);}
+.save-star-btn{margin-top:1.1rem;margin-left:.6rem;position:relative;z-index:1;width:38px;height:38px;border-radius:50%;border:1px solid rgba(232,184,75,.4);background:rgba(255,255,255,.06);color:var(--gold-light);font-size:18px;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .18s;vertical-align:middle;}
+.save-star-btn:hover{background:rgba(200,149,42,.15);border-color:var(--gold);}
+.save-star-btn.is-saved{background:rgba(200,149,42,.22);border-color:var(--gold);color:var(--gold-light);}
 
 /* Spiritual highlight block */
 .spirit-block{background:linear-gradient(135deg,rgba(26,58,42,.07) 0%,rgba(200,149,42,.06) 100%);border:1px solid rgba(200,149,42,.2);border-radius:6px;padding:1.75rem;margin:1.5rem 0;}
@@ -892,6 +895,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
           <div class="ph-latin" id="ph-latin">—</div>
           <div class="ph-origin" id="ph-origin">—</div>
           <button class="stack-btn hero-stack" id="stack-btn" style="display:none;"></button>
+          <button class="save-star-btn" id="save-star-btn" style="display:none;" title="Save"></button>
         </div>
         <div class="ph-aside">
           <div class="ph-aside-card">
@@ -1234,6 +1238,16 @@ function renderProfile(h) {
     heroStackBtn.onclick = () => toggleStack(h.name);
   }
 
+  const heroSaveBtn = document.getElementById('save-star-btn');
+  if (heroSaveBtn) {
+    const isSaved = isHerbSaved(h.name);
+    heroSaveBtn.style.display = 'inline-flex';
+    heroSaveBtn.textContent = isSaved ? '★' : '☆';
+    heroSaveBtn.classList.toggle('is-saved', isSaved);
+    heroSaveBtn.title = isSaved ? 'Remove from saved' : 'Save';
+    heroSaveBtn.onclick = () => toggleSaveHerb(h.name);
+  }
+
   // Interactions & cautions — surfaced on the scrolling ticker under the hero.
   // Content is duplicated once for a seamless loop; duration scales with length.
   (function(){
@@ -1529,6 +1543,29 @@ function isInStack(name) {
   try { return JSON.parse(localStorage.getItem('chi_phyto_stack') || '[]').some(s => s.toLowerCase() === name.toLowerCase()); }
   catch (e) { return false; }
 }
+// Save (bookmark) — separate from the stack above. Saving just means
+// "curious about this, not ready to own it yet"; shared chi_saved_herbs
+// key so it also feeds Herb Planner's "My Saved Herbs" filter and the
+// profile page's Saved > Images tab.
+function isHerbSaved(name) {
+  try { return JSON.parse(localStorage.getItem('chi_saved_herbs') || '[]').some(s => s.toLowerCase() === name.toLowerCase()); }
+  catch (e) { return false; }
+}
+function toggleSaveHerb(name) {
+  let saved = [];
+  try { saved = JSON.parse(localStorage.getItem('chi_saved_herbs') || '[]'); } catch (e) {}
+  const i = saved.findIndex(s => s.toLowerCase() === name.toLowerCase());
+  const nowSaved = i === -1;
+  if (nowSaved) saved.push(name); else saved.splice(i, 1);
+  localStorage.setItem('chi_saved_herbs', JSON.stringify(saved));
+  const btn = document.getElementById('save-star-btn');
+  if (btn) {
+    btn.textContent = nowSaved ? '★' : '☆';
+    btn.classList.toggle('is-saved', nowSaved);
+    btn.title = nowSaved ? 'Remove from saved' : 'Save';
+  }
+}
+
 function toggleStack(name) {
   let stack = [];
   try { stack = JSON.parse(localStorage.getItem('chi_phyto_stack') || '[]'); } catch (e) {}
