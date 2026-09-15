@@ -64,20 +64,23 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 /* ── PAGE SHELL ── */
 .page{max-width:1200px;margin:0 auto;padding:2rem 2rem 5rem;}
 
-/* ── GREETING ── */
-.greeting-row{display:flex;align-items:flex-end;justify-content:space-between;gap:1.5rem;margin-bottom:1.75rem;}
-.greeting{flex:1;min-width:0;}
+/* ── GREETING (full-width panel, image bleeds in from the right like a
+   herb profile hero — same treatment as Herb of the Day / The Herbarium) ── */
+.greeting-row{position:relative;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;margin-bottom:1.75rem;padding:1.85rem 2rem;background:var(--card);border:1px solid var(--card-border);border-radius:12px;overflow:hidden;min-height:150px;}
+.greeting{flex:1;min-width:0;position:relative;z-index:2;}
 .greeting-eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:10px;margin-bottom:.5rem;}
 .greeting-eyebrow::before{content:'';width:16px;height:1px;background:var(--gold);opacity:.6;}
 .greeting-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,42px);font-weight:300;line-height:1.1;color:var(--parchment);}
 .greeting-title em{font-style:italic;color:var(--gold-light);}
 .greeting-sub{font-size:13.5px;color:var(--muted);margin-top:.4rem;}
 
-/* ── PROFILE AVATAR (matches herb-of-day fade treatment) ── */
-.profile-avatar-frame{position:relative;width:120px;height:120px;border-radius:12px;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,rgba(74,140,101,.28),rgba(200,149,42,.18));border:1px solid var(--card-border);}
-.profile-avatar-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.5) 25%,#000 65%);mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.5) 25%,#000 65%);}
-.profile-avatar-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:500;color:var(--gold-light);opacity:.6;-webkit-mask-image:linear-gradient(to right,transparent 0%,#000 55%);mask-image:linear-gradient(to right,transparent 0%,#000 55%);}
-@media(max-width:680px){.greeting-row{flex-direction:column-reverse;align-items:flex-start;}.profile-avatar-frame{width:64px;height:64px;}.profile-avatar-placeholder{font-size:24px;}}
+/* ── PROFILE AVATAR (matches herb-of-day / herb-profile fade treatment —
+   a wide image bled in from the right, faded on the left, not a boxed
+   thumbnail) ── */
+.profile-avatar-frame{position:absolute;top:0;right:0;bottom:0;width:48%;z-index:1;overflow:hidden;pointer-events:none;}
+.profile-avatar-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55;-webkit-mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.5) 30%,#000 75%);mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.5) 30%,#000 75%);}
+.profile-avatar-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:500;color:var(--gold-light);opacity:.22;-webkit-mask-image:linear-gradient(to right,transparent 0%,#000 55%);mask-image:linear-gradient(to right,transparent 0%,#000 55%);}
+@media(max-width:680px){.greeting-row{padding:1.5rem;min-height:120px;}.profile-avatar-frame{width:70%;}.profile-avatar-frame img{opacity:.35;}.profile-avatar-placeholder{font-size:52px;opacity:.16;}}
 
 /* ── THREE COLUMN LAYOUT ── */
 .three-col{display:grid;grid-template-columns:260px 1fr 260px;gap:1.25rem;align-items:start;}
@@ -503,10 +506,13 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
         <div class="stat-label">Find herbs for your goals</div>
       </div>
     </a>
-    <div class="stat-card stat-seeds">
-      <div class="stat-val" id="stat-seeds">–</div>
-      <div class="stat-label">Your seeds</div>
-    </div>
+    <a href="herb-planner.html" class="stat-card stat-tool">
+      <div class="stat-icon">🗓️</div>
+      <div>
+        <div class="stat-val">Herb Planner</div>
+        <div class="stat-label">Plan your routine</div>
+      </div>
+    </a>
     <a href="supreme.html" class="stat-card stat-tool">
       <div class="stat-icon">📖</div>
       <div>
@@ -685,27 +691,23 @@ function rankInfo(level){
 }
 
 async function loadLiveProfile(){
-  const seedsEl = document.getElementById('stat-seeds');
   const rankEl = document.getElementById('stat-rank');
   try{
     const { data: { session } } = await sb.auth.getSession();
     if(!session){
-      // Not signed in — demo/placeholder values so the strip isn't blank
-      seedsEl.textContent = '100';
+      // Not signed in — demo/placeholder value so the strip isn't blank
       const ri = rankInfo(1);
       rankEl.textContent = `${ri.emoji} ${ri.name}`;
       return;
     }
     const { data: profile, error } = await sb.from('profiles')
-      .select('username,display_name,seed_balance,rank_level')
+      .select('username,display_name,rank_level')
       .eq('id', session.user.id)
       .single();
     if(error || !profile){
-      seedsEl.textContent = '—';
       rankEl.textContent = '—';
       return;
     }
-    seedsEl.textContent = profile.seed_balance ?? '—';
     const ri = rankInfo(profile.rank_level);
     rankEl.textContent = `${ri.emoji} ${ri.name}`;
     const liveName = profile.display_name || profile.username;
@@ -716,7 +718,6 @@ async function loadLiveProfile(){
     }
   }catch(err){
     console.warn('Could not load live profile:', err);
-    seedsEl.textContent = '—';
     rankEl.textContent = '—';
   }
 }
@@ -726,7 +727,6 @@ const subs = [
   'Here\'s what\'s happening in your herbal world today.',
   'Your stack is ready. The plants are waiting.',
   'A good day to explore something new.',
-  'Knowledge compounds. So do herbs.',
 ];
 document.getElementById('greeting-sub').textContent = subs[now.getDate() % subs.length];
 
