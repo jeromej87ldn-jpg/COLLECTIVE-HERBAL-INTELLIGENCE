@@ -74,10 +74,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .greeting-sub{font-size:13.5px;color:var(--muted);margin-top:.4rem;}
 
 /* ── PROFILE AVATAR (matches herb-of-day fade treatment) ── */
-.profile-avatar-frame{position:relative;width:168px;height:168px;border-radius:14px;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,rgba(74,140,101,.28),rgba(200,149,42,.18));border:1px solid var(--card-border);}
-.profile-avatar-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-mask-image:linear-gradient(to right,rgba(0,0,0,.65) 0%,#000 50%);mask-image:linear-gradient(to right,rgba(0,0,0,.65) 0%,#000 50%);}
-.profile-avatar-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:500;color:var(--gold-light);-webkit-mask-image:linear-gradient(to right,rgba(0,0,0,.65) 0%,#000 50%);mask-image:linear-gradient(to right,rgba(0,0,0,.65) 0%,#000 50%);}
-@media(max-width:680px){.greeting-row{flex-direction:column-reverse;align-items:flex-start;}.profile-avatar-frame{width:84px;height:84px;}.profile-avatar-placeholder{font-size:32px;}}
+.profile-avatar-frame{position:relative;width:120px;height:120px;border-radius:12px;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,rgba(74,140,101,.28),rgba(200,149,42,.18));border:1px solid var(--card-border);}
+.profile-avatar-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.5) 25%,#000 65%);mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.5) 25%,#000 65%);}
+.profile-avatar-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:500;color:var(--gold-light);opacity:.6;-webkit-mask-image:linear-gradient(to right,transparent 0%,#000 55%);mask-image:linear-gradient(to right,transparent 0%,#000 55%);}
+@media(max-width:680px){.greeting-row{flex-direction:column-reverse;align-items:flex-start;}.profile-avatar-frame{width:64px;height:64px;}.profile-avatar-placeholder{font-size:24px;}}
 
 /* ── THREE COLUMN LAYOUT ── */
 .three-col{display:grid;grid-template-columns:260px 1fr 260px;gap:1.25rem;align-items:start;}
@@ -127,6 +127,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .hotd-banner{border-radius:8px;padding:1rem;margin-bottom:.85rem;background:linear-gradient(135deg,rgba(26,58,42,.8),rgba(45,92,66,.4));border:1px solid rgba(200,149,42,.2);position:relative;overflow:hidden;min-height:96px;}
 .hotd-banner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 80% 20%,rgba(200,149,42,.08),transparent 60%);z-index:1;}
 .hotd-img{position:absolute;top:0;right:0;bottom:0;width:58%;object-fit:cover;opacity:.55;-webkit-mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.5) 30%,#000 75%);mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.5) 30%,#000 75%);}
+.hotd-img-credit{position:absolute;right:.7rem;bottom:.4rem;font-size:9px;color:rgba(245,240,232,.4);z-index:2;pointer-events:none;line-height:1.4;}
 .hotd-img-placeholder{position:absolute;top:0;right:0;bottom:0;width:58%;display:flex;align-items:center;justify-content:center;font-size:64px;opacity:.16;-webkit-mask-image:linear-gradient(to right,transparent 0%,#000 55%);mask-image:linear-gradient(to right,transparent 0%,#000 55%);}
 .hotd-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.35rem;position:relative;z-index:2;}
 .hotd-name{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;color:var(--parchment);line-height:1.1;margin-bottom:2px;position:relative;z-index:2;}
@@ -201,6 +202,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .stat-tool .stat-icon{font-size:24px;line-height:1;flex-shrink:0;}
 .stat-tool .stat-val{font-size:15px;color:var(--parchment);font-family:'Cormorant Garamond',serif;font-weight:500;}
 .stat-tool .stat-label{margin-top:2px;}
+.stat-seeds{background:linear-gradient(160deg,rgba(200,149,42,.12),var(--card) 70%);}
+.stat-seeds .stat-val{color:#e8b84b;}
 .stat-rank{background:linear-gradient(160deg,rgba(130,100,200,.1),var(--card) 70%);}
 .stat-rank .stat-val{color:var(--tag-text);}
 
@@ -486,7 +489,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
       <p class="greeting-sub" id="greeting-sub">Here's what's happening in your herbal world today.</p>
     </div>
     <div class="profile-avatar-frame" id="profile-avatar">
-      <!-- Placeholder until a photo is provided — swap in <img class="..." src="your-photo.jpg"> -->
+      <img id="profile-avatar-img" alt="" style="display:none">
       <div class="profile-avatar-placeholder" id="profile-avatar-initial">J</div>
     </div>
   </div>
@@ -500,13 +503,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
         <div class="stat-label">Find herbs for your goals</div>
       </div>
     </a>
-    <a href="herb-planner.html" class="stat-card stat-tool">
-      <div class="stat-icon">🗓️</div>
-      <div>
-        <div class="stat-val">Herb Planner</div>
-        <div class="stat-label">Plan your herbal routine</div>
-      </div>
-    </a>
+    <div class="stat-card stat-seeds">
+      <div class="stat-val" id="stat-seeds">–</div>
+      <div class="stat-label">Your seeds</div>
+    </div>
     <a href="supreme.html" class="stat-card stat-tool">
       <div class="stat-icon">📖</div>
       <div>
@@ -649,6 +649,18 @@ document.getElementById('user-name').textContent = userName + '.';
 const avatarInitialEl = document.getElementById('profile-avatar-initial');
 if(avatarInitialEl) avatarInitialEl.textContent = userName.trim().charAt(0).toUpperCase() || 'J';
 
+// Photo uploaded on profile.html is stored locally on this device/browser
+// (same chi_avatar key profile.html uses) — show it here too if present.
+try{
+  const savedAvatar = localStorage.getItem('chi_avatar');
+  const avatarImgEl = document.getElementById('profile-avatar-img');
+  if(savedAvatar && avatarImgEl){
+    avatarImgEl.src = savedAvatar;
+    avatarImgEl.style.display = 'block';
+    if(avatarInitialEl) avatarInitialEl.style.display = 'none';
+  }
+}catch(e){}
+
 const h = new Date().getHours();
 document.getElementById('time-of-day').textContent = h < 12 ? 'morning' : h < 17 ? 'afternoon' : 'evening';
 
@@ -673,23 +685,27 @@ function rankInfo(level){
 }
 
 async function loadLiveProfile(){
+  const seedsEl = document.getElementById('stat-seeds');
   const rankEl = document.getElementById('stat-rank');
   try{
     const { data: { session } } = await sb.auth.getSession();
     if(!session){
       // Not signed in — demo/placeholder values so the strip isn't blank
+      seedsEl.textContent = '100';
       const ri = rankInfo(1);
       rankEl.textContent = `${ri.emoji} ${ri.name}`;
       return;
     }
     const { data: profile, error } = await sb.from('profiles')
-      .select('username,display_name,rank_level')
+      .select('username,display_name,seed_balance,rank_level')
       .eq('id', session.user.id)
       .single();
     if(error || !profile){
+      seedsEl.textContent = '—';
       rankEl.textContent = '—';
       return;
     }
+    seedsEl.textContent = profile.seed_balance ?? '—';
     const ri = rankInfo(profile.rank_level);
     rankEl.textContent = `${ri.emoji} ${ri.name}`;
     const liveName = profile.display_name || profile.username;
@@ -700,6 +716,7 @@ async function loadLiveProfile(){
     }
   }catch(err){
     console.warn('Could not load live profile:', err);
+    seedsEl.textContent = '—';
     rankEl.textContent = '—';
   }
 }
@@ -767,24 +784,35 @@ document.getElementById('hotd-content').innerHTML = `
   </div>
 `;
 
-// Swap in a real community-submitted photo for this herb if one's been approved
+// Swap in the herb's real photo — same Wikimedia Commons source The
+// Herbarium's own profile page uses (herb-images.js), so Herb of the Day
+// shows the same image you'd see on that herb's actual profile.
 (async function loadHotdImage(){
   try{
-    const { data: photos, error } = await sb.from('community_photos')
-      .select('image_url')
-      .ilike('herb_name', hotd.name)
-      .eq('status','approved')
-      .limit(1);
-    if(error || !photos || !photos.length) return;
+    const res = await fetch('/.netlify/functions/herb-images', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ herbName: hotd.name, latinName: hotd.latin })
+    });
+    if(!res.ok) return;
+    const data = await res.json();
+    const images = (data.images || []).filter(im => im && im.url);
+    if(!images.length) return;
     const slot = document.getElementById('hotd-img-slot');
     if(!slot) return;
     const img = document.createElement('img');
     img.className = 'hotd-img';
     img.alt = hotd.name;
-    img.src = photos[0].image_url;
+    img.src = images[0].url;
     slot.replaceWith(img);
+    if(images[0].credit){
+      const credit = document.createElement('div');
+      credit.className = 'hotd-img-credit';
+      credit.textContent = images[0].credit;
+      img.insertAdjacentElement('afterend', credit);
+    }
   }catch(err){
-    console.warn('Could not load herb-of-the-day photo:', err);
+    console.warn('Could not load herb-of-the-day image:', err);
   }
 })();
 
