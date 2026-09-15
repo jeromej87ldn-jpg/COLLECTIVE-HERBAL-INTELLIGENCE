@@ -44,9 +44,9 @@ nav {
   backdrop-filter:blur(16px);
   border-bottom:1px solid rgba(200,149,42,0.12);
 }
-.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
-.nav-chi{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;letter-spacing:.16em;color:var(--gold-light);}
-.nav-full{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:rgba(245,240,232,0.4);}
+.nav-logo{text-decoration:none;display:flex;flex-direction:column;justify-content:center;}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:600;color:var(--gold-light);letter-spacing:.09em;line-height:1;}
+.nav-full{font-size:13px;letter-spacing:.17em;text-transform:uppercase;color:rgba(245,240,232,.5);margin-top:4px;}
 .nav-right{display:flex;align-items:center;gap:1.5rem;}
 .nav-right a{color:rgba(245,240,232,0.55);text-decoration:none;font-size:13px;transition:color .2s;}
 .nav-right a:hover{color:var(--gold-light);}
@@ -339,9 +339,9 @@ nav {
 }
 /* NAV */
 nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:var(--forest);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:100;}
-.nav-logo{text-decoration:none;display:flex;flex-direction:column;}
-.nav-chi{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-light);letter-spacing:.1em;}
-.nav-full{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.5);}
+.nav-logo{text-decoration:none;display:flex;flex-direction:column;justify-content:center;}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:600;color:var(--gold-light);letter-spacing:.09em;line-height:1;}
+.nav-full{font-size:13px;letter-spacing:.17em;text-transform:uppercase;color:rgba(245,240,232,.5);margin-top:4px;}
 .nav-right{display:flex;align-items:center;gap:1.5rem;}
 .nav-right a{color:rgba(245,240,232,.6);text-decoration:none;font-size:13px;transition:color .2s;}
 .nav-right a:hover,.nav-right a.active{color:var(--gold-light);}
@@ -349,6 +349,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .nav-inbox{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:6px;border:1px solid rgba(255,255,255,0.08);color:rgba(245,240,232,.6);transition:all .2s;}
 .nav-inbox:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
 @media(max-width:760px){.nav-right a:not(.nav-cta):not(.nav-inbox){display:none;}}
+@media(max-width:600px){.nav-chi{font-size:26px}.nav-full{font-size:9px}}
 </style>
 </head>
 <body>

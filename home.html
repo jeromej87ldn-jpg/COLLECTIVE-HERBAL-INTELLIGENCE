@@ -74,10 +74,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .greeting-sub{font-size:13.5px;color:var(--muted);margin-top:.4rem;}
 
 /* ── PROFILE AVATAR (matches herb-of-day fade treatment) ── */
-.profile-avatar-frame{position:relative;width:120px;height:120px;border-radius:12px;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,rgba(74,140,101,.28),rgba(200,149,42,.18));border:1px solid var(--card-border);}
-.profile-avatar-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.5) 25%,#000 65%);mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.5) 25%,#000 65%);}
-.profile-avatar-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:500;color:var(--gold-light);opacity:.6;-webkit-mask-image:linear-gradient(to right,transparent 0%,#000 55%);mask-image:linear-gradient(to right,transparent 0%,#000 55%);}
-@media(max-width:680px){.greeting-row{flex-direction:column-reverse;align-items:flex-start;}.profile-avatar-frame{width:64px;height:64px;}.profile-avatar-placeholder{font-size:24px;}}
+.profile-avatar-frame{position:relative;width:168px;height:168px;border-radius:14px;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,rgba(74,140,101,.28),rgba(200,149,42,.18));border:1px solid var(--card-border);}
+.profile-avatar-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;-webkit-mask-image:linear-gradient(to right,rgba(0,0,0,.65) 0%,#000 50%);mask-image:linear-gradient(to right,rgba(0,0,0,.65) 0%,#000 50%);}
+.profile-avatar-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:500;color:var(--gold-light);-webkit-mask-image:linear-gradient(to right,rgba(0,0,0,.65) 0%,#000 50%);mask-image:linear-gradient(to right,rgba(0,0,0,.65) 0%,#000 50%);}
+@media(max-width:680px){.greeting-row{flex-direction:column-reverse;align-items:flex-start;}.profile-avatar-frame{width:84px;height:84px;}.profile-avatar-placeholder{font-size:32px;}}
 
 /* ── THREE COLUMN LAYOUT ── */
 .three-col{display:grid;grid-template-columns:260px 1fr 260px;gap:1.25rem;align-items:start;}
@@ -201,8 +201,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .stat-tool .stat-icon{font-size:24px;line-height:1;flex-shrink:0;}
 .stat-tool .stat-val{font-size:15px;color:var(--parchment);font-family:'Cormorant Garamond',serif;font-weight:500;}
 .stat-tool .stat-label{margin-top:2px;}
-.stat-seeds{background:linear-gradient(160deg,rgba(200,149,42,.12),var(--card) 70%);}
-.stat-seeds .stat-val{color:#e8b84b;}
 .stat-rank{background:linear-gradient(160deg,rgba(130,100,200,.1),var(--card) 70%);}
 .stat-rank .stat-val{color:var(--tag-text);}
 
@@ -502,10 +500,13 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
         <div class="stat-label">Find herbs for your goals</div>
       </div>
     </a>
-    <div class="stat-card stat-seeds">
-      <div class="stat-val" id="stat-seeds">–</div>
-      <div class="stat-label">Your seeds</div>
-    </div>
+    <a href="herb-planner.html" class="stat-card stat-tool">
+      <div class="stat-icon">🗓️</div>
+      <div>
+        <div class="stat-val">Herb Planner</div>
+        <div class="stat-label">Plan your herbal routine</div>
+      </div>
+    </a>
     <a href="supreme.html" class="stat-card stat-tool">
       <div class="stat-icon">📖</div>
       <div>
@@ -672,27 +673,23 @@ function rankInfo(level){
 }
 
 async function loadLiveProfile(){
-  const seedsEl = document.getElementById('stat-seeds');
   const rankEl = document.getElementById('stat-rank');
   try{
     const { data: { session } } = await sb.auth.getSession();
     if(!session){
       // Not signed in — demo/placeholder values so the strip isn't blank
-      seedsEl.textContent = '100';
       const ri = rankInfo(1);
       rankEl.textContent = `${ri.emoji} ${ri.name}`;
       return;
     }
     const { data: profile, error } = await sb.from('profiles')
-      .select('username,display_name,seed_balance,rank_level')
+      .select('username,display_name,rank_level')
       .eq('id', session.user.id)
       .single();
     if(error || !profile){
-      seedsEl.textContent = '—';
       rankEl.textContent = '—';
       return;
     }
-    seedsEl.textContent = profile.seed_balance ?? '—';
     const ri = rankInfo(profile.rank_level);
     rankEl.textContent = `${ri.emoji} ${ri.name}`;
     const liveName = profile.display_name || profile.username;
@@ -703,7 +700,6 @@ async function loadLiveProfile(){
     }
   }catch(err){
     console.warn('Could not load live profile:', err);
-    seedsEl.textContent = '—';
     rankEl.textContent = '—';
   }
 }

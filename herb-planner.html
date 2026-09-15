@@ -50,9 +50,9 @@ h1{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(26px,4
 
 /* ── NAV (matches site-wide C.H.I nav) ── */
 nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:var(--forest);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:100;}
-.nav-logo{text-decoration:none;display:flex;flex-direction:column;}
-.nav-chi{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-light);letter-spacing:.1em;}
-.nav-full{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.5);}
+.nav-logo{text-decoration:none;display:flex;flex-direction:column;justify-content:center;}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:600;color:var(--gold-light);letter-spacing:.09em;line-height:1;}
+.nav-full{font-size:13px;letter-spacing:.17em;text-transform:uppercase;color:rgba(245,240,232,.5);margin-top:4px;}
 .nav-right{display:flex;align-items:center;gap:1.5rem;}
 .nav-right>a{color:rgba(245,240,232,.6);text-decoration:none;font-size:13px;transition:color .2s;}
 .nav-right>a:hover,.nav-right>a.active{color:var(--gold-light);}
@@ -452,6 +452,7 @@ input:focus,select:focus{border-color:rgba(200,149,42,.4);}
     width: 240px;
   }
 }
+@media(max-width:600px){.nav-chi{font-size:26px}.nav-full{font-size:9px}}
 </style>
 </head>
 <body>

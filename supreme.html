@@ -414,7 +414,7 @@ footer{background:var(--night);padding:3rem 0 2rem;border-top:1px solid rgba(200
 }
 /* NAV */
 nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:var(--forest);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:100;}
-.nav-logo{text-decoration:none;display:flex;flex-direction:column;}
+.nav-logo{text-decoration:none;display:flex;flex-direction:column;justify-content:center;}
 .nav-left{display:flex;align-items:center;gap:1.25rem;}
 .nav-search{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:.42rem .75rem;color:rgba(245,240,232,.5);transition:border-color .2s;}
 .nav-search:focus-within{border-color:rgba(200,149,42,.55);}
@@ -424,8 +424,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .mobile-search input{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);border-radius:6px;padding:.65rem .85rem;color:var(--parchment);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;}
 .mobile-search input::placeholder{color:rgba(245,240,232,.4);}
 .mobile-search{padding:.25rem 1rem .5rem;}
-.nav-chi{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-light);letter-spacing:.1em;}
-.nav-full{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(245,240,232,.5);}
+.nav-chi{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:600;color:var(--gold-light);letter-spacing:.09em;line-height:1;}
+.nav-full{font-size:13px;letter-spacing:.17em;text-transform:uppercase;color:rgba(245,240,232,.5);margin-top:4px;}
 .nav-right{display:flex;align-items:center;gap:1.5rem;}
 .nav-right a{color:rgba(245,240,232,.6);text-decoration:none;font-size:13px;transition:color .2s;}
 .nav-right a:hover,.nav-right a.active{color:var(--gold-light);}
@@ -679,7 +679,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     .herb-suggestions-item .confidence.medium { background: #fff9c4; color: #f57f17; }
     .herb-suggestions-item .confidence.low { background: #ffccbc; color: #d84315; }
 
-    </style>
+    @media(max-width:600px){.nav-chi{font-size:26px}.nav-full{font-size:9px}}
+</style>
 </head>
 <body>
 
