@@ -318,19 +318,7 @@ exports.handler = async (event) => {
     }
 
     if (itemType === 'unknown') {
-      if (!catalogInfo) {
-        // Not in the catalog at all — could be anything, including non-herbal terms.
-        // Block it rather than risk calling the Claude API on junk input.
-        return {
-          statusCode: 400,
-          body: JSON.stringify({
-            error: 'not_an_herb',
-            message: `"${herbName.trim()}" was not found in the herb library. Please search for a recognised herb name.`
-          })
-        };
-      }
-      // In the catalog but type field not yet set — allow through and flag for cleanup.
-      console.warn(`[WARNING] ${herbName} is in the catalog but has no type field — allowing generation. Add a type to this catalog entry.`);
+      console.warn(`[WARNING] ${herbName} has unknown type — allowing profile generation. Update categorization if needed.`);
     }
     // END TYPE-BASED VALIDATION
 

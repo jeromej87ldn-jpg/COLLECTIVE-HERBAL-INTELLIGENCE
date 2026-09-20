@@ -84,11 +84,7 @@ class FuzzyHerbMatcher {
     if (!queryTokens.length || !herbTokens.length) return 0;
     const matches = queryTokens.filter(qt =>
       herbTokens.some(ht => {
-        // Herb token contains query token — always valid (e.g. "elderberry" contains "elder")
         if (ht.includes(qt)) return true;
-        // Query token contains herb token — only valid if herb token is at least 60% the
-        // length of the query token. This allows "cats" to match "cat" (75%) but stops
-        // "computer" matching short tokens like "com" (37%).
         if (qt.includes(ht) && ht.length / qt.length >= 0.6) return true;
         return false;
       })
