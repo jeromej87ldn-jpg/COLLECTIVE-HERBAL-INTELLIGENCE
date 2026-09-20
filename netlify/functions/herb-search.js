@@ -189,7 +189,7 @@ exports.handler = async (event) => {
     }
 
     // Load herb index
-    const indexPath = path.join(__dirname, '..', 'herbadex_master_catalog.json');
+    const indexPath = path.join(__dirname, '..', '..', 'herbadex_master_catalog.json');
     const herbData = JSON.parse(fs.readFileSync(indexPath, 'utf-8'));
     const herbs = Array.isArray(herbData) ? herbData : (herbData.herbs || Object.values(herbData));
 
