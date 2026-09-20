@@ -318,7 +318,79 @@ exports.handler = async (event) => {
     }
 
     if (itemType === 'unknown') {
-      console.warn(`[WARNING] ${herbName} has unknown type — allowing profile generation. Update categorization if needed.`);
+      // Not in catalog with a known type — validate against catalog names before
+      // calling the Claude API. This is the main gate that stops non-herb terms
+      // (e.g. "computer", "ring", "chicken") from generating profiles.
+      // Uses fuzzy matching so misspellings (e.g. "mullien" → "mullein",
+      // "tumeric" → "turmeric") are still allowed through.
+      try {
+        const catalogPath = `${__dirname}/../../herbadex_master_catalog.json`;
+        if (fs.existsSync(catalogPath)) {
+          const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
+          const catalogNames = (catalog.herbs || []).map(h => (h.name || '').toLowerCase());
+
+          // Build a word-level index for multi-word names (e.g. "licorice" from "licorice root")
+          const catalogWords = new Set();
+          for (const n of catalogNames) {
+            n.split(/[\s'-]+/).filter(w => w.length > 3).forEach(w => catalogWords.add(w));
+          }
+
+          const inputLower = name.toLowerCase().trim();
+          const THRESHOLD = 0.70;
+
+          // Levenshtein similarity inline (no extra imports needed)
+          const levSim = (a, b) => {
+            const longer = a.length > b.length ? a : b;
+            const shorter = a.length > b.length ? b : a;
+            if (longer.length === 0) return 1.0;
+            const costs = [];
+            for (let i = 0; i <= longer.length; i++) {
+              let last = i;
+              for (let j = 0; j <= shorter.length; j++) {
+                if (i === 0) { costs[j] = j; }
+                else if (j > 0) {
+                  let nv = costs[j - 1];
+                  if (longer[i-1] !== shorter[j-1]) nv = Math.min(nv, last, costs[j]) + 1;
+                  costs[j-1] = last; last = nv;
+                }
+              }
+              if (i > 0) costs[shorter.length] = last;
+            }
+            return (longer.length - costs[shorter.length]) / longer.length;
+          };
+
+          // Check full name match
+          let bestScore = 0;
+          for (const n of catalogNames) {
+            const s = levSim(inputLower, n);
+            if (s > bestScore) bestScore = s;
+          }
+
+          // Check word-level match (single-word inputs only)
+          if (bestScore < THRESHOLD && !inputLower.includes(' ')) {
+            for (const w of catalogWords) {
+              const s = levSim(inputLower, w);
+              if (s > bestScore) bestScore = s;
+            }
+          }
+
+          if (bestScore < THRESHOLD) {
+            console.log(`[BLOCKED] "${herbName}" not recognised as an herb (best catalog match: ${bestScore.toFixed(3)})`);
+            return {
+              statusCode: 400,
+              body: JSON.stringify({
+                error: 'not_an_herb',
+                message: `"${herbName.trim()}" wasn't recognised as a herb in our library. Please check the spelling, or browse The Herbarium to find what you're looking for.`
+              })
+            };
+          }
+
+          console.log(`[CATALOG FUZZY PASS] "${herbName}" matched catalog at ${bestScore.toFixed(3)} — allowing generation.`);
+        }
+      } catch (e) {
+        // If catalog check fails for any reason, allow through rather than block valid herbs
+        console.warn(`[CATALOG CHECK ERROR] ${e.message} — allowing generation as fallback.`);
+      }
     }
     // END TYPE-BASED VALIDATION
 
