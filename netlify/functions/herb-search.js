@@ -82,12 +82,43 @@ class FuzzyHerbMatcher {
 
   tokenSimilarity(queryTokens, herbTokens) {
     if (!queryTokens.length || !herbTokens.length) return 0;
-    const matches = queryTokens.filter(qt => herbTokens.some(ht => ht.includes(qt) || qt.includes(ht)));
+    const matches = queryTokens.filter(qt =>
+      herbTokens.some(ht => {
+        if (ht.includes(qt)) return true;
+        if (qt.includes(ht) && ht.length / qt.length >= 0.6) return true;
+        return false;
+      })
+    );
     return matches.length / Math.max(queryTokens.length, herbTokens.length);
   }
 
   findMatches(query, maxResults = 20, minScore = 30) {
     if (!query || query.trim().length < 2) return [];
+
+    // Hard block — common non-herb words that fuzzy matching might
+    // accidentally score against herb names. Exact word match only.
+    const NON_HERBAL = new Set([
+      'computer','phone','laptop','tablet','camera','television','radio',
+      'ring','necklace','bracelet','watch','jewel','jewelry','diamond',
+      'chicken','beef','pork','lamb','fish','egg','eggs','milk','cheese',
+      'butter','bread','pasta','sugar','salt','flour','rice','wheat',
+      'potato','tomato','lettuce','onion','carrot','cabbage','broccoli',
+      'cat','dog','bird','horse','cow','pig','sheep','mouse','rat',
+      'hello','goodbye','thanks','please','sorry','yes','no','okay',
+      'money','bank','credit','debt','loan','cash','price','cost',
+      'happy','sad','angry','tired','sick','dead','alive','free','busy',
+      'cancer','virus','bacteria','disease','infection','fever','pain',
+      'blood','bone','brain','heart','liver','kidney','lung','skin',
+      'water','fire','earth','wind','rain','snow','sun','moon','star',
+      'house','home','room','door','window','floor','wall','roof',
+      'car','bus','train','plane','boat','truck','bike','road',
+      'book','paper','pen','pencil','desk','chair','table','bed',
+      'shirt','pants','shoes','hat','coat','dress','sock','bag',
+      'game','sport','music','movie','film','song','dance','art',
+      'school','work','job','office','meeting','class','test','exam'
+    ]);
+
+    if (NON_HERBAL.has(query.toLowerCase().trim())) return [];
 
     const queryNorm = query.toLowerCase().trim();
     const queryTokens = this.tokenize(queryNorm);
@@ -130,8 +161,9 @@ class FuzzyHerbMatcher {
         const latinSimilarity = this.levenshteinSimilarity(queryNorm, entry.latinLower);
         const maxSimilarity = Math.max(nameSimilarity, latinSimilarity);
 
-        // LOOSENED: 0.60 → 0.45 (more forgiving of typos)
-        if (maxSimilarity >= 0.45) {
+        // 0.55 blocks false positives (e.g. "computer") while keeping
+        // real misspellings (e.g. "tumeric" scores 0.875, "mullien" 0.714)
+        if (maxSimilarity >= 0.55) {
           score = 50 + (maxSimilarity * 30);
           matchType = nameSimilarity > latinSimilarity ? 'fuzzy_name' : 'fuzzy_latin';
         }
