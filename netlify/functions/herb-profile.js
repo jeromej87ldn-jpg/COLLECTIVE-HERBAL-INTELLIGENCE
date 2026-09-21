@@ -13,6 +13,19 @@ if (process.env.SUPABASE_URL && process.env.SUPABASE_KEY) {
   supabase = createClient(supabaseProjectUrl(), process.env.SUPABASE_KEY);
 }
 
+// Load catalog once at module level — cached in memory for all requests.
+// This is more reliable than reading from disk on every request, and ensures
+// the path resolves correctly at cold-start time.
+let HERB_CATALOG = [];
+try {
+  const catalogPath = path.join(__dirname, '..', '..', 'herbadex_master_catalog.json');
+  const catalogData = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
+  HERB_CATALOG = catalogData.herbs || [];
+  console.log(`[CATALOG] Loaded ${HERB_CATALOG.length} herbs from catalog.`);
+} catch (e) {
+  console.error('[CATALOG] Failed to load catalog at startup:', e.message);
+}
+
 const SYSTEM_PROMPT = `You are the Herbadex -- CHI's herb knowledge engine.
 
 IMPORTANT DISCLAIMER: Profiles are generated for educational reference only and are NOT medical advice. Users should consult healthcare professionals before using any herbs, especially if pregnant, nursing, or on medications.
@@ -166,17 +179,13 @@ function mergeSources(existing, verified) {
 
 exports.handler = async (event) => {
 
-  // Load herb catalog to check status
+  // Look up herb in the in-memory catalog (loaded once at module level above)
   const getCatalogStatus = (herbName) => {
     try {
-      const catalogPath = `${__dirname}/../../herbadex_master_catalog.json`;
-      if (fs.existsSync(catalogPath)) {
-        const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
-        const herb = catalog.herbs.find(h => h.name.toLowerCase() === herbName.toLowerCase());
-        return herb ? { status: herb.status || 'unknown', herb } : null;
-      }
+      const herb = HERB_CATALOG.find(h => h.name.toLowerCase() === herbName.toLowerCase());
+      return herb ? { status: herb.status || 'unknown', herb } : null;
     } catch (e) {
-      console.error('Catalog load failed:', e.message);
+      console.error('Catalog lookup failed:', e.message);
     }
     return null;
   };
@@ -394,10 +403,8 @@ exports.handler = async (event) => {
         let closestCatalogName = null;
 
         try {
-          const catalogPath = `${__dirname}/../../herbadex_master_catalog.json`;
-          if (fs.existsSync(catalogPath)) {
-            const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
-            const catalogNames = (catalog.herbs || []).map(h => (h.name || '').toLowerCase());
+          if (HERB_CATALOG.length > 0) {
+            const catalogNames = HERB_CATALOG.map(h => (h.name || '').toLowerCase());
 
             // Build word index for multi-word names
             const catalogWords = new Set();
