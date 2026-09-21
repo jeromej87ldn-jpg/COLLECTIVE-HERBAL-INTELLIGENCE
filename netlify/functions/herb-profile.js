@@ -13,19 +13,6 @@ if (process.env.SUPABASE_URL && process.env.SUPABASE_KEY) {
   supabase = createClient(supabaseProjectUrl(), process.env.SUPABASE_KEY);
 }
 
-// Load catalog once at module level — cached in memory for all requests.
-// This is more reliable than reading from disk on every request, and ensures
-// the path resolves correctly at cold-start time.
-let HERB_CATALOG = [];
-try {
-  const catalogPath = path.join(__dirname, '..', '..', 'herbadex_master_catalog.json');
-  const catalogData = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
-  HERB_CATALOG = catalogData.herbs || [];
-  console.log(`[CATALOG] Loaded ${HERB_CATALOG.length} herbs from catalog.`);
-} catch (e) {
-  console.error('[CATALOG] Failed to load catalog at startup:', e.message);
-}
-
 const SYSTEM_PROMPT = `You are the Herbadex -- CHI's herb knowledge engine.
 
 IMPORTANT DISCLAIMER: Profiles are generated for educational reference only and are NOT medical advice. Users should consult healthcare professionals before using any herbs, especially if pregnant, nursing, or on medications.
@@ -179,13 +166,17 @@ function mergeSources(existing, verified) {
 
 exports.handler = async (event) => {
 
-  // Look up herb in the in-memory catalog (loaded once at module level above)
+  // Load herb catalog to check status
   const getCatalogStatus = (herbName) => {
     try {
-      const herb = HERB_CATALOG.find(h => h.name.toLowerCase() === herbName.toLowerCase());
-      return herb ? { status: herb.status || 'unknown', herb } : null;
+      const catalogPath = `${__dirname}/../../herbadex_master_catalog.json`;
+      if (fs.existsSync(catalogPath)) {
+        const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
+        const herb = catalog.herbs.find(h => h.name.toLowerCase() === herbName.toLowerCase());
+        return herb ? { status: herb.status || 'unknown', herb } : null;
+      }
     } catch (e) {
-      console.error('Catalog lookup failed:', e.message);
+      console.error('Catalog load failed:', e.message);
     }
     return null;
   };
@@ -327,157 +318,7 @@ exports.handler = async (event) => {
     }
 
     if (itemType === 'unknown') {
-      // ── UNKNOWN TYPE GATE ──────────────────────────────────────────────────
-      // Item is not in catalog with a known type. Run it through a 3-stage
-      // check to decide whether to allow, flag, or block generation.
-      //
-      // ROUTE 2: In catalog but type not yet set → allow + log for typing up
-      // ROUTE 3: Not in catalog but fuzzy matches a catalog name (≥0.70) → allow
-      // ROUTE 4: Not in catalog but has herb signals → allow as unclassified
-      // ROUTE 5: Common English word / no herb signals → block
-      // ─────────────────────────────────────────────────────────────────────
-
-      // Levenshtein similarity (inline — no extra imports)
-      const levSim = (a, b) => {
-        const longer = a.length > b.length ? a : b;
-        const shorter = a.length > b.length ? b : a;
-        if (longer.length === 0) return 1.0;
-        const costs = [];
-        for (let i = 0; i <= longer.length; i++) {
-          let last = i;
-          for (let j = 0; j <= shorter.length; j++) {
-            if (i === 0) { costs[j] = j; }
-            else if (j > 0) {
-              let nv = costs[j - 1];
-              if (longer[i-1] !== shorter[j-1]) nv = Math.min(nv, last, costs[j]) + 1;
-              costs[j-1] = last; last = nv;
-            }
-          }
-          if (i > 0) costs[shorter.length] = last;
-        }
-        return (longer.length - costs[shorter.length]) / longer.length;
-      };
-
-      // Herb signal detection — words and patterns that indicate a real herb
-      const HERB_PART_WORDS = new Set([
-        'root','bark','leaf','leaves','berry','berries','seed','seeds','flower',
-        'flowers','herb','wort','grass','wood','vine','resin','gum','nut','bud',
-        'fruit','bulb','rhizome','mushroom','moss','fern','tree','bush','shrub',
-        'weed','thistle','nettle','mint','sage','balm','thorn','stem','petal',
-        'pod','spore','cap','tincture','extract','oil','powder'
-      ]);
-      const HERB_QUALIFIER_WORDS = new Set([
-        'black','white','red','blue','yellow','green','wild','common','sweet',
-        'bitter','holy','sacred','chinese','japanese','african','indian','asian',
-        'american','korean','european','tropical','mountain','sea','river',
-        'desert','forest','highland','highland','eastern','western','northern',
-        'southern','true','false','dwarf','giant','lesser','greater','small',
-        'large','ancient','golden','silver','purple','spotted','striped'
-      ]);
-      const LATIN_ENDINGS = [
-        'ium','ia','us','is','alis','aria','ella','ica','inae','opsis','ula','aceae'
-      ];
-      // Common English non-herb words — expanded from NON_HERBAL_EXACT
-      const COMMON_ENGLISH_WORDS = new Set([
-        'computer','phone','table','chair','money','paper','glass','metal',
-        'water','blood','sleep','cancer','stress','pain','ring','cat','dog',
-        'house','car','food','work','play','game','book','film','song','band',
-        'hello','world','thing','stuff','good','nice','cool','fast','slow',
-        'hard','soft','hot','cold','big','small','long','short','open','close',
-        'happy','sad','angry','tired','sick','well','dead','alive','free','busy',
-        'people','person','place','time','year','day','week','month','hour',
-        'question','answer','problem','solution','idea','thought','feeling',
-        'love','hate','fear','hope','life','death','body','mind','soul','heart'
-      ]);
-
-      const inputLower = name.toLowerCase().trim();
-      const inputWords = inputLower.split(/[\s\-']+/).filter(w => w.length > 1);
-
-      // ROUTE 2: In catalog, type just not set yet
-      if (catalogInfo) {
-        console.log(`[UNTYPED] "${herbName}" is in catalog but has no type field — allowing generation. Add a type to this catalog entry.`);
-        // Falls through to generation below
-      } else {
-        // Not in catalog at all — run full gate
-        let catalogFuzzyScore = 0;
-        let closestCatalogName = null;
-
-        try {
-          if (HERB_CATALOG.length > 0) {
-            const catalogNames = HERB_CATALOG.map(h => (h.name || '').toLowerCase());
-
-            // Build word index for multi-word names
-            const catalogWords = new Set();
-            for (const n of catalogNames) {
-              n.split(/[\s'-]+/).filter(w => w.length > 3).forEach(w => catalogWords.add(w));
-            }
-
-            // Full name fuzzy score
-            for (const n of catalogNames) {
-              const s = levSim(inputLower, n);
-              if (s > catalogFuzzyScore) { catalogFuzzyScore = s; closestCatalogName = n; }
-            }
-            // Word-level score for single-word inputs
-            if (catalogFuzzyScore < 0.70 && !inputLower.includes(' ')) {
-              for (const w of catalogWords) {
-                const s = levSim(inputLower, w);
-                if (s > catalogFuzzyScore) { catalogFuzzyScore = s; closestCatalogName = w; }
-              }
-            }
-          }
-        } catch (e) {
-          console.warn(`[CATALOG CHECK ERROR] ${e.message} — continuing with signal check.`);
-        }
-
-        // ROUTE 3: Close fuzzy match to a catalog name
-        if (catalogFuzzyScore >= 0.70) {
-          console.log(`[FUZZY MATCH] "${herbName}" → "${closestCatalogName}" (${catalogFuzzyScore.toFixed(3)}) — allowing generation.`);
-          // Falls through to generation below
-        } else {
-          // Check herb signals
-          const hasPartWord    = inputWords.some(w => HERB_PART_WORDS.has(w));
-          const hasQualifier   = inputWords.some(w => HERB_QUALIFIER_WORDS.has(w));
-          const hasLatinEnding = LATIN_ENDINGS.some(e => inputLower.endsWith(e));
-          const isMultiWord    = inputWords.length >= 2;
-          const isCommonWord   = COMMON_ENGLISH_WORDS.has(inputLower);
-          const hasHerbSignal  = hasPartWord || hasQualifier || hasLatinEnding || isMultiWord;
-
-          // ROUTE 5: Common word with no herb signals → block
-          if (isCommonWord && !hasHerbSignal) {
-            const suggestion = closestCatalogName
-              ? ` Did you mean "${closestCatalogName.replace(/\b\w/g,c=>c.toUpperCase())}"?`
-              : ' Try browsing The Herbarium to find what you\'re looking for.';
-            console.log(`[BLOCKED] "${herbName}" — common word, no herb signals.`);
-            return {
-              statusCode: 400,
-              body: JSON.stringify({
-                error: 'not_an_herb',
-                message: `We don't recognise "${herbName.trim()}" as an herb.${suggestion}`
-              })
-            };
-          }
-
-          // ROUTE 5b: No herb signals at all and very low catalog score → block
-          if (!hasHerbSignal && catalogFuzzyScore < 0.50) {
-            const suggestion = closestCatalogName
-              ? ` Did you mean "${closestCatalogName.replace(/\b\w/g,c=>c.toUpperCase())}"?`
-              : ' Try browsing The Herbarium to find what you\'re looking for.';
-            console.log(`[BLOCKED] "${herbName}" — no herb signals, low catalog score (${catalogFuzzyScore.toFixed(3)}).`);
-            return {
-              statusCode: 400,
-              body: JSON.stringify({
-                error: 'not_an_herb',
-                message: `We don't recognise "${herbName.trim()}" as an herb.${suggestion}`
-              })
-            };
-          }
-
-          // ROUTE 4: Has herb signals but not in catalog → allow as unclassified
-          console.log(`[UNCLASSIFIED] "${herbName}" not in catalog but has herb signals [part:${hasPartWord} qualifier:${hasQualifier} latin:${hasLatinEnding} multi:${isMultiWord}] — generating as unclassified.`);
-          // Mark for unclassified save after generation (checked below)
-          event._unclassified = true;
-        }
-      }
+      console.warn(`[WARNING] ${herbName} has unknown type — allowing profile generation. Update categorization if needed.`);
     }
     // END TYPE-BASED VALIDATION
 
@@ -501,17 +342,9 @@ exports.handler = async (event) => {
     herb.images = [];
     herb.generatedAt = new Date().toISOString();
 
-    // Unclassified herbs (Route 4 — herb signals but not in catalog) are saved
-    // with status 'unclassified' so they can be reviewed and typed separately.
-    const saveStatus = event._unclassified ? 'unclassified' : 'complete';
-    if (event._unclassified) {
-      herb._unclassified = true;
-      herb._flaggedForReview = true;
-    }
-
     if (supabase) {
       try {
-        await supabase.from('herbs').upsert({ name, status: saveStatus, data: herb }, { onConflict: 'name' });
+        await supabase.from('herbs').upsert({ name, status: 'complete', data: herb }, { onConflict: 'name' });
       } catch (e) {
         console.error('Supabase write failed:', e.message);
       }

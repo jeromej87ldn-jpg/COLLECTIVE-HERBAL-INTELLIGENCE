@@ -1087,9 +1087,47 @@ document.getElementById('supreme-search-input').addEventListener('keydown', e =>
   if(e.key==='Enter') searchHerb();
 });
 
-function searchHerb() {
+async function searchHerb() {
   const val = document.getElementById('supreme-search-input').value.trim();
   if(!val) return;
+
+  // Validate against the herb catalog before generating a profile.
+  // This stops non-herb terms (e.g. "computer") from reaching the API,
+  // and also corrects misspellings (e.g. "mullien" → "Mullein").
+  try {
+    const res = await fetch(`/.netlify/functions/herb-search?q=${encodeURIComponent(val)}&limit=1&confidence=60`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data.results && data.results.length > 0) {
+        // Use the matched herb name (corrects misspellings automatically)
+        const matchedName = data.results[0].name;
+        document.getElementById('supreme-search-input').value = matchedName;
+        loadHerbProfile(matchedName);
+        return;
+      } else {
+        // Nothing matched — show a friendly message, don't call the API
+        const profileSection = document.getElementById('herb-profile-section') || document.getElementById('profile-container');
+        const heroSection = document.getElementById('tree-hero');
+        if (heroSection) heroSection.style.display = 'none';
+        if (profileSection) {
+          profileSection.style.display = 'block';
+          const msgBox = document.getElementById('herb-profile-content') || profileSection;
+          msgBox.innerHTML = `
+            <div style="text-align:center;padding:3rem 1rem;max-width:500px;margin:0 auto;">
+              <div style="font-size:2.5rem;margin-bottom:1rem;">🌿</div>
+              <h2 style="font-size:1.4rem;margin-bottom:0.75rem;color:var(--text-primary,#1a1a1a);">We don't recognise "${val.replace(/"/g,'&quot;')}" as a herb</h2>
+              <p style="color:var(--text-secondary,#666);margin-bottom:1.5rem;line-height:1.6;">Try checking the spelling, or browse The Herbarium to discover what's available.</p>
+            </div>`;
+        }
+        return;
+      }
+    }
+  } catch(e) {
+    // If the search API fails for any reason, fall through to direct profile load
+    console.warn('Herb search validation failed, falling through:', e.message);
+  }
+
+  // Fallback — if search API is unavailable, load profile directly
   loadHerbProfile(val);
 }
 

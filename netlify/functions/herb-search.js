@@ -82,13 +82,7 @@ class FuzzyHerbMatcher {
 
   tokenSimilarity(queryTokens, herbTokens) {
     if (!queryTokens.length || !herbTokens.length) return 0;
-    const matches = queryTokens.filter(qt =>
-      herbTokens.some(ht => {
-        if (ht.includes(qt)) return true;
-        if (qt.includes(ht) && ht.length / qt.length >= 0.6) return true;
-        return false;
-      })
-    );
+    const matches = queryTokens.filter(qt => herbTokens.some(ht => ht.includes(qt) || qt.includes(ht)));
     return matches.length / Math.max(queryTokens.length, herbTokens.length);
   }
 
@@ -136,8 +130,8 @@ class FuzzyHerbMatcher {
         const latinSimilarity = this.levenshteinSimilarity(queryNorm, entry.latinLower);
         const maxSimilarity = Math.max(nameSimilarity, latinSimilarity);
 
-        // Threshold 0.55 — blocks false positives while keeping real misspellings
-        if (maxSimilarity >= 0.55) {
+        // LOOSENED: 0.60 → 0.45 (more forgiving of typos)
+        if (maxSimilarity >= 0.45) {
           score = 50 + (maxSimilarity * 30);
           matchType = nameSimilarity > latinSimilarity ? 'fuzzy_name' : 'fuzzy_latin';
         }
