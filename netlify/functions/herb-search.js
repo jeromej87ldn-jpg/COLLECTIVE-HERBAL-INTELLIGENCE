@@ -3,8 +3,9 @@
  * Fuzzy Matching + Property/Keyword Search
  */
 
-const fs = require('fs');
-const path = require('path');
+// HERBADEX SEARCH v4
+const CATALOG_DATA = require('../../herbadex_master_catalog.json');
+const CATALOG_HERBS = Array.isArray(CATALOG_DATA) ? CATALOG_DATA : (CATALOG_DATA.herbs || []);
 
 class FuzzyHerbMatcher {
   constructor(herbs = []) {
@@ -191,6 +192,8 @@ class FuzzyHerbMatcher {
   }
 }
 
+const SEARCH_MATCHER = new FuzzyHerbMatcher(CATALOG_HERBS);
+
 exports.handler = async (event) => {
   try {
     const query = (event.queryStringParameters?.q || '').trim();
@@ -209,12 +212,9 @@ exports.handler = async (event) => {
       };
     }
 
-    // Load herb index
-    const indexPath = path.join(__dirname, '..', '..', 'herbadex_master_catalog.json');
-    const herbData = JSON.parse(fs.readFileSync(indexPath, 'utf-8'));
-    const herbs = Array.isArray(herbData) ? herbData : (herbData.herbs || Object.values(herbData));
-
-    const matcher = new FuzzyHerbMatcher(herbs);
+    // Catalog is require()d at module level (see top of file) so Netlify
+    // bundles it — the old fs.readFileSync call failed on Netlify (500 errors).
+    const matcher = SEARCH_MATCHER;
     const allMatches = matcher.findMatches(query, limit * 2, Math.max(30, confidence));
 
     // Tier results by confidence
