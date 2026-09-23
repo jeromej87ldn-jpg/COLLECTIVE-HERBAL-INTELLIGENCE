@@ -108,7 +108,87 @@ function validateCompounds(h) {
   });
 }
 
+// ── Compound verification (replaces the strip-only whitelist) ──────────
+// The whitelist above was only ever a shortlist. Real compounds that weren't
+// on it (e.g. inulin in burdock) were deleted, the profile was saved with no
+// compounds, and the cache then treated it as incomplete and paid to
+// regenerate it on every visit.
+//
+// verifyCompounds() keeps the whitelist as a fast path, then asks PubChem
+// (the US National Library of Medicine chemical database) about anything
+// else. Each compound ends up as one of:
+//   verified: 'list'      — on the known list above (no network needed)
+//   verified: 'pubchem'   — PubChem recognises the name; pubchemCid saved
+//   verified: 'unchecked' — PubChem couldn't be reached; kept in storage,
+//                           hidden from users, re-checked on the next visit
+// Names PubChem says don't exist are removed.
+//
+// What this proves: the compound is a real, documented chemical.
+// What it does NOT prove: that this particular herb contains it.
+//
+// The lookup function is passed in (herb-profile.js supplies it) so this
+// file stays free of network code and can still be tested with plain node.
+function cleanCompoundName(name) {
+  return String(name || '')
+    .replace(/\([^)]*\)/g, ' ')      // "Curcumin (diferuloylmethane)" -> "Curcumin"
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+function singularOf(n) {
+  if (n.length > 4 && n.endsWith('s') && !/(ss|us|is)$/.test(n)) return n.slice(0, -1);
+  return null;
+}
+
+function onKnownList(n) {
+  if (REAL_COMPOUNDS.has(n)) return true;
+  const one = singularOf(n);
+  return !!(one && REAL_COMPOUNDS.has(one));
+}
+
+async function verifyCompounds(h, lookup) {
+  const result = { changed: false, unchecked: 0 };
+  if (!Array.isArray(h.compounds)) { h.compounds = []; result.changed = true; }
+  const before = JSON.stringify(h.compounds);
+
+  const checked = await Promise.all(h.compounds.map(async c => {
+    if (!c || !c.name || !String(c.name).trim()) return null;
+    if (c.verified === 'list' || c.verified === 'pubchem') return c;   // already settled
+
+    const n = cleanCompoundName(c.name);
+    if (!n) return null;
+    if (onKnownList(n)) return Object.assign(c, { verified: 'list' });
+    if (typeof lookup !== 'function') return Object.assign(c, { verified: 'unchecked' });
+
+    let r = await lookup(n);
+    const one = singularOf(n);
+    if (r && r.status === 'notfound' && one) r = await lookup(one);
+
+    if (r && r.status === 'found') return Object.assign(c, { verified: 'pubchem', pubchemCid: r.cid });
+    if (r && r.status === 'notfound') return null;                  // not a real compound
+    return Object.assign(c, { verified: 'unchecked' });              // network problem: try again later
+  }));
+
+  h.compounds = checked.filter(Boolean);
+  if (JSON.stringify(h.compounds) !== before) result.changed = true;
+  result.unchecked = h.compounds.filter(c => c.verified === 'unchecked').length;
+  if (!h._compoundsCheckedAt) { h._compoundsCheckedAt = new Date().toISOString(); result.changed = true; }
+  return result;
+}
+
+// What users get to see: compounds that have actually been confirmed.
+// 'unchecked' ones stay in storage (so they can be re-checked) but are
+// never displayed until confirmed.
+function forDisplay(h) {
+  if (!h || !Array.isArray(h.compounds)) return h;
+  return Object.assign({}, h, { compounds: h.compounds.filter(c => c && c.verified !== 'unchecked') });
+}
+
 module.exports = {
+  verifyCompounds,
+  forDisplay,
+  cleanCompoundName,
   REQUIRED_TEXT,
   REQUIRED_SECTIONS,
   REQUIRED_TEXT_SECTIONS,

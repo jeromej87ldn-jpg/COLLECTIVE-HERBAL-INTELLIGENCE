@@ -181,40 +181,42 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ch
   background:linear-gradient(135deg,rgba(200,149,42,.15) 0%,rgba(74,140,101,.1) 100%);
   border:1px solid rgba(200,149,42,.4);
   border-radius:10px;
-  padding:1.75rem 2rem;
-  margin-bottom:2.5rem;
+  padding:.85rem 1.1rem;
+  margin-bottom:1.5rem;
   margin-top:0;
   display:flex;
-  align-items:flex-start;
-  gap:1.5rem;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:.75rem 1rem;
   backdrop-filter:blur(10px);
 }
 .health-profile-banner-icon{
-  font-size:32px;
+  font-size:22px;
   flex-shrink:0;
-  margin-top:.2rem;
 }
 .health-profile-banner-content{flex:1;}
+.health-profile-banner-content{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem 1rem;}
+.health-profile-banner-text{flex:1;min-width:220px;}
 .health-profile-banner h3{
   font-family:'Cormorant Garamond',serif;
-  font-size:19px;
+  font-size:16px;
   font-weight:700;
   color:var(--parchment);
-  margin:0 0 .6rem;
+  margin:0 0 .15rem;
   letter-spacing:.02em;
   line-height:1.3;
 }
 .health-profile-banner p{
-  font-size:13px;color:rgba(245,240,232,.72);line-height:1.65;margin:0 0 1.1rem;
+  font-size:12.5px;color:rgba(245,240,232,.72);line-height:1.5;margin:0;
 }
 .health-profile-banner a{
   display:inline-flex;align-items:center;gap:8px;
   background:rgba(200,149,42,.3);
   border:1px solid rgba(200,149,42,.55);
   color:var(--gold-light);
-  padding:.7rem 1.35rem;
+  padding:.5rem 1rem;
   border-radius:6px;
-  text-decoration:none;font-size:12px;
+  text-decoration:none;font-size:11.5px;white-space:nowrap;
   font-weight:600;letter-spacing:.06em;
   text-transform:uppercase;
   transition:all .2s;
@@ -329,6 +331,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ch
 .sci-mbox{background:rgba(200,149,42,.07);border-left:2px solid rgba(200,149,42,.3);border-radius:0 4px 4px 0;padding:.5rem .75rem;font-size:12px;color:var(--charcoal-mid);line-height:1.6;font-style:italic;margin-bottom:5px;}
 .sci-pill-row{display:flex;flex-wrap:wrap;gap:5px;margin:4px 0;}
 .sci-pill{font-size:11px;padding:2px 9px;border-radius:999px;border:1px solid;font-weight:500;}
+.sci-verify{display:inline-block;margin-top:.55rem;font-size:11.5px;color:var(--forest-mid);text-decoration:underline;text-underline-offset:2px;}
+.sci-verify:hover{color:var(--gold);}
 .sci-sys-tag{display:inline-block;font-size:10px;padding:2px 8px;border-radius:999px;white-space:nowrap;}
 .sci-boundary{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin:0 0 2rem;padding:1rem 1.25rem;background:var(--parchment-dark);border:1px solid var(--parchment-deep);border-radius:6px;}
 .sci-boundary-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--charcoal-mid);}
@@ -337,9 +341,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--parchment);color:var(--ch
 .stack-btn.in-stack{background:transparent;border:1px solid rgba(74,140,101,.4);color:var(--forest-mid);}
 .hero-stack{margin-top:1.1rem;font-size:13px;padding:.6rem 1.2rem;position:relative;z-index:1;}
 .hero-stack.in-stack{border-color:rgba(232,184,75,.55);color:var(--gold-light);}
-.save-star-btn{margin-top:1.1rem;margin-left:.6rem;position:relative;z-index:1;width:38px;height:38px;border-radius:50%;border:1px solid rgba(232,184,75,.4);background:rgba(255,255,255,.06);color:var(--gold-light);font-size:18px;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:all .18s;vertical-align:middle;}
-.save-star-btn:hover{background:rgba(200,149,42,.15);border-color:var(--gold);}
-.save-star-btn.is-saved{background:rgba(200,149,42,.22);border-color:var(--gold);color:var(--gold-light);}
+.save-star-btn{position:relative;z-index:1;display:inline-flex;align-items:center;justify-content:center;vertical-align:top;margin:.05em 0 0 .08em;width:1.4em;height:1.4em;padding:0;border:none;border-radius:50%;background:none;color:rgba(232,184,75,.6);font-family:inherit;font-size:.42em;font-weight:400;line-height:1;cursor:pointer;transition:color .15s,background .15s;}
+.save-star-btn:hover{color:var(--gold-light);background:rgba(200,149,42,.14);}
+.save-star-btn.is-saved{color:var(--gold-light);}
+.save-star-btn:focus-visible{outline:2px solid var(--gold-light);outline-offset:1px;}
 
 /* Spiritual highlight block */
 .spirit-block{background:linear-gradient(135deg,rgba(26,58,42,.07) 0%,rgba(200,149,42,.06) 100%);border:1px solid rgba(200,149,42,.2);border-radius:6px;padding:1.75rem;margin:1.5rem 0;}
@@ -828,8 +833,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <div class="health-profile-banner">
       <div class="health-profile-banner-icon">⚕️</div>
       <div class="health-profile-banner-content">
-        <h3>Your Health Profile Matters</h3>
-        <p>Create a personalized health profile to see which herbs are safe for you. Instantly check safety, interactions, and cautions when you search.</p>
+        <div class="health-profile-banner-text">
+          <h3>Your Health Profile Matters</h3>
+          <p>Create a personalized health profile to see which herbs are safe for you.</p>
+        </div>
         <a href="profile.html">Set Up Health Profile</a>
       </div>
     </div>
@@ -891,11 +898,10 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
       <div class="ph-inner">
         <div>
           <div class="ph-cat" id="ph-cat">—</div>
-          <div class="ph-name" id="ph-name">—</div>
+          <div class="ph-name"><span id="ph-name">—</span><button type="button" class="save-star-btn" id="save-star-btn" style="display:none;" title="Save" aria-label="Save this herb" aria-pressed="false"></button></div>
           <div class="ph-latin" id="ph-latin">—</div>
           <div class="ph-origin" id="ph-origin">—</div>
           <button class="stack-btn hero-stack" id="stack-btn" style="display:none;"></button>
-          <button class="save-star-btn" id="save-star-btn" style="display:none;" title="Save"></button>
         </div>
         <div class="ph-aside">
           <div class="ph-aside-card">
@@ -1245,6 +1251,8 @@ function renderProfile(h) {
     heroSaveBtn.textContent = isSaved ? '★' : '☆';
     heroSaveBtn.classList.toggle('is-saved', isSaved);
     heroSaveBtn.title = isSaved ? 'Remove from saved' : 'Save';
+    heroSaveBtn.setAttribute('aria-label', isSaved ? 'Remove from saved' : 'Save this herb');
+    heroSaveBtn.setAttribute('aria-pressed', isSaved ? 'true' : 'false');
     heroSaveBtn.onclick = () => toggleSaveHerb(h.name);
   }
 
@@ -1298,6 +1306,7 @@ function renderProfile(h) {
       ${F.has(c.mechanism) ? `<div class="sci-mbox">${c.mechanism}</div>` : `<div class="sci-mbox" style="opacity:.6">${F.message('mechanism')}</div>`}
       <div class="sci-dl">Evidence</div>
       ${F.has(c.evidence) ? `<div class="sci-mbox" style="font-style:normal">${c.evidence}</div>` : `<div class="sci-mbox" style="opacity:.6">${F.message('evidence')}</div>`}
+      ${c.pubchemCid ? `<a class="sci-verify" href="https://pubchem.ncbi.nlm.nih.gov/compound/${encodeURIComponent(c.pubchemCid)}" target="_blank" rel="noopener">Confirmed compound on PubChem ↗</a>` : ''}
     </div>`).join('')}</div>`);
 
   // Herbal actions — compact summary rows, listed inside the unified
@@ -1563,6 +1572,8 @@ function toggleSaveHerb(name) {
     btn.textContent = nowSaved ? '★' : '☆';
     btn.classList.toggle('is-saved', nowSaved);
     btn.title = nowSaved ? 'Remove from saved' : 'Save';
+    btn.setAttribute('aria-label', nowSaved ? 'Remove from saved' : 'Save this herb');
+    btn.setAttribute('aria-pressed', nowSaved ? 'true' : 'false');
   }
 }
 
@@ -1893,7 +1904,7 @@ let profileUploadImg = null;
 const ME_PROFILE = localStorage.getItem('chi_display_name') || 'Anonymous';
 
 function openProfileUpload() {
-  const herbName = document.querySelector('.ph-name');
+  const herbName = document.getElementById('ph-name');
   if (herbName) {
     document.getElementById('upload-herb-input').value = herbName.textContent.trim();
     document.getElementById('upload-herb-name').textContent = herbName.textContent.trim();

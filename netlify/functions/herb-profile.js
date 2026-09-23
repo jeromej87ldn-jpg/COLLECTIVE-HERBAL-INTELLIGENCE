@@ -2,7 +2,7 @@ const https = require('https');
 const fs = require('fs');
 const Anthropic = require('@anthropic-ai/sdk');
 const { createClient } = require('@supabase/supabase-js');
-const { findMissing, deriveFunctionalOverview, validateCompounds } = require('./profile-validation');
+const { findMissing, deriveFunctionalOverview, verifyCompounds, forDisplay } = require('./profile-validation');
 
 function supabaseProjectUrl() {
   return (process.env.SUPABASE_URL || '').replace(/\/rest\/v1\/?$/, '');
@@ -414,6 +414,33 @@ async function fetchVerifiedSources(commonName, latinName) {
   return out;
 }
 
+// ── PubChem compound check ────────────────────────────────────────────
+// Asks PubChem (US National Library of Medicine) whether a compound name is
+// a real, documented chemical. Three answers, never a guess:
+//   found    → real; returns its PubChem ID so the profile can link to it
+//   notfound → PubChem has no such compound (HTTP 404)
+//   error    → couldn't tell (timeout, rate limit, outage) — caller keeps the
+//              compound hidden and re-checks it on a later visit
+// PubChem asks for no more than 5 requests/second; profiles hold at most 4
+// compounds, so one herb stays inside that.
+async function pubchemLookup(name) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => { try { ctrl.abort(); } catch (e) {} }, 2500);
+  try {
+    const r = await fetch('https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/' + encodeURIComponent(name) + '/cids/JSON',
+      { signal: ctrl.signal, headers: { accept: 'application/json' } });
+    if (r.status === 404) return { status: 'notfound' };
+    if (!r.ok) return { status: 'error' };
+    const j = await r.json();
+    const cid = j && j.IdentifierList && Array.isArray(j.IdentifierList.CID) ? j.IdentifierList.CID[0] : null;
+    return cid ? { status: 'found', cid } : { status: 'notfound' };
+  } catch (e) {
+    return { status: 'error' };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 // Merge verified links into existing sources without overwriting anything —
 // keeps every existing entry that already has a URL, then appends new ones.
 function mergeSources(existing, verified) {
@@ -464,7 +491,10 @@ exports.handler = async (event) => {
     if (cachedRow && (cachedRow.status === 'complete' || cachedRow.status === 'unclassified') && cachedRow.data && cachedRow.data.name) {
       // Check if profile is complete (has original required fields — new fields optional for backwards compat)
       const requiredFields = ['category', 'safetyLevel', 'modernUse', 'compounds', 'herbalActions', 'bodyEffects', 'preparation', 'interactions'];
-      const isIncomplete = requiredFields.some(f => !cachedRow.data[f] || (Array.isArray(cachedRow.data[f]) && cachedRow.data[f].length === 0) || (typeof cachedRow.data[f] === 'object' && cachedRow.data[f] !== null && Object.keys(cachedRow.data[f]).length === 0) || (typeof cachedRow.data[f] === 'string' && !cachedRow.data[f].trim()));
+      const compoundsSettled = !!cachedRow.data._compoundsCheckedAt;
+      // interactions: an empty array is an honest "none documented" (see
+      // hasInteractionsField in profile-validation.js) — it only has to exist.
+      const isIncomplete = requiredFields.some(f => !(f === 'compounds' && compoundsSettled) && !(f === 'interactions' && Array.isArray(cachedRow.data.interactions)) && (!cachedRow.data[f] || (Array.isArray(cachedRow.data[f]) && cachedRow.data[f].length === 0) || (typeof cachedRow.data[f] === 'object' && cachedRow.data[f] !== null && Object.keys(cachedRow.data[f]).length === 0) || (typeof cachedRow.data[f] === 'string' && !cachedRow.data[f].trim())));
 
       if (isIncomplete) {
         console.log(`Profile incomplete for ${name}, regenerating...`);
@@ -472,8 +502,12 @@ exports.handler = async (event) => {
       } else {
         const before = cachedRow.data.functionalOverview;
         deriveFunctionalOverview(cachedRow.data);
-        validateCompounds(cachedRow.data);
         let healed = cachedRow.data.functionalOverview !== before;
+        // Only compounds not yet confirmed hit the network; settled ones are skipped.
+        try {
+          const cv = await verifyCompounds(cachedRow.data, pubchemLookup);
+          if (cv.changed) healed = true;
+        } catch (e) { console.error('compound check failed:', e.message); }
 
         // Backfill verified citation links (Wikipedia/PubMed) for cached
         // rows that have none — runs once per herb, then it's saved.
@@ -486,15 +520,16 @@ exports.handler = async (event) => {
           }
         }
 
-        if (healed) {
-          supabase.from('herbs').upsert({ name, status: cachedRow.status, data: cachedRow.data }, { onConflict: 'name' }).then(
-            () => {}, e => console.error('healed-row save failed:', e.message)
-          );
+        if (healed && supabase) {
+          try {
+            const { error: healErr } = await supabase.from('herbs').upsert({ name, status: cachedRow.status, data: cachedRow.data }, { onConflict: 'name' });
+            if (healErr) console.error('healed-row save failed:', healErr.message);
+          } catch (e) { console.error('healed-row save failed:', e.message); }
         }
         return {
           statusCode: 200,
           headers: { 'Content-Type': 'application/json', 'X-Cache': healed ? 'repaired' : 'hit', 'X-Herbadex-Gate': `${GATE_VERSION}/${gate.route}` },
-          body: JSON.stringify(cachedRow.data)
+          body: JSON.stringify(forDisplay(cachedRow.data))
         };
       }
     }
@@ -513,7 +548,8 @@ exports.handler = async (event) => {
     }
 
     deriveFunctionalOverview(herb);
-    validateCompounds(herb);
+    try { await verifyCompounds(herb, pubchemLookup); }
+    catch (e) { console.error('compound check failed:', e.message); }
 
     // Attach verified citation links — only URLs that actually resolved.
     // Existing linked sources are kept; nothing is overwritten.
@@ -545,7 +581,7 @@ exports.handler = async (event) => {
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json', 'X-Herbadex-Gate': `${GATE_VERSION}/${gate.route}` },
-      body: JSON.stringify(herb)
+      body: JSON.stringify(forDisplay(herb))
     };
   } catch (error) {
     return {
