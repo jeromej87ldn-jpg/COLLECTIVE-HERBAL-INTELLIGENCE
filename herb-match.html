@@ -35,6 +35,11 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .hero{text-align:center;margin-bottom:3rem;}
 .hero h1{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:300;color:var(--parchment);margin-bottom:.5rem;}
 .hero p{font-size:15px;color:var(--muted);line-height:1.8;max-width:620px;margin:0 auto 1.5rem;}
+/* Safety profile link — noticeable, a step smaller than the Herb Planner's */
+.hero-safety{display:inline-flex;align-items:center;gap:.5rem;padding:.55rem 1rem;border-radius:8px;border:1px solid rgba(217,161,63,.35);background:rgba(217,161,63,.12);color:#f0c878;font-size:13.5px;font-weight:500;text-decoration:none;transition:background .2s,border-color .2s;}
+.hero-safety:hover{background:rgba(217,161,63,.2);border-color:#d9a13f;}
+.hero-safety:focus-visible{outline:2px solid var(--gold-light);outline-offset:2px;}
+.hero-safety-note{display:block;font-size:12px;color:var(--muted);margin-top:.5rem;}
 
 /* PYRAMID/TREE ISSUES */
 .pyramid-section{background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:2rem;margin-bottom:2.5rem;}
@@ -46,6 +51,35 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .category-name::before{content:'▸';font-size:16px;}
 
 .issues-grid{display:flex;flex-wrap:wrap;gap:.6rem;margin-left:1.5rem;}
+
+/* ── PAGE 1 ONLY: categories as separate cards (page 2 keeps the panel) ── */
+#pyramid-section-page1{background:none;border:none;padding:0;}
+#pyramid-section-page1 .pyramid-title,#pyramid-section-page1 .pyramid-intro{text-align:center;}
+#pyramid-section-page1 .pyramid-intro{margin-bottom:1.5rem;}
+#issues-container{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;align-items:start;}
+#issues-container .issue-category{margin:0;background:rgba(26,58,42,.32);border:1px solid var(--card-border);border-radius:12px;padding:1.1rem 1.2rem 1.25rem;transition:border-color .2s,background .2s;}
+#issues-container .issue-category:has(.issue-chip.picked){border-color:rgba(200,149,42,.55);background:rgba(200,149,42,.07);}
+#issues-container .category-name{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:500;letter-spacing:.01em;text-transform:none;color:var(--parchment);margin-bottom:.8rem;gap:.55rem;}
+#issues-container .category-name::before{content:none;}
+#issues-container .category-icon{font-size:18px;line-height:1;}
+#issues-container .issues-grid{margin-left:0;gap:.5rem;}
+#issues-container .issue-chip{font-size:13px;padding:.5rem 1rem;}
+#issues-container .issue-chip:focus-visible{outline:2px solid var(--gold-light);outline-offset:2px;}
+#issues-container .issue-category.is-empty,#issues-container .issue-chip.is-hidden{display:none;}
+#issues-container .issue-chip.is-match{border-color:rgba(200,149,42,.55);}
+
+/* Quick search (plain-language filter) */
+.issue-search{max-width:560px;margin:0 auto 1.5rem;}
+.issue-search label{display:block;font-size:13px;color:var(--parchment);margin-bottom:.45rem;text-align:center;}
+.issue-search-box{position:relative;}
+.issue-search input{width:100%;padding:.85rem 1rem;border-radius:10px;border:1px solid rgba(200,149,42,.35);background:rgba(0,0,0,.25);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;}
+.issue-search input::placeholder{color:rgba(245,240,232,.38);}
+.issue-search input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,149,42,.18);}
+.issue-search input::-webkit-search-cancel-button{display:none;}
+.issue-search-status{font-size:12.5px;color:var(--muted);text-align:center;margin-top:.6rem;min-height:1.2em;line-height:1.6;}
+.issue-search-clear{background:none;border:none;color:var(--gold-light);font-family:'DM Sans',sans-serif;font-size:12.5px;text-decoration:underline;cursor:pointer;padding:0 .2rem;}
+@media(max-width:700px){#issues-container{grid-template-columns:1fr;}}
+@media(prefers-reduced-motion:reduce){#issues-container .issue-category{transition:none;}}
 .issue-chip{padding:.55rem 1.15rem;border-radius:999px;border:1px solid var(--card-border);background:rgba(255,255,255,.03);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .2s;}
 .issue-chip:hover{border-color:rgba(200,149,42,.45);}
 .issue-chip.picked{background:rgba(200,149,42,.22);border-color:var(--gold);color:var(--gold-light);}
@@ -385,7 +419,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <div class="mobile-menu-title">Account</div>
     <a href="profile.html"><span class="mobile-menu-icon">🌿</span>My Profile</a>
     <a href="inbox.html"><span class="mobile-menu-icon">✉️</span>Inbox</a>
-    <a href="join.html"><span class="mobile-menu-icon">➕</span>Join CHI</a>
+    <a href="join.html"><span class="mobile-menu-icon">➕</span>Join Herbadex</a>
   </div>
   <div class="mobile-menu-section">
     <div class="mobile-menu-title">Legal</div>
@@ -411,14 +445,24 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 <div class="container">
   <!-- HERO -->
   <div class="hero">
-    <h1>Let's find what your body's asking for</h1>
+    <h1>Find herbs for how you feel</h1>
     <p>There's no wrong answer here — just pick whatever's been on your mind lately. We'll ask a couple of gentle follow-up questions, then bring you a real spread of herbs to consider, not just the usual suspects.</p>
+    <a class="hero-safety" href="herb-planner.html?safety=1&amp;return=herb-match"><span aria-hidden="true">🛡️</span>Set up your safety profile</a>
+    <span class="hero-safety-note">Takes under a minute. The Herb Planner uses it to flag herbs that may not suit you.</span>
   </div>
 
   <!-- PAGE 1: INITIAL SELECTION -->
   <div class="pyramid-section" id="pyramid-section-page1">
     <div class="pyramid-title">What have you been struggling with lately?</div>
     <div class="pyramid-intro">Choose up to 5 — whatever feels most present for you right now.</div>
+
+    <div class="issue-search">
+      <label for="issue-search-input">Not sure where to look? Describe it in your own words.</label>
+      <div class="issue-search-box">
+        <input type="search" id="issue-search-input" placeholder="e.g. I get tired a lot" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="issue-search-status" id="issue-search-status" aria-live="polite"></div>
+    </div>
 
     <div id="issues-container"></div>
 
@@ -510,6 +554,73 @@ const ISSUE_CATEGORIES = {
   'Headaches & Tension': ['Tension headaches', 'Occasional migraines', 'Jaw or neck tension'],
 };
 
+// Display-only icons for the category cards.
+const CATEGORY_ICONS = {
+  'Sleep & Rest': '🌙', 'Mood & Mind': '🌤️', 'Focus & Cognitive': '🧠', 'Energy & Stamina': '⚡',
+  'Digestion & Gut': '🍵', 'Immune Support': '🍋', 'Inflammation & Joints': '🦴', 'Heart & Circulation': '❤️',
+  'Skin & Beauty': '✨', 'Hormonal Balance': '🌸', "Men's Vitality": '💪', 'Respiratory & Sinus': '🌬️',
+  'Detox & Liver': '🌿', 'Headaches & Tension': '🤕'
+};
+
+// Everyday words people use for each concern, so the quick search can match
+// "I get tired a lot" to Low energy / Stamina and drive etc. The chip's own
+// words and its category name are added automatically — list extras only.
+const ISSUE_KEYWORDS = {
+  'Trouble falling asleep': ['sleep', 'asleep', 'insomnia', 'awake', 'bed', 'bedtime', 'night', 'tossing'],
+  'Waking in the night': ['wake', 'waking', 'awake', 'night', 'sleep', 'interrupted', '3am'],
+  'Restless or light sleep': ['restless', 'sleep', 'tossing', 'turning', 'unrested', 'unrefreshed'],
+  'Racing mind at bedtime': ['racing', 'thoughts', 'overthinking', 'mind', 'worry', 'worrying', 'bedtime', 'night', 'busy'],
+  'Everyday stress': ['stress', 'stressed', 'pressure', 'tense', 'work', 'worried'],
+  'Anxious feelings': ['anxiety', 'anxious', 'nervous', 'worry', 'worried', 'panic', 'uneasy', 'jittery', 'edge'],
+  'Low mood': ['sad', 'down', 'depressed', 'depression', 'unhappy', 'gloomy', 'mood', 'crying', 'miserable'],
+  'Irritability': ['irritable', 'angry', 'anger', 'snappy', 'grumpy', 'temper', 'annoyed', 'cranky', 'moody', 'rage'],
+  'Emotional overwhelm': ['overwhelmed', 'overwhelm', 'emotional', 'cope', 'coping', 'crying', 'breakdown'],
+  'Brain fog': ['fog', 'foggy', 'fuzzy', 'cloudy', 'confused', 'spaced'],
+  'Trouble concentrating': ['concentrate', 'concentration', 'focus', 'distracted', 'attention', 'adhd'],
+  'Memory support': ['memory', 'forget', 'forgetful', 'forgetting', 'remember', 'recall'],
+  'Mental fatigue': ['mental', 'mentally', 'drained', 'exhausted', 'tired', 'brain', 'thinking'],
+  'Low energy': ['energy', 'tired', 'tiredness', 'weak', 'lethargic', 'sluggish', 'flat', 'knackered', 'drained'],
+  'Afternoon slump': ['afternoon', 'slump', 'crash', 'drowsy', 'lunch', 'dip'],
+  'Fatigue that lingers': ['fatigue', 'fatigued', 'exhausted', 'exhaustion', 'tired', 'worn', 'weary'],
+  'Burnout recovery': ['burnout', 'burnt', 'burned', 'worn', 'overworked', 'exhausted'],
+  'Bloating': ['bloat', 'bloated', 'swollen', 'belly', 'stomach', 'tummy', 'gas', 'wind', 'food', 'eating', 'meal', 'meals'],
+  'Slow digestion': ['digestion', 'digest', 'constipation', 'constipated', 'heavy', 'stomach', 'bowel', 'food', 'eating', 'meal', 'meals'],
+  'Occasional cramping': ['cramp', 'cramps', 'stomach', 'tummy', 'belly', 'pain', 'ache'],
+  'Gut sensitivity': ['gut', 'sensitive', 'ibs', 'stomach', 'tummy', 'upset', 'intolerance', 'diarrhoea', 'diarrhea'],
+  'Nausea': ['nausea', 'nauseous', 'sick', 'queasy', 'vomit', 'vomiting', 'travel'],
+  'Catching colds often': ['cold', 'colds', 'flu', 'ill', 'sick', 'bug', 'germs'],
+  'Wanting a stronger baseline': ['immune', 'immunity', 'resilience', 'defence', 'defense', 'rundown'],
+  'Recovering from illness': ['recover', 'recovery', 'illness', 'ill', 'sick', 'covid', 'flu'],
+  'Joint stiffness': ['joint', 'joints', 'stiff', 'stiffness', 'knee', 'knees', 'hip', 'hips', 'arthritis', 'creaky'],
+  'Occasional aches': ['ache', 'aches', 'aching', 'pain', 'pains', 'sore', 'hurt', 'hurts', 'body'],
+  'Muscle soreness': ['muscle', 'muscles', 'sore', 'gym', 'workout', 'exercise', 'strain'],
+  'Morning stiffness': ['morning', 'stiff', 'stiffness', 'waking'],
+  'Cold hands and feet': ['cold', 'hands', 'feet', 'fingers', 'toes', 'circulation', 'numb'],
+  'Wanting circulatory support': ['circulation', 'blood', 'heart', 'veins', 'flow', 'legs'],
+  'Healthy blood pressure support': ['blood', 'pressure', 'bp', 'hypertension', 'heart'],
+  'Dry or irritated skin': ['skin', 'dry', 'itchy', 'itch', 'rash', 'eczema', 'irritated', 'flaky', 'red'],
+  'Occasional breakouts': ['spots', 'acne', 'pimples', 'breakouts', 'zits', 'blemishes', 'skin'],
+  'Wanting a healthy glow': ['glow', 'dull', 'radiant', 'complexion', 'skin'],
+  'Signs of aging': ['aging', 'ageing', 'wrinkles', 'lines', 'older', 'age', 'skin'],
+  'PMS-type symptoms': ['pms', 'period', 'periods', 'premenstrual', 'cramps', 'moody', 'cycle'],
+  'Cycle irregularity': ['irregular', 'period', 'periods', 'cycle', 'missed', 'late'],
+  'Menopause-related changes': ['menopause', 'perimenopause', 'hot', 'flushes', 'flashes', 'sweats', 'sweating'],
+  'Libido support': ['libido', 'sex', 'drive', 'desire', 'arousal'],
+  'Stamina and drive': ['stamina', 'drive', 'tired', 'energy', 'endurance', 'performance', 'motivation', 'vigour', 'vigor', 'sex'],
+  'Prostate support': ['prostate', 'urinating', 'peeing', 'wee', 'bladder', 'urine'],
+  'Healthy testosterone support': ['testosterone', 'hormones', 'male', 'muscle', 'libido'],
+  'Seasonal congestion': ['congestion', 'congested', 'blocked', 'stuffy', 'nose', 'runny'],
+  'Occasional cough': ['cough', 'coughing', 'chesty', 'throat', 'phlegm', 'mucus'],
+  'Sinus pressure': ['sinus', 'sinuses', 'nose', 'face', 'pressure', 'blocked'],
+  'Allergy-type symptoms': ['allergy', 'allergies', 'hayfever', 'hay', 'sneezing', 'sneeze', 'itchy', 'eyes', 'pollen'],
+  'Feeling sluggish': ['sluggish', 'heavy', 'slow', 'tired', 'lethargic'],
+  'Wanting gentle liver support': ['liver', 'alcohol', 'drinking', 'hangover'],
+  'Supporting natural detox': ['detox', 'cleanse', 'toxins', 'reset'],
+  'Tension headaches': ['headache', 'headaches', 'head', 'tension', 'tense', 'pain'],
+  'Occasional migraines': ['migraine', 'migraines', 'headache', 'headaches', 'head'],
+  'Jaw or neck tension': ['jaw', 'neck', 'shoulders', 'clench', 'clenching', 'grinding', 'teeth', 'tmj', 'tense']
+};
+
 let selectedIssues = [];
 let selectedSpecifics = {};   // { issue: [specific, specific, ...] }
 let specificsCache = {};      // { issue: [specific, specific, ...] | 'loading' | 'error' }
@@ -578,7 +689,14 @@ function buildPyramid() {
 
     const categoryTitle = document.createElement('div');
     categoryTitle.className = 'category-name';
-    categoryTitle.textContent = category;
+    if (CATEGORY_ICONS[category]) {
+      const icon = document.createElement('span');
+      icon.className = 'category-icon';
+      icon.setAttribute('aria-hidden', 'true');
+      icon.textContent = CATEGORY_ICONS[category];
+      categoryTitle.appendChild(icon);
+    }
+    categoryTitle.appendChild(document.createTextNode(category));
     categoryDiv.appendChild(categoryTitle);
 
     const gridDiv = document.createElement('div');
@@ -590,6 +708,8 @@ function buildPyramid() {
       chip.className = 'issue-chip';
       chip.id = 'issue-' + slug(issue);
       chip.textContent = issue;
+      chip.dataset.issue = issue;
+      chip.dataset.category = category;
       chip.onclick = () => {
         const isPicked = chip.classList.contains('picked');
         if (!isPicked) {
@@ -604,6 +724,7 @@ function buildPyramid() {
         }
         updateSelectionStatus();
         if (matchPageState === 'page2') renderSpecificsSection();
+        if (typeof applyIssueFilter === 'function') applyIssueFilter();
       };
 
       gridDiv.appendChild(chip);
@@ -613,6 +734,135 @@ function buildPyramid() {
     container.appendChild(categoryDiv);
   });
 }
+
+// ─── QUICK SEARCH (plain-language filter for page 1) ─────
+// Runs entirely in the browser: no API calls, no cost. Matching order per
+// word: exact → word-start ("tiredness" ↔ "tired") → small typo ("tierd").
+// Typo matching only kicks in when a word found nothing the other two ways.
+const ISSUE_STOPWORDS = new Set(['i im ive id me my myself a an the and or but get gets getting got lot lots alot ' +
+  'very really so too of to in on at for with from have has had having feel feeling feels felt am is are was were be been ' +
+  'it its always often sometimes all time times bit little just like want wanting need needs help cant can dont do does ' +
+  'not no some much more keep keeps when what how this that day days bad good kind sort quite also im been lately ' +
+  'seem seems be being there their they them you your after before things thing stuff'].join(' ').split(/\s+/));
+
+function issueSearchTokens(text) {
+  return String(text || '').toLowerCase().replace(/['’]/g, '').split(/[^a-z0-9]+/)
+    .filter(w => w.length >= 2 && !ISSUE_STOPWORDS.has(w));
+}
+
+function editDistanceWithin(a, b, max) {
+  if (Math.abs(a.length - b.length) > max) return false;
+  const d = [];
+  for (let i = 0; i <= a.length; i++) { d[i] = [i]; }
+  for (let j = 0; j <= b.length; j++) { d[0][j] = j; }
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+        d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);   // swapped letters
+      }
+    }
+  }
+  return d[a.length][b.length] <= max;
+}
+
+let ISSUE_INDEX = null;   // [{ issue, words:Set }]
+function buildIssueIndex() {
+  ISSUE_INDEX = [];
+  Object.entries(ISSUE_CATEGORIES).forEach(([category, issues]) => {
+    issues.forEach(issue => {
+      const words = new Set([
+        ...issueSearchTokens(issue),
+        ...issueSearchTokens(category),
+        ...(ISSUE_KEYWORDS[issue] || []).flatMap(k => issueSearchTokens(k))
+      ]);
+      ISSUE_INDEX.push({ issue, words: [...words] });
+    });
+  });
+}
+
+function wordMatches(q, w, mode) {
+  if (mode === 'direct') {
+    if (q === w) return true;
+    if (q.length >= 4 && w.startsWith(q)) return true;
+    if (w.length >= 4 && q.startsWith(w)) return true;
+    return false;
+  }
+  if (q.length < 4 || w.length < 4) return false;
+  return editDistanceWithin(q, w, q.length >= 7 ? 2 : 1);
+}
+
+// Returns a Set of issue names matching the query (empty Set = no matches).
+function matchIssues(query) {
+  if (!ISSUE_INDEX) buildIssueIndex();
+  const tokens = issueSearchTokens(query);
+  const found = new Set();
+  tokens.forEach(q => {
+    let hit = false;
+    ISSUE_INDEX.forEach(e => { if (e.words.some(w => wordMatches(q, w, 'direct'))) { found.add(e.issue); hit = true; } });
+    if (!hit) ISSUE_INDEX.forEach(e => { if (e.words.some(w => wordMatches(q, w, 'typo'))) found.add(e.issue); });
+  });
+  return { tokens, found };
+}
+
+function applyIssueFilter() {
+  const input = document.getElementById('issue-search-input');
+  const status = document.getElementById('issue-search-status');
+  const container = document.getElementById('issues-container');
+  if (!input || !status || !container) return;
+  const query = input.value.trim();
+  const chips = container.querySelectorAll('.issue-chip');
+
+  if (!query) {
+    chips.forEach(c => c.classList.remove('is-hidden', 'is-match'));
+    container.querySelectorAll('.issue-category').forEach(c => c.classList.remove('is-empty'));
+    status.textContent = '';
+    return;
+  }
+
+  const { tokens, found } = matchIssues(query);
+  chips.forEach(c => {
+    const isMatch = found.has(c.dataset.issue);
+    const keep = isMatch || c.classList.contains('picked');   // never hide a picked chip
+    c.classList.toggle('is-hidden', !keep);
+    c.classList.toggle('is-match', isMatch);
+  });
+  container.querySelectorAll('.issue-category').forEach(cat => {
+    cat.classList.toggle('is-empty', !cat.querySelector('.issue-chip:not(.is-hidden)'));
+  });
+
+  status.textContent = '';
+  if (!tokens.length) {
+    status.append('Try a word like sleep, tired, stress, stomach or skin. ');
+  } else if (found.size === 0) {
+    status.append(`Nothing matched "${query}". Try a simpler word like sleep, tired, stress, stomach or skin. `);
+  } else {
+    status.append(`${found.size} ${found.size === 1 ? 'match' : 'matches'} for "${query}". `);
+  }
+  const clear = document.createElement('button');
+  clear.type = 'button';
+  clear.className = 'issue-search-clear';
+  clear.textContent = 'Show everything';
+  clear.onclick = clearIssueFilter;
+  status.appendChild(clear);
+}
+
+function clearIssueFilter() {
+  const input = document.getElementById('issue-search-input');
+  if (input) input.value = '';
+  applyIssueFilter();
+}
+
+(function wireIssueSearch() {
+  const input = document.getElementById('issue-search-input');
+  if (!input) return;
+  input.addEventListener('input', applyIssueFilter);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { clearIssueFilter(); }
+    if (e.key === 'Enter') { e.preventDefault(); }
+  });
+})();
 
 function slug(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g, '-'); }
 
@@ -837,6 +1087,7 @@ function backToPyramid() {
   selectedSpecifics = {};
   specificsCache = {};
   document.querySelectorAll('.issue-chip').forEach(el => el.classList.remove('picked'));
+  clearIssueFilter();
   document.getElementById('specifics-section').innerHTML = '';
   updateSelectionStatus();
   sessionStorage.removeItem('chi_match_state');
