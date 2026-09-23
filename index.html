@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sign In — C.H.I</title>
+<title>Sign In — Herbadex</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
@@ -42,6 +42,12 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .privacy-note{margin-top:1.5rem;font-size:11px;color:rgba(245,240,232,0.2);line-height:1.7;text-align:center;}
 .error-msg{display:none;background:rgba(196,82,42,0.1);border:1px solid rgba(196,82,42,0.25);border-radius:4px;padding:.75rem 1rem;font-size:13px;color:rgba(232,133,106,0.9);margin-bottom:1rem;}
 .error-msg.show{display:block;}
+.notice-msg{display:none;background:rgba(74,140,101,0.12);border:1px solid rgba(74,140,101,0.35);border-radius:4px;padding:.75rem 1rem;font-size:13px;color:#9fd8b6;margin-bottom:1rem;line-height:1.6;}
+.notice-msg.show{display:block;}
+.field-hint{font-size:12px;color:var(--muted);margin-top:.35rem;}
+#reset-panel{display:none;}
+body.is-recovery #signin-panel{display:none;}
+body.is-recovery #reset-panel{display:block;}
 @media(max-width:768px){body{grid-template-columns:1fr;}.left{display:none;}.right{padding:2rem 1.5rem;}}
 
 /* ════════════════════════════════════════════════════════════════ */
@@ -119,7 +125,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </head>
 <body>
 <div class="left">
-  <div class="left-logo">C.H.I</div>
+  <div class="left-logo">Herbadex</div>
   <div class="left-name">Collective Herbal Intelligence</div>
   <h1 class="left-h">Welcome<br>back to your<br><em>herb journey.</em></h1>
   <p class="left-p">Your Herb Passport, journal, and health profile are waiting. Pick up exactly where you left off.</p>
@@ -131,9 +137,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </div>
 <div class="right">
   <div class="form-wrap">
+   <div id="signin-panel">
     <div class="form-eyebrow">Sign in</div>
-    <h2 class="form-title">Sign in to C.H.I</h2>
+    <h2 class="form-title">Sign in to Herbadex</h2>
     <p class="form-sub">Enter your email and password to continue your herbal journey.</p>
+    <div class="notice-msg" id="notice-msg"></div>
     <div class="error-msg" id="error-msg">That email and password combination does not match our records. Please try again.</div>
     <div class="field">
       <label class="field-label">Email address</label>
@@ -150,7 +158,25 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     </button>
     <div class="divider">or</div>
     <a class="btn-create" href="join.html">Create a free account</a>
-    <p class="privacy-note">CHI uses email and password only. We do not offer Google or Facebook login — your health information stays on CHI.</p>
+    <p class="privacy-note" id="privacy-note">Herbadex uses email and password only. We do not offer Google or Facebook login — your health information stays on Herbadex.</p>
+   </div>
+
+   <!-- Shown only when arriving from a "reset your password" email link -->
+   <div id="reset-panel">
+    <div class="form-eyebrow">New password</div>
+    <h2 class="form-title">Choose a new password</h2>
+    <p class="form-sub">You're signed in from your reset link. Set a new password to finish.</p>
+    <div class="error-msg" id="reset-error"></div>
+    <div class="field">
+      <label class="field-label" for="new-password">New password</label>
+      <input class="field-input" type="password" id="new-password" autocomplete="new-password" placeholder="At least 8 characters">
+    </div>
+    <div class="field">
+      <label class="field-label" for="new-password-2">Type it again</label>
+      <input class="field-input" type="password" id="new-password-2" autocomplete="new-password" placeholder="Same password again" onkeydown="if(event.key==='Enter')saveNewPassword()">
+    </div>
+    <button class="btn-signin" id="reset-btn" onclick="saveNewPassword()">Save new password</button>
+   </div>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -177,7 +203,10 @@ async function signIn() {
 
   if (error) {
     btn.disabled = false;
-    showError('That email and password combination does not match our records. Please try again.');
+    const code = error.code || '';
+    if (code === 'email_not_confirmed') showError('This account hasn\'t been confirmed yet. Check your email for the confirmation link.');
+    else if (code === 'over_request_rate_limit' || error.status === 429) showError('Too many sign-in attempts. Wait a few minutes, then try again.');
+    else showError('That email and password combination does not match our records. Please try again.');
     return;
   }
 
@@ -186,10 +215,63 @@ async function signIn() {
   window.location.href = 'home.html';
 }
 
-// If already signed in, skip straight to the dashboard
-sb.auth.getSession().then(({ data: { session } }) => {
-  if (session) window.location.href = 'home.html';
+// ── Arriving from an email link (password reset / confirmation) ──
+// Read the address BEFORE Supabase tidies it up. A reset link carries
+// type=recovery; an expired or used link carries an error instead.
+const linkParams = new URLSearchParams((location.hash || '').replace(/^#/, '') + '&' + (location.search || '').replace(/^\?/, ''));
+const fromEmailLink = ['access_token', 'code', 'token_hash', 'error', 'error_code'].some(k => linkParams.has(k));
+let recoveryMode = linkParams.get('type') === 'recovery';
+
+function showResetForm() {
+  recoveryMode = true;
+  document.body.classList.add('is-recovery');
+  const f = document.getElementById('new-password'); if (f) f.focus();
+}
+
+if (linkParams.get('error_code') || linkParams.get('error')) {
+  const expired = /expired/i.test(linkParams.get('error_code') || '') || /expired/i.test(linkParams.get('error_description') || '');
+  const n = document.getElementById('notice-msg');
+  n.textContent = expired
+    ? 'That email link has expired or was already used. Use "Forgot your password?" to get a new one.'
+    : 'That email link didn\'t work. Use "Forgot your password?" to get a new one.';
+  n.classList.add('show');
+}
+
+// Newer Supabase links (?code=) don't say "recovery" in the address,
+// so also listen for Supabase's own recovery signal.
+sb.auth.onAuthStateChange((event) => {
+  if (event === 'PASSWORD_RECOVERY') showResetForm();
 });
+
+sb.auth.getSession().then(({ data: { session } }) => {
+  if (recoveryMode && session) { showResetForm(); return; }
+  if (!session) return;
+  if (!fromEmailLink) { window.location.href = 'home.html'; return; }
+  // Came from an email link: give the recovery signal a moment before
+  // treating it as a normal sign-in (e.g. an account confirmation link).
+  setTimeout(() => { if (!recoveryMode) window.location.href = 'home.html'; }, 600);
+});
+
+async function saveNewPassword() {
+  const p1 = document.getElementById('new-password').value;
+  const p2 = document.getElementById('new-password-2').value;
+  const err = document.getElementById('reset-error');
+  const say = (m) => { err.textContent = m; err.classList.add('show'); };
+  err.classList.remove('show');
+  if (p1.length < 8) return say('Use at least 8 characters.');
+  if (p1 !== p2) return say('The two passwords don\'t match.');
+  const btn = document.getElementById('reset-btn');
+  btn.disabled = true;
+  const { error } = await sb.auth.updateUser({ password: p1 });
+  btn.disabled = false;
+  if (error) {
+    if (/should be different/i.test(error.message)) return say('Choose a password you haven\'t used on this account before.');
+    if (/session/i.test(error.message)) return say('Your reset link has expired. Go back and use "Forgot your password?" again.');
+    return say(error.message || 'Couldn\'t save the new password. Try again.');
+  }
+  localStorage.removeItem('chi_logged_in');
+  window.location.href = 'home.html';
+}
 </script>
 <!-- Shared C.H.I glossary — auto-tags known terms (tincture, capsule, infusion,
      adaptogen, etc) anywhere in the page text with a hover definition. -->
