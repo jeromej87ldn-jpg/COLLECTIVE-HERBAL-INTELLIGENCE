@@ -1124,8 +1124,18 @@ async function loadHerbProfile(herbName) {
   // Update breadcrumb
   window.scrollTo({top:0,behavior:'smooth'});
 
+  // Seen this herb before on this device? Show that copy straight away, then
+  // quietly fetch the latest version in the background for next time.
+  const cached = readProfileCache(herbName);
+  if (cached) {
+    renderProfile(cached);
+    refreshProfileCache(herbName);
+    return;
+  }
+
   try {
     const herb = await fetchHerbProfilePolling(herbName);
+    writeProfileCache(herbName, herb);
     renderProfile(herb);
   } catch(err) {
     console.error(err);
@@ -1143,6 +1153,63 @@ async function loadHerbProfile(herbName) {
     } else {
       document.getElementById('profile-loading').innerHTML = '<p style="color:#c4522a;padding:2rem;text-align:center;">Unable to load herb data. Please try again in a moment.</p>';
     }
+  }
+}
+
+// ── Device profile cache ───────────────────────────────────────────────
+// Profiles already opened on this device are kept in localStorage
+// (chi_profile_cache) so re-opening one is instant. The server is still
+// asked in the background every time, so the stored copy stays current,
+// and a herb the server now rejects is dropped from the cache.
+const PROFILE_CACHE_KEY = 'chi_profile_cache';
+const PROFILE_CACHE_VERSION = 1;   // bump to discard every stored copy
+const PROFILE_CACHE_MAX = 60;      // ~4KB each, so ~250KB at most
+function profileCacheKey(name) {
+  // "Cat's Claw", "cat s claw" (from a link) and "cats claw" share one key
+  return String(name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+function loadProfileCache() {
+  try {
+    const c = JSON.parse(localStorage.getItem(PROFILE_CACHE_KEY) || 'null');
+    if (c && c.v === PROFILE_CACHE_VERSION && c.items && typeof c.items === 'object') return c;
+  } catch (e) {}
+  return { v: PROFILE_CACHE_VERSION, items: {} };
+}
+function readProfileCache(name) {
+  const hit = loadProfileCache().items[profileCacheKey(name)];
+  return hit && hit.data && hit.data.name ? hit.data : null;
+}
+function writeProfileCache(requestedName, herb) {
+  if (!herb || !herb.name) return;
+  try {
+    const c = loadProfileCache();
+    const entry = { t: Date.now(), data: herb };
+    // Store under what was asked for AND the herb's real name, so a
+    // spelling variant and the proper name both open instantly next time.
+    [requestedName, herb.name].forEach(n => { const k = profileCacheKey(n); if (k) c.items[k] = entry; });
+    const keys = Object.keys(c.items);
+    if (keys.length > PROFILE_CACHE_MAX) {
+      keys.sort((a, b) => c.items[a].t - c.items[b].t)
+          .slice(0, keys.length - PROFILE_CACHE_MAX)
+          .forEach(k => delete c.items[k]);
+    }
+    localStorage.setItem(PROFILE_CACHE_KEY, JSON.stringify(c));
+  } catch (e) { /* storage full or blocked — the page just works uncached */ }
+}
+function dropProfileCache(name) {
+  try {
+    const c = loadProfileCache();
+    delete c.items[profileCacheKey(name)];
+    localStorage.setItem(PROFILE_CACHE_KEY, JSON.stringify(c));
+  } catch (e) {}
+}
+async function refreshProfileCache(herbName) {
+  try {
+    const fresh = await fetchHerbProfilePolling(herbName);
+    writeProfileCache(herbName, fresh);
+  } catch (err) {
+    if (err && err.code === 'not_an_herb') dropProfileCache(herbName);
+    // Any other failure: keep the stored copy; try again next visit.
   }
 }
 
@@ -1648,10 +1715,18 @@ async function fetchHerbImage(herbName, latinName) {
   // The Unsplash keyword-search fallback is gone: it was the source of
   // images that didn't match the herb. No verified image = no image.
   try {
+    const imgKey = 'chi_herb_img_' + profileCacheKey(herbName);
+    let stored = null;
+    try { stored = JSON.parse(localStorage.getItem(imgKey) || 'null'); } catch (e) {}
+    const bd0 = document.getElementById('ph-backdrop');
+    if (stored && stored.url && bd0 && !bd0.dataset.has) renderImageBox(null, [stored]);
+
     let images = [];
     try { images = await fetchWikimediaImages(herbName, latinName); }
     catch (e) { /* Wikimedia lookup failed — backdrop stays hidden */ }
     if (!images.length) return;
+    try { localStorage.setItem(imgKey, JSON.stringify(images[0])); } catch (e) {}
+    if (stored && stored.url === images[0].url) return; // already showing it
 
     // Only set if the backdrop isn't already showing an image from stored data
     const bd = document.getElementById('ph-backdrop');
