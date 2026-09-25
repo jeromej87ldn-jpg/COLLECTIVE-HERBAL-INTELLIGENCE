@@ -64,13 +64,32 @@ for (const h of HERB_CATALOG) { const k = normName(h.name); if (k && !CATALOG_IN
 for (const h of HERB_CATALOG) { const k = normName(String(h.name || '').replace(/\(.*?\)/g, '')); if (k && !CATALOG_INDEX.has(k)) CATALOG_INDEX.set(k, h); }
 for (const h of HERB_CATALOG) { const k = normName(h.latin_name || h.latin); if (k && k.includes(' ') && !CATALOG_INDEX.has(k)) CATALOG_INDEX.set(k, h); }
 
+// Last-resort index with all spaces removed. Page links turn "cat's claw"
+// into ?herb=cat-s-claw, which comes back as "cat s claw" and misses the
+// index above — that forced a paid classifier call on every open. Only
+// consulted when every exact lookup fails, and never overwrites an entry.
+const CATALOG_COMPACT = new Map();
+for (const [k, h] of CATALOG_INDEX) { const c = k.replace(/[\s()]/g, ''); if (c && !CATALOG_COMPACT.has(c)) CATALOG_COMPACT.set(c, h); }
+
 function findInCatalog(term) {
   const k = normName(term);
   if (!k) return null;
   if (CATALOG_INDEX.has(k)) return CATALOG_INDEX.get(k);
   if (k.endsWith('es') && CATALOG_INDEX.has(k.slice(0, -2))) return CATALOG_INDEX.get(k.slice(0, -2));
   if (k.endsWith('s') && CATALOG_INDEX.has(k.slice(0, -1))) return CATALOG_INDEX.get(k.slice(0, -1));
+  const c = k.replace(/[\s()]/g, '');
+  if (c.length >= 4 && CATALOG_COMPACT.has(c)) return CATALOG_COMPACT.get(c);
   return null;
+}
+
+// Classifier decisions for names that are herbal but not catalog names
+// (e.g. "hibiscus flower" -> hibiscus). Kept in this function instance's
+// memory so repeat opens skip the paid classifier call while the instance
+// stays warm. Nothing is written to the database.
+const GATE_MEMO = new Map();
+function memoGate(key, value) {
+  if (GATE_MEMO.size >= 500) GATE_MEMO.delete(GATE_MEMO.keys().next().value);
+  GATE_MEMO.set(key, value);
 }
 
 function levSimilarity(a, b) {
@@ -209,19 +228,26 @@ async function checkHerbGate(rawName, anthropic) {
 
   // 3. Decision already stored in Supabase
   let row = null;
+  let rowRead = false; // true only when the lookup itself succeeded
   if (supabase) {
     try {
       const { data, error } = await supabase.from('herbs').select('status, data').eq('name', key).maybeSingle();
       if (error) console.error(`[GATE ${GATE_VERSION}] row lookup failed:`, error.message);
-      else row = data;
+      else { row = data; rowRead = true; }
     } catch (e) { console.error(`[GATE ${GATE_VERSION}] row lookup failed:`, e.message); }
   }
+  // The handler reuses this row instead of reading the same record twice.
+  const withRow = (r) => (rowRead && r.name === key ? Object.assign(r, { row, rowKey: key }) : r);
   if (row) {
     if (row.status === 'rejected') return gateBlock(rawName, 'previously rejected');
-    if (row.status === 'pending') return { ok: true, name: key, saveStatus: 'complete', route: 'curated' };
-    if (row.status === 'unclassified') return { ok: true, name: key, saveStatus: 'unclassified', route: 'unclassified' };
-    if (row.data && row.data._gate === 'herbal') return { ok: true, name: key, saveStatus: 'complete', route: 'approved' };
+    if (row.status === 'pending') return withRow({ ok: true, name: key, saveStatus: 'complete', route: 'curated' });
+    if (row.status === 'unclassified') return withRow({ ok: true, name: key, saveStatus: 'unclassified', route: 'unclassified' });
+    if (row.data && row.data._gate === 'herbal') return withRow({ ok: true, name: key, saveStatus: 'complete', route: 'approved' });
   }
+
+  // 3b. Classifier already answered for this name while this instance is warm
+  const memo = GATE_MEMO.get(key);
+  if (memo) return withRow(Object.assign({}, memo));
 
   // 4. Ask the classifier once
   let result;
@@ -254,7 +280,9 @@ async function checkHerbGate(rawName, anthropic) {
     }
     if (match) {
       console.log(`[GATE ${GATE_VERSION}] "${rawName}" → catalog herb "${match.name}"`);
-      return { ok: true, name: String(match.name).trim().toLowerCase(), saveStatus: 'complete', route: 'catalog-alias' };
+      const decision = { ok: true, name: String(match.name).trim().toLowerCase(), saveStatus: 'complete', route: 'catalog-alias' };
+      memoGate(key, decision);
+      return Object.assign({}, decision);
     }
   }
 
@@ -263,12 +291,15 @@ async function checkHerbGate(rawName, anthropic) {
     try {
       const { error } = await supabase.from('herbs').update({ data: { ...row.data, _gate: 'herbal' } }).eq('name', key);
       if (error) console.error(`[GATE ${GATE_VERSION}] approval flag save failed:`, error.message);
+      else row.data = { ...row.data, _gate: 'herbal' };
     } catch (e) {}
-    return { ok: true, name: key, saveStatus: row.status === 'unclassified' ? 'unclassified' : 'complete', route: 'approved' };
+    return withRow({ ok: true, name: key, saveStatus: row.status === 'unclassified' ? 'unclassified' : 'complete', route: 'approved' });
   }
 
   console.log(`[GATE ${GATE_VERSION}] "${rawName}" is herbal but not in the catalog — generating as unclassified`);
-  return { ok: true, name: canonical ? canonical.toLowerCase() : key, saveStatus: 'unclassified', route: 'unclassified' };
+  const decision = { ok: true, name: canonical ? canonical.toLowerCase() : key, saveStatus: 'unclassified', route: 'unclassified' };
+  memoGate(key, decision);
+  return withRow(Object.assign({}, decision));
 }
 // ══════════════════════ END HERBADEX GATE v4 ══════════════════════════════
 
@@ -475,7 +506,9 @@ exports.handler = async (event) => {
     name = gate.name;
 
     let cachedRow = null;
-    if (supabase) {
+    if (gate.rowKey === name) {
+      cachedRow = gate.row; // already read by the gate — skip a second identical query
+    } else if (supabase) {
       try {
         const { data: row } = await supabase
           .from('herbs')
@@ -511,13 +544,15 @@ exports.handler = async (event) => {
 
         // Backfill verified citation links (Wikipedia/PubMed) for cached
         // rows that have none — runs once per herb, then it's saved.
+        // Herbs Wikipedia/PubMed have nothing for used to retry this (up to
+        // ~12s) on every single visit; now it's retried at most every 30 days.
         const hasLinkedSources = Array.isArray(cachedRow.data.sources) && cachedRow.data.sources.some(s => s && s.url);
-        if (!hasLinkedSources) {
+        const lastTry = Date.parse(cachedRow.data._sourcesCheckedAt || '') || 0;
+        if (!hasLinkedSources && Date.now() - lastTry > 30 * 24 * 60 * 60 * 1000) {
           const verified = await fetchVerifiedSources(name, cachedRow.data.latin);
-          if (verified.length) {
-            cachedRow.data.sources = mergeSources(cachedRow.data.sources, verified);
-            healed = true;
-          }
+          if (verified.length) cachedRow.data.sources = mergeSources(cachedRow.data.sources, verified);
+          cachedRow.data._sourcesCheckedAt = new Date().toISOString();
+          healed = true;
         }
 
         if (healed && supabase) {
