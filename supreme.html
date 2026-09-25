@@ -424,11 +424,16 @@ footer{background:var(--night);padding:3rem 0 2rem;border-top:1px solid rgba(200
 nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:var(--forest);border-bottom:1px solid rgba(200,149,42,.22);position:sticky;top:0;z-index:100;}
 .nav-logo{text-decoration:none;display:flex;flex-direction:column;}
 .nav-left{display:flex;align-items:center;gap:1.25rem;}
-.nav-search{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:6px;padding:.42rem .75rem;color:rgba(245,240,232,.5);transition:border-color .2s;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.nav-search-wrap{position:relative;}
+.nav-search-toggle{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:6px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:rgba(245,240,232,.6);cursor:pointer;transition:all .2s;}
+.nav-search-toggle:hover,.nav-search-toggle.open{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
+.nav-search{display:none;position:absolute;top:calc(100% + 8px);left:0;width:260px;align-items:center;gap:7px;background:var(--forest);border:1px solid rgba(200,149,42,.3);border-radius:8px;padding:.6rem .75rem;color:rgba(245,240,232,.5);box-shadow:0 8px 32px rgba(0,0,0,.4);z-index:200;}
+.nav-search.open{display:flex;animation:fadeUp .18s ease forwards;}
 .nav-search:focus-within{border-color:rgba(200,149,42,.55);}
-.nav-search input{background:none;border:none;outline:none;color:var(--parchment);font-family:'DM Sans',sans-serif;font-size:12.5px;width:150px;}
+.nav-search input{background:none;border:none;outline:none;color:var(--parchment);font-family:'DM Sans',sans-serif;font-size:12.5px;width:100%;}
 .nav-search input::placeholder{color:rgba(245,240,232,.4);}
-@media(max-width:900px){.nav-search{display:none;}}
+@media(max-width:900px){.nav-search-wrap{display:none;}}
 .mobile-search input{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);border-radius:6px;padding:.65rem .85rem;color:var(--parchment);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;}
 .mobile-search input::placeholder{color:rgba(245,240,232,.4);}
 .mobile-search{padding:.25rem 1rem .5rem;}
@@ -745,11 +750,16 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
       <span class="nav-chi">Herbadex</span>
       <span class="nav-full">Collective Herbal Intelligence</span>
     </a>
-    <div class="nav-search" title="Search The Herbarium">
-      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-      <input id="nav-herb-search" list="nav-stack-list" placeholder="Search any herb…" autocomplete="off">
-      <datalist id="nav-stack-list"></datalist>
-      <div id="nav-herb-suggestions" class="herb-suggestions" style="display:none;"></div>
+    <div class="nav-search-wrap">
+      <button type="button" class="nav-search-toggle" id="nav-search-toggle" onclick="toggleNavSearch()" title="Search The Herbarium" aria-label="Search The Herbarium" aria-expanded="false">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </button>
+      <div class="nav-search" id="nav-search-box" title="Search The Herbarium">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.4"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <input id="nav-herb-search" list="nav-stack-list" placeholder="Search any herb…" autocomplete="off">
+        <datalist id="nav-stack-list"></datalist>
+        <div id="nav-herb-suggestions" class="herb-suggestions" style="display:none;"></div>
+      </div>
     </div>
   </div>
   <div class="nav-right">
@@ -1793,7 +1803,7 @@ async function fetchHerbImage(herbName, latinName) {
     if (!container) return;
     
     container.innerHTML = suggestions.map((s, idx) => `
-      <div class="herb-suggestions-item" onclick="searchHerbByName('${s.name.replace(/'/g, "\'")}'); this.closest('.herb-suggestions').style.display='none';">
+      <div class="herb-suggestions-item" onclick="searchHerbByName('${s.name.replace(/'/g, "\'")}'); this.closest('.herb-suggestions').style.display='none'; toggleNavSearch(false);">
         <strong>${s.name}</strong>
         <em>${s.latin_name || ''}</em>
         ${s.tradition ? `<em>${s.tradition}</em>` : ''}
@@ -1826,6 +1836,7 @@ async function fetchHerbImage(herbName, latinName) {
     el.value = '';
     el.blur();
     try { if (typeof closeMobileMenu === 'function') closeMobileMenu(); } catch(e) {}
+    toggleNavSearch(false);
     searchHerbByName(v);
   };
   ['nav-herb-search','mobile-herb-search'].forEach(id => {
@@ -1837,6 +1848,25 @@ async function fetchHerbImage(herbName, latinName) {
     });
   });
 })();
+
+// Nav search toggle — opens the dropdown box, focuses the input, closes on
+// an outside click, Escape, or once a herb is picked.
+function toggleNavSearch(forceOpen){
+  const box = document.getElementById('nav-search-box');
+  const btn = document.getElementById('nav-search-toggle');
+  if (!box || !btn) return;
+  const open = typeof forceOpen === 'boolean' ? forceOpen : !box.classList.contains('open');
+  box.classList.toggle('open', open);
+  btn.classList.toggle('open', open);
+  btn.setAttribute('aria-expanded', String(open));
+  if (open) setTimeout(() => document.getElementById('nav-herb-search').focus(), 50);
+}
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.nav-search-wrap')) toggleNavSearch(false);
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') toggleNavSearch(false);
+});
 
 // Deep link — open a specific herb directly from supreme.html?herb=name
 (function openHerbFromURL(){

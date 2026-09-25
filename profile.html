@@ -69,6 +69,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .greeting-title em{font-style:italic;color:var(--gold-light);}
 .greeting-sub{font-size:13.5px;color:var(--muted);margin-top:.4rem;}
 
+.page-topbar{display:flex;align-items:center;justify-content:flex-end;gap:1rem;margin-bottom:1rem;flex-wrap:wrap;}
+.page-topbar .seed-badge{font-size:12.5px;padding:.4rem .85rem;}
+.page-topbar .topbar-upsell{font-size:12.5px;color:rgba(245,240,232,.55);display:flex;align-items:center;gap:6px;}
+.page-topbar .topbar-upsell a{color:var(--gold-light);text-decoration:none;border-bottom:1px dashed rgba(200,149,42,.4);}
+@media(max-width:480px){.page-topbar{justify-content:center;}}
 .phead{display:flex;gap:1.75rem;align-items:flex-start;background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:2rem;position:relative;overflow:hidden;}
 .phead-backdrop{position:absolute;top:0;right:0;bottom:0;width:42%;z-index:0;overflow:hidden;pointer-events:none;}
 .phead-backdrop img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.4;-webkit-mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.4) 30%,#000 75%);mask-image:linear-gradient(to right,transparent 0%,rgba(0,0,0,.4) 30%,#000 75%);}
@@ -648,6 +653,11 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 
 <div class="wrap">
 
+  <div class="page-topbar owner-only">
+    <a class="seed-badge" id="hdr-seeds" href="seeds.html" title="Get more seeds">🌰 — seeds</a>
+    <span class="topbar-upsell" id="premium-upsell">✨ Want more from Herbadex? <a href="join.html">See upgrade options</a></span>
+  </div>
+
   <div class="phead fade">
     <div class="phead-backdrop" id="phead-backdrop">
       <img id="phead-backdrop-img" alt="" style="display:none">
@@ -663,10 +673,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <div class="phead-main">
       <div class="pname" id="p-name">&nbsp;</div>
       <div class="pmeta">
-        <a class="seed-badge owner-only" id="hdr-seeds" href="seeds.html" title="Get more seeds">🌰 — seeds</a>
         <span class="psince" id="p-since"></span>
       </div>
-      <div class="premium-lock-note owner-only" id="premium-upsell">✨ Want more from Herbadex? <a href="join.html">See upgrade options</a></div>
       <div class="pbio" id="p-bio"></div>
     </div>
     <div class="pactions" id="p-actions"></div>

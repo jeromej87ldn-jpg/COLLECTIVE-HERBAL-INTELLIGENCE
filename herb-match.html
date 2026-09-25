@@ -153,6 +153,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 .herb-btn{padding:.6rem;border:1px solid var(--card-border);border-radius:5px;background:transparent;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;}
 .herb-btn:hover{border-color:rgba(200,149,42,.4);color:var(--gold-light);}
 .herb-btn.primary{background:var(--gold);color:var(--forest);border-color:var(--gold);}
+.herb-btn.stack-btn.added{background:rgba(200,149,42,.15);border-color:var(--gold);color:var(--gold-light);}
 
 /* PROFILE VIEWER */
 .profile-section{display:none;}
@@ -1111,6 +1112,7 @@ function updateResultsGrid() {
       </div>` : ''}
       <div class="herb-actions">
         <button class="herb-btn primary" onclick="viewProfile('${safeName}')">📖 View profile</button>
+        <button class="herb-btn stack-btn ${inStack ? 'added' : ''}" onclick="toggleHerbInStack('${safeName}')">${inStack ? '✓ In your stack' : '+ Add to stack'}</button>
         <button class="herb-btn" onclick="rejectHerb('${safeName}')">Offer alternative</button>
       </div>
     `;
