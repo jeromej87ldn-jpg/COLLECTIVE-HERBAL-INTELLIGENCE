@@ -1817,8 +1817,35 @@ function switchView(view) {
   document.getElementById('routine-calendar-wrap').classList.toggle('is-hidden', view !== 'calendar');
 }
 
+// Herbs in a built routine become the member's Active herbs (shown on the
+// profile). New routines ADD to the list; a herb already there is updated with
+// its latest prep, time, cycle and start date. Key: chi_active_herbs.
+function saveActiveHerbs(herbs) {
+  try {
+    let list = JSON.parse(localStorage.getItem('chi_active_herbs') || '[]');
+    if (!Array.isArray(list)) list = [];
+    herbs.forEach((h) => {
+      if (!h || !h.name) return;
+      const entry = {
+        name: h.name,
+        prep: (PREP_METHODS[h.prep] && PREP_METHODS[h.prep].label) || h.prep || '',
+        time: (TIME_SLOTS[h.time] && TIME_SLOTS[h.time].label) || h.time || '',
+        onWeeks: h.onWeeks || null,
+        offWeeks: h.offWeeks || 0,
+        startDate: state.startDate,
+        addedAt: new Date().toISOString()
+      };
+      const i = list.findIndex((a) => a && typeof a.name === 'string' && a.name.toLowerCase() === h.name.toLowerCase());
+      if (i === -1) list.push(entry);
+      else list[i] = Object.assign({}, list[i], entry, { addedAt: list[i].addedAt || entry.addedAt });
+    });
+    localStorage.setItem('chi_active_herbs', JSON.stringify(list));
+  } catch (e) { /* storage full or blocked — the routine still works */ }
+}
+
 function renderRoutine() {
   const herbs = getSelectedHerbsWithPrep();
+  saveActiveHerbs(herbs);
   const startDate = new Date(state.startDate + 'T00:00:00');
   currentScheduleDays = buildDailySchedule(herbs, startDate, state.weeksToShow);
   renderExplanation(herbs);

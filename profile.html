@@ -27,7 +27,7 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Profile — C.H.I</title>
+<title>Profile — Herbadex</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
 <style>
@@ -105,12 +105,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .btn-ghost:hover{border-color:var(--gold);color:var(--gold-light);}
 .btn-following{background:rgba(74,140,101,.18);color:var(--tag-text);border-color:var(--tag-border);}
 
-.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem;margin-top:1.25rem;}
-@media(max-width:680px){.stats{grid-template-columns:repeat(2,1fr);}.stats .stat:last-child{grid-column:1/-1;}}
-.stat{background:var(--card);border:2px solid var(--gold);border-radius:10px;padding:.85rem 1rem;cursor:pointer;transition:all .18s;position:relative;overflow:hidden;box-shadow:0 0 24px rgba(200,149,42,.18);}
-.stat:hover{box-shadow:0 0 24px rgba(200,149,42,.3);}
-.stat:hover{border-color:rgba(200,149,42,.3);background:rgba(200,149,42,.05);}
-.stat.active{background:rgba(200,149,42,.09);border-color:var(--gold-light);box-shadow:0 0 24px rgba(200,149,42,.35);}
+.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:.75rem;margin-top:1.25rem;}
+@media(max-width:820px){.stats{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:480px){.stats{grid-template-columns:repeat(2,1fr);}}
+/* Unselected panels: flat gold frame, no glow. Only the selected panel glows. */
+.stat{background:var(--card);border:1.5px solid rgba(200,149,42,.55);border-radius:10px;padding:.85rem 1rem;cursor:pointer;transition:background .18s,border-color .18s,box-shadow .18s;position:relative;overflow:hidden;box-shadow:none;}
+.stat:hover{border-color:var(--gold);background:rgba(200,149,42,.05);}
+.stat:focus-visible{outline:2px solid var(--gold-light);outline-offset:2px;}
+.stat.active{background:rgba(200,149,42,.1);border-color:var(--gold-light);box-shadow:0 0 22px rgba(232,184,75,.45),inset 0 0 0 1px rgba(232,184,75,.35);}
 .stat.active::after{content:'';position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--gold);}
 .stat.active .stat-num{color:var(--gold-light);}
 .stat-num{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;color:var(--gold-light);line-height:1;}
@@ -184,7 +186,46 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .settings-footnote a{color:var(--gold);text-decoration:none;}
 .settings-footnote a:hover{text-decoration:underline;}
 
-/* COMPANIONS */
+/* LEVEL STRIP (below the profile banner) */
+.level-strip{display:flex;align-items:center;gap:1rem;margin-top:.9rem;background:var(--card);border:1px solid rgba(200,149,42,.3);border-radius:12px;padding:.85rem 1.1rem;}
+.level-trophy{width:52px;height:52px;flex-shrink:0;}
+.level-strip-main{flex:1;min-width:0;}
+.level-strip-num{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--gold-light);line-height:1.1;}
+.level-strip-xp{margin-top:.45rem;max-width:360px;}
+a.seed-badge{text-decoration:none;cursor:pointer;transition:border-color .2s;}
+a.seed-badge:hover{border-color:var(--gold);}
+
+/* ACTIVE HERBS */
+.active-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;}
+.active-card{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:1.1rem 1.25rem;}
+.active-meta{font-size:12.5px;color:var(--muted);margin-top:.4rem;line-height:1.6;}
+.stack-actions{display:flex;gap:.5rem;margin-top:.85rem;}
+
+/* EDIT PROFILE */
+.field{display:block;margin-bottom:1rem;}
+.field-label{display:block;font-size:12px;color:var(--muted);margin-bottom:.35rem;}
+.field input,.field textarea{width:100%;background:rgba(0,0,0,.25);border:1px solid var(--card-border);border-radius:6px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.6;padding:.65rem .85rem;outline:none;}
+.field textarea{min-height:110px;resize:vertical;}
+.field input:focus,.field textarea:focus{border-color:var(--gold);}
+.field-count{font-size:11px;color:var(--muted);text-align:right;margin-top:.25rem;}
+.form-error{font-size:12.5px;color:#e8856a;min-height:1.2em;margin-top:.25rem;}
+
+/* MEMBERSHIP (settings) */
+.membership-actions{display:flex;gap:.5rem;flex-wrap:wrap;}
+a.setting-action-btn{text-decoration:none;display:inline-flex;align-items:center;}
+
+/* BADGE WEEK */
+.badge-week{background:var(--card);border:1px solid rgba(200,149,42,.3);border-radius:12px;padding:1.25rem 1.4rem;margin:1.25rem 0;}
+.badge-week-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;}
+.badge-week-sub{font-size:13px;color:var(--muted);margin:.25rem 0 1rem;line-height:1.6;}
+.badge-row{display:flex;align-items:center;gap:.75rem;padding:.6rem 0;border-top:1px solid var(--card-border);flex-wrap:wrap;}
+.badge-row-name{flex:1;min-width:120px;font-size:14px;}
+.badge-picks{display:flex;gap:.4rem;flex-wrap:wrap;}
+.badge-pick{background:transparent;border:1px solid var(--card-border);border-radius:999px;padding:.3rem .7rem;font-family:'DM Sans',sans-serif;font-size:12.5px;color:var(--muted);cursor:pointer;}
+.badge-pick:hover{border-color:rgba(200,149,42,.4);color:var(--text);}
+.badge-pick.on{background:rgba(200,149,42,.15);border-color:var(--gold);color:var(--gold-light);}
+
+/* CIRCLE */
 .section{margin-top:2.5rem;}
 .sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.3rem;}
 .sec-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:500;}
@@ -604,14 +645,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   </div>
   <span class="demo-note">Same profile, two perspectives — this bar wouldn't appear on the live site.</span>
 </div>
-<div class="demo-bar">
-  <span class="demo-label">Demo</span>
-  <div class="demo-toggle">
-    <button id="t-free" class="on" onclick="setTier('free')">Free tier</button>
-    <button id="t-premium" onclick="setTier('premium')">Premium tier</button>
-  </div>
-  <span class="demo-note">Previewing seeds, XP and what's unlocked at each tier — this bar wouldn't appear on the live site.</span>
-</div>
 
 <div class="wrap">
 
@@ -628,24 +661,36 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     </div>
     <input type="file" id="avatar-input" accept="image/png,image/jpeg,image/webp" style="display:none" onchange="handleAvatarFile(event)">
     <div class="phead-main">
-      <div class="pname">Sage Rowan</div>
+      <div class="pname" id="p-name">&nbsp;</div>
       <div class="pmeta">
-        <span class="level-badge" id="hdr-level">★ Level 5</span>
-        <span class="rank-badge">🌿 <span id="hdr-rank">Sprout</span></span>
-        <span class="tier-badge" id="hdr-tier">Free</span>
-        <span class="seed-badge" id="hdr-seeds">🌰 84 seeds</span>
-        <span class="psince">Member since March 2024</span>
+        <a class="seed-badge owner-only" id="hdr-seeds" href="seeds.html" title="Get more seeds">🌰 — seeds</a>
+        <span class="psince" id="p-since"></span>
       </div>
-      <div class="premium-lock-note" id="premium-upsell">🔒 Founding herbs and unlimited generations are a <a href="join.html">Premium</a> perk — £6.99/mo.</div>
-      <div class="pbio">Kitchen-garden herbalist working through the nervines and adaptogens. Slow mornings, bitter teas, and a deep love of anything in the mint family.</div>
-      <div class="phead-journey owner-only" id="phead-journey"></div>
+      <div class="premium-lock-note owner-only" id="premium-upsell">✨ Want more from Herbadex? <a href="join.html">See upgrade options</a></div>
+      <div class="pbio" id="p-bio"></div>
     </div>
     <div class="pactions" id="p-actions"></div>
   </div>
 
+  <!-- LEVEL (below the profile banner). XP detail is owner-only. -->
+  <div class="level-strip fade" id="level-strip" style="animation-delay:.03s">
+    <!-- Placeholder tree-trophy artwork — swap for final image later -->
+    <svg class="level-trophy" viewBox="0 0 52 52" aria-hidden="true">
+      <circle cx="26" cy="18" r="13" fill="#2d5c42" stroke="#c8952a" stroke-width="1.5"/>
+      <circle cx="19" cy="15" r="6" fill="#4a8c65"/><circle cx="31" cy="13" r="7" fill="#4a8c65"/><circle cx="27" cy="22" r="6" fill="#4a8c65"/>
+      <rect x="24" y="28" width="4" height="10" fill="#c8952a"/>
+      <path d="M15 38h22l-3 8H18z" fill="#c8952a"/>
+      <rect x="13" y="45" width="26" height="4" rx="1" fill="#e8b84b"/>
+    </svg>
+    <div class="level-strip-main">
+      <div class="level-strip-num" id="level-strip-num">Level 1</div>
+      <div class="level-strip-xp owner-only" id="level-strip-xp"></div>
+    </div>
+  </div>
+
   <div class="section fade" style="animation-delay:.05s">
-    <div class="sec-head"><div class="sec-title">Companions</div></div>
-    <div class="sec-sub">The members Sage grows alongside — like companion planting, partners who help each other thrive.</div>
+    <div class="sec-head"><div class="sec-title">Circle</div></div>
+    <div class="sec-sub" id="circle-sub">The members you grow alongside — your herbal family.</div>
     <div class="companions" id="companions"></div>
   </div>
 
@@ -658,6 +703,12 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
   <div class="panel active" id="panel-stack">
     <div class="sec-sub" id="stack-sub"></div>
     <div class="stack" id="stack"></div>
+  </div>
+
+  <!-- ACTIVE HERBS (from Herb Planner routines) -->
+  <div class="panel" id="panel-active">
+    <div class="sec-sub" id="active-sub"></div>
+    <div id="active-body"></div>
   </div>
 
   <!-- SAVED -->
@@ -693,7 +744,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 
   <!-- ACHIEVEMENTS -->
   <div class="panel" id="panel-ach">
-    <div class="sec-sub">Complete tasks across CHI to earn XP and level up. Your level is a badge of how deep you've gone — into the herbs and into the community.</div>
+    <div class="sec-sub">Complete tasks across Herbadex to earn XP and level up. Your level is a badge of how deep you've gone — into the herbs and into the community.</div>
     <div class="level-card" id="level-card"></div>
 
     <div class="section premium-only" id="founder-card" style="margin:1.25rem 0;">
@@ -708,12 +759,29 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     </div>
     <div class="premium-lock-note" id="founder-locked-note" style="margin:0 0 1.25rem;">🔒 Founding herbs is a <a href="join.html">Premium</a> perk. Free members can still <strong>corroborate</strong> other people's submissions and earn seeds for it.</div>
 
+    <div class="badge-week owner-only" id="badge-week"></div>
+
     <div class="ach-grid" id="ach-grid"></div>
   </div>
 
   <!-- SETTINGS -->
   <div class="panel" id="panel-settings">
     <div class="sec-sub">Accessibility, privacy and account controls. Changes save automatically to this device.</div>
+
+    <!-- MEMBERSHIP -->
+    <div class="settings-group">
+      <div class="settings-group-title">Membership</div>
+      <div class="setting-row">
+        <div class="setting-info">
+          <div class="setting-label" id="set-plan-label">Your plan: Free</div>
+          <div class="setting-desc" id="set-plan-desc">Seeds let you generate herb profiles and use the tools.</div>
+        </div>
+        <div class="membership-actions">
+          <a class="setting-action-btn" href="seeds.html">Get seeds</a>
+          <a class="setting-action-btn" href="join.html" id="set-upgrade-btn">See upgrade options</a>
+        </div>
+      </div>
+    </div>
 
     <!-- DISPLAY -->
     <div class="settings-group">
@@ -783,7 +851,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
       <div class="setting-row">
         <div class="setting-info">
           <div class="setting-label">Sign out everywhere</div>
-          <div class="setting-desc">Sign out of CHI on this and all other devices. You'll need to sign in again.</div>
+          <div class="setting-desc">Sign out of Herbadex on this and all other devices. You'll need to sign in again.</div>
         </div>
         <button class="setting-action-btn" onclick="signOutEverywhere()">Sign out everywhere</button>
       </div>
@@ -805,7 +873,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
       <div class="setting-row">
         <div class="setting-info">
           <div class="setting-label">Download my data</div>
-          <div class="setting-desc">Export everything CHI holds about you — stack, saved herbs, settings — as a file.</div>
+          <div class="setting-desc">Export everything Herbadex holds about you (stack, active herbs, saved herbs, settings) as a file.</div>
         </div>
         <button class="setting-action-btn" onclick="downloadMyData()">Download</button>
       </div>
@@ -818,9 +886,30 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
       </div>
     </div>
 
-    <p class="settings-footnote">CHI never sells your data. Read our <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms</a>. For account deletion, contact us through the <a href="privacy-policy.html#contact">Privacy Policy</a> page.</p>
+    <p class="settings-footnote">Herbadex never sells your data. Read our <a href="privacy-policy.html">Privacy Policy</a> and <a href="terms.html">Terms</a>. For account deletion, contact us through the <a href="privacy-policy.html#contact">Privacy Policy</a> page.</p>
   </div>
 
+</div>
+
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <h3>Edit profile</h3>
+    <p>This is what other members see on your profile.</p>
+    <label class="field">
+      <span class="field-label">Display name</span>
+      <input type="text" id="edit-name" maxlength="40" autocomplete="nickname">
+    </label>
+    <label class="field">
+      <span class="field-label">Summary</span>
+      <textarea id="edit-bio" maxlength="300" placeholder="e.g. Kitchen-garden herbalist working through the nervines…" oninput="updateBioCount()"></textarea>
+      <div class="field-count" id="edit-bio-count">0 / 300</div>
+    </label>
+    <div class="form-error" id="edit-error"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeEditProfile()">Cancel</button>
+      <button class="btn btn-primary" id="edit-save-btn" onclick="saveProfileEdits()">Save changes</button>
+    </div>
+  </div>
 </div>
 
 <div class="modal-overlay" id="msg-modal">
@@ -854,18 +943,44 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
   }
   window.CHI_SESSION = session;
   try{
-    const { data: profile } = await sb.from('profiles')
-      .select('username,display_name')
+    const { data: profile, error } = await sb.from('profiles')
+      .select('username,display_name,bio,seed_balance,is_premium,created_at')
       .eq('id', session.user.id)
       .single();
+    if(error) throw error;
+    window.CHI_PROFILE = profile;
     const liveName = profile && (profile.display_name || profile.username);
-    if(liveName){
-      localStorage.setItem('chi_display_name', liveName);
-      const gn = document.getElementById('greet-name');
-      if(gn) gn.textContent = "this is " + liveName + "'s.";
-    }
-  }catch(e){ console.warn('Could not load live profile name:', e); }
+    if(liveName) localStorage.setItem('chi_display_name', liveName);
+    applyLiveProfile();
+  }catch(e){ console.warn('Could not load live profile:', e); }
 })();
+
+// Puts the signed-in member's real details into the header + membership settings.
+function applyLiveProfile(){
+  const p = window.CHI_PROFILE;
+  if(!p){
+    // Before the live profile arrives, show the last known name instead of a blank.
+    const cached = localStorage.getItem('chi_display_name');
+    if(cached) document.getElementById('p-name').textContent = cached;
+    return;
+  }
+  const name = p.display_name || p.username || 'Herbalist';
+  document.getElementById('p-name').textContent = name;
+  PROFILE_NAME = name.split(' ')[0];
+  const initial = document.getElementById('avatar-initial');
+  if(initial) initial.textContent = name.trim().charAt(0).toUpperCase();
+  const bio = document.getElementById('p-bio');
+  bio.textContent = p.bio || '';
+  if(!p.bio && document.body.dataset.view === 'owner'){
+    bio.innerHTML = '<span style="color:var(--muted);font-style:italic">No summary yet — tap Edit profile to add one.</span>';
+  }
+  if(p.created_at){
+    const d = new Date(p.created_at);
+    document.getElementById('p-since').textContent = 'Member since ' + d.toLocaleDateString('en-GB', {month:'long', year:'numeric'});
+  }
+  document.body.dataset.tier = p.is_premium ? 'premium' : 'free';
+  renderTierBadges();
+}
 
 function chiSignOut(){
   sb.auth.signOut().finally(() => { localStorage.clear(); window.location.href = 'index.html'; });
@@ -882,7 +997,7 @@ async function syncRankToSupabase(level){
   }catch(e){ console.warn('Could not sync rank to Supabase:', e); }
 }
 
-const PROFILE_NAME = 'Sage';
+let PROFILE_NAME = ((localStorage.getItem('chi_display_name') || 'This member').trim().split(' ')[0]) || 'This member';
 let following = false;
 let savedPublic = true;
 
@@ -897,41 +1012,49 @@ const companions = [
   {name:'Cyrus B', rank:'🌿 Sprout', color:'#7acca0'},
 ];
 
-let stack = [
-  {name:'Shatavari', color:'#9a3a7a', form:'Capsule · 500mg · Morning', status:'active',
-   note:'Two caps with breakfast through the colder months — steadies my energy without the wired feeling I get from ashwagandha.'},
-  {name:'Passionflower', color:'#3a3a8a', form:'Tea · Evening', status:'active',
-   note:'One cup an hour before bed, blended with lemon balm. The looping-thoughts kind of nights are where it earns its place.'},
-  {name:'Ashwagandha', color:'#7a9a2a', form:'Powder · Morning', status:'break',
-   note:'On a break for the summer — I cycle it 6 weeks on, 2 off so it keeps working.'},
-  {name:'Milk Thistle', color:'#4a7a5a', form:'Tincture · Daily', status:'complete', note:''},
-];
-
-// ── SYNC WITH SHARED STACK (chi_phyto_stack) ──
-// Herbs added via Plant Intelligence / Community live in localStorage as a
-// simple name array. Merge any that aren't already shown here so the profile
-// reflects the user's real, current stack across the whole platform.
-(function syncStack(){
-  try{
+// ── HERB STACK (chi_phyto_stack) ──
+// The shared stack key written by every "+ Add to stack" button (The Herbarium,
+// Herb Match, Community). A plain herb-name array. Stack = "the herbs I'm
+// dealing with right now". Notes are kept separately in chi_stack_notes
+// ({herbName: note}) so the shared name array stays exactly as other pages expect.
+const STACK_COLORS = ['#5cab7a','#e8a840','#6aaddd','#9b8de0','#cc7a5a','#cc6a9a','#7abf6a','#dd6a6a'];
+function loadStackNotes(){
+  try{ const v = JSON.parse(localStorage.getItem('chi_stack_notes') || '{}'); return (v && typeof v === 'object') ? v : {}; }catch(e){ return {}; }
+}
+function loadStack(){
+  let names = [];
+  try{ const v = JSON.parse(localStorage.getItem('chi_phyto_stack') || '[]'); if(Array.isArray(v)) names = v.filter(n => typeof n === 'string'); }catch(e){}
+  const notes = loadStackNotes();
+  return names.map(name => {
+    let hash=0; for(let i=0;i<name.length;i++) hash=(hash*31+name.charCodeAt(i))&0xffff;
+    return { name, color: STACK_COLORS[hash % STACK_COLORS.length], note: notes[name] || '' };
+  });
+}
+// One-time move of herbs from Herb Match's old separate stack key
+// (chi_herb_stack) into the shared stack key every page uses (chi_phyto_stack).
+function migrateLegacyStack() {
+  try {
+    const legacy = JSON.parse(localStorage.getItem('chi_herb_stack') || 'null');
+    if (!Array.isArray(legacy)) return;
     const shared = JSON.parse(localStorage.getItem('chi_phyto_stack') || '[]');
-    if(!Array.isArray(shared)) return;
-    const STACK_COLORS = ['#5cab7a','#e8a840','#6aaddd','#9b8de0','#cc7a5a','#cc6a9a','#7abf6a','#dd6a6a'];
-    shared.forEach(name=>{
-      if(typeof name !== 'string') return;
-      const exists = stack.some(h => h.name.toLowerCase() === name.toLowerCase());
-      if(!exists){
-        let hash=0; for(let i=0;i<name.length;i++) hash=(hash*31+name.charCodeAt(i))&0xffff;
-        stack.push({
-          name: name,
-          color: STACK_COLORS[hash % STACK_COLORS.length],
-          form: 'Added from your stack',
-          status: 'active',
-          note: ''
-        });
-      }
+    const list = Array.isArray(shared) ? shared : [];
+    legacy.forEach(n => {
+      if (typeof n === 'string' && !list.some(s => typeof s === 'string' && s.toLowerCase() === n.toLowerCase())) list.push(n);
     });
-  }catch(e){}
-})();
+    localStorage.setItem('chi_phyto_stack', JSON.stringify(list));
+    localStorage.removeItem('chi_herb_stack');
+  } catch (e) {}
+}
+migrateLegacyStack();
+let stack = loadStack();
+
+// ── ACTIVE HERBS (chi_active_herbs) ──
+// Written by Herb Planner when a routine is built. Active = "chosen and part of
+// my routine". Array of {name, prep, time, onWeeks, offWeeks, startDate, addedAt}.
+function loadActive(){
+  try{ const v = JSON.parse(localStorage.getItem('chi_active_herbs') || '[]'); return Array.isArray(v) ? v.filter(h => h && typeof h.name === 'string') : []; }catch(e){ return []; }
+}
+let activeHerbs = loadActive();
 
 // ── SAVED HERBS (chi_saved_herbs) ──
 // Shared with the save star on The Herbarium, Herb Match and Herb Planner —
@@ -993,7 +1116,7 @@ const achievements = [
   {icon:'🔍', name:'Explorer', desc:'Explore 50 herbs in The Herbarium.', progress:148, target:50, xp:40},
   {icon:'📚', name:'Scholar', desc:'Explore 200 herbs in The Herbarium.', progress:148, target:200, xp:80},
   {icon:'✍️', name:'Storyteller', desc:'Publish 10 posts to the community.', progress:23, target:10, xp:50},
-  {icon:'🤝', name:'Good Company', desc:'Grow 5 companions.', progress:5, target:5, xp:40},
+  {icon:'🤝', name:'Good Company', desc:'Grow your Circle to 5 members.', progress:5, target:5, xp:40},
   {icon:'🧭', name:'Journey Maker', desc:'Document a full journey of linked posts.', progress:0, target:1, xp:60},
   {icon:'📷', name:'Identifier', desc:'Identify 10 herbs with the camera tool.', progress:6, target:10, xp:40},
   {icon:'🌍', name:'Tradition Traveller', desc:'Explore herbs from 5 healing traditions.', progress:7, target:5, xp:50},
@@ -1076,44 +1199,39 @@ function levelInfo(){
   return {xp, level, into, pct: Math.round(into/XP_PER_LEVEL*100), rank, emoji};
 }
 
-// ── SEEDS / TIER ──
-// Mock balance for the free-tier demo view. Premium never spends seeds, so
-// this number is irrelevant once tier === 'premium'.
-const MOCK_SEED_BALANCE = 84;
-const MOCK_SEED_DAYS_LEFT = 12;
-
+// ── SEEDS / MEMBERSHIP ──
+// Real values from the profiles table (seed_balance, is_premium). Membership
+// detail lives in Settings → Membership; the header just shows seeds.
 function renderTierBadges(){
-  const tier = document.body.dataset.tier || 'free';
-  const tierEl = document.getElementById('hdr-tier');
+  const p = window.CHI_PROFILE;
+  const premium = document.body.dataset.tier === 'premium';
   const seedEl = document.getElementById('hdr-seeds');
   const upsell = document.getElementById('premium-upsell');
-
-  tierEl.textContent = tier === 'premium' ? 'Premium' : 'Free';
-  tierEl.className = 'tier-badge ' + tier;
-
-  if (tier === 'premium') {
-    seedEl.textContent = '🌰 Unlimited';
-    seedEl.className = 'seed-badge premium';
+  if(premium){
+    seedEl.textContent = '🌰 Unlimited seeds';
+    seedEl.className = 'seed-badge premium owner-only';
     upsell.style.display = 'none';
   } else {
-    seedEl.textContent = `🌰 ${MOCK_SEED_BALANCE} seeds · ${MOCK_SEED_DAYS_LEFT}d left`;
-    seedEl.className = 'seed-badge';
+    const bal = p && typeof p.seed_balance === 'number' ? p.seed_balance : null;
+    seedEl.textContent = bal === null ? '🌰 — seeds' : `🌰 ${bal} seed${bal===1?'':'s'}`;
+    seedEl.className = 'seed-badge owner-only';
     upsell.style.display = 'flex';
   }
+  const planLabel = document.getElementById('set-plan-label');
+  const planDesc = document.getElementById('set-plan-desc');
+  const upBtn = document.getElementById('set-upgrade-btn');
+  if(planLabel) planLabel.textContent = premium ? 'Your plan: Premium' : 'Your plan: Free';
+  if(planDesc) planDesc.textContent = premium
+    ? 'Unlimited seeds and every premium feature.'
+    : 'Seeds let you generate herb profiles and use the tools. Top up any time, or upgrade for more.';
+  if(upBtn) upBtn.style.display = premium ? 'none' : '';
 
   // Gate anything premium-only that's rendered elsewhere on the page
   document.querySelectorAll('.premium-only').forEach(el => {
-    el.classList.toggle('premium-locked', tier !== 'premium');
+    el.classList.toggle('premium-locked', !premium);
   });
   const lockedNote = document.getElementById('founder-locked-note');
-  if (lockedNote) lockedNote.style.display = tier === 'premium' ? 'none' : 'flex';
-}
-
-function setTier(tier){
-  document.body.dataset.tier = tier;
-  document.getElementById('t-free').classList.toggle('on', tier === 'free');
-  document.getElementById('t-premium').classList.toggle('on', tier === 'premium');
-  renderTierBadges();
+  if (lockedNote) lockedNote.style.display = premium ? 'none' : 'flex';
 }
 
 // ── VIEW ──
@@ -1121,10 +1239,14 @@ function setView(mode){
   document.body.dataset.view = mode;
   document.getElementById('t-owner').classList.toggle('on', mode==='owner');
   document.getElementById('t-public').classList.toggle('on', mode==='public');
-  renderActions(); renderStack(); renderSaved(); renderPosts(); renderStats();
+  renderActions(); renderStack(); renderActive(); renderSaved(); renderPosts(); renderStats(); renderAchievements();
+  applyLiveProfile();
   document.getElementById('stack-sub').textContent = mode==='owner'
-    ? 'How you use herbs in daily life. Tap any herb to open its Herbarium page; tap a note to add or edit how you use it.'
-    : `How ${PROFILE_NAME} uses herbs in daily life. Tap any herb to open its Herbarium page. Curious about a note? Send a message.`;
+    ? 'Herbs you\u2019re working with right now. Tap a herb to open its Herbarium page, or open a card to add notes.'
+    : `Herbs ${PROFILE_NAME} is working with right now. Curious about a note? Send a message.`;
+  document.getElementById('active-sub').textContent = mode==='owner'
+    ? 'Herbs that are part of your routine, added when you build a plan in the Herb Planner.'
+    : `Herbs that are part of ${PROFILE_NAME}\u2019s routine.`;
   document.getElementById('saved-sub').textContent = mode==='owner'
     ? 'Herbs, posts and images you\u2019ve saved to revisit.'
     : `What ${PROFILE_NAME} has saved — herbs, posts and results they\u2019re keeping.`;
@@ -1133,7 +1255,7 @@ function setView(mode){
 function renderActions(){
   const el = document.getElementById('p-actions');
   if(document.body.dataset.view === 'owner'){
-    el.innerHTML = `<button class="btn btn-ghost" onclick="alert('Opens profile editor (name, bio, themes).')">Edit profile</button>`
+    el.innerHTML = `<button class="btn btn-ghost" onclick="openEditProfile()">Edit profile</button>`
       + (hasAvatarPhoto ? ` <span class="avatar-remove" onclick="removeAvatar()">Remove photo</span>` : '');
   } else {
     el.innerHTML = `
@@ -1147,7 +1269,9 @@ function renderActions(){
 function toggleFollow(){ following=!following; renderActions(); }
 
 // ── TABS ──
+let currentTab = 'stack';
 function setTab(tab, el){
+  currentTab = tab;
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   const panel = document.getElementById('panel-'+tab);
   if(panel) panel.classList.add('active');
@@ -1161,30 +1285,32 @@ function setTab(tab, el){
 function renderStats(){
   const L = levelInfo();
   const isOwner = document.body.dataset.view !== 'public';
-  document.getElementById('stats').innerHTML = `
-    <div class="stat active" data-tab="stack" onclick="setTab('stack',this)"><div class="stat-num">${stack.length}</div><div class="stat-lbl">Stack</div></div>
-    <div class="stat" data-tab="saved" onclick="setTab('saved',this)"><div class="stat-num">${isOwner ? savedCount() : '—'}</div><div class="stat-lbl">Saved</div></div>
-    <div class="stat" data-tab="gallery" onclick="setTab('gallery',this)"><div class="stat-num">${galleryPhotos.length}</div><div class="stat-lbl">Garden photos</div></div>
-    <div class="stat" data-tab="posts" onclick="setTab('posts',this)"><div class="stat-num">${myPosts.length}</div><div class="stat-lbl">Posts</div></div>
-    <div class="stat" data-tab="ach" onclick="setTab('ach',this)"><div class="stat-num">${L.level}</div><div class="stat-lbl">Level</div></div>`;
-  document.getElementById('hdr-level').textContent = '★ Level ' + L.level;
-  document.getElementById('hdr-rank').textContent = L.rank;
-  if(isOwner) syncRankToSupabase(L.level);
-  // Journey bar in the profile header
-  const j = document.getElementById('phead-journey');
-  if(j) j.innerHTML = `
+  const doneCount = achievements.filter(a=>a.progress>=a.target).length;
+  const tiles = [
+    ['stack',   stack.length, 'Stack'],
+    ['saved',   isOwner ? savedCount() : '—', 'Saved'],
+    ['active',  activeHerbs.length, 'Active'],
+    ['gallery', galleryPhotos.length, 'Garden'],
+    ['posts',   myPosts.length, 'Posts'],
+    ['ach',     doneCount, 'Achievements'],
+  ];
+  document.getElementById('stats').innerHTML = tiles.map(([tab,num,lbl]) =>
+    `<div class="stat${tab===currentTab?' active':''}" data-tab="${tab}" role="button" tabindex="0" onclick="setTab('${tab}',this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setTab('${tab}',this);}"><div class="stat-num">${num}</div><div class="stat-lbl">${lbl}</div></div>`
+  ).join('');
+
+  // Level strip below the banner. XP detail is private to the owner.
+  document.getElementById('level-strip-num').textContent = 'Level ' + L.level;
+  const xpEl = document.getElementById('level-strip-xp');
+  if(xpEl) xpEl.innerHTML = isOwner ? `
     <div class="xp-bar"><div class="xp-fill" style="width:${L.pct}%"></div></div>
-    <div class="xp-text">${L.into} XP into Level ${L.level} — ${L.pct}% of the way to Level ${L.level+1}</div>`;
-  // Share identity with other CHI pages (community, home)
+    <div class="xp-text">${L.into} / ${XP_PER_LEVEL} XP to Level ${L.level+1} (only you can see this)</div>` : '';
+
+  if(isOwner) syncRankToSupabase(L.level);
+  // Rank is no longer shown on the profile, but Home and Community still
+  // display it, so keep sharing it with them.
   try{
     localStorage.setItem('chi_level', String(L.level));
     localStorage.setItem('chi_rank', L.emoji + ' ' + L.rank);
-  }catch(e){}
-  // Personalise the greeting
-  try{
-    const gn = document.getElementById('greet-name');
-    const dn = localStorage.getItem('chi_display_name');
-    if(gn && dn) gn.textContent = 'this is ' + dn + "'s.";
   }catch(e){}
 }
 
@@ -1210,7 +1336,17 @@ function toggleStackCard(i){ openStackIndex = (openStackIndex === i) ? null : i;
 
 function renderStack(){
   const owner = document.body.dataset.view === 'owner';
-  document.getElementById('stack').innerHTML = stack.map((h, i) => {
+  const stackEl = document.getElementById('stack');
+  if(!owner && localStorage.getItem('chi_setting_stack_public') === '0'){
+    stackEl.innerHTML = `<div class="locked-note">🔒 ${PROFILE_NAME} keeps their stack private.</div>`; return;
+  }
+  if(!stack.length){
+    stackEl.innerHTML = emptyNote(owner
+      ? 'Your stack is empty. Tap “+ Add to stack” on any herb in The Herbarium, Herb Match or the Community feed.'
+      : `${PROFILE_NAME} hasn\u2019t added any herbs to their stack yet.`);
+    return;
+  }
+  stackEl.innerHTML = stack.map((h, i) => {
     const isOpen = openStackIndex === i;
     let noteBlock;
     if(owner){
@@ -1228,6 +1364,9 @@ function renderStack(){
               <button class="mini-btn mini-cancel" onclick="event.stopPropagation();cancelNote(${i})">Cancel</button>
             </div>
           </div>
+          <div class="stack-actions">
+            <button class="mini-btn mini-cancel" onclick="event.stopPropagation();removeFromStack(${i})">Remove from stack</button>
+          </div>
         </div>`;
     } else {
       noteBlock = h.note ? `
@@ -1242,9 +1381,7 @@ function renderStack(){
         <div class="herb-top">
           <span class="herb-dot" style="background:${h.color}"></span>
           <a class="herb-name" href="supreme.html?herb=${slug(h.name)}" onclick="event.stopPropagation()">${h.name}</a>
-          <span class="herb-form">${h.form}</span>
-          <span class="herb-status ${({active:'st-active',break:'st-break',complete:'st-complete'})[h.status]}">${({active:'Active',break:'On break',complete:'Completed'})[h.status]}</span>
-          <span class="herb-caret">${isOpen ? '▲' : '▼'}</span>
+          <span class="herb-caret" style="margin-left:auto">${isOpen ? '▲' : '▼'}</span>
         </div>
         <div class="herb-collapse">${noteBlock}</div>
       </div>`;
@@ -1252,7 +1389,61 @@ function renderStack(){
 }
 function editNote(i){ openStackIndex=i; renderStack(); document.getElementById('nd-'+i).style.display='none'; document.getElementById('ne-'+i).style.display='block'; document.getElementById('nt-'+i).focus(); }
 function cancelNote(i){ document.getElementById('nt-'+i).value=stack[i].note; document.getElementById('ne-'+i).style.display='none'; document.getElementById('nd-'+i).style.display='block'; }
-function saveNote(i){ stack[i].note=document.getElementById('nt-'+i).value.trim(); renderStack(); }
+function saveNote(i){
+  stack[i].note = document.getElementById('nt-'+i).value.trim();
+  const notes = loadStackNotes();
+  if(stack[i].note) notes[stack[i].name] = stack[i].note; else delete notes[stack[i].name];
+  try{ localStorage.setItem('chi_stack_notes', JSON.stringify(notes)); }catch(e){}
+  renderStack();
+}
+function removeFromStack(i){
+  const h = stack[i]; if(!h) return;
+  if(!confirm(`Remove ${h.name} from your stack?`)) return;
+  try{
+    const names = JSON.parse(localStorage.getItem('chi_phyto_stack') || '[]');
+    const kept = Array.isArray(names) ? names.filter(n => typeof n !== 'string' || n.toLowerCase() !== h.name.toLowerCase()) : [];
+    localStorage.setItem('chi_phyto_stack', JSON.stringify(kept));
+  }catch(e){}
+  openStackIndex = null;
+  stack = loadStack();
+  renderStack(); renderStats();
+}
+
+// ── ACTIVE HERBS ──
+function renderActive(){
+  const owner = document.body.dataset.view === 'owner';
+  const body = document.getElementById('active-body');
+  if(!activeHerbs.length){
+    body.innerHTML = owner
+      ? emptyNote('No active herbs yet. Build a routine in the <a href="herb-planner.html" style="color:var(--gold-light)">Herb Planner</a> and its herbs will appear here.')
+      : emptyNote(`${PROFILE_NAME} hasn\u2019t shared an active routine yet.`);
+    return;
+  }
+  body.innerHTML = `<div class="active-grid">` + activeHerbs.map((h,i) => {
+    let hash=0; for(let k=0;k<h.name.length;k++) hash=(hash*31+h.name.charCodeAt(k))&0xffff;
+    const color = STACK_COLORS[hash % STACK_COLORS.length];
+    const how = [h.prep, h.time].filter(Boolean).map(escapeHtml).join(', ');
+    const cycle = h.onWeeks ? `${h.onWeeks} week${h.onWeeks==1?'':'s'} on${h.offWeeks ? `, ${h.offWeeks} off` : ''}` : '';
+    const since = h.startDate ? 'Started ' + new Date(h.startDate + 'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '';
+    return `<div class="active-card">
+      <div class="herb-top">
+        <span class="herb-dot" style="background:${color}"></span>
+        <a class="herb-name" href="supreme.html?herb=${slug(h.name)}">${escapeHtml(h.name)}</a>
+      </div>
+      <div class="active-meta">${[how, cycle, since].filter(Boolean).join('<br>')}</div>
+      <div class="stack-actions owner-only">
+        <button class="mini-btn mini-cancel" onclick="removeActive(${i})">Remove</button>
+      </div>
+    </div>`;
+  }).join('') + `</div>`;
+}
+function removeActive(i){
+  const h = activeHerbs[i]; if(!h) return;
+  if(!confirm(`Remove ${h.name} from your active herbs?`)) return;
+  activeHerbs.splice(i,1);
+  try{ localStorage.setItem('chi_active_herbs', JSON.stringify(activeHerbs)); }catch(e){}
+  renderActive(); renderStats();
+}
 
 // ── SAVED (Herbs / Posts / Matches) ──
 let savedSub = 'herbs';
@@ -1355,22 +1546,23 @@ function renderPosts(){
 // ── ACHIEVEMENTS ──
 function renderAchievements(){
   const L = levelInfo();
-  const nextRankAt = L.level<4?4:L.level<7?7:null;
+  const isOwner = document.body.dataset.view !== 'public';
   document.getElementById('level-card').innerHTML = `
-    <div class="level-ring" style="--pct:${L.pct}%"><span><span class="level-num">${L.level}</span><span class="level-word">Level</span></span></div>
+    <div class="level-ring" style="--pct:${isOwner ? L.pct : 100}%"><span><span class="level-num">${L.level}</span><span class="level-word">Level</span></span></div>
     <div class="level-info">
-      <div class="level-rank">${L.emoji} ${L.rank}</div>
-      <div class="level-sub">${nextRankAt ? `Reach Level ${nextRankAt} to rank up.` : 'Top rank reached — keep the streak alive.'}</div>
+      <div class="level-rank">Level ${L.level}</div>
+      ${isOwner ? `<div class="level-sub">Keep exploring to reach Level ${L.level+1}.</div>
       <div class="xp-bar"><div class="xp-fill" style="width:${L.pct}%"></div></div>
-      <div class="xp-text">${L.into} / ${XP_PER_LEVEL} XP toward Level ${L.level+1} · ${L.xp} XP total</div>
+      <div class="xp-text">${L.into} / ${XP_PER_LEVEL} XP toward Level ${L.level+1}, ${L.xp} XP total (only you can see this)</div>` : ''}
     </div>`;
+  renderBadgeWeek();
   document.getElementById('ach-grid').innerHTML = achievements.map(a=>{
     const done = a.progress>=a.target;
     const pct = Math.min(100, Math.round(a.progress/a.target*100));
     return `<div class="ach ${done?'done':'locked'}">
       <div class="ach-top">
         <div class="ach-icon">${a.icon}</div>
-        <div><div class="ach-name">${a.name}</div><div class="ach-xp">${a.xp} XP</div></div>
+        <div><div class="ach-name">${a.name}</div>${isOwner ? `<div class="ach-xp">${a.xp} XP</div>` : ''}</div>
         ${done?'<span class="ach-check">✓</span>':''}
       </div>
       <div class="ach-desc">${a.desc}</div>
@@ -1378,6 +1570,99 @@ function renderAchievements(){
       <div class="ach-prog-text">${done?'Complete':`${Math.min(a.progress,a.target)} / ${a.target}`}</div>
     </div>`;
   }).join('');
+}
+
+// ── EDIT PROFILE ──
+function openEditProfile(){
+  const p = window.CHI_PROFILE || {};
+  document.getElementById('edit-name').value = p.display_name || p.username || '';
+  document.getElementById('edit-bio').value = p.bio || '';
+  document.getElementById('edit-error').textContent = '';
+  updateBioCount();
+  document.getElementById('edit-modal').classList.add('open');
+  document.getElementById('edit-name').focus();
+}
+function closeEditProfile(){ document.getElementById('edit-modal').classList.remove('open'); }
+function updateBioCount(){
+  document.getElementById('edit-bio-count').textContent = document.getElementById('edit-bio').value.length + ' / 300';
+}
+async function saveProfileEdits(){
+  const errEl = document.getElementById('edit-error');
+  const btn = document.getElementById('edit-save-btn');
+  const name = document.getElementById('edit-name').value.trim();
+  const bio = document.getElementById('edit-bio').value.trim();
+  if(!name){ errEl.textContent = 'Add a display name.'; return; }
+  if(name.length > 40){ errEl.textContent = 'Display name must be 40 characters or fewer.'; return; }
+  if(bio.length > 300){ errEl.textContent = 'Summary must be 300 characters or fewer.'; return; }
+  if(!window.CHI_SESSION){ errEl.textContent = 'You\u2019re signed out. Sign in again to save changes.'; return; }
+  btn.disabled = true; btn.textContent = 'Saving…'; errEl.textContent = '';
+  try{
+    const { error } = await sb.from('profiles')
+      .update({ display_name: name, bio: bio || null })
+      .eq('id', window.CHI_SESSION.user.id);
+    if(error) throw error;
+    window.CHI_PROFILE = Object.assign(window.CHI_PROFILE || {}, { display_name: name, bio: bio || null });
+    try{ localStorage.setItem('chi_display_name', name); }catch(e){}
+    applyLiveProfile();
+    closeEditProfile();
+  }catch(e){
+    console.warn('Profile save failed:', e);
+    errEl.textContent = 'Couldn\u2019t save your changes. Check your connection and try again.';
+  }finally{
+    btn.disabled = false; btn.textContent = 'Save changes';
+  }
+}
+
+// ── BADGE WEEK ──
+// For the first 7 days of every month, members can give each person in their
+// Circle one badge. Basic version: saved on this device only (chi_badges_given,
+// keyed by month). Add ?badgeweek=1 to the URL to preview it outside the week.
+const CIRCLE_BADGES = [
+  {id:'green-thumb',  icon:'🌿', name:'Green Thumb'},
+  {id:'helping-hand', icon:'🤝', name:'Helping Hand'},
+  {id:'wise-root',    icon:'📚', name:'Wise Root'},
+  {id:'good-energy',  icon:'☀️', name:'Good Energy'},
+];
+function badgeMonthKey(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0'); }
+function isBadgeWeek(d){
+  if(new URLSearchParams(location.search).get('badgeweek') === '1') return true;
+  return d.getDate() <= 7;
+}
+function loadBadgesGiven(){
+  try{ const v = JSON.parse(localStorage.getItem('chi_badges_given') || '{}'); return (v && typeof v === 'object') ? v : {}; }catch(e){ return {}; }
+}
+function renderBadgeWeek(){
+  const el = document.getElementById('badge-week');
+  if(!el) return;
+  const now = new Date();
+  const month = badgeMonthKey(now);
+  const given = loadBadgesGiven()[month] || {};
+  if(!isBadgeWeek(now)){
+    const next = new Date(now.getFullYear(), now.getMonth()+1, 1);
+    el.innerHTML = `<div class="badge-week-title">Badge Week</div>
+      <div class="badge-week-sub" style="margin-bottom:0">Once a month, for one week, you can give each person in your Circle a badge. The next Badge Week opens on ${next.toLocaleDateString('en-GB',{day:'numeric',month:'long'})}.</div>`;
+    return;
+  }
+  el.innerHTML = `<div class="badge-week-title">Badge Week is open</div>
+    <div class="badge-week-sub">Give each person in your Circle one badge this month. You can change your pick until the week ends.</div>
+    ${companions.map(c => {
+      const id = slug(c.name);
+      return `<div class="badge-row">
+        <div class="badge-row-name">${escapeHtml(c.name)}</div>
+        <div class="badge-picks">${CIRCLE_BADGES.map(b =>
+          `<button class="badge-pick${given[id]===b.id?' on':''}" aria-pressed="${given[id]===b.id}" onclick="giveBadge('${id}','${b.id}')">${b.icon} ${b.name}</button>`
+        ).join('')}</div>
+      </div>`;
+    }).join('')}`;
+}
+function giveBadge(memberId, badgeId){
+  const all = loadBadgesGiven();
+  const month = badgeMonthKey(new Date());
+  all[month] = all[month] || {};
+  all[month][memberId] = (all[month][memberId] === badgeId) ? undefined : badgeId;
+  if(!all[month][memberId]) delete all[month][memberId];
+  try{ localStorage.setItem('chi_badges_given', JSON.stringify(all)); }catch(e){}
+  renderBadgeWeek();
 }
 
 // ── MESSAGE ──
@@ -1514,8 +1799,8 @@ renderAchievements();
 renderGallery();
 renderPosts();
 loadSettings();
+document.body.dataset.tier = 'free';
 setView('owner');
-setTier('free');
 
 // Handle #achievements / #settings deep links from nav dropdown
 (function(){

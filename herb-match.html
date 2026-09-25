@@ -122,6 +122,11 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 
 .results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.5rem;margin-bottom:2rem;}
 
+.results-stack-note{font-size:12.5px;color:var(--muted);max-width:480px;margin:.6rem auto 0;line-height:1.6;}
+.results-stack-note a{color:var(--gold-light);text-decoration:none;border-bottom:1px dashed rgba(200,149,42,.4);}
+.herb-card.in-stack{opacity:.6;filter:grayscale(.5);}
+.herb-card.in-stack:hover,.herb-card.in-stack:focus-within{opacity:1;filter:none;}
+.in-stack-pill{display:inline-block;font-size:10.5px;padding:.15rem .55rem;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);color:var(--muted);margin-bottom:.5rem;}
 .herb-card{background:var(--card);border:1px solid var(--card-border);border-radius:10px;padding:1.25rem;cursor:default;transition:all .2s;text-align:left;position:relative;}
 .herb-card:hover{border-color:rgba(200,149,42,.4);background:rgba(200,149,42,.08);}
 
@@ -493,6 +498,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
       <h2>Herbs worth considering</h2>
       <p id="results-description"></p>
       <p class="results-note">We keep this fresh on purpose — herbs already in your stack, or ones we've shown you recently, take a back seat unless they're genuinely the best fit.</p>
+      <p class="results-stack-note" id="results-stack-note" style="display:none"></p>
     </div>
     <div id="results-body">
       <div class="results-loading" id="results-loading">
@@ -629,8 +635,29 @@ let currentProfile = null;
 let matchPageState = 'page1';  // 'page1' or 'page2'
 
 // ─── OWNED / SEEN HERBS (used to widen variety) ─────────
+// One-time move of herbs from Herb Match's old separate stack key
+// (chi_herb_stack) into the shared stack key every page uses (chi_phyto_stack).
+function migrateLegacyStack() {
+  try {
+    const legacy = JSON.parse(localStorage.getItem('chi_herb_stack') || 'null');
+    if (!Array.isArray(legacy)) return;
+    const shared = JSON.parse(localStorage.getItem('chi_phyto_stack') || '[]');
+    const list = Array.isArray(shared) ? shared : [];
+    legacy.forEach(n => {
+      if (typeof n === 'string' && !list.some(s => typeof s === 'string' && s.toLowerCase() === n.toLowerCase())) list.push(n);
+    });
+    localStorage.setItem('chi_phyto_stack', JSON.stringify(list));
+    localStorage.removeItem('chi_herb_stack');
+  } catch (e) {}
+}
+migrateLegacyStack();
+// "Owned" = the shared herb stack (chi_phyto_stack), the same list the
+// profile page, The Herbarium and Community use.
 function getOwnedHerbs() {
-  try { return JSON.parse(localStorage.getItem('chi_herb_stack') || '[]'); } catch (e) { return []; }
+  try {
+    const v = JSON.parse(localStorage.getItem('chi_phyto_stack') || '[]');
+    return Array.isArray(v) ? v.filter(n => typeof n === 'string') : [];
+  } catch (e) { return []; }
 }
 function getSeenHerbs() {
   try { return JSON.parse(localStorage.getItem('chi_match_seen') || '[]'); } catch (e) { return []; }
@@ -1026,9 +1053,26 @@ function badgeClass(strength) {
   return 'worth-exploring';
 }
 
+// Display only: tells the member which of their stack herbs are being kept in
+// the background, and greys out any that still come back as a match. Nothing
+// here changes what is sent to the matching engine.
+function renderStackNote() {
+  const el = document.getElementById('results-stack-note');
+  if (!el) return;
+  const stack = getOwnedHerbs();
+  if (!stack.length) { el.style.display = 'none'; el.innerHTML = ''; return; }
+  const esc = (t) => String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const shown = stack.slice(0, 6).map(esc).join(', ');
+  const more = stack.length > 6 ? ` and ${stack.length - 6} more` : '';
+  el.innerHTML = `Already in your stack: ${shown}${more}. <a href="profile.html">View your stack</a>`;
+  el.style.display = 'block';
+}
+
 function updateResultsGrid() {
   const grid = document.getElementById('results-grid');
   grid.innerHTML = '';
+  renderStackNote();
+  const stackLower = getOwnedHerbs().map(n => n.toLowerCase());
 
   // Defensive: a single malformed entry (e.g. missing name) shouldn't be
   // able to blank the whole preview. Drop anything unusable and still show
@@ -1046,7 +1090,8 @@ function updateResultsGrid() {
     const safeName = herb.name.replace(/'/g, "\\'");
     const saved = savedHerbs.includes(herb.name);
     const card = document.createElement('div');
-    card.className = 'herb-card';
+    const inStack = stackLower.includes(herb.name.toLowerCase());
+    card.className = 'herb-card' + (inStack ? ' in-stack' : '');
     card.setAttribute('data-herb', herb.name);
     card.style.setProperty('--herb-color', herb.categoryColor || 'var(--gold)');
     card.innerHTML = `
@@ -1055,6 +1100,7 @@ function updateResultsGrid() {
         ${herb.category ? `<span class="tag">${herb.category}</span>` : '<span></span>'}
         <button type="button" class="stack-star ${saved ? 'is-saved' : ''}" data-stack-name="${herb.name}" title="${saved ? 'Remove from saved' : 'Save'}">${saved ? '★' : '☆'}</button>
       </div>
+      ${inStack ? '<span class="in-stack-pill">✓ In your stack</span>' : ''}
       <div class="herb-name">${herb.name}</div>
       <div class="herb-latin">${herb.latin || ''}</div>
       ${herb.blurb ? `<div class="herb-blurb">${herb.blurb}</div>` : ''}
@@ -1442,10 +1488,10 @@ function hideAlternativesModal() {
 // ─── HERB STACK ─────────────────────────────────────────
 function addHerbToStack(herbName) {
   const stack = getOwnedHerbs();
-  if (!stack.includes(herbName)) {
+  if (!stack.some(s => s.toLowerCase() === String(herbName).toLowerCase())) {
     stack.push(herbName);
   }
-  localStorage.setItem('chi_herb_stack', JSON.stringify(stack));
+  localStorage.setItem('chi_phyto_stack', JSON.stringify(stack));
   alert(`${herbName} added to your stack!`);
 }
 
@@ -1462,7 +1508,7 @@ function toggleHerbInStack(herbName) {
   const stack = getOwnedHerbs();
   const idx = stack.indexOf(herbName);
   if (idx === -1) stack.push(herbName); else stack.splice(idx, 1);
-  localStorage.setItem('chi_herb_stack', JSON.stringify(stack));
+  localStorage.setItem('chi_phyto_stack', JSON.stringify(stack));
   updateResultsGrid();
 }
 
