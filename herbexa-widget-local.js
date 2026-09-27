@@ -21,6 +21,25 @@ class HerbexaWidget {
     this.createWidget();
     this.attachEventListeners();
     this.loadUserPreferences();
+    this.applyPosition();
+    window.addEventListener("herbadex-edge-prefs", () => this.applyPosition());
+  }
+
+  // Side + height from the shared edge prefs (herbadex-edge-tabs.js).
+  // Falls back to right edge, lower third if that file isn't loaded.
+  applyPosition() {
+    const P = window.HerbadexEdgePrefs;
+    const prefs = P ? P.get() : { herbexaSide: "right", herbexaHeight: "lower", toolsSide: "left", toolsHeight: "middle" };
+    const side = prefs.herbexaSide === "left" ? "left" : "right";
+    const top = P ? P.herbexaTop(prefs) : "72%";
+    const btn = document.getElementById("herbexa-btn");
+    const chat = document.getElementById("herbexa-chat");
+    [btn, chat].forEach((el) => {
+      if (!el) return;
+      el.classList.remove("hdx-side-left", "hdx-side-right");
+      el.classList.add("hdx-side-" + side);
+    });
+    if (btn) btn.style.top = top;
   }
 
   createWidget() {
@@ -28,69 +47,105 @@ class HerbexaWidget {
     container.id = "herbexa-widget";
     container.innerHTML = `
       <style>
+        /* Edge layout (v3). Side and height come from HerbadexEdgePrefs
+           (herbadex-edge-tabs.js), set in Profile → Settings → Display. */
         #herbexa-widget {
-          position: fixed;
-          bottom: 20px;
-          right: 20px;
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-          z-index: 9999;
         }
 
         .herbexa-button {
-          width: 60px;
-          height: 60px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, #2d5016 0%, #4a7c2f 100%);
-          border: none;
-          cursor: pointer;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          position: fixed;
+          top: 72%;
+          right: 0;
+          z-index: 45;
           display: flex;
           align-items: center;
-          justify-content: center;
-          font-size: 24px;
-          transition: all 0.3s ease;
-          color: white;
+          gap: 6px;
+          writing-mode: vertical-rl;
+          transform: translateY(-50%) rotate(180deg);
+          background: linear-gradient(135deg, #2d5016 0%, #4a7c2f 100%);
+          color: #fff;
+          border: 1px solid rgba(200,149,42,.4);
+          border-right: none;
+          border-radius: 8px 0 0 8px;
+          padding: .8rem .42rem;
+          font-family: 'DM Sans', -apple-system, sans-serif;
+          font-size: 11.5px;
+          font-weight: 600;
+          letter-spacing: .04em;
+          cursor: pointer;
+          opacity: .88;
+          box-shadow: 0 4px 14px rgba(0,0,0,.3);
+          transition: opacity .15s, padding .15s;
+          -webkit-tap-highlight-color: transparent;
         }
 
-        .herbexa-button:hover {
-          transform: scale(1.1);
-          box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+        .herbexa-button.hdx-side-left {
+          right: auto;
+          left: 0;
+          transform: translateY(-50%);
+          border-right: 1px solid rgba(200,149,42,.4);
+          border-left: none;
+          border-radius: 0 8px 8px 0;
         }
 
+        .herbexa-button:hover,
+        .herbexa-button:focus-visible {
+          opacity: 1;
+        }
+
+        .herbexa-button.hdx-side-right:hover { padding-right: .6rem; }
+        .herbexa-button.hdx-side-left:hover { padding-left: .6rem; }
+        .herbexa-button:focus-visible { outline: 2px solid #e8b84b; outline-offset: 2px; }
+
+        .herbexa-button-icon {
+          writing-mode: horizontal-tb;
+          font-size: 12px;
+          line-height: 1;
+        }
+
+        /* Hide the tab while the panel is open; the panel has its own close. */
         .herbexa-button.active {
-          border-radius: 0;
-          width: auto;
-          padding: 0;
+          visibility: hidden;
         }
 
         .herbexa-chat {
-          position: absolute;
-          bottom: 80px;
+          position: fixed;
+          bottom: 20px;
           right: 0;
+          z-index: 1500;
           width: 380px;
-          height: 600px;
+          height: min(600px, calc(100vh - 100px));
           background: white;
-          border-radius: 12px;
-          box-shadow: 0 5px 40px rgba(0,0,0,0.16);
+          border-radius: 12px 0 0 12px;
+          box-shadow: 0 5px 40px rgba(0,0,0,0.22);
           display: flex;
           flex-direction: column;
           opacity: 0;
           pointer-events: none;
-          transform: translateY(20px);
-          transition: all 0.3s ease;
+          transform: translateX(105%);
+          transition: transform 0.3s ease, opacity 0.3s ease;
         }
 
-        .herbexa-chat.open {
+        .herbexa-chat.hdx-side-left {
+          right: auto;
+          left: 0;
+          border-radius: 0 12px 12px 0;
+          transform: translateX(-105%);
+        }
+
+        .herbexa-chat.open,
+        .herbexa-chat.hdx-side-left.open {
           opacity: 1;
           pointer-events: auto;
-          transform: translateY(0);
+          transform: translateX(0);
         }
 
         .herbexa-header {
           background: linear-gradient(135deg, #2d5016 0%, #4a7c2f 100%);
           color: white;
           padding: 16px;
-          border-radius: 12px 12px 0 0;
+          border-radius: 12px 0 0 0;
           display: flex;
           justify-content: space-between;
           align-items: center;
@@ -292,49 +347,37 @@ class HerbexaWidget {
           text-align: center;
         }
 
+        .herbexa-chat.hdx-side-left .herbexa-header {
+          border-radius: 0 12px 0 0;
+        }
+
+        /* Slimmer tab on phones, matching the tool tabs. */
+        @media (max-width: 760px) {
+          .herbexa-button { font-size: 10.5px; padding: .6rem .26rem; gap: 4px; }
+          .herbexa-button-icon { font-size: 10.5px; }
+        }
+
         @media (max-width: 480px) {
-          /* Center the button itself on mobile instead of pinning bottom-right */
-          #herbexa-widget {
-            left: 50%;
-            right: auto;
-            transform: translateX(-50%);
-            bottom: 16px;
-          }
-
-          /* Chat panel: fixed + centered independently of the button, so it
-             stays centered regardless of the button's own transform. */
           .herbexa-chat {
-            position: fixed;
-            left: 50%;
-            right: auto;
-            transform: translateX(-50%);
-            bottom: 90px;
-            width: calc(100vw - 32px);
-            height: 70vh;
-            max-height: 500px;
-            opacity: 0;
-            pointer-events: none;
-          }
-
-          /* Explicit transform here too (same value) — otherwise the base
-             .herbexa-chat.open{transform:translateY(0)} rule (higher
-             specificity, defined earlier) would win and cancel the
-             horizontal centering right when the panel opens. */
-          .herbexa-chat.open {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateX(-50%);
+            width: calc(100vw - 12px);
+            height: 75vh;
+            max-height: 560px;
+            bottom: 8px;
           }
 
           .herbexa-text {
             max-width: 95%;
           }
         }
+
+        @media (prefers-reduced-motion: reduce) {
+          .herbexa-chat, .herbexa-button { transition: none; }
+        }
       </style>
 
-      <button class="herbexa-button" id="herbexa-btn" title="Ask Herbexa">🌿</button>
+      <button type="button" class="herbexa-button hdx-side-right" id="herbexa-btn" title="Ask Herbexa" aria-controls="herbexa-chat" aria-expanded="false"><span class="herbexa-button-icon" aria-hidden="true">🌿</span>Herbexa</button>
 
-      <div class="herbexa-chat" id="herbexa-chat">
+      <div class="herbexa-chat hdx-side-right" id="herbexa-chat">
         <div class="herbexa-header">
           <h2 class="herbexa-title">Herbexa</h2>
           <button class="herbexa-close" id="herbexa-close">&times;</button>
@@ -414,6 +457,7 @@ class HerbexaWidget {
     const btn = document.getElementById("herbexa-btn");
     chat.classList.add("open");
     btn.classList.add("active");
+    btn.setAttribute("aria-expanded", "true");
     document.getElementById("herbexa-input").focus();
   }
 
@@ -423,6 +467,7 @@ class HerbexaWidget {
     const btn = document.getElementById("herbexa-btn");
     chat.classList.remove("open");
     btn.classList.remove("active");
+    btn.setAttribute("aria-expanded", "false");
   }
 
   async sendMessage() {
