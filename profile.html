@@ -187,16 +187,17 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .toggle-slider::before{content:'';position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:var(--muted);border-radius:50%;transition:.2s;}
 .toggle input:checked + .toggle-slider{background:rgba(74,140,101,.5);}
 .toggle input:checked + .toggle-slider::before{transform:translateX(18px);background:#7acca0;}
-/* Edge tab position controls (own class: setFontScale() clears every .fs-btn) */
-.edge-pos-control{display:flex;gap:.3rem;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;}
-.edge-btn{font-size:12.5px;padding:.4rem .7rem;border-radius:6px;border:1px solid var(--card-border);background:transparent;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
-.edge-btn:hover{border-color:rgba(200,149,42,.4);color:var(--text);}
-.edge-btn.active{background:rgba(200,149,42,.18);border-color:rgba(200,149,42,.5);color:var(--gold-light);font-weight:500;}
+/* Mobile: button rows wrap under their label instead of squashing it */
 @media(max-width:600px){
-  .setting-row:has(.edge-pos-control),.setting-row:has(.font-scale-control),.setting-row:has(.membership-actions){flex-wrap:wrap;gap:.75rem;}
-  .setting-row:has(.edge-pos-control) .setting-info,.setting-row:has(.font-scale-control) .setting-info,.setting-row:has(.membership-actions) .setting-info{flex-basis:100%;}
-  .edge-pos-control{justify-content:flex-start;}
+  .setting-row:has(.font-scale-control),.setting-row:has(.membership-actions){flex-wrap:wrap;gap:.75rem;}
+  .setting-row:has(.font-scale-control) .setting-info,.setting-row:has(.membership-actions) .setting-info{flex-basis:100%;}
 }
+/* Username prompt + @handle */
+.puser{color:var(--muted);font-size:13px;margin-right:.6rem;}
+.username-notice{margin-top:.75rem;padding:.65rem .8rem;border-radius:8px;border:1px solid rgba(200,149,42,.35);background:rgba(200,149,42,.08);font-size:13px;color:var(--text);display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .8rem;}
+.username-notice[hidden]{display:none;}
+.username-notice button{font:inherit;font-size:12.5px;padding:.35rem .7rem;border-radius:6px;border:1px solid rgba(200,149,42,.5);background:rgba(200,149,42,.18);color:var(--gold-light);cursor:pointer;}
+.field-hint{font-size:11.5px;color:var(--muted);margin-top:.3rem;line-height:1.4;}
 .settings-footnote{font-size:11.5px;color:rgba(245,240,232,.35);line-height:1.65;margin-top:.5rem;}
 .settings-footnote a{color:var(--gold);text-decoration:none;}
 .settings-footnote a:hover{text-decoration:underline;}
@@ -520,19 +521,19 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 }
 
 /* Show hamburger and mobile menu only on tablets and smaller */
-@media (max-width: 768px) {
-  .nav-hamburger {
-    display: flex;
-  }
-  .nav-right > a:not(.nav-cta):not(.nav-inbox) {
-    display: none !important;
-  }
-  .nav-dd {
-    display: none !important;
-  }
-  .mobile-menu {
-    display: block;
-  }
+/* One navigation on every screen size: the ☰ menu (Sept 2026).
+   Was mobile-only (max-width: 768px). */
+.nav-hamburger {
+  display: flex;
+}
+.nav-right > a:not(.nav-cta):not(.nav-inbox) {
+  display: none !important;
+}
+.nav-dd {
+  display: none !important;
+}
+.mobile-menu {
+  display: block;
 }
 
 /* Further optimize for phones */
@@ -584,7 +585,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <div class="mobile-menu-title">Tools</div>
     <a href="herb-match.html"><span class="mobile-menu-icon">🌿</span>Herb Match</a>
     <a href="supreme.html"><span class="mobile-menu-icon">📖</span>The Herbarium</a>
-    <a href="herb-identifier.html"><span class="mobile-menu-icon">🔍</span>Herb Identifier</a>
     <a href="herb-planner.html"><span class="mobile-menu-icon">🗓️</span>Herb Planner</a>
     <a href="resources.html"><span class="mobile-menu-icon">📚</span>Resources</a>
   </div>
@@ -683,9 +683,14 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <div class="phead-main">
       <div class="pname" id="p-name">&nbsp;</div>
       <div class="pmeta">
+        <span class="puser" id="p-username"></span>
         <span class="psince" id="p-since"></span>
       </div>
       <div class="pbio" id="p-bio"></div>
+      <div class="username-notice" id="username-notice" hidden>
+        <span>Pick a username. Right now your profile uses your email address.</span>
+        <button type="button" onclick="openEditProfile()">Choose username</button>
+      </div>
     </div>
     <div class="pactions" id="p-actions"></div>
   </div>
@@ -816,48 +821,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
           <button class="fs-btn" data-scale="150" onclick="setFontScale(150,this)">150%</button>
         </div>
       </div>
-      <div class="setting-row">
-        <div class="setting-info">
-          <div class="setting-label">Tool tabs: edge</div>
-          <div class="setting-desc">Which side of the screen the Herbarium, Herb Match and Herb Planner tabs sit on.</div>
-        </div>
-        <div class="edge-pos-control">
-          <button class="edge-btn" data-edge-key="toolsSide" data-edge-val="left" onclick="setEdgePref('toolsSide','left')">Left</button>
-          <button class="edge-btn" data-edge-key="toolsSide" data-edge-val="right" onclick="setEdgePref('toolsSide','right')">Right</button>
-        </div>
-      </div>
-      <div class="setting-row">
-        <div class="setting-info">
-          <div class="setting-label">Tool tabs: height</div>
-          <div class="setting-desc">How far down the screen the tool tabs sit.</div>
-        </div>
-        <div class="edge-pos-control">
-          <button class="edge-btn" data-edge-key="toolsHeight" data-edge-val="upper" onclick="setEdgePref('toolsHeight','upper')">Upper</button>
-          <button class="edge-btn" data-edge-key="toolsHeight" data-edge-val="middle" onclick="setEdgePref('toolsHeight','middle')">Middle</button>
-          <button class="edge-btn" data-edge-key="toolsHeight" data-edge-val="lower" onclick="setEdgePref('toolsHeight','lower')">Lower</button>
-        </div>
-      </div>
-      <div class="setting-row">
-        <div class="setting-info">
-          <div class="setting-label">Herbexa tab: edge</div>
-          <div class="setting-desc">Which side of the screen the Herbexa tab sits on.</div>
-        </div>
-        <div class="edge-pos-control">
-          <button class="edge-btn" data-edge-key="herbexaSide" data-edge-val="left" onclick="setEdgePref('herbexaSide','left')">Left</button>
-          <button class="edge-btn" data-edge-key="herbexaSide" data-edge-val="right" onclick="setEdgePref('herbexaSide','right')">Right</button>
-        </div>
-      </div>
-      <div class="setting-row">
-        <div class="setting-info">
-          <div class="setting-label">Herbexa tab: height</div>
-          <div class="setting-desc">How far down the screen the Herbexa tab sits. If it matches the tool tabs on the same side, it moves to the nearest free spot.</div>
-        </div>
-        <div class="edge-pos-control">
-          <button class="edge-btn" data-edge-key="herbexaHeight" data-edge-val="upper" onclick="setEdgePref('herbexaHeight','upper')">Upper</button>
-          <button class="edge-btn" data-edge-key="herbexaHeight" data-edge-val="middle" onclick="setEdgePref('herbexaHeight','middle')">Middle</button>
-          <button class="edge-btn" data-edge-key="herbexaHeight" data-edge-val="lower" onclick="setEdgePref('herbexaHeight','lower')">Lower</button>
-        </div>
-      </div>
     </div>
 
     <!-- PRIVACY -->
@@ -956,8 +919,13 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <h3>Edit profile</h3>
     <p>This is what other members see on your profile.</p>
     <label class="field">
-      <span class="field-label">Display name</span>
-      <input type="text" id="edit-name" maxlength="40" autocomplete="nickname">
+      <span class="field-label">Username</span>
+      <input type="text" id="edit-username" maxlength="20" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="e.g. nettle_fan">
+      <div class="field-hint">3–20 lowercase letters, numbers or underscores. This is how other members see you, so don't use your real name.</div>
+    </label>
+    <label class="field">
+      <span class="field-label">Display name (optional)</span>
+      <input type="text" id="edit-name" maxlength="40" autocomplete="off" placeholder="Leave blank to show your username">
     </label>
     <label class="field">
       <span class="field-label">Summary</span>
@@ -1024,8 +992,13 @@ function applyLiveProfile(){
     if(cached) document.getElementById('p-name').textContent = cached;
     return;
   }
-  const name = p.display_name || p.username || 'Herbalist';
+  const uValid = isValidUsername(p.username);
+  const name = p.display_name || (uValid ? p.username : '') || 'Herbalist';
   document.getElementById('p-name').textContent = name;
+  const handle = document.getElementById('p-username');
+  if(handle) handle.textContent = uValid ? '@' + p.username : '';
+  const notice = document.getElementById('username-notice');
+  if(notice) notice.hidden = uValid || document.body.dataset.view !== 'owner';
   PROFILE_NAME = name.split(' ')[0];
   const initial = document.getElementById('avatar-initial');
   if(initial) initial.textContent = name.trim().charAt(0).toUpperCase();
@@ -1635,13 +1608,16 @@ function renderAchievements(){
 // ── EDIT PROFILE ──
 function openEditProfile(){
   const p = window.CHI_PROFILE || {};
-  document.getElementById('edit-name').value = p.display_name || p.username || '';
+  document.getElementById('edit-username').value = isValidUsername(p.username) ? p.username : '';
+  document.getElementById('edit-name').value = p.display_name || '';
   document.getElementById('edit-bio').value = p.bio || '';
   document.getElementById('edit-error').textContent = '';
   updateBioCount();
   document.getElementById('edit-modal').classList.add('open');
-  document.getElementById('edit-name').focus();
+  document.getElementById(isValidUsername(p.username) ? 'edit-name' : 'edit-username').focus();
 }
+// Same rule the database enforces when a username changes.
+function isValidUsername(u){ return typeof u === 'string' && /^[a-z0-9_]{3,20}$/.test(u); }
 function closeEditProfile(){ document.getElementById('edit-modal').classList.remove('open'); }
 function updateBioCount(){
   document.getElementById('edit-bio-count').textContent = document.getElementById('edit-bio').value.length + ' / 300';
@@ -1651,18 +1627,27 @@ async function saveProfileEdits(){
   const btn = document.getElementById('edit-save-btn');
   const name = document.getElementById('edit-name').value.trim();
   const bio = document.getElementById('edit-bio').value.trim();
-  if(!name){ errEl.textContent = 'Add a display name.'; return; }
+  const uname = document.getElementById('edit-username').value.trim().replace(/^@/, '').toLowerCase();
+  document.getElementById('edit-username').value = uname;
+  if(!isValidUsername(uname)){ errEl.textContent = 'Username must be 3–20 characters: lowercase letters, numbers or underscores.'; return; }
   if(name.length > 40){ errEl.textContent = 'Display name must be 40 characters or fewer.'; return; }
   if(bio.length > 300){ errEl.textContent = 'Summary must be 300 characters or fewer.'; return; }
   if(!window.CHI_SESSION){ errEl.textContent = 'You\u2019re signed out. Sign in again to save changes.'; return; }
   btn.disabled = true; btn.textContent = 'Saving…'; errEl.textContent = '';
   try{
+    const changes = { display_name: name || null, bio: bio || null };
+    const current = (window.CHI_PROFILE || {}).username;
+    if(uname !== current) changes.username = uname;
     const { error } = await sb.from('profiles')
-      .update({ display_name: name, bio: bio || null })
+      .update(changes)
       .eq('id', window.CHI_SESSION.user.id);
-    if(error) throw error;
-    window.CHI_PROFILE = Object.assign(window.CHI_PROFILE || {}, { display_name: name, bio: bio || null });
-    try{ localStorage.setItem('chi_display_name', name); }catch(e){}
+    if(error){
+      if(error.code === '23505'){ errEl.textContent = 'That username is taken. Try another.'; return; }
+      if(error.code === '22023'){ errEl.textContent = 'Username must be 3–20 characters: lowercase letters, numbers or underscores.'; return; }
+      throw error;
+    }
+    window.CHI_PROFILE = Object.assign(window.CHI_PROFILE || {}, changes);
+    try{ localStorage.setItem('chi_display_name', name || uname); }catch(e){}
     applyLiveProfile();
     closeEditProfile();
   }catch(e){
@@ -1775,20 +1760,6 @@ function setFontScale(scale, btn){
     else { document.body.style.transform='scale('+s+')'; document.body.style.transformOrigin='top center'; document.body.style.width=(100/s)+'%'; }
   }
 }
-
-function setEdgePref(key, val){
-  if(window.HerbadexEdgePrefs) window.HerbadexEdgePrefs.set(key, val);
-  syncEdgeButtons();
-}
-function syncEdgeButtons(){
-  if(!window.HerbadexEdgePrefs) return;
-  const p = window.HerbadexEdgePrefs.get();
-  document.querySelectorAll('.edge-btn').forEach(b=>{
-    b.classList.toggle('active', p[b.dataset.edgeKey] === b.dataset.edgeVal);
-  });
-}
-if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', syncEdgeButtons);
-else syncEdgeButtons();
 
 function saveSetting(key, val){
   try{ localStorage.setItem('chi_setting_'+key, val ? '1':'0'); }catch(e){}
@@ -1944,7 +1915,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
     <script src="herbexa-knowledge-base.js"></script>
-<script src="herbadex-edge-tabs.js"></script>
 <script src="herbexa-widget-local.js"></script>
 <script src="chi-leaves.js"></script>
 </body></html>

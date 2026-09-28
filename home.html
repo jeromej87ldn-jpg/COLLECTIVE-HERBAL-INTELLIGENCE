@@ -331,19 +331,19 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 }
 
 /* Show hamburger and mobile menu only on tablets and smaller */
-@media (max-width: 768px) {
-  .nav-hamburger {
-    display: flex;
-  }
-  .nav-right > a:not(.nav-cta):not(.nav-inbox) {
-    display: none !important;
-  }
-  .nav-dd {
-    display: none !important;
-  }
-  .mobile-menu {
-    display: block;
-  }
+/* One navigation on every screen size: the ☰ menu (Sept 2026).
+   Was mobile-only (max-width: 768px). */
+.nav-hamburger {
+  display: flex;
+}
+.nav-right > a:not(.nav-cta):not(.nav-inbox) {
+  display: none !important;
+}
+.nav-dd {
+  display: none !important;
+}
+.mobile-menu {
+  display: block;
 }
 
 /* Further optimize for phones */
@@ -398,7 +398,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <div class="mobile-menu-title">Tools</div>
     <a href="herb-match.html"><span class="mobile-menu-icon">🌿</span>Herb Match</a>
     <a href="supreme.html"><span class="mobile-menu-icon">📖</span>The Herbarium</a>
-    <a href="herb-identifier.html"><span class="mobile-menu-icon">🔍</span>Herb Identifier</a>
     <a href="herb-planner.html"><span class="mobile-menu-icon">🗓️</span>Herb Planner</a>
     <a href="resources.html"><span class="mobile-menu-icon">📚</span>Resources</a>
   </div>
@@ -1017,7 +1016,7 @@ const ACTIVE_HERBS = [
 const ACTIVITY = [
   {type:'formula',title:'Built sleep formula',desc:'Ashwagandha, Lemon Balm, Shatavari — 2h ago'},
   {type:'journal',title:'Logged journal entry',desc:'Day 7 of nettle protocol — 5h ago'},
-  {type:'identify',title:'Identified herb',desc:'Found lemon balm in garden — 1d ago'},
+  {type:'formula',title:'Updated Herb Planner',desc:'Lemon balm added to evening routine — 1d ago'},
   {type:'complete',title:'Completed protocol',desc:'Lion\'s Mane 30-day cycle finished — 3d ago'}
 ];
 
@@ -1041,7 +1040,7 @@ function buildActivityFeed(){
   const container = document.getElementById('activity-feed');
   if(!container)return;
   if(ACTIVITY.length===0){
-    container.innerHTML='<p style="font-size:13px;color:var(--muted);">Your journey starts here. Build a formula, log an entry, or identify an herb.</p>';
+    container.innerHTML='<p style="font-size:13px;color:var(--muted);">Your journey starts here. Build a formula, log an entry, or add herbs to your planner.</p>';
     return;
   }
   container.innerHTML = ACTIVITY.map(a=>`
@@ -1164,7 +1163,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
     <script src="herbexa-knowledge-base.js"></script>
-<script src="herbadex-edge-tabs.js"></script>
 <script src="herbexa-widget-local.js"></script>
 <script src="chi-leaves.js"></script>
 </body></html>

@@ -190,19 +190,19 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 }
 
 /* Show hamburger and mobile menu only on tablets and smaller */
-@media (max-width: 768px) {
-  .nav-hamburger {
-    display: flex;
-  }
-  .nav-right > a:not(.nav-cta):not(.nav-inbox) {
-    display: none !important;
-  }
-  .nav-dd {
-    display: none !important;
-  }
-  .mobile-menu {
-    display: block;
-  }
+/* One navigation on every screen size: the ☰ menu (Sept 2026).
+   Was mobile-only (max-width: 768px). */
+.nav-hamburger {
+  display: flex;
+}
+.nav-right > a:not(.nav-cta):not(.nav-inbox) {
+  display: none !important;
+}
+.nav-dd {
+  display: none !important;
+}
+.mobile-menu {
+  display: block;
 }
 
 /* Further optimize for phones */
@@ -278,7 +278,6 @@ h2{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:500;margin:
     <div class="mobile-menu-title">Tools</div>
     <a href="herb-match.html"><span class="mobile-menu-icon">🌿</span>Herb Match</a>
     <a href="supreme.html"><span class="mobile-menu-icon">📖</span>The Herbarium</a>
-    <a href="herb-identifier.html"><span class="mobile-menu-icon">🔍</span>Herb Identifier</a>
     <a href="herb-planner.html"><span class="mobile-menu-icon">🗓️</span>Herb Planner</a>
     <a href="resources.html"><span class="mobile-menu-icon">📚</span>Resources</a>
   </div>
@@ -462,6 +461,5 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
     <script src="chi-leaves.js"></script>
-<script src="herbadex-edge-tabs.js"></script>
 </body>
 </html>

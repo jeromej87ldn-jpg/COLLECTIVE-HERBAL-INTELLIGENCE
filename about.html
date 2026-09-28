@@ -243,19 +243,19 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 }
 
 /* Show hamburger and mobile menu only on tablets and smaller */
-@media (max-width: 768px) {
-  .nav-hamburger {
-    display: flex;
-  }
-  .nav-right > a:not(.nav-cta):not(.nav-inbox) {
-    display: none !important;
-  }
-  .nav-dd {
-    display: none !important;
-  }
-  .mobile-menu {
-    display: block;
-  }
+/* One navigation on every screen size: the ☰ menu (Sept 2026).
+   Was mobile-only (max-width: 768px). */
+.nav-hamburger {
+  display: flex;
+}
+.nav-right > a:not(.nav-cta):not(.nav-inbox) {
+  display: none !important;
+}
+.nav-dd {
+  display: none !important;
+}
+.mobile-menu {
+  display: block;
 }
 
 /* Further optimize for phones */
@@ -306,7 +306,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <div class="mobile-menu-title">Tools</div>
     <a href="herb-match.html"><span class="mobile-menu-icon">🌿</span>Herb Match</a>
     <a href="supreme.html"><span class="mobile-menu-icon">📖</span>The Herbarium</a>
-    <a href="herb-identifier.html"><span class="mobile-menu-icon">🔍</span>Herb Identifier</a>
     <a href="herb-planner.html"><span class="mobile-menu-icon">🗓️</span>Herb Planner</a>
     <a href="resources.html"><span class="mobile-menu-icon">📚</span>Resources</a>
   </div>
@@ -457,7 +456,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <div class="tools-grid">
       <a href="herb-match.html" class="tool-card"><span class="tool-num">Tool 01</span><span class="tool-icon">&#128269;</span><div class="tool-name">Herb Match</div><div class="tool-desc">Enter your full health profile and receive personalised herb recommendations cross-referenced against your medications, conditions, and life stage. Not generic. Built around you.</div><span class="tool-link">Try it &#8594;</span></a>
       <a href="supreme.html" class="tool-card"><span class="tool-num">Tool 02</span><span class="tool-icon">&#128214;</span><div class="tool-name">The Herbarium</div><div class="tool-desc">Search any herb from any tradition on earth. Every profile leads with spiritual and ceremonial history, then the science, then growing, preparation, and safety. 2,500 herbs. All of them.</div><span class="tool-link">Explore &#8594;</span></a>
-      <a href="herb-identifier.html" class="tool-card"><span class="tool-num">Tool 03</span><span class="tool-icon">&#128247;</span><div class="tool-name">Herb Identifier</div><div class="tool-desc">Photograph any plant. CHI analyses the image, identifies what it is, and links you to its full Herbarium profile. Turn curiosity into knowledge — anywhere you are.</div><span class="tool-link">Try it &#8594;</span></a>
+      <a href="herb-planner.html" class="tool-card"><span class="tool-num">Tool 03</span><span class="tool-icon">&#128197;</span><div class="tool-name">Herb Planner</div><div class="tool-desc">Plan when and how you take your herbs, and keep your active herbs in one place alongside your profile.</div><span class="tool-link">Try it &#8594;</span></a>
     </div>
   </div>
 </section>
@@ -499,7 +498,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <div class="footer-links">
       <a href="herb-match.html">Herb Match</a>
       <a href="supreme.html">The Herbarium</a>
-      <a href="herb-identifier.html">Herb Identifier</a>
       <a href="community.html">Community</a>
       <a href="join.html">Join</a>
       <a href="privacy-policy.html">Privacy</a>
@@ -555,7 +553,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
     <script src="herbexa-knowledge-base.js"></script>
-<script src="herbadex-edge-tabs.js"></script>
 <script src="herbexa-widget-local.js"></script>
 <script src="chi-leaves.js"></script>
 </body></html>

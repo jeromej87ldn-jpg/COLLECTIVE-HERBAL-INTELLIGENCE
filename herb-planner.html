@@ -423,19 +423,19 @@ input:focus,select:focus{border-color:rgba(200,149,42,.4);}
 }
 
 /* Show hamburger and mobile menu only on tablets and smaller */
-@media (max-width: 768px) {
-  .nav-hamburger {
-    display: flex;
-  }
-  .nav-right > a:not(.nav-cta):not(.nav-inbox) {
-    display: none !important;
-  }
-  .nav-dd {
-    display: none !important;
-  }
-  .mobile-menu {
-    display: block;
-  }
+/* One navigation on every screen size: the ☰ menu (Sept 2026).
+   Was mobile-only (max-width: 768px). */
+.nav-hamburger {
+  display: flex;
+}
+.nav-right > a:not(.nav-cta):not(.nav-inbox) {
+  display: none !important;
+}
+.nav-dd {
+  display: none !important;
+}
+.mobile-menu {
+  display: block;
 }
 
 /* Further optimize for phones */
@@ -479,10 +479,15 @@ input:focus,select:focus{border-color:rgba(200,149,42,.4);}
 <!-- Mobile sidebar menu -->
 <div class="mobile-menu" id="mobile-menu">
   <div class="mobile-menu-section">
+    <div class="mobile-menu-title">Account</div>
+    <a href="profile.html"><span class="mobile-menu-icon">🌿</span>My Profile</a>
+    <a href="inbox.html"><span class="mobile-menu-icon">✉️</span>Inbox</a>
+    <a href="join.html"><span class="mobile-menu-icon">➕</span>Join Herbadex</a>
+  </div>
+  <div class="mobile-menu-section">
     <div class="mobile-menu-title">Tools</div>
     <a href="herb-match.html"><span class="mobile-menu-icon">🌿</span>Herb Match</a>
     <a href="supreme.html"><span class="mobile-menu-icon">📖</span>The Herbarium</a>
-    <a href="herb-identifier.html"><span class="mobile-menu-icon">🔍</span>Herb Identifier</a>
     <a href="herb-planner.html"><span class="mobile-menu-icon">🗓️</span>Herb Planner</a>
     <a href="resources.html"><span class="mobile-menu-icon">📚</span>Resources</a>
   </div>
@@ -491,12 +496,6 @@ input:focus,select:focus{border-color:rgba(200,149,42,.4);}
     <a href="community.html"><span class="mobile-menu-icon">💬</span>Community Feed</a>
     <a href="garden.html"><span class="mobile-menu-icon">🌱</span>Herbal Garden</a>
     <a href="glossary.html"><span class="mobile-menu-icon">📚</span>Glossary</a>
-  </div>
-  <div class="mobile-menu-section">
-    <div class="mobile-menu-title">Account</div>
-    <a href="profile.html"><span class="mobile-menu-icon">🌿</span>My Profile</a>
-    <a href="inbox.html"><span class="mobile-menu-icon">✉️</span>Inbox</a>
-    <a href="join.html"><span class="mobile-menu-icon">➕</span>Join Herbadex</a>
   </div>
   <div class="mobile-menu-section">
     <div class="mobile-menu-title">Legal</div>

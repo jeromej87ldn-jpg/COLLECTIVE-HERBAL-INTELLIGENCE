@@ -378,7 +378,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
     <div class="mobile-menu-title">Tools</div>
     <a href="herb-match.html"><span class="mobile-menu-icon">🌿</span>Herb Match</a>
     <a href="supreme.html"><span class="mobile-menu-icon">📖</span>The Herbarium</a>
-    <a href="herb-identifier.html"><span class="mobile-menu-icon">🔍</span>Herb Identifier</a>
     <a href="herb-planner.html"><span class="mobile-menu-icon">🗓️</span>Herb Planner</a>
     <a href="resources.html"><span class="mobile-menu-icon">📚</span>Resources</a>
   </div>
@@ -529,12 +528,13 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2.5r
 
       <div class="field-row">
         <div class="field">
-          <label class="field-label">Display name</label>
-          <input class="field-input" type="text" placeholder="Your name" autocomplete="name">
+          <label class="field-label" for="signup-username">Username</label>
+          <input class="field-input" type="text" id="signup-username" placeholder="e.g. nettle_fan" maxlength="21" autocomplete="off" autocapitalize="none" spellcheck="false">
+          <div class="field-hint">How other members see you. 3–20 lowercase letters, numbers or underscores. Don't use your real name.</div>
         </div>
         <div class="field">
-          <label class="field-label">Username</label>
-          <input class="field-input" type="text" placeholder="@username" autocomplete="username">
+          <label class="field-label" for="signup-display-name">Display name (optional)</label>
+          <input class="field-input" type="text" id="signup-display-name" placeholder="Leave blank to use your username" maxlength="40" autocomplete="off">
         </div>
       </div>
 
@@ -628,7 +628,7 @@ let currentPlan = 'free';
 
 const PLAN_DETAILS = {
   free: '<span class="highlight">100 seeds on signup</span> — use them across all three CHI tools. <strong>Every week, 5 minutes of full unlimited access</strong> so you experience what membership feels like. Seeds you purchase never expire.',
-  monthly: '<strong>Unlimited access to everything.</strong> Herb Match, The Herbarium, Herb Identifier, full journal, community, herb passport, and rank progression. <span class="highlight">£6.99/month — cancel anytime.</span>',
+  monthly: '<strong>Full access to every tool.</strong> Herb Match, The Herbarium, Herbexa (25 questions a day), full journal, community, herb passport, and rank progression. <span class="highlight">£6.99/month — cancel anytime.</span>',
   annual: '<strong>Everything in monthly, at a lower price.</strong> £69.99/year works out to just £5.83/month — <span class="highlight">saving £13.89 versus monthly billing.</span> Best value for committed herb explorers.'
 };
 
@@ -716,9 +716,14 @@ async function handleSignup() {
   const btn = document.getElementById('submit-btn');
   const text = document.getElementById('btn-text');
 
-  const displayName = document.querySelector('input[placeholder="Your name"]').value.trim();
-  let username = document.querySelector('input[placeholder="@username"]').value.trim();
-  username = username.replace(/^@/, '');
+  const displayName = document.getElementById('signup-display-name').value.trim();
+  let username = document.getElementById('signup-username').value.trim();
+  username = username.replace(/^@/, '').toLowerCase();
+  document.getElementById('signup-username').value = username;
+  if (!/^[a-z0-9_]{3,20}$/.test(username)) {
+    showSignupError('Choose a username: 3–20 lowercase letters, numbers or underscores.');
+    return;
+  }
   const email = document.getElementById('email-input').value.trim();
   const password = document.getElementById('password-input').value;
 
@@ -731,12 +736,24 @@ async function handleSignup() {
   text.textContent = 'Creating your account...';
   showSignupError('');
 
+  // Username free? (Underscores are escaped: in ILIKE they'd match any character.)
+  try {
+    const { data: taken } = await sb.from('profiles').select('id')
+      .ilike('username', username.replace(/_/g, '\\_')).limit(1);
+    if (taken && taken.length) {
+      btn.disabled = false;
+      text.textContent = 'Create my account';
+      showSignupError('That username is taken. Try another.');
+      return;
+    }
+  } catch (e) { /* the database still guarantees uniqueness */ }
+
   const { data, error } = await sb.auth.signUp({
     email,
     password,
     options: {
       data: {
-        username: username || undefined,
+        username: username,
         display_name: displayName || undefined
       },
       emailRedirectTo: 'https://collectiveherbal.netlify.app/join.html'
@@ -932,19 +949,19 @@ document.getElementById('submit-btn').style.cursor = 'not-allowed';
 }
 
 /* Show hamburger and mobile menu only on tablets and smaller */
-@media (max-width: 768px) {
-  .nav-hamburger {
-    display: flex;
-  }
-  .nav-right > a:not(.nav-cta):not(.nav-inbox) {
-    display: none !important;
-  }
-  .nav-dd {
-    display: none !important;
-  }
-  .mobile-menu {
-    display: block;
-  }
+/* One navigation on every screen size: the ☰ menu (Sept 2026).
+   Was mobile-only (max-width: 768px). */
+.nav-hamburger {
+  display: flex;
+}
+.nav-right > a:not(.nav-cta):not(.nav-inbox) {
+  display: none !important;
+}
+.nav-dd {
+  display: none !important;
+}
+.mobile-menu {
+  display: block;
 }
 
 /* Further optimize for phones */
@@ -980,7 +997,6 @@ document.getElementById('submit-btn').style.cursor = 'not-allowed';
     <div class="scroller-item"><div class="scroller-dot"></div>AI built around you</div>
     <div class="scroller-item"><div class="scroller-dot"></div>Herb Match</div>
     <div class="scroller-item"><div class="scroller-dot"></div>The Herbarium — 2,500 herbs</div>
-    <div class="scroller-item"><div class="scroller-dot"></div>Herb Identifier</div>
     <div class="scroller-item"><div class="scroller-dot"></div>Community without compromise</div>
     <div class="scroller-item"><div class="scroller-dot"></div>Honest language. Always.</div>
     <div class="scroller-item"><div class="scroller-dot"></div>No data selling</div>
@@ -996,7 +1012,6 @@ document.getElementById('submit-btn').style.cursor = 'not-allowed';
     <div class="scroller-item"><div class="scroller-dot"></div>AI built around you</div>
     <div class="scroller-item"><div class="scroller-dot"></div>Herb Match</div>
     <div class="scroller-item"><div class="scroller-dot"></div>The Herbarium — 2,500 herbs</div>
-    <div class="scroller-item"><div class="scroller-dot"></div>Herb Identifier</div>
     <div class="scroller-item"><div class="scroller-dot"></div>Community without compromise</div>
     <div class="scroller-item"><div class="scroller-dot"></div>Honest language. Always.</div>
     <div class="scroller-item"><div class="scroller-dot"></div>No data selling</div>
@@ -1052,7 +1067,6 @@ document.getElementById('submit-btn').style.cursor = 'not-allowed';
     <div class="footer-links">
       <a href="herb-match.html">Herb Match</a>
       <a href="supreme.html">The Herbarium</a>
-      <a href="herb-identifier.html">Herb Identifier</a>
       <a href="about.html">About</a>
       <a href="community.html">Community</a>
       <a href="privacy-policy.html">Privacy Policy</a>
@@ -1100,7 +1114,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
     <script src="herbexa-knowledge-base.js"></script>
-<script src="herbadex-edge-tabs.js"></script>
 <script src="herbexa-widget-local.js"></script>
 <script src="chi-leaves.js"></script>
 </body></html>
